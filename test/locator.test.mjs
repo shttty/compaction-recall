@@ -121,7 +121,7 @@ test('image-only latest user, no user and stopwords do not fall back to earlier 
   assert.deepEqual(withLocators([user('quasar'), user('the and')], b), [user('quasar'), user('the and')]);
 });
 
-test('identical snippets are deduplicated with the highest-ranked newest locator retained', () => {
+test('identical snippets are deduplicated with the newest representative retained before ranking', () => {
   const b = branch(msg('distinct', 'quasar distinct detail'), ...Array.from({ length: 8 }, (_, i) => msg(`copy${i}`, 'quasar repeated detail')));
   assert.deepEqual(ids(buildLocator('quasar', b)), ['copy7', 'distinct']);
 });

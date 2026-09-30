@@ -1,0 +1,14 @@
+{
+  "gitHead": "0dfefccdc18ebaa52c9181f64ad51aca0d7ad904",
+  "note": "Final reproduction source hashes; experiment includes uncommitted dedupe-order changes. Later edits to preparation/summary only added metadata; mmarco token-length metadata was recomputed without rescoring.",
+  "sha256": {
+    "history.ts": "a9cbada48fb7ed9a1409bc908cd2f0e16b44300cd79b57d7fb6f0f680c97ba25",
+    "locator.ts": "a9d492620acb91152aa580a6fc1ca7209c889876dddf3efc6303ce60a841fb71",
+    "recall-extension.ts": "e59c246f820ceb35e1993edd95aa41d15be6acd8358a8e53bdf132ba094e29ae",
+    "prototype/blind-harness-core.mjs": "ea3830eec5bbb6624257b49f2bcae12aff7f545b3fca4f1afbd81e50d47a298b",
+    "prototype/prepare-rerank.mjs": "61823582b225d6e2802af55f6e6b379c4dbda2cc49e4dad94d8607874e1374f6",
+    "prototype/run-reranker.py": "75c39b9fce2df18eb380d483e15c138133c42e76e6a1d3fcb6eaebe4cd3fbb83",
+    "prototype/summarize-rerank.mjs": "db48f316d0e3d27458c893f254271c62a3eb9ad000a324cf40f2bf009e77e319",
+    "prototype/download-rerank-models.py": "77f960f087829a6b1a09f31ea85992148305230caafcafa8a9dbdb0f3832d1e8"
+  }
+}

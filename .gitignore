@@ -15,3 +15,11 @@ prototype/range.headers
 prototype/blind-runs/
 prototype/stacked-progress.json
 prototype/stacked-summary.txt
+
+# Local reranker runtimes, model weights and source-window payloads
+prototype/.venv-rerank/
+prototype/models/
+prototype/rerank-candidates.private.json
+
+# Generated local runtime session marker
+/:memory:.ses

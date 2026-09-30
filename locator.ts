@@ -59,12 +59,12 @@ export function locatorText(message: { role?: unknown; content?: unknown }): str
   return searchableMessageText(message) ?? "";
 }
 
-function snippet(text: string, offset: number, term = ""): string {
+function snippet(text: string, offset: number, term = "", size = LOCATOR_SNIPPET_CHARS): string {
   const chars = Array.from(text);
   const center = Array.from(text.slice(0, offset)).length + Math.floor(Array.from(term).length / 2);
-  const start = Math.max(0, Math.min(center - Math.floor(LOCATOR_SNIPPET_CHARS / 2), chars.length - LOCATOR_SNIPPET_CHARS));
-  return (start ? "…" : "") + chars.slice(start, start + LOCATOR_SNIPPET_CHARS).join("") +
-    (start + LOCATOR_SNIPPET_CHARS < chars.length ? "…" : "");
+  const start = Math.max(0, Math.min(center - Math.floor(size / 2), chars.length - size));
+  return (start ? "…" : "") + chars.slice(start, start + size).join("") +
+    (start + size < chars.length ? "…" : "");
 }
 
 /** JSON escapes delimiters, control characters and bidi controls without changing ids. */
@@ -78,7 +78,7 @@ export interface LocatorCandidate {
   offsets?: Map<string, number>;
 }
 
-function matchedSnippet(candidate: LocatorCandidate, frequency: Map<string, number>): string {
+export function locatorWindow(candidate: LocatorCandidate, frequency: Map<string, number>, size = LOCATOR_SNIPPET_CHARS): string {
   let selected = "", offset = candidate.offset, rarity = Infinity;
   for (const term of candidate.matches) {
     const count = frequency.get(term) ?? Infinity;
@@ -87,7 +87,7 @@ function matchedSnippet(candidate: LocatorCandidate, frequency: Map<string, numb
       selected = term; offset = at; rarity = count;
     }
   }
-  return snippet(candidate.text, offset, selected);
+  return snippet(candidate.text, offset, selected, size);
 }
 
 function sortCandidates(candidates: LocatorCandidate[], frequency: Map<string, number>, documents: number): void {
@@ -96,28 +96,55 @@ function sortCandidates(candidates: LocatorCandidate[], frequency: Map<string, n
   candidates.sort((a, b) => score(b) - score(a) || b.matches.size - a.matches.size || b.recency - a.recency);
 }
 
-/** Automatic hint formatting; also used by the isolated index experiment. */
-export function renderLocators(candidates: LocatorCandidate[], frequency: Map<string, number>, documents: number): string | undefined {
-  sortCandidates(candidates, frequency, documents);
-  let result = HEADER, count = 0;
-  const snippets = new Set<string>();
+/** Filter duplicate ids/snippets before scoring; newest source entry is the representative. */
+export function dedupeLocatorCandidates(candidates: LocatorCandidate[], frequency: Map<string, number>): LocatorCandidate[] {
+  const byId = new Map<string, LocatorCandidate>();
   for (const candidate of candidates) {
-    const excerpt = matchedSnippet(candidate, frequency);
-    // Repeated historical messages should not occupy the whole shortlist.
-    const key = excerpt.replace(/\s+/g, " ").trim();
-    if (snippets.has(key)) continue;
-    const line = safeJSON({ id: candidate.id, date: candidate.date, role: candidate.role,
-      snippet: excerpt }) + "\n";
+    const previous = byId.get(candidate.id);
+    if (!previous || candidate.recency > previous.recency) byId.set(candidate.id, candidate);
+  }
+  const bySnippet = new Map<string, LocatorCandidate>();
+  for (const candidate of byId.values()) {
+    const key = locatorWindow(candidate, frequency).replace(/\s+/g, " ").trim();
+    const previous = bySnippet.get(key);
+    if (!previous || candidate.recency > previous.recency ||
+      (candidate.recency === previous.recency && candidate.id < previous.id)) bySnippet.set(key, candidate);
+  }
+  return [...bySnippet.values()];
+}
+
+export function rankLocatorCandidates(candidates: LocatorCandidate[], frequency: Map<string, number>, documents: number): LocatorCandidate[] {
+  const distinct = dedupeLocatorCandidates(candidates, frequency);
+  sortCandidates(distinct, frequency, documents);
+  return distinct;
+}
+
+export function locatorRow(candidate: LocatorCandidate, frequency: Map<string, number>) {
+  return { id: candidate.id, date: candidate.date, role: candidate.role, snippet: locatorWindow(candidate, frequency) };
+}
+
+/** Already-filtered/ranked results: top five first, then the fixed display budget. */
+export function formatLocatorRows(rows: ReturnType<typeof locatorRow>[]): string | undefined {
+  let result = HEADER, count = 0;
+  for (const row of rows.slice(0, MAX_LOCATORS)) {
+    const line = safeJSON(row) + "\n";
     if (Array.from(result + line).length > LOCATOR_CHARS) continue;
-    snippets.add(key);
-    result += line;
-    if (++count === MAX_LOCATORS) break;
+    result += line; count++;
   }
   return count ? result : undefined;
 }
 
+export function formatRankedLocators(candidates: LocatorCandidate[], frequency: Map<string, number>): string | undefined {
+  return formatLocatorRows(candidates.slice(0, MAX_LOCATORS).map(candidate => locatorRow(candidate, frequency)));
+}
 
-function collectCandidates(query: string, branch: SessionEntry[]) {
+/** Automatic hint formatting; also used by the isolated index experiment. */
+export function renderLocators(candidates: LocatorCandidate[], frequency: Map<string, number>, documents: number): string | undefined {
+  return formatRankedLocators(rankLocatorCandidates(candidates, frequency, documents), frequency);
+}
+
+
+export function collectLocatorCandidates(query: string, branch: SessionEntry[]) {
   const terms = queryTerms(query);
   if (!terms.length) return undefined;
   const wanted = new Set(terms);
@@ -151,7 +178,7 @@ function collectCandidates(query: string, branch: SessionEntry[]) {
 }
 
 export function buildLocator(query: string, branch: SessionEntry[]): string | undefined {
-  const found = collectCandidates(query, branch);
+  const found = collectLocatorCandidates(query, branch);
   return found ? renderLocators(found.candidates, found.frequency, found.documents) : undefined;
 }
 
@@ -166,18 +193,9 @@ export function buildRecallPage(query: string, branch: SessionEntry[],
   const limit = options.limit ?? RECALL_DEFAULT_LIMIT, offset = options.offset ?? 0;
   if (!Number.isInteger(limit) || limit < 1 || limit > RECALL_MAX_LIMIT) throw new RangeError("limit must be an integer from 1 to 50");
   if (!Number.isSafeInteger(offset) || offset < 0) throw new RangeError("offset must be a nonnegative safe integer");
-  const found = collectCandidates(query, branch);
-  const lines: string[] = [], snippets = new Set<string>();
-  if (found) {
-    sortCandidates(found.candidates, found.frequency, found.documents);
-    for (const candidate of found.candidates) {
-      const excerpt = matchedSnippet(candidate, found.frequency);
-      const key = excerpt.replace(/\s+/g, " ").trim();
-      if (snippets.has(key)) continue;
-      snippets.add(key);
-      lines.push(safeJSON({ id: candidate.id, date: candidate.date, role: candidate.role, snippet: excerpt }));
-    }
-  }
+  const found = collectLocatorCandidates(query, branch);
+  const lines = found ? rankLocatorCandidates(found.candidates, found.frequency, found.documents)
+    .map(candidate => safeJSON(locatorRow(candidate, found.frequency))) : [];
   const total = lines.length;
   const page = (selected: string[], budgetExceeded = false) => {
     const returned = selected.length, hasMore = offset + returned < total;

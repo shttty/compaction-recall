@@ -114,3 +114,19 @@ test('equally informative terms choose the earlier source position, independent 
   assert.match(first,/quasar/);
   assert.doesNotMatch(first,/nebula/);
 });
+
+test('duplicate removal precedes scoring and chooses newest representative', async () => {
+  const { rankLocatorCandidates }=await import('../locator.ts');
+  const shared='quasar same snippet';
+  const make=(id,recency,matches)=>({id,recency,text:shared,date:'2026-09-30',role:'user',offset:0,matches:new Set(matches)});
+  const ranked=rankLocatorCandidates([make('older',0,['quasar','bonus']),make('newer',1,['quasar'])],new Map([['quasar',2],['bonus',1]]),2);
+  assert.deepEqual(ranked.map(x=>x.id),['newer']);
+});
+
+test('automatic top-five selection precedes budget and never backfills rank six',async()=>{
+  const { renderLocators }=await import('../locator.ts');
+  const candidates=Array.from({length:6},(_,i)=>({id:i===0?'x'.repeat(2000):`rank${i+1}`,recency:6-i,text:`quasar unique ${i}`,date:'2026-09-30',role:'user',offset:0,matches:new Set(['quasar'])}));
+  const text=renderLocators(candidates,new Map([['quasar',6]]),6);
+  assert.equal(rows(text).length,4);
+  assert.doesNotMatch(text,/rank6/);
+});
