@@ -15,6 +15,7 @@ export function registerBenchmarkArm(pi, arm) {
   let scheduled=null,dirty=false;
   const prewarm = (_event,ctx) => {
     dirty=true;if(scheduled)return;
+    benchmarkTiming?.mark('preindex_scheduled',{trigger:_event?.type??'lifecycle',userCounter:cadence.completed,toolCounter:cadence.toolRounds});
     cadence.scheduled();
     scheduled=setImmediate(()=>{scheduled=null;if(!dirty)return;dirty=false;index.prepare(ctx.sessionManager.getBranch(),{preindexLive:true}).catch(()=>{});});
   };
@@ -22,7 +23,7 @@ export function registerBenchmarkArm(pi, arm) {
     pi.on('session_start',(event,ctx)=>{
       const warn=message=>{if(ctx.hasUI&&ctx.ui?.notify)ctx.ui.notify(message,'warning');else process.stderr.write(message+'\n');};
       const config=loadPreindexConfig(ctx.cwd??ctx.sessionManager.getCwd?.()??process.cwd(),{warn});
-      cadence=new PreindexCadence(config.userCycles,config.toolRounds);index.reset();prewarm(event,ctx);
+      benchmarkTiming?.mark('preindex_config',config);cadence=new PreindexCadence(config.userCycles,config.toolRounds);index.reset();prewarm(event,ctx);
     });
     pi.on('session_compact',prewarm);
     pi.on('session_tree',(event,ctx)=>{index.reset();cadence.reset();prewarm(event,ctx);});

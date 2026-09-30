@@ -2,6 +2,7 @@
 import importlib.util
 import json
 import io
+import sys
 from pathlib import Path
 import tempfile
 import unittest
@@ -27,9 +28,19 @@ class RunnerTest(unittest.TestCase):
    stderr=io.StringIO('')
    def wait(self,timeout):return 0
   process=Process()
-  with patch.object(r,'preflight',return_value=100),patch.object(r.subprocess,'Popen',return_value=process):
-   result=r.compact(Path('/not-read'),{},Path('/not-used'))
+  with tempfile.TemporaryDirectory() as td:
+   session=Path(td)/'session.jsonl';session.with_suffix('.preflight.json').write_text(json.dumps({'timing':{}}))
+   with patch.object(r,'preflight',return_value=100),patch.object(r.subprocess,'Popen',return_value=process):
+    result=r.compact(session,{},Path(td))
   self.assertTrue(result['success'])
   self.assertGreaterEqual(result['timing']['startupToRpcReadyMs'],0)
   self.assertGreaterEqual(result['timing']['compactionRpcWallMs'],0)
+ def test_rpc_observer_milestones_do_not_log_stream_content(self):
+  with tempfile.TemporaryDirectory() as td:
+   script=Path(td)/'fake.py'
+   script.write_text("import json,sys\nfor line in sys.stdin:\n c=json.loads(line)\n if c['type']=='get_state':print(json.dumps({'id':'ready','type':'response','success':True}),flush=True)\n else:\n  for e in [{'type':'message_end','message':{'role':'user'}},{'type':'turn_start'},{'type':'message_update','assistantMessageEvent':{'type':'thinking_delta','delta':'SECRET_SENTINEL'}},{'type':'message_update','assistantMessageEvent':{'type':'text_delta','delta':'SECRET_SENTINEL'}},{'type':'tool_execution_start'},{'type':'tool_execution_start'},{'type':'turn_end','toolResults':[{},{}]},{'type':'agent_end'}]:print(json.dumps(e),flush=True)\n")
+   result=r.rpc.run_rpc([sys.executable,str(script)],{},Path(td),prompt='fixture',timeout=10)
+   self.assertEqual(result['outcome'],'completed');self.assertEqual(result['timing']['toolCalls'],2);self.assertEqual(result['timing']['toolBatches'],1)
+   self.assertIsNotNone(result['timing']['firstVisibleTextFromSpawnMs']);self.assertIsNone(result['timing']['providerTTFTMs'])
+   self.assertNotIn('SECRET_SENTINEL',json.dumps(result))
 if __name__=='__main__':unittest.main()

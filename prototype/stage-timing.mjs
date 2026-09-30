@@ -1,3 +1,4 @@
+import { isMainThread } from 'node:worker_threads';
 import { randomUUID } from 'node:crypto';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { appendFileSync } from 'node:fs';
@@ -6,7 +7,7 @@ import { performance } from 'node:perf_hooks';
 export class StageTiming {
   constructor(clock = () => performance.now()) { this.clock=clock; this.origin=clock(); this.timerId=randomUUID(); this.events=[]; this.dropped=0; this.context=new AsyncLocalStorage(); this.sequence=0; }
   start(stage) {
-    const span={type:'span',execution:'synchronous_main_thread',stage,id:++this.sequence,parentId:this.context.getStore()??null,startMs:this.clock()-this.origin};
+    const span={type:'span',execution:isMainThread?'synchronous_main_thread':'worker_thread',stage,id:++this.sequence,parentId:this.context.getStore()??null,startMs:this.clock()-this.origin};
     return span;
   }
   end(span, outcome='ok') {
@@ -19,7 +20,7 @@ export class StageTiming {
     if(!path||!this.events.length)return;
     const events=this.events.splice(0);
     if(this.dropped){events.push({type:'mark',stage:'dropped_timing_events',count:this.dropped});this.dropped=0;}
-    try {appendFileSync(path,events.map(e=>JSON.stringify({processId:process.pid,timerId:this.timerId,...e})).join('\n')+'\n',{mode:0o600});} catch { /* Measurements must never alter responses. */ }
+    try {appendFileSync(path,events.map(e=>JSON.stringify({processId:process.pid,timerId:this.timerId,clockOriginMs:this.origin,...e})).join('\n')+'\n',{mode:0o600});} catch { /* Measurements must never alter responses. */ }
   }
 }
 export const benchmarkTiming = process.env.PI_RECALL_TIMING_FILE ? new StageTiming() : undefined;
