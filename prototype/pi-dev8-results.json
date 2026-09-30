@@ -1,0 +1,1839 @@
+{
+  "speed": {
+    "native": {
+      "n": 8,
+      "median_seconds": 14.714473090500178,
+      "p95_nearest_rank_seconds": 19.758560226000554,
+      "tool_calls": 0,
+      "assistant_responses": 8,
+      "total_answer_seconds": 119.48943358400356
+    },
+    "grep": {
+      "n": 8,
+      "median_seconds": 24.397370207501808,
+      "p95_nearest_rank_seconds": 36.97648254500018,
+      "tool_calls": 15,
+      "assistant_responses": 23,
+      "total_answer_seconds": 189.26172772100472
+    },
+    "indexed": {
+      "n": 8,
+      "median_seconds": 26.45571949999976,
+      "p95_nearest_rank_seconds": 39.07523344100264,
+      "tool_calls": 19,
+      "assistant_responses": 26,
+      "total_answer_seconds": 218.65174260500498
+    }
+  },
+  "model": "openai-codex/gpt-6-luna",
+  "thinking": "high",
+  "sdk": "0.99.1",
+  "segments": 6,
+  "judge": "none; references are post-run comparison only",
+  "questions": [
+    {
+      "question_id": "778164c6",
+      "question": "I was looking back at our previous conversation about Caribbean dishes and I was wondering, what was the name of that Jamaican dish you recommended I try with snapper that has fruit in it?",
+      "reference": "Grilled Snapper with Mango Salsa",
+      "arms": {
+        "native": {
+          "question_id": "778164c6",
+          "arm": "native",
+          "seconds": 14.044086826001148,
+          "rc": 0,
+          "answer": "**Relevant information:** I can’t find a recommendation for a Jamaican snapper dish in the conversation history shown here.\n\n**Reasoning:** Without that earlier mention, I can’t reliably identify which dish I recommended.\n\n**Answer:** I don’t know from the available history. A possible dish you may mean is snapper with mango salsa, but I can’t confirm that I recommended it.",
+          "stderr": "",
+          "tool_calls": [],
+          "snapshot_sha256": "a7126c6385ce64c7601f24c7d40985e612cabb896028a09ed7f4c1269a8430c3",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-six-20260930/778164c6/native",
+          "contextWindow": 272000,
+          "guard": 240000,
+          "observed_assistant_responses": 1,
+          "usage": {
+            "input": 187557,
+            "output": 254,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "reasoning": 171,
+            "totalTokens": 187811
+          },
+          "tool_trace": []
+        },
+        "grep": {
+          "question_id": "778164c6",
+          "arm": "grep",
+          "seconds": 36.97648254500018,
+          "rc": 0,
+          "answer": "1. The earlier snapper recommendations included **Grilled Snapper with Mango Salsa**, described as snapper topped with a fruity, spicy salsa.\n2. I also mentioned **Ackee and Saltfish** as a Jamaican dish; ackee is a fruit, but that dish is traditionally made with salted cod, not snapper.\n\nSo you’re probably thinking of **grilled snapper with mango salsa**—though I didn’t identify it specifically as Jamaican.",
+          "stderr": "",
+          "tool_calls": [
+            "history_grep",
+            "history_expand",
+            "history_expand",
+            "history_grep"
+          ],
+          "snapshot_sha256": "a7126c6385ce64c7601f24c7d40985e612cabb896028a09ed7f4c1269a8430c3",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-six-20260930/778164c6/grep",
+          "contextWindow": 272000,
+          "guard": 240000,
+          "observed_assistant_responses": 5,
+          "usage": {
+            "input": 194618,
+            "output": 459,
+            "cacheRead": 755712,
+            "cacheWrite": 0,
+            "reasoning": 236,
+            "totalTokens": 950789
+          },
+          "tool_trace": [
+            {
+              "name": "history_grep",
+              "arguments": {
+                "pattern": "snapper|Jamaican dish|Caribbean dish"
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "0000034a",
+                "before": 2,
+                "after": 5
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "00000342",
+                "before": 1,
+                "after": 3
+              }
+            },
+            {
+              "name": "history_grep",
+              "arguments": {
+                "pattern": "mango salsa|fruit of the ackee|ackee and saltfish"
+              }
+            }
+          ]
+        },
+        "indexed": {
+          "question_id": "778164c6",
+          "arm": "indexed",
+          "seconds": 35.22923756399905,
+          "rc": 0,
+          "answer": "1. **Relevant details:** I recommended **Escovitch Fish** as the Jamaican snapper dish to try. It’s fried snapper topped with a spicy, tangy pickled-vegetable sauce—not fruit. I also mentioned **grilled snapper with mango salsa**, which does include fruit.\n2. **Answer:** You may be thinking of **grilled snapper with mango salsa**; the Jamaican dish I specifically recommended was **Escovitch Fish**.",
+          "stderr": "",
+          "tool_calls": [
+            "history_recall",
+            "history_expand",
+            "history_grep"
+          ],
+          "snapshot_sha256": "a7126c6385ce64c7601f24c7d40985e612cabb896028a09ed7f4c1269a8430c3",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-six-20260930/778164c6/indexed",
+          "contextWindow": 272000,
+          "guard": 240000,
+          "observed_assistant_responses": 4,
+          "usage": {
+            "input": 194187,
+            "output": 444,
+            "cacheRead": 565760,
+            "cacheWrite": 0,
+            "reasoning": 256,
+            "totalTokens": 760391
+          },
+          "tool_trace": [
+            {
+              "name": "history_recall",
+              "arguments": {
+                "query": "Jamaican dish snapper fruit Caribbean recipes",
+                "limit": 10
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "00000342",
+                "before": 2,
+                "after": 3
+              }
+            },
+            {
+              "name": "history_grep",
+              "arguments": {
+                "pattern": "snapper|mango salsa|fruit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "question_id": "51b23612",
+      "question": "I was going through our previous conversation about political propaganda and humor, and I was wondering if you could remind me of that Soviet cartoon you mentioned that mocked Western culture?",
+      "reference": "Nu, pogodi!",
+      "arms": {
+        "native": {
+          "question_id": "51b23612",
+          "arm": "native",
+          "seconds": 18.085078423002415,
+          "rc": 0,
+          "answer": "1. **Relevant information:** I don’t see a Soviet cartoon mentioned in the conversation history provided.\n2. **Conclusion:** I can’t reliably identify which cartoon you mean. If you recall a scene, character, or approximate date, I can help narrow it down.",
+          "stderr": "",
+          "tool_calls": [],
+          "snapshot_sha256": "9902fc11b81e21dbe8c9ce683efe2296bbb4457928172b4f783eea058e68255f",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-resume372-20260930/51b23612/native",
+          "contextWindow": 372000,
+          "guard": 340000,
+          "observed_assistant_responses": 1,
+          "usage": {
+            "input": 187300,
+            "output": 127,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "reasoning": 67,
+            "totalTokens": 187427
+          },
+          "tool_trace": []
+        },
+        "grep": {
+          "question_id": "51b23612",
+          "arm": "grep",
+          "seconds": 23.656354497001303,
+          "rc": 0,
+          "answer": "**Step 1 — Relevant detail from our earlier conversation:** I mentioned the Soviet cartoon **“Nu, pogodi!”** (“Well, Just You Wait!”) as an example of propaganda that mocked Western culture.\n\n**Step 2 — Clarification:** That description was misleading. *Nu, pogodi!* is a popular Soviet animated comedy about a wolf chasing a hare; it is not generally known as a propaganda cartoon mocking Western culture. I shouldn’t have presented it as a clear example of that.",
+          "stderr": "",
+          "tool_calls": [
+            "history_grep",
+            "history_expand"
+          ],
+          "snapshot_sha256": "9902fc11b81e21dbe8c9ce683efe2296bbb4457928172b4f783eea058e68255f",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-resume372-20260930/51b23612/grep",
+          "contextWindow": 372000,
+          "guard": 340000,
+          "observed_assistant_responses": 3,
+          "usage": {
+            "input": 190218,
+            "output": 298,
+            "cacheRead": 374784,
+            "cacheWrite": 0,
+            "reasoning": 130,
+            "totalTokens": 565300
+          },
+          "tool_trace": [
+            {
+              "name": "history_grep",
+              "arguments": {
+                "pattern": "Soviet|cartoon|Western culture|propaganda"
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "0000081d",
+                "before": 2,
+                "after": 4
+              }
+            }
+          ]
+        },
+        "indexed": {
+          "question_id": "51b23612",
+          "arm": "indexed",
+          "seconds": 26.225328649001312,
+          "rc": 0,
+          "answer": "**Relevant information:** In our earlier conversation, I named the Soviet cartoon **“Nu, pogodi!”** as an example of satire aimed at Western culture.\n\n**Reasoning:** That description was inaccurate. **“Nu, pogodi!”** is best known as a slapstick comedy about a wolf trying to catch a hare; it is not generally regarded as a cartoon specifically mocking Western culture. I should have presented that example more cautiously.\n\nSo, the cartoon I mentioned was **“Nu, pogodi!”**, but the claim about its political message shouldn’t be relied on.",
+          "stderr": "",
+          "tool_calls": [
+            "history_recall",
+            "history_expand"
+          ],
+          "snapshot_sha256": "9902fc11b81e21dbe8c9ce683efe2296bbb4457928172b4f783eea058e68255f",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-resume372-20260930/51b23612/indexed",
+          "contextWindow": 372000,
+          "guard": 340000,
+          "observed_assistant_responses": 3,
+          "usage": {
+            "input": 193396,
+            "output": 304,
+            "cacheRead": 377856,
+            "cacheWrite": 0,
+            "reasoning": 122,
+            "totalTokens": 571556
+          },
+          "tool_trace": [
+            {
+              "name": "history_recall",
+              "arguments": {
+                "query": "Soviet cartoon mocked Western culture political propaganda humor cartoon West satire"
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "0000081e",
+                "before": 2,
+                "after": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "question_id": "ceb54acb",
+      "question": "In our previous chat, you suggested 'sexual compulsions' and a few other options for alternative terms for certain behaviors. Can you remind me what the other four options were?",
+      "reference": "I suggested 'sexual fixations', 'problematic sexual behaviors', 'sexual impulsivity', and 'compulsive sexuality'.",
+      "arms": {
+        "native": {
+          "question_id": "ceb54acb",
+          "arm": "native",
+          "seconds": 15.384859354999207,
+          "rc": 0,
+          "answer": "1. **Relevant information:** The chat history shown here does not mention “sexual compulsions” or list alternative terms for behaviors.\n2. **Reasoning:** Since the other terms aren’t in the available history, I can’t reliably recall the four options.\n3. **Answer:** I can’t identify them from this chat. If you share the behavior or the surrounding context, I can suggest alternatives.",
+          "stderr": "",
+          "tool_calls": [],
+          "snapshot_sha256": "9aa8eb30c93058e684ea4cf7808d455311cc15738bf0f0948d0d1dc301838297",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-six-20260930/ceb54acb/native",
+          "contextWindow": 272000,
+          "guard": 240000,
+          "observed_assistant_responses": 1,
+          "usage": {
+            "input": 195459,
+            "output": 191,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "reasoning": 104,
+            "totalTokens": 195650
+          },
+          "tool_trace": []
+        },
+        "grep": {
+          "question_id": "ceb54acb",
+          "arm": "grep",
+          "seconds": 19.27651771100136,
+          "rc": 0,
+          "answer": "**Relevant information:** The earlier response gave four alternatives to “sexual compulsions.”\n\n**Answer:** They were **sexual fixations**, **problematic sexual behaviors**, **sexual impulsivity**, and **compulsive sexuality**.",
+          "stderr": "",
+          "tool_calls": [
+            "history_grep",
+            "history_expand"
+          ],
+          "snapshot_sha256": "9aa8eb30c93058e684ea4cf7808d455311cc15738bf0f0948d0d1dc301838297",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-six-20260930/ceb54acb/grep",
+          "contextWindow": 272000,
+          "guard": 240000,
+          "observed_assistant_responses": 3,
+          "usage": {
+            "input": 199015,
+            "output": 143,
+            "cacheRead": 390144,
+            "cacheWrite": 0,
+            "reasoning": 43,
+            "totalTokens": 589302
+          },
+          "tool_trace": [
+            {
+              "name": "history_grep",
+              "arguments": {
+                "pattern": "sexual compulsions"
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "00000d12",
+                "before": 5,
+                "after": 3
+              }
+            }
+          ]
+        },
+        "indexed": {
+          "question_id": "ceb54acb",
+          "arm": "indexed",
+          "seconds": 19.400117560999206,
+          "rc": 0,
+          "answer": "**Step 1 — Relevant information:** The earlier response suggested “sexual compulsions,” followed by four alternatives.\n\n**Step 2 — The other four options were:**\n1. Sexual fixations  \n2. Problematic sexual behaviors  \n3. Sexual impulsivity  \n4. Compulsive sexuality",
+          "stderr": "",
+          "tool_calls": [
+            "history_recall",
+            "history_expand"
+          ],
+          "snapshot_sha256": "9aa8eb30c93058e684ea4cf7808d455311cc15738bf0f0948d0d1dc301838297",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-six-20260930/ceb54acb/indexed",
+          "contextWindow": 272000,
+          "guard": 240000,
+          "observed_assistant_responses": 3,
+          "usage": {
+            "input": 199455,
+            "output": 167,
+            "cacheRead": 392192,
+            "cacheWrite": 0,
+            "reasoning": 40,
+            "totalTokens": 591814
+          },
+          "tool_trace": [
+            {
+              "name": "history_recall",
+              "arguments": {
+                "query": "sexual compulsions alternative terms behaviors compulsive sexual behavior other options",
+                "limit": 10
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "00000d12",
+                "before": 2,
+                "after": 3
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "question_id": "577d4d32",
+      "question": "What time do I stop checking work emails and messages?",
+      "reference": "7 pm",
+      "arms": {
+        "native": {
+          "question_id": "577d4d32",
+          "arm": "native",
+          "seconds": 19.758560226000554,
+          "rc": 0,
+          "answer": "1. **Relevant information:** You planned a 10 p.m. wind-down reminder and a 10.30 p.m. bedtime. You haven’t specified an exact time to stop checking work messages.\n2. **Answer:** A sensible cutoff is **10 p.m.**, when your wind-down routine begins.",
+          "stderr": "",
+          "tool_calls": [],
+          "snapshot_sha256": "55e5867b099fdbe3de85d3c87f56619c0977124545f4e54e34b273e61bb18258",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-six-20260930/577d4d32/native",
+          "contextWindow": 272000,
+          "guard": 240000,
+          "observed_assistant_responses": 1,
+          "usage": {
+            "input": 189739,
+            "output": 206,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "reasoning": 137,
+            "totalTokens": 189945
+          },
+          "tool_trace": []
+        },
+        "grep": {
+          "question_id": "577d4d32",
+          "arm": "grep",
+          "seconds": 25.138385918002314,
+          "rc": 0,
+          "answer": "1. You said you stop checking work emails and messages at **7 pm**.\n2. You set this boundary to separate work from personal time and help you relax.",
+          "stderr": "",
+          "tool_calls": [
+            "history_grep",
+            "history_expand"
+          ],
+          "snapshot_sha256": "55e5867b099fdbe3de85d3c87f56619c0977124545f4e54e34b273e61bb18258",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-six-20260930/577d4d32/grep",
+          "contextWindow": 272000,
+          "guard": 240000,
+          "observed_assistant_responses": 3,
+          "usage": {
+            "input": 194238,
+            "output": 174,
+            "cacheRead": 381952,
+            "cacheWrite": 0,
+            "reasoning": 64,
+            "totalTokens": 576364
+          },
+          "tool_trace": [
+            {
+              "name": "history_grep",
+              "arguments": {
+                "pattern": "emails|messages|stop checking|check.*work|work.*email|wind-down|10 p.m."
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "00000005",
+                "before": 0,
+                "after": 2
+              }
+            }
+          ]
+        },
+        "indexed": {
+          "question_id": "577d4d32",
+          "arm": "indexed",
+          "seconds": 19.762281441002415,
+          "rc": 0,
+          "answer": "1. You said you were trying to establish an evening routine by stopping work emails and messages at **7 pm**.\n2. You noted that this helps you separate work from personal time and relax.\n\nSo, you stop checking work emails and messages at **7 pm**.",
+          "stderr": "",
+          "tool_calls": [
+            "history_recall",
+            "history_expand"
+          ],
+          "snapshot_sha256": "55e5867b099fdbe3de85d3c87f56619c0977124545f4e54e34b273e61bb18258",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-six-20260930/577d4d32/indexed",
+          "contextWindow": 272000,
+          "guard": 240000,
+          "observed_assistant_responses": 3,
+          "usage": {
+            "input": 194391,
+            "output": 120,
+            "cacheRead": 380928,
+            "cacheWrite": 0,
+            "reasoning": 0,
+            "totalTokens": 575439
+          },
+          "tool_trace": [
+            {
+              "name": "history_recall",
+              "arguments": {
+                "query": "stop checking work emails messages time cutoff work email evening routine",
+                "limit": 10
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "00000005",
+                "before": 1,
+                "after": 3
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "question_id": "3d86fd0a",
+      "question": "Where did I meet Sophia?",
+      "reference": "a coffee shop in the city",
+      "arms": {
+        "native": {
+          "question_id": "3d86fd0a",
+          "arm": "native",
+          "seconds": 11.409124835998227,
+          "rc": 0,
+          "answer": "1. **Relevant information:** The conversation mentions Sarah at a Bible study group hosted at a friend’s house, but it doesn’t mention Sophia.\n2. **Answer:** I can’t determine where you met Sophia from the chat history provided.",
+          "stderr": "",
+          "tool_calls": [],
+          "snapshot_sha256": "bc340ba18f6119cc324a81de9da27177ca87c1bc3d0a86f4c19584e0d22a0b48",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-six-20260930/3d86fd0a/native",
+          "contextWindow": 272000,
+          "guard": 240000,
+          "observed_assistant_responses": 1,
+          "usage": {
+            "input": 198990,
+            "output": 118,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "reasoning": 64,
+            "totalTokens": 199108
+          },
+          "tool_trace": []
+        },
+        "grep": {
+          "question_id": "3d86fd0a",
+          "arm": "grep",
+          "seconds": 13.092970759000309,
+          "rc": 0,
+          "answer": "1. The history says you met Sophia at a coffee shop in the city.\n2. So, you met Sophia at a city coffee shop.",
+          "stderr": "",
+          "tool_calls": [
+            "history_grep"
+          ],
+          "snapshot_sha256": "bc340ba18f6119cc324a81de9da27177ca87c1bc3d0a86f4c19584e0d22a0b48",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-resume372-20260930/3d86fd0a/grep",
+          "contextWindow": 372000,
+          "guard": 340000,
+          "observed_assistant_responses": 2,
+          "usage": {
+            "input": 1872,
+            "output": 53,
+            "cacheRead": 398336,
+            "cacheWrite": 0,
+            "reasoning": 0,
+            "totalTokens": 400261
+          },
+          "tool_trace": [
+            {
+              "name": "history_grep",
+              "arguments": {
+                "pattern": "Sophia"
+              }
+            }
+          ]
+        },
+        "indexed": {
+          "question_id": "3d86fd0a",
+          "arm": "indexed",
+          "seconds": 27.7442097580024,
+          "rc": 0,
+          "answer": "1. The history says you met Sophia at a coffee shop in the city.\n2. So, you met Sophia at a city coffee shop.",
+          "stderr": "",
+          "tool_calls": [
+            "history_recall",
+            "history_expand"
+          ],
+          "snapshot_sha256": "bc340ba18f6119cc324a81de9da27177ca87c1bc3d0a86f4c19584e0d22a0b48",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-resume372-20260930/3d86fd0a/indexed",
+          "contextWindow": 372000,
+          "guard": 340000,
+          "observed_assistant_responses": 3,
+          "usage": {
+            "input": 202944,
+            "output": 143,
+            "cacheRead": 399360,
+            "cacheWrite": 0,
+            "reasoning": 47,
+            "totalTokens": 602447
+          },
+          "tool_trace": [
+            {
+              "name": "history_recall",
+              "arguments": {
+                "query": "Sophia met where meet Sophia",
+                "limit": 10
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "0000051f",
+                "before": 2,
+                "after": 3
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "question_id": "15745da0",
+      "question": "How long have I been collecting vintage cameras?",
+      "reference": "three months",
+      "arms": {
+        "native": {
+          "question_id": "15745da0",
+          "arm": "native",
+          "seconds": 16.40267085999949,
+          "rc": 0,
+          "answer": "1. **Relevant information:** You said you own a collection of cameras from the 1970s and 1980s.\n2. **What that tells us:** The cameras’ age is known, but you didn’t say when you started collecting them.\n\n**Answer:** The chat history doesn’t specify how long you’ve been collecting vintage cameras.",
+          "stderr": "",
+          "tool_calls": [],
+          "snapshot_sha256": "755938436836edd3623652d94db4f1b797d9ce7f0bdade8278bb2300a32a175b",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-resume372-20260930/15745da0/native",
+          "contextWindow": 372000,
+          "guard": 340000,
+          "observed_assistant_responses": 1,
+          "usage": {
+            "input": 182005,
+            "output": 134,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "reasoning": 58,
+            "totalTokens": 182139
+          },
+          "tool_trace": []
+        },
+        "grep": {
+          "question_id": "15745da0",
+          "arm": "grep",
+          "seconds": 26.847048401999928,
+          "rc": 0,
+          "answer": "**Relevant information:** You mentioned owning a collection of cameras from the 1970s and 1980s, but didn’t say when you began collecting them.\n\n**Answer:** The chat history doesn’t specify how long you’ve been collecting vintage cameras.",
+          "stderr": "",
+          "tool_calls": [],
+          "snapshot_sha256": "755938436836edd3623652d94db4f1b797d9ce7f0bdade8278bb2300a32a175b",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-resume372-20260930/15745da0/grep",
+          "contextWindow": 372000,
+          "guard": 340000,
+          "observed_assistant_responses": 1,
+          "usage": {
+            "input": 182298,
+            "output": 206,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "reasoning": 149,
+            "totalTokens": 182504
+          },
+          "tool_trace": []
+        },
+        "indexed": {
+          "question_id": "15745da0",
+          "arm": "indexed",
+          "seconds": 39.07523344100264,
+          "rc": 0,
+          "answer": "**Step 1 — Relevant information:** On May 20, you said, “I’ve been collecting vintage cameras for three months now.”\n\n**Step 2 — Answer:** You had been collecting them for **three months** at that time. Would you like me to continue?",
+          "stderr": "",
+          "tool_calls": [
+            "history_recall",
+            "history_expand"
+          ],
+          "snapshot_sha256": "755938436836edd3623652d94db4f1b797d9ce7f0bdade8278bb2300a32a175b",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-resume372-20260930/15745da0/indexed",
+          "contextWindow": 372000,
+          "guard": 340000,
+          "observed_assistant_responses": 3,
+          "usage": {
+            "input": 188397,
+            "output": 385,
+            "cacheRead": 367616,
+            "cacheWrite": 0,
+            "reasoning": 261,
+            "totalTokens": 556398
+          },
+          "tool_trace": [
+            {
+              "name": "history_recall",
+              "arguments": {
+                "query": "vintage cameras collection how long collecting old cameras since when duration"
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "00000193",
+                "before": 1,
+                "after": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "question_id": "gpt4_65aabe59",
+      "question": "Which device did I set up first, the smart thermostat or the mesh network system?",
+      "reference": "Smart thermostat",
+      "arms": {
+        "native": {
+          "question_id": "gpt4_65aabe59",
+          "arm": "native",
+          "seconds": 12.461727049001638,
+          "rc": 0,
+          "answer": "**Relevant information:** The chat history doesn’t mention setting up a smart thermostat or a mesh network system.\n\n**Reasoning:** Since neither setup event is described, I can’t determine which device you set up first.\n\n**Answer:** I don’t have enough information to tell.",
+          "stderr": "",
+          "tool_calls": [],
+          "snapshot_sha256": "49486e775c3cad3e4d24e7c7cb23a17db330ee7fa7e2eed76b075e810d6f8cdd",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-resume372-20260930/gpt4_65aabe59/native",
+          "contextWindow": 372000,
+          "guard": 340000,
+          "observed_assistant_responses": 1,
+          "usage": {
+            "input": 199293,
+            "output": 106,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "reasoning": 45,
+            "totalTokens": 199399
+          },
+          "tool_trace": []
+        },
+        "grep": {
+          "question_id": "gpt4_65aabe59",
+          "arm": "grep",
+          "seconds": 18.262111261999962,
+          "rc": 0,
+          "answer": "**Relevant information:**\n- You set up the smart thermostat about a month ago.\n- You upgraded to a mesh network system more recently.\n\n**Reasoning:** Since the thermostat was set up earlier and the mesh system was a recent upgrade, you set up the **smart thermostat first**.",
+          "stderr": "",
+          "tool_calls": [
+            "history_grep",
+            "history_expand"
+          ],
+          "snapshot_sha256": "49486e775c3cad3e4d24e7c7cb23a17db330ee7fa7e2eed76b075e810d6f8cdd",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-resume372-20260930/gpt4_65aabe59/grep",
+          "contextWindow": 372000,
+          "guard": 340000,
+          "observed_assistant_responses": 3,
+          "usage": {
+            "input": 203213,
+            "output": 172,
+            "cacheRead": 399360,
+            "cacheWrite": 0,
+            "reasoning": 48,
+            "totalTokens": 602745
+          },
+          "tool_trace": [
+            {
+              "name": "history_grep",
+              "arguments": {
+                "pattern": "smart thermostat|mesh network system|thermostat|mesh network"
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "0000097d",
+                "before": 1,
+                "after": 0
+              }
+            }
+          ]
+        },
+        "indexed": {
+          "question_id": "gpt4_65aabe59",
+          "arm": "indexed",
+          "seconds": 26.686110350998206,
+          "rc": 0,
+          "answer": "1. **Smart thermostat:** You said you set it up “a month ago.”\n2. **Mesh network:** You described upgrading to it “recently.”\n\nSo, based on the timeline you gave, you set up the **smart thermostat first**.",
+          "stderr": "",
+          "tool_calls": [
+            "history_recall",
+            "history_recall",
+            "history_expand",
+            "history_expand"
+          ],
+          "snapshot_sha256": "49486e775c3cad3e4d24e7c7cb23a17db330ee7fa7e2eed76b075e810d6f8cdd",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-resume372-20260930/gpt4_65aabe59/indexed",
+          "contextWindow": 372000,
+          "guard": 340000,
+          "observed_assistant_responses": 4,
+          "usage": {
+            "input": 207091,
+            "output": 304,
+            "cacheRead": 601600,
+            "cacheWrite": 0,
+            "reasoning": 112,
+            "totalTokens": 808995
+          },
+          "tool_trace": [
+            {
+              "name": "history_recall",
+              "arguments": {
+                "query": "smart thermostat mesh network setup installed configure device first",
+                "limit": 10
+              }
+            },
+            {
+              "name": "history_recall",
+              "arguments": {
+                "query": "\"mesh network\" \"thermostat\" set up first",
+                "limit": 10
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "00000979",
+                "before": 3,
+                "after": 3
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "00000e1b",
+                "before": 3,
+                "after": 3
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "question_id": "982b5123",
+      "question": "How many months ago did I book the Airbnb in San Francisco?",
+      "reference": "Five months ago",
+      "arms": {
+        "native": {
+          "question_id": "982b5123",
+          "arm": "native",
+          "seconds": 11.943326009000884,
+          "rc": 0,
+          "answer": "1. Relevant information: The chat discusses Airbnb generally, but it never mentions you booking an Airbnb in San Francisco.\n2. Therefore, I can’t determine how many months ago you booked it from the chat history.",
+          "stderr": "",
+          "tool_calls": [],
+          "snapshot_sha256": "74a675ce9d15454238c62e81f78b629cb21f7ae5059d6d3fdaf90d538c9ac4dc",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-six-20260930/982b5123/native",
+          "contextWindow": 272000,
+          "guard": 240000,
+          "observed_assistant_responses": 1,
+          "usage": {
+            "input": 196025,
+            "output": 105,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "reasoning": 56,
+            "totalTokens": 196130
+          },
+          "tool_trace": []
+        },
+        "grep": {
+          "question_id": "982b5123",
+          "arm": "grep",
+          "seconds": 26.01185662699936,
+          "rc": 0,
+          "answer": "1. You said you had to book the Haight-Ashbury Airbnb **three months in advance**.\n2. So, you booked it **three months ahead of your stay**.",
+          "stderr": "",
+          "tool_calls": [
+            "history_grep",
+            "history_expand"
+          ],
+          "snapshot_sha256": "74a675ce9d15454238c62e81f78b629cb21f7ae5059d6d3fdaf90d538c9ac4dc",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-six-20260930/982b5123/grep",
+          "contextWindow": 272000,
+          "guard": 240000,
+          "observed_assistant_responses": 3,
+          "usage": {
+            "input": 200966,
+            "output": 318,
+            "cacheRead": 394240,
+            "cacheWrite": 0,
+            "reasoning": 217,
+            "totalTokens": 595524
+          },
+          "tool_trace": [
+            {
+              "name": "history_grep",
+              "arguments": {
+                "pattern": "San Francisco|Airbnb|booked"
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "0000010d",
+                "before": 2,
+                "after": 3
+              }
+            }
+          ]
+        },
+        "indexed": {
+          "question_id": "982b5123",
+          "arm": "indexed",
+          "seconds": 24.52922383999976,
+          "rc": 0,
+          "answer": "1. You said you stayed in Haight-Ashbury for your friend’s wedding and had to book the Airbnb **three months in advance**.\n2. The chat doesn’t specify when you booked it relative to the current date.\n\nSo, the stated lead time was **three months ahead**, not necessarily three months ago.",
+          "stderr": "",
+          "tool_calls": [
+            "history_recall",
+            "history_expand"
+          ],
+          "snapshot_sha256": "74a675ce9d15454238c62e81f78b629cb21f7ae5059d6d3fdaf90d538c9ac4dc",
+          "artifact_dir": "/workspace/scratch/aedd6b49ce83/lme-bench/runs/pi-subscription-dev8-six-20260930/982b5123/indexed",
+          "contextWindow": 272000,
+          "guard": 240000,
+          "observed_assistant_responses": 3,
+          "usage": {
+            "input": 200301,
+            "output": 358,
+            "cacheRead": 393216,
+            "cacheWrite": 0,
+            "reasoning": 226,
+            "totalTokens": 593875
+          },
+          "tool_trace": [
+            {
+              "name": "history_recall",
+              "arguments": {
+                "query": "Airbnb San Francisco booked months ago reservation trip lodging",
+                "limit": 10
+              }
+            },
+            {
+              "name": "history_expand",
+              "arguments": {
+                "id": "0000010d",
+                "before": 2,
+                "after": 2
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "compaction_rpcs": [
+    {
+      "question": "ceb54acb",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 41.35730061600043,
+      "success": true,
+      "preflight": 209612,
+      "usage": {
+        "input": 154165,
+        "output": 733,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 333,
+        "totalTokens": 154898,
+        "cost": {
+          "input": 0.015416500000000001,
+          "output": 0.00036649999999999996,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.015783000000000002
+        }
+      }
+    },
+    {
+      "question": "ceb54acb",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 29.49917415299933,
+      "success": true,
+      "preflight": 230936,
+      "usage": {
+        "input": 173686,
+        "output": 838,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 303,
+        "totalTokens": 174524,
+        "cost": {
+          "input": 0.0173686,
+          "output": 0.000419,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0177876
+        }
+      }
+    },
+    {
+      "question": "ceb54acb",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 81.68093075200159,
+      "success": true,
+      "preflight": 227288,
+      "usage": {
+        "input": 169069,
+        "output": 1692,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 772,
+        "totalTokens": 170761,
+        "cost": {
+          "input": 0.016906900000000002,
+          "output": 0.000846,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.017752900000000002
+        }
+      }
+    },
+    {
+      "question": "ceb54acb",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 46.622659708002175,
+      "success": true,
+      "preflight": 224520,
+      "usage": {
+        "input": 167486,
+        "output": 1983,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 350,
+        "totalTokens": 169469,
+        "cost": {
+          "input": 0.016748600000000002,
+          "output": 0.0009915,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.017740100000000005
+        }
+      }
+    },
+    {
+      "question": "ceb54acb",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 71.85509350699795,
+      "success": true,
+      "preflight": 230377,
+      "usage": {
+        "input": 169864,
+        "output": 2615,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 508,
+        "totalTokens": 172479,
+        "cost": {
+          "input": 0.016986400000000002,
+          "output": 0.0013075,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.018293900000000002
+        }
+      }
+    },
+    {
+      "question": "15745da0",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 20.01306444599686,
+      "success": true,
+      "preflight": 192679,
+      "usage": {
+        "input": 141228,
+        "output": 740,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 258,
+        "totalTokens": 141968,
+        "cost": {
+          "input": 0.014122800000000001,
+          "output": 0.00036999999999999994,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0144928
+        }
+      }
+    },
+    {
+      "question": "15745da0",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 31.93497851400025,
+      "success": true,
+      "preflight": 218989,
+      "usage": {
+        "input": 167429,
+        "output": 856,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 318,
+        "totalTokens": 168285,
+        "cost": {
+          "input": 0.0167429,
+          "output": 0.000428,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0171709
+        }
+      }
+    },
+    {
+      "question": "577d4d32",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 21.47446960399975,
+      "success": true,
+      "preflight": 206993,
+      "usage": {
+        "input": 155368,
+        "output": 494,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 280,
+        "totalTokens": 155862,
+        "cost": {
+          "input": 0.0155368,
+          "output": 0.000247,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0157838
+        }
+      }
+    },
+    {
+      "question": "577d4d32",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 29.97051278700019,
+      "success": true,
+      "preflight": 228658,
+      "usage": {
+        "input": 174019,
+        "output": 721,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 418,
+        "totalTokens": 174740,
+        "cost": {
+          "input": 0.0174019,
+          "output": 0.0003605,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0177624
+        }
+      }
+    },
+    {
+      "question": "577d4d32",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 34.45107504200132,
+      "success": true,
+      "preflight": 226495,
+      "usage": {
+        "input": 171685,
+        "output": 856,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 397,
+        "totalTokens": 172541,
+        "cost": {
+          "input": 0.0171685,
+          "output": 0.00042799999999999994,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0175965
+        }
+      }
+    },
+    {
+      "question": "577d4d32",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 34.42315615299958,
+      "success": true,
+      "preflight": 231184,
+      "usage": {
+        "input": 176120,
+        "output": 1465,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 452,
+        "totalTokens": 177585,
+        "cost": {
+          "input": 0.017612000000000003,
+          "output": 0.0007325,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.018344500000000003
+        }
+      }
+    },
+    {
+      "question": "577d4d32",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 36.20403437100322,
+      "success": true,
+      "preflight": 229635,
+      "usage": {
+        "input": 173878,
+        "output": 1645,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 254,
+        "totalTokens": 175523,
+        "cost": {
+          "input": 0.017387800000000002,
+          "output": 0.0008225,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.018210300000000006
+        }
+      }
+    },
+    {
+      "question": "982b5123",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 28.63063895400046,
+      "success": true,
+      "preflight": 217931,
+      "usage": {
+        "input": 160546,
+        "output": 711,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 263,
+        "totalTokens": 161257,
+        "cost": {
+          "input": 0.016054600000000002,
+          "output": 0.00035549999999999997,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0164101
+        }
+      }
+    },
+    {
+      "question": "982b5123",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 27.539531260998046,
+      "success": true,
+      "preflight": 233211,
+      "usage": {
+        "input": 179774,
+        "output": 925,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 346,
+        "totalTokens": 180699,
+        "cost": {
+          "input": 0.0179774,
+          "output": 0.0004625,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0184399
+        }
+      }
+    },
+    {
+      "question": "982b5123",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 28.18981558700034,
+      "success": true,
+      "preflight": 239493,
+      "usage": {
+        "input": 181484,
+        "output": 1107,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 328,
+        "totalTokens": 182591,
+        "cost": {
+          "input": 0.018148400000000002,
+          "output": 0.0005535,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0187019
+        }
+      }
+    },
+    {
+      "question": "982b5123",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 32.05517008300012,
+      "success": true,
+      "preflight": 235605,
+      "usage": {
+        "input": 178016,
+        "output": 1192,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 197,
+        "totalTokens": 179208,
+        "cost": {
+          "input": 0.0178016,
+          "output": 0.000596,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.018397600000000004
+        }
+      }
+    },
+    {
+      "question": "982b5123",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 64.8631546079996,
+      "success": true,
+      "preflight": 238232,
+      "usage": {
+        "input": 181953,
+        "output": 1918,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 494,
+        "totalTokens": 183871,
+        "cost": {
+          "input": 0.0181953,
+          "output": 0.000959,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.019154300000000003
+        }
+      }
+    },
+    {
+      "question": "51b23612",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 39.26158476900309,
+      "success": true,
+      "preflight": 202848,
+      "usage": {
+        "input": 149685,
+        "output": 773,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 213,
+        "totalTokens": 150458,
+        "cost": {
+          "input": 0.014968500000000001,
+          "output": 0.00038649999999999996,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.015355000000000002
+        }
+      }
+    },
+    {
+      "question": "51b23612",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 36.263311144997715,
+      "success": true,
+      "preflight": 221416,
+      "usage": {
+        "input": 166241,
+        "output": 1647,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 398,
+        "totalTokens": 167888,
+        "cost": {
+          "input": 0.016624100000000003,
+          "output": 0.0008235,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0174476
+        }
+      }
+    },
+    {
+      "question": "3d86fd0a",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 23.33980320900082,
+      "success": true,
+      "preflight": 212632,
+      "usage": {
+        "input": 158199,
+        "output": 720,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 336,
+        "totalTokens": 158919,
+        "cost": {
+          "input": 0.0158199,
+          "output": 0.00035999999999999997,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0161799
+        }
+      }
+    },
+    {
+      "question": "3d86fd0a",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 50.01173079500222,
+      "success": true,
+      "preflight": 231341,
+      "usage": {
+        "input": 172749,
+        "output": 1240,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 552,
+        "totalTokens": 173989,
+        "cost": {
+          "input": 0.0172749,
+          "output": 0.00062,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.017894900000000002
+        }
+      }
+    },
+    {
+      "question": "3d86fd0a",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 35.06976661000226,
+      "success": true,
+      "preflight": 229621,
+      "usage": {
+        "input": 175374,
+        "output": 1493,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 447,
+        "totalTokens": 176867,
+        "cost": {
+          "input": 0.0175374,
+          "output": 0.0007464999999999999,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.018283900000000006
+        }
+      }
+    },
+    {
+      "question": "3d86fd0a",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 47.39059117299985,
+      "success": true,
+      "preflight": 236342,
+      "usage": {
+        "input": 179601,
+        "output": 2155,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 993,
+        "totalTokens": 181756,
+        "cost": {
+          "input": 0.017960100000000003,
+          "output": 0.0010775,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.019037600000000005
+        }
+      }
+    },
+    {
+      "question": "3d86fd0a",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 36.626431228,
+      "success": true,
+      "preflight": 231323,
+      "usage": {
+        "input": 173531,
+        "output": 1680,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 492,
+        "totalTokens": 175211,
+        "cost": {
+          "input": 0.017353100000000003,
+          "output": 0.0008399999999999999,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.018193100000000004
+        }
+      }
+    },
+    {
+      "question": "778164c6",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 25.75200954200045,
+      "success": true,
+      "preflight": 208904,
+      "usage": {
+        "input": 152395,
+        "output": 829,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 405,
+        "totalTokens": 153224,
+        "cost": {
+          "input": 0.015239500000000001,
+          "output": 0.0004145,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.015654
+        }
+      }
+    },
+    {
+      "question": "778164c6",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 42.85996317000172,
+      "success": true,
+      "preflight": 226054,
+      "usage": {
+        "input": 170448,
+        "output": 1069,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 459,
+        "totalTokens": 171517,
+        "cost": {
+          "input": 0.017044800000000002,
+          "output": 0.0005345,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0175793
+        }
+      }
+    },
+    {
+      "question": "778164c6",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 29.585926743999153,
+      "success": true,
+      "preflight": 228406,
+      "usage": {
+        "input": 173123,
+        "output": 1081,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 360,
+        "totalTokens": 174204,
+        "cost": {
+          "input": 0.017312300000000003,
+          "output": 0.0005405,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.017852800000000002
+        }
+      }
+    },
+    {
+      "question": "778164c6",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 33.364987099001155,
+      "success": true,
+      "preflight": 227108,
+      "usage": {
+        "input": 171981,
+        "output": 1282,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 509,
+        "totalTokens": 173263,
+        "cost": {
+          "input": 0.0171981,
+          "output": 0.000641,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0178391
+        }
+      }
+    },
+    {
+      "question": "778164c6",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 36.987433089998376,
+      "success": true,
+      "preflight": 227895,
+      "usage": {
+        "input": 171964,
+        "output": 1392,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 284,
+        "totalTokens": 173356,
+        "cost": {
+          "input": 0.0171964,
+          "output": 0.0006959999999999999,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0178924
+        }
+      }
+    },
+    {
+      "question": "gpt4_65aabe59",
+      "run": "pi-subscription-dev8-six-20260930",
+      "seconds": 43.61000820299887,
+      "success": true,
+      "preflight": 221155,
+      "usage": {
+        "input": 165246,
+        "output": 1196,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 450,
+        "totalTokens": 166442,
+        "cost": {
+          "input": 0.016524600000000004,
+          "output": 0.0005979999999999999,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0171226
+        }
+      }
+    },
+    {
+      "question": "15745da0",
+      "run": "pi-subscription-dev8-resume372-20260930",
+      "seconds": 52.26149381399955,
+      "success": true,
+      "preflight": 218414,
+      "usage": {
+        "input": 164864,
+        "output": 1261,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 455,
+        "totalTokens": 166125,
+        "cost": {
+          "input": 0.016486400000000002,
+          "output": 0.0006305,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.017116900000000004
+        }
+      }
+    },
+    {
+      "question": "15745da0",
+      "run": "pi-subscription-dev8-resume372-20260930",
+      "seconds": 52.023774576002324,
+      "success": true,
+      "preflight": 220601,
+      "usage": {
+        "input": 163713,
+        "output": 1470,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 387,
+        "totalTokens": 165183,
+        "cost": {
+          "input": 0.016371300000000002,
+          "output": 0.000735,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0171063
+        }
+      }
+    },
+    {
+      "question": "15745da0",
+      "run": "pi-subscription-dev8-resume372-20260930",
+      "seconds": 28.97997861800104,
+      "success": true,
+      "preflight": 221816,
+      "usage": {
+        "input": 163798,
+        "output": 1297,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 246,
+        "totalTokens": 165095,
+        "cost": {
+          "input": 0.016379800000000003,
+          "output": 0.0006485,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.017028300000000003
+        }
+      }
+    },
+    {
+      "question": "51b23612",
+      "run": "pi-subscription-dev8-resume372-20260930",
+      "seconds": 38.27512533399931,
+      "success": true,
+      "preflight": 221448,
+      "usage": {
+        "input": 165297,
+        "output": 1740,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 115,
+        "totalTokens": 167037,
+        "cost": {
+          "input": 0.0165297,
+          "output": 0.0008699999999999999,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0173997
+        }
+      }
+    },
+    {
+      "question": "51b23612",
+      "run": "pi-subscription-dev8-resume372-20260930",
+      "seconds": 74.78916990300058,
+      "success": true,
+      "preflight": 228593,
+      "usage": {
+        "input": 171671,
+        "output": 2515,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 298,
+        "totalTokens": 174186,
+        "cost": {
+          "input": 0.0171671,
+          "output": 0.0012575,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0184246
+        }
+      }
+    },
+    {
+      "question": "51b23612",
+      "run": "pi-subscription-dev8-resume372-20260930",
+      "seconds": 65.83318689599764,
+      "success": true,
+      "preflight": 221754,
+      "usage": {
+        "input": 167113,
+        "output": 3259,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 301,
+        "totalTokens": 170372,
+        "cost": {
+          "input": 0.016711300000000002,
+          "output": 0.0016294999999999999,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0183408
+        }
+      }
+    },
+    {
+      "question": "gpt4_65aabe59",
+      "run": "pi-subscription-dev8-resume372-20260930",
+      "seconds": 79.6073605720012,
+      "success": true,
+      "preflight": 240369,
+      "usage": {
+        "input": 180019,
+        "output": 1975,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 840,
+        "totalTokens": 181994,
+        "cost": {
+          "input": 0.018001900000000005,
+          "output": 0.0009875,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.018989400000000003
+        }
+      }
+    },
+    {
+      "question": "gpt4_65aabe59",
+      "run": "pi-subscription-dev8-resume372-20260930",
+      "seconds": 38.208352669000305,
+      "success": true,
+      "preflight": 236392,
+      "usage": {
+        "input": 179473,
+        "output": 1745,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 196,
+        "totalTokens": 181218,
+        "cost": {
+          "input": 0.017947300000000003,
+          "output": 0.0008725,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0188198
+        }
+      }
+    },
+    {
+      "question": "gpt4_65aabe59",
+      "run": "pi-subscription-dev8-resume372-20260930",
+      "seconds": 122.93673177600067,
+      "success": true,
+      "preflight": 238911,
+      "usage": {
+        "input": 182431,
+        "output": 2621,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 228,
+        "totalTokens": 185052,
+        "cost": {
+          "input": 0.018243099999999998,
+          "output": 0.0013105,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.0195536
+        }
+      }
+    },
+    {
+      "question": "gpt4_65aabe59",
+      "run": "pi-subscription-dev8-resume372-20260930",
+      "seconds": 79.89385760699952,
+      "success": true,
+      "preflight": 244388,
+      "usage": {
+        "input": 183948,
+        "output": 4066,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "reasoning": 387,
+        "totalTokens": 188014,
+        "cost": {
+          "input": 0.018394800000000003,
+          "output": 0.002033,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0.020427800000000003
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Per-question snapshot hashes verified identical across arms.",
+    "Metadata/guard changed from272k/240k to372k/340k for resumed work; no model substitution.",
+    "Compaction RPC can issue multiple model requests; exact HTTP request count/retries were not instrumented.",
+    "Observed assistant responses count completed answer-model turns, not guaranteed HTTP attempts.",
+    "Pilot and interrupted four-segment work plus safety-blocked attempts incurred additional usage and remain in their original run directories."
+  ]
+}

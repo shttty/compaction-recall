@@ -23,3 +23,6 @@ prototype/rerank-candidates.private.json
 
 # Generated local runtime session marker
 /:memory:.ses
+
+# Python prototype bytecode
+prototype/__pycache__/

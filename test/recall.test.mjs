@@ -110,7 +110,7 @@ test('SDK loads standalone package and legacy entry from isolated runtime-only c
   try {
     const source = fileURLToPath(new URL('..', import.meta.url));
     const archive = join(root, 'pi-recall');
-    for (const file of ['package.json', 'index.ts', 'recall-extension.ts', 'history.ts', 'locator.ts']) {
+    for (const file of ['package.json', 'index.ts', 'recall-extension.ts', 'history.ts', 'locator.ts', 'timing.ts']) {
       cpSync(join(source, file), join(archive, file));
     }
     for (const path of [archive, join(archive, 'index.ts'), join(archive, 'recall-extension.ts')]) {

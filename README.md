@@ -88,3 +88,7 @@ grep 的正则行为和 expand 的边界 / 截断规则沿用 recall spike；搜
 ## 本地 reranker 对比
 
 `prototype/RERANK.md` 记录纯 grep、grep + recall 机械排序，以及相同候选池上的本地 mMiniLMv2 / Qwen3 reranker 对比。候选先去重再排序 / 限额；神经模型仍是隔离原型，不接入生产扩展。主语料为英文，少量中文样例只用于运行检查，不代表多语言质量已得到验证。
+
+## 真实 Pi DEV8 与阶段耗时
+
+`prototype/PI_DEV8.md` 记录 Pi 0.99.1 / gpt-6-luna high 的三组真实答题结果与端到端耗时；`prototype/TIMING.md` 说明后续加入的分阶段计时。历史缺失的首字、工具细分耗时不会补造。该已完成跑分使用的是同步索引版本。后续 worker / 每5轮批量预索引优化见 `prototype/BACKGROUND_INDEX.md`：真实后台线程处理重活，保留主线程传输开销和未就绪等待的说明；生产入口仍使用扫描。

@@ -1,3 +1,4 @@
+import { measured, type StageTimer } from "./timing.ts";
 // Ephemeral lexical locators only: no persisted messages, cache, storage or model calls.
 import type { ContextEvent, SessionEntry } from "@earendil-works/pi-coding-agent";
 import { compactedEntries, searchableMessageText } from "./history.ts";
@@ -113,9 +114,9 @@ export function dedupeLocatorCandidates(candidates: LocatorCandidate[], frequenc
   return [...bySnippet.values()];
 }
 
-export function rankLocatorCandidates(candidates: LocatorCandidate[], frequency: Map<string, number>, documents: number): LocatorCandidate[] {
-  const distinct = dedupeLocatorCandidates(candidates, frequency);
-  sortCandidates(distinct, frequency, documents);
+export function rankLocatorCandidates(candidates: LocatorCandidate[], frequency: Map<string, number>, documents: number, timer?: StageTimer): LocatorCandidate[] {
+  const distinct = measured(timer, "deduplicate", () => dedupeLocatorCandidates(candidates, frequency));
+  measured(timer, "mechanical_rank", () => sortCandidates(distinct, frequency, documents));
   return distinct;
 }
 
@@ -139,8 +140,9 @@ export function formatRankedLocators(candidates: LocatorCandidate[], frequency: 
 }
 
 /** Automatic hint formatting; also used by the isolated index experiment. */
-export function renderLocators(candidates: LocatorCandidate[], frequency: Map<string, number>, documents: number): string | undefined {
-  return formatRankedLocators(rankLocatorCandidates(candidates, frequency, documents), frequency);
+export function renderLocators(candidates: LocatorCandidate[], frequency: Map<string, number>, documents: number, timer?: StageTimer): string | undefined {
+  const ranked = rankLocatorCandidates(candidates, frequency, documents, timer);
+  return measured(timer, "auto_render_budget", () => formatRankedLocators(ranked, frequency));
 }
 
 
@@ -190,12 +192,18 @@ export interface RecallPageDetails {
 /** Manual recall uses the same candidates/ranking, with independent page boundaries. */
 export function buildRecallPage(query: string, branch: SessionEntry[],
   options: { limit?: number; offset?: number } = {}): { text: string; details: RecallPageDetails } {
+  return recallPageFromCandidates(collectLocatorCandidates(query, branch), options);
+}
+
+/** Shared renderer for scan and isolated indexed benchmark adapters. */
+export function recallPageFromCandidates(found: ReturnType<typeof collectLocatorCandidates>,
+  options: { limit?: number; offset?: number } = {}, timer?: StageTimer): { text: string; details: RecallPageDetails } {
   const limit = options.limit ?? RECALL_DEFAULT_LIMIT, offset = options.offset ?? 0;
   if (!Number.isInteger(limit) || limit < 1 || limit > RECALL_MAX_LIMIT) throw new RangeError("limit must be an integer from 1 to 50");
   if (!Number.isSafeInteger(offset) || offset < 0) throw new RangeError("offset must be a nonnegative safe integer");
-  const found = collectLocatorCandidates(query, branch);
-  const lines = found ? rankLocatorCandidates(found.candidates, found.frequency, found.documents)
-    .map(candidate => safeJSON(locatorRow(candidate, found.frequency))) : [];
+  const ranked = found ? rankLocatorCandidates(found.candidates, found.frequency, found.documents, timer) : [];
+  return measured(timer, "manual_snippets_pagination_render", () => {
+  const lines = found ? ranked.map(candidate => safeJSON(locatorRow(candidate, found.frequency))) : [];
   const total = lines.length;
   const page = (selected: string[], budgetExceeded = false) => {
     const returned = selected.length, hasMore = offset + returned < total;
@@ -217,15 +225,17 @@ export function buildRecallPage(query: string, branch: SessionEntry[],
     selected.push(lines[at]);
   }
   return page(selected);
+  });
 }
 
 /** Called for every model request, including consumed steering/follow-up messages. */
-export function withLocators(messages: ContextEvent["messages"], branch: SessionEntry[]): ContextEvent["messages"] {
+export function withLocators(messages: ContextEvent["messages"], branch: SessionEntry[],
+  lookup: (query: string, branch: SessionEntry[]) => string | undefined = buildLocator): ContextEvent["messages"] {
   const clean = messages.filter(m => !(m.role === "custom" && m.customType === LOCATOR_TYPE));
   const user = clean.findLastIndex(m => m.role === "user");
   if (user < 0) return clean;
   const last = clean[user];
-  const content = buildLocator("content" in last ? locatorText(last) : "", branch);
+  const content = lookup("content" in last ? locatorText(last) : "", branch);
   if (!content) return clean;
   // Inserting here leaves subsequent assistant calls and tool results adjacent.
   return [...clean.slice(0, user + 1), { role: "custom", customType: LOCATOR_TYPE, content,
