@@ -7,6 +7,7 @@ import test from 'node:test';
 import register from '../index.ts';
 import legacyRegister from '../recall-extension.ts';
 import { compactedEntries, entryText, MAX_EXPAND_CHARS } from '../history.ts';
+import { buildLocator, LOCATOR_CHARS } from '../locator.ts';
 import { discoverAndLoadExtensions } from '@earendil-works/pi-coding-agent';
 
 const stamp = '2026-09-30T00:00:00.000Z';
@@ -18,9 +19,9 @@ const text = (result) => result.content[0].text;
 function harness(initial) {
   let branch = initial;
   const tools = new Map();
-  // Any registration besides these two tools would fail this stub.
-  register({ registerTool: (tool) => tools.set(tool.name, tool) });
-  assert.deepEqual([...tools.keys()], ['history_grep', 'history_expand']);
+  // Context transform is the only hook; three recall tools share the same current-branch scope.
+  register({ registerTool: (tool) => tools.set(tool.name, tool), on: (event) => assert.equal(event, "context") });
+  assert.deepEqual([...tools.keys()], ['history_recall', 'history_grep', 'history_expand']);
   return { tools, setBranch: (value) => { branch = value; },
     run: (name, params) => tools.get(name).execute('test', params, undefined, undefined,
       { sessionManager: { getBranch: () => branch } }) };
@@ -109,17 +110,55 @@ test('SDK loads standalone package and legacy entry from isolated runtime-only c
   try {
     const source = fileURLToPath(new URL('..', import.meta.url));
     const archive = join(root, 'pi-recall');
-    for (const file of ['package.json', 'index.ts', 'recall-extension.ts', 'history.ts']) {
+    for (const file of ['package.json', 'index.ts', 'recall-extension.ts', 'history.ts', 'locator.ts']) {
       cpSync(join(source, file), join(archive, file));
     }
     for (const path of [archive, join(archive, 'index.ts'), join(archive, 'recall-extension.ts')]) {
       const loaded = await discoverAndLoadExtensions([path], resolve(root), join(root, 'agent'));
       assert.deepEqual(loaded.errors, [], JSON.stringify(loaded.errors));
       assert.equal(loaded.extensions.length, 1);
-      assert.deepEqual([...loaded.extensions[0].tools.keys()], ['history_grep', 'history_expand']);
-      assert.equal(loaded.extensions[0].handlers.size, 0);
+      assert.deepEqual([...loaded.extensions[0].tools.keys()], ['history_recall', 'history_grep', 'history_expand']);
+      assert.deepEqual([...loaded.extensions[0].handlers.keys()], ["context"]);
     }
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
+});
+
+
+test('manual recall shares automatic ranking, candidates and output budget exactly', async () => {
+  const entries = [msg('old', 'quasar old'), msg('best', 'quasar nebula'), msg('recent', 'quasar recent'),
+    msg('tool', 'quasar nebula', 'toolResult'), msg('live', 'quasar nebula live'), compact('c', 'live')];
+  const h = harness(entries);
+  const result = text(await h.run('history_recall', { query: 'quasar nebula' }));
+  assert.equal(result, buildLocator('quasar nebula', entries));
+  assert.ok(Array.from(result).length <= LOCATOR_CHARS);
+  assert.deepEqual(result.trim().split('\n').slice(1).map(JSON.parse).map(row => row.id), ['best', 'recent', 'old']);
+  h.setBranch([msg('alternate', 'quasar'), msg('live', 'tail'), compact('c2', 'live')]);
+  const alternate = text(await h.run('history_recall', { query: 'quasar' }));
+  assert.match(alternate, /alternate/);
+  assert.doesNotMatch(alternate, /"id":"best"/);
+});
+
+test('manual recall permits rewritten keywords but does not invent semantic synonym matches', async () => {
+  const h = harness([msg('bike', 'bicycle repair appointment'), msg('live', 'tail'), compact('c', 'live')]);
+  const missing = text(await h.run('history_recall', { query: 'cycling' }));
+  assert.match(missing, /does not prove absence/);
+  assert.match(missing, /history_grep.*supplementary/);
+  assert.match(text(await h.run('history_recall', { query: 'bicycle repair' })), /"id":"bike"/);
+  for (const query of ['', 'the and', 'unmatched']) {
+    assert.match(text(await h.run('history_recall', { query })), /No lexical locators/);
+  }
+  h.setBranch([msg('uncompacted', 'bicycle repair')]);
+  assert.match(text(await h.run('history_recall', { query: 'bicycle' })), /No lexical locators/);
+});
+
+test('manual recall remains null-safe and grep remains available for tool-output evidence', async () => {
+  const malformed = msg('broken', 'unused');
+  malformed.message.content = [null, undefined, { type: 'text', text: 'quasar valid' }];
+  const h = harness([malformed, msg('stdout', 'needle only in tool output', 'toolResult'), msg('live', 'tail'), compact('c', 'live')]);
+  assert.match(text(await h.run('history_recall', { query: 'quasar' })), /"id":"broken"/);
+  assert.match(text(await h.run('history_recall', { query: 'needle' })), /No lexical locators/);
+  assert.equal((await h.run('history_grep', { pattern: 'needle' })).details.total, 1);
+  assert.match(text(await h.run('history_expand', { id: 'stdout', before: 0, after: 0 })), /needle only in tool output/);
 });

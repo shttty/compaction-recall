@@ -1,0 +1,79 @@
+{
+  "source": "../lme-bench/data/longmemeval_m.json",
+  "selection": "DEV8 in listed order, plus first two additional single-session-user records in original full-M file order",
+  "questionIds": [
+    "577d4d32",
+    "778164c6",
+    "51b23612",
+    "ceb54acb",
+    "3d86fd0a",
+    "15745da0",
+    "gpt4_65aabe59",
+    "982b5123",
+    "e47becba",
+    "118b2229"
+  ],
+  "inputSha256": "0dff99f46b27fd43e77c5c2916c262008326d3a5a89b1d48ca2ed86c9b94fcbe",
+  "questions": [
+    {
+      "id": "577d4d32",
+      "type": "single-session-user",
+      "question": "What time do I stop checking work emails and messages?",
+      "sessions": 501
+    },
+    {
+      "id": "778164c6",
+      "type": "single-session-assistant",
+      "question": "I was looking back at our previous conversation about Caribbean dishes and I was wondering, what was the name of that Jamaican dish you recommended I try with snapper that has fruit in it?",
+      "sessions": 501
+    },
+    {
+      "id": "51b23612",
+      "type": "single-session-assistant",
+      "question": "I was going through our previous conversation about political propaganda and humor, and I was wondering if you could remind me of that Soviet cartoon you mentioned that mocked Western culture?",
+      "sessions": 501
+    },
+    {
+      "id": "ceb54acb",
+      "type": "single-session-assistant",
+      "question": "In our previous chat, you suggested 'sexual compulsions' and a few other options for alternative terms for certain behaviors. Can you remind me what the other four options were?",
+      "sessions": 501
+    },
+    {
+      "id": "3d86fd0a",
+      "type": "single-session-user",
+      "question": "Where did I meet Sophia?",
+      "sessions": 501
+    },
+    {
+      "id": "15745da0",
+      "type": "single-session-user",
+      "question": "How long have I been collecting vintage cameras?",
+      "sessions": 501
+    },
+    {
+      "id": "gpt4_65aabe59",
+      "type": "temporal-reasoning",
+      "question": "Which device did I set up first, the smart thermostat or the mesh network system?",
+      "sessions": 502
+    },
+    {
+      "id": "982b5123",
+      "type": "temporal-reasoning",
+      "question": "How many months ago did I book the Airbnb in San Francisco?",
+      "sessions": 502
+    },
+    {
+      "id": "e47becba",
+      "type": "single-session-user",
+      "question": "What degree did I graduate with?",
+      "sessions": 501
+    },
+    {
+      "id": "118b2229",
+      "type": "single-session-user",
+      "question": "How long is my daily commute to work?",
+      "sessions": 501
+    }
+  ]
+}

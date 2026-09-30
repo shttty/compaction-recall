@@ -1,0 +1,10 @@
+{
+  "source": "https://huggingface.co/datasets/xiaowu0162/longmemeval/resolve/main/longmemeval_m",
+  "dataset": "original LongMemEval_M (not cleaned, S, or oracle)",
+  "questionId": "577d4d32",
+  "rangeStart": 508000000,
+  "rangeEnd": 529999999,
+  "recordByteStart": 514952819,
+  "extractedSha256": "5d3aa710459df3692a934aad85fda36413d9fe68e3d75836c12164d5672b9a4c",
+  "sessions": 501
+}

@@ -1,0 +1,32 @@
+{
+  "stats": {
+    "sessions": 4756,
+    "messages": 49360,
+    "textUtf16Units": 48692918,
+    "rawTextUtf16Units": 48507813,
+    "uniqueRawTurns": 46119,
+    "uniqueRawTurnTextUtf16Units": 45772273,
+    "uniqueSessionsIgnoringDates": 4497,
+    "roughTokensAt4_84Chars": 10060520.247933885,
+    "cuts": [
+      12443,
+      24732,
+      49360
+    ]
+  },
+  "baseline": {
+    "heapUsed": 11241152,
+    "rss": 59523072
+  },
+  "host": {
+    "heapUsed": 90352920,
+    "rss": 307949568
+  },
+  "retained": {
+    "heapUsed": 363017800,
+    "rss": 664842240
+  },
+  "scanMs": 6603.780059999999,
+  "buildMs": 12318.6622,
+  "lookupMs": 57.22037199999977
+}

@@ -6,3 +6,12 @@ coverage/
 .env.*
 !.env.example
 .DS_Store
+
+# Public benchmark downloads (not extension runtime or committed fixtures)
+prototype/*.download*
+prototype/range.headers
+
+# Generated run logs and redundant intermediate benchmark output
+prototype/blind-runs/
+prototype/stacked-progress.json
+prototype/stacked-summary.txt

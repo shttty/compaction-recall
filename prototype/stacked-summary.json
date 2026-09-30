@@ -1,0 +1,604 @@
+{
+  "stats": {
+    "sessions": 4756,
+    "messages": 49360,
+    "textUtf16Units": 48692918,
+    "rawTextUtf16Units": 48507813,
+    "uniqueRawTurns": 46119,
+    "uniqueRawTurnTextUtf16Units": 45772273,
+    "uniqueSessionsIgnoringDates": 4497,
+    "roughTokensAt4_84Chars": 10060520.247933885,
+    "cuts": [
+      12443,
+      24732,
+      49360
+    ]
+  },
+  "node": "v24.19.0",
+  "platform": "linux/x64",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "parity": true,
+  "arms": {
+    "scan": {
+      "hostHeapMiB": 75.41598510742188,
+      "cumulativeBuildUpdateMs": 0,
+      "stages": [
+        {
+          "compactedEntries": 12443,
+          "measuredSamples": 30,
+          "mixedMedianMs": 1589.436380000001,
+          "mixedP95Ms": 1810.9093280000006,
+          "updateMedianMs": 0,
+          "firstQueryMedianMs": 1663.840327,
+          "additionalHeapMiB": -0.01383209228515625,
+          "additionalRssMiB": -0.296875,
+          "perQueryMedianMs": {
+            "577d4d32": 1540.8260690000006,
+            "778164c6": 1600.2632439999988,
+            "51b23612": 1566.1537080000016,
+            "ceb54acb": 1542.7288310000004,
+            "3d86fd0a": 1548.2343140000003,
+            "15745da0": 1586.750078000001,
+            "gpt4_65aabe59": 1653.5213160000021,
+            "982b5123": 1662.1742479999994,
+            "e47becba": 1588.961010000001,
+            "118b2229": 1507.7980800000005
+          }
+        },
+        {
+          "compactedEntries": 24732,
+          "measuredSamples": 30,
+          "mixedMedianMs": 3221.9069095000013,
+          "mixedP95Ms": 3542.524483000001,
+          "updateMedianMs": 0,
+          "firstQueryMedianMs": 3210.1156950000004,
+          "additionalHeapMiB": -0.07251739501953125,
+          "additionalRssMiB": 16.015625,
+          "perQueryMedianMs": {
+            "577d4d32": 3219.1230639999994,
+            "778164c6": 3342.4861420000016,
+            "51b23612": 3254.7539879999968,
+            "ceb54acb": 3224.6907550000033,
+            "3d86fd0a": 3038.3549180000045,
+            "15745da0": 3015.5538190000007,
+            "gpt4_65aabe59": 3415.061512,
+            "982b5123": 3014.9274229999974,
+            "e47becba": 3195.4262059999965,
+            "118b2229": 3137.588137999999
+          }
+        },
+        {
+          "compactedEntries": 49360,
+          "measuredSamples": 30,
+          "mixedMedianMs": 6418.269140999997,
+          "mixedP95Ms": 7437.761169000005,
+          "updateMedianMs": 0,
+          "firstQueryMedianMs": 6592.802540000004,
+          "additionalHeapMiB": -0.1136932373046875,
+          "additionalRssMiB": 23.26953125,
+          "perQueryMedianMs": {
+            "577d4d32": 7003.107682999995,
+            "778164c6": 6466.439734,
+            "51b23612": 6505.538302000001,
+            "ceb54acb": 6542.279003999996,
+            "3d86fd0a": 5835.669658999992,
+            "15745da0": 5782.657421000011,
+            "gpt4_65aabe59": 6521.628448999996,
+            "982b5123": 6236.8848819999985,
+            "e47becba": 6381.01915800001,
+            "118b2229": 6792.553472
+          }
+        }
+      ]
+    },
+    "index": {
+      "hostHeapMiB": 75.41008758544922,
+      "cumulativeBuildUpdateMs": 11005.092538,
+      "stages": [
+        {
+          "compactedEntries": 12443,
+          "measuredSamples": 30,
+          "mixedMedianMs": 6.748526499999798,
+          "mixedP95Ms": 16.159770999999637,
+          "updateMedianMs": 2626.709168,
+          "firstQueryMedianMs": 17.870358000000124,
+          "additionalHeapMiB": 68.57038879394531,
+          "additionalRssMiB": 99.625,
+          "perQueryMedianMs": {
+            "577d4d32": 8.319648000000143,
+            "778164c6": 9.032682999999906,
+            "51b23612": 8.12248400000044,
+            "ceb54acb": 16.159770999999637,
+            "3d86fd0a": 2.978419000000031,
+            "15745da0": 3.335587999999916,
+            "gpt4_65aabe59": 11.461688000000322,
+            "982b5123": 5.931861999999455,
+            "e47becba": 1.2117269999998825,
+            "118b2229": 5.863726000000042
+          }
+        },
+        {
+          "compactedEntries": 24732,
+          "measuredSamples": 30,
+          "mixedMedianMs": 15.089814000000388,
+          "mixedP95Ms": 27.66103700000076,
+          "updateMedianMs": 2758.267439,
+          "firstQueryMedianMs": 24.004619999999704,
+          "additionalHeapMiB": 132.20964813232422,
+          "additionalRssMiB": 176.2421875,
+          "perQueryMedianMs": {
+            "577d4d32": 18.861810000000332,
+            "778164c6": 27.66103700000076,
+            "51b23612": 14.91457200000059,
+            "ceb54acb": 23.463780000000042,
+            "3d86fd0a": 4.109444000000622,
+            "15745da0": 6.2959209999999075,
+            "gpt4_65aabe59": 21.082832000000053,
+            "982b5123": 13.362874000000375,
+            "e47becba": 2.4641440000004877,
+            "118b2229": 14.093339000000014
+          }
+        },
+        {
+          "compactedEntries": 49360,
+          "measuredSamples": 30,
+          "mixedMedianMs": 30.902517000000444,
+          "mixedP95Ms": 78.79386599999998,
+          "updateMedianMs": 5665.965939000001,
+          "firstQueryMedianMs": 42.010104000000865,
+          "additionalHeapMiB": 260.0038146972656,
+          "additionalRssMiB": 336.5859375,
+          "perQueryMedianMs": {
+            "577d4d32": 38.99895000000106,
+            "778164c6": 44.469285999999556,
+            "51b23612": 28.36590199999955,
+            "ceb54acb": 61.720532999999705,
+            "3d86fd0a": 4.556108999999196,
+            "15745da0": 11.12056400000074,
+            "gpt4_65aabe59": 46.082823000000644,
+            "982b5123": 27.54652999999962,
+            "e47becba": 3.8501739999992424,
+            "118b2229": 31.884094000000914
+          }
+        }
+      ]
+    }
+  },
+  "coverage": [
+    {
+      "compactedEntries": 12443,
+      "queries": [
+        {
+          "id": "577d4d32",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "577d4d32:00000284",
+            "778164c6:000011df",
+            "778164c6:00000c95",
+            "778164c6:000011e3",
+            "577d4d32:000005da"
+          ]
+        },
+        {
+          "id": "778164c6",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 1,
+          "ownSourceGoldTurnsLocated": 1,
+          "returnedIds": [
+            "778164c6:00000342",
+            "778164c6:00000344",
+            "778164c6:00000346",
+            "778164c6:00000348",
+            "778164c6:0000034a"
+          ]
+        },
+        {
+          "id": "51b23612",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 1,
+          "ownSourceGoldTurnsLocated": 1,
+          "returnedIds": [
+            "51b23612:0000081e",
+            "577d4d32:00000056",
+            "778164c6:00000d4b",
+            "577d4d32:0000004e",
+            "577d4d32:00000a28"
+          ]
+        },
+        {
+          "id": "ceb54acb",
+          "eligibleGoldTurns": 0,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "577d4d32:000005e8",
+            "778164c6:00001025",
+            "577d4d32:00001162",
+            "577d4d32:000003f4",
+            "778164c6:00000a7d"
+          ]
+        },
+        {
+          "id": "3d86fd0a",
+          "eligibleGoldTurns": 0,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "778164c6:000006a1",
+            "778164c6:00000e17",
+            "778164c6:00000e11",
+            "577d4d32:00001063",
+            "577d4d32:0000105f"
+          ]
+        },
+        {
+          "id": "15745da0",
+          "eligibleGoldTurns": 0,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "51b23612:0000066d",
+            "51b23612:00000668",
+            "51b23612:00000667",
+            "778164c6:00000ad2",
+            "577d4d32:00000658"
+          ]
+        },
+        {
+          "id": "gpt4_65aabe59",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 3,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "778164c6:0000071a",
+            "778164c6:00000a58",
+            "778164c6:00000114",
+            "577d4d32:00000d28",
+            "778164c6:00000718"
+          ]
+        },
+        {
+          "id": "982b5123",
+          "eligibleGoldTurns": 0,
+          "totalGoldTurns": 2,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "51b23612:00000879",
+            "778164c6:00000cdb",
+            "51b23612:000007d2",
+            "51b23612:000007d0",
+            "51b23612:000002b4"
+          ]
+        },
+        {
+          "id": "e47becba",
+          "eligibleGoldTurns": 0,
+          "totalGoldTurns": 2,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "51b23612:0000060f",
+            "51b23612:0000060a",
+            "577d4d32:000011b0",
+            "577d4d32:000011ae",
+            "577d4d32:00000fa8"
+          ]
+        },
+        {
+          "id": "118b2229",
+          "eligibleGoldTurns": 0,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "778164c6:00000746",
+            "51b23612:00000200",
+            "577d4d32:00001172",
+            "577d4d32:00000db0",
+            "577d4d32:00000681"
+          ]
+        }
+      ]
+    },
+    {
+      "compactedEntries": 24732,
+      "queries": [
+        {
+          "id": "577d4d32",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "577d4d32:00000284",
+            "778164c6:000011df",
+            "51b23612:00000fbe",
+            "778164c6:000011e3",
+            "778164c6:00000c95"
+          ]
+        },
+        {
+          "id": "778164c6",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 1,
+          "ownSourceGoldTurnsLocated": 1,
+          "returnedIds": [
+            "778164c6:00000342",
+            "778164c6:00000344",
+            "778164c6:00000346",
+            "778164c6:00000348",
+            "51b23612:00000aa9"
+          ]
+        },
+        {
+          "id": "51b23612",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 1,
+          "ownSourceGoldTurnsLocated": 1,
+          "returnedIds": [
+            "51b23612:0000081e",
+            "577d4d32:00000056",
+            "778164c6:00000d4b",
+            "577d4d32:0000004e",
+            "51b23612:000011db"
+          ]
+        },
+        {
+          "id": "ceb54acb",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 1,
+          "ownSourceGoldTurnsLocated": 1,
+          "returnedIds": [
+            "ceb54acb:00000d12",
+            "51b23612:00000d54",
+            "ceb54acb:00000d14",
+            "51b23612:00000f18",
+            "51b23612:00000a90"
+          ]
+        },
+        {
+          "id": "3d86fd0a",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "778164c6:000006a1",
+            "3d86fd0a:000012c5",
+            "3d86fd0a:00000e88",
+            "3d86fd0a:00000e86",
+            "3d86fd0a:00000e84"
+          ]
+        },
+        {
+          "id": "15745da0",
+          "eligibleGoldTurns": 0,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "51b23612:00000667",
+            "577d4d32:00000658",
+            "577d4d32:00000657",
+            "3d86fd0a:000007ac",
+            "ceb54acb:00000f98"
+          ]
+        },
+        {
+          "id": "gpt4_65aabe59",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 3,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "778164c6:0000071a",
+            "778164c6:00000a58",
+            "778164c6:00000114",
+            "577d4d32:00000d28",
+            "778164c6:00000718"
+          ]
+        },
+        {
+          "id": "982b5123",
+          "eligibleGoldTurns": 0,
+          "totalGoldTurns": 2,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "51b23612:00000879",
+            "ceb54acb:00000616",
+            "51b23612:000011fa",
+            "3d86fd0a:000012eb",
+            "3d86fd0a:000002bc"
+          ]
+        },
+        {
+          "id": "e47becba",
+          "eligibleGoldTurns": 0,
+          "totalGoldTurns": 2,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "3d86fd0a:00001323",
+            "3d86fd0a:00000bf0",
+            "ceb54acb:00000d84",
+            "ceb54acb:00000d83",
+            "ceb54acb:00000d82"
+          ]
+        },
+        {
+          "id": "118b2229",
+          "eligibleGoldTurns": 0,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "3d86fd0a:000005d0",
+            "51b23612:00000eae",
+            "778164c6:00000746",
+            "ceb54acb:00000d20",
+            "ceb54acb:00000810"
+          ]
+        }
+      ]
+    },
+    {
+      "compactedEntries": 49360,
+      "queries": [
+        {
+          "id": "577d4d32",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "577d4d32:00000284",
+            "gpt4_65aabe59:00001022",
+            "e47becba:0000082a",
+            "gpt4_65aabe59:000007de",
+            "778164c6:000011df"
+          ]
+        },
+        {
+          "id": "778164c6",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 1,
+          "ownSourceGoldTurnsLocated": 1,
+          "returnedIds": [
+            "778164c6:00000342",
+            "778164c6:00000344",
+            "778164c6:00000346",
+            "778164c6:00000348",
+            "51b23612:00000aa9"
+          ]
+        },
+        {
+          "id": "51b23612",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 1,
+          "ownSourceGoldTurnsLocated": 1,
+          "returnedIds": [
+            "51b23612:0000081e",
+            "577d4d32:00000056",
+            "778164c6:00000d4b",
+            "15745da0:00000874",
+            "118b2229:00000bd2"
+          ]
+        },
+        {
+          "id": "ceb54acb",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 1,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "gpt4_65aabe59:000012a4",
+            "51b23612:00000d54",
+            "gpt4_65aabe59:000012a6",
+            "51b23612:00000f18",
+            "51b23612:00000a90"
+          ]
+        },
+        {
+          "id": "3d86fd0a",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "778164c6:000006a1",
+            "118b2229:00000b62",
+            "118b2229:00000b60",
+            "118b2229:00000b5f",
+            "118b2229:0000098e"
+          ]
+        },
+        {
+          "id": "15745da0",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "e47becba:00000be2",
+            "e47becba:00000be1",
+            "982b5123:000009f8",
+            "gpt4_65aabe59:000013c6",
+            "gpt4_65aabe59:00000dfe"
+          ]
+        },
+        {
+          "id": "gpt4_65aabe59",
+          "eligibleGoldTurns": 3,
+          "totalGoldTurns": 3,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "778164c6:0000071a",
+            "15745da0:00000e92",
+            "778164c6:00000a58",
+            "577d4d32:00000d28",
+            "778164c6:00000114"
+          ]
+        },
+        {
+          "id": "982b5123",
+          "eligibleGoldTurns": 2,
+          "totalGoldTurns": 2,
+          "sharedTextAwareGoldTurnsLocated": 2,
+          "ownSourceGoldTurnsLocated": 2,
+          "returnedIds": [
+            "982b5123:0000010d",
+            "982b5123:0000010e",
+            "982b5123:00000112",
+            "982b5123:00000553",
+            "51b23612:00000879"
+          ]
+        },
+        {
+          "id": "e47becba",
+          "eligibleGoldTurns": 2,
+          "totalGoldTurns": 2,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "118b2229:00000b58",
+            "118b2229:00000244",
+            "gpt4_65aabe59:00000a92",
+            "gpt4_65aabe59:000008d8",
+            "15745da0:0000050a"
+          ]
+        },
+        {
+          "id": "118b2229",
+          "eligibleGoldTurns": 1,
+          "totalGoldTurns": 1,
+          "sharedTextAwareGoldTurnsLocated": 0,
+          "ownSourceGoldTurnsLocated": 0,
+          "returnedIds": [
+            "15745da0:00000572",
+            "3d86fd0a:000005d0",
+            "51b23612:00000eae",
+            "778164c6:00000746",
+            "15745da0:000005c6"
+          ]
+        }
+      ]
+    }
+  ]
+}

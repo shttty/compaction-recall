@@ -3,14 +3,40 @@ import { Type } from "typebox";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { MAX_HITS, SNIPPET, MAX_EXPAND_CHARS, entryText, compactedEntries, toRegExp } from "./history.ts";
 
+import { buildLocator, withLocators } from "./locator.ts";
+
 export default function(pi: ExtensionAPI) {
+  pi.on("context", (event, ctx) => ({
+    messages: withLocators(event.messages, ctx.sessionManager.getBranch()),
+  }));
+  pi.registerTool({
+    name: "history_recall",
+    label: "History recall",
+    description:
+      "Primary keyword lookup of compacted conversation history on the current branch. " +
+      "Use automatic locator hints, then this tool with focused or rewritten keywords to find related entry ids. " +
+      "Uses the same lexical ranking as automatic hints, not semantic search: supply alternative wording or synonyms yourself. " +
+      "Searches user/assistant text only; returns at most 5 deduplicated locators within 1500 Unicode codepoints. " +
+      "Verify exact details with history_expand. If evidence remains insufficient, use history_grep as a supplementary " +
+      "text-search fallback, including tool output. No hit does not prove the information was never mentioned.",
+    parameters: Type.Object({
+      query: Type.String({ description: "Focused keywords or revised wording; first 4000 Unicode codepoints and 24 distinct terms are used" }),
+    }),
+    async execute(_id, params, _signal, _onUpdate, ctx) {
+      const content = buildLocator(params.query, ctx.sessionManager.getBranch());
+      return { content: [{ type: "text", text: content ??
+        "No lexical locators found within the current compacted branch and output limits. This does not prove absence. " +
+        "Try history_recall with revised keywords; if evidence remains insufficient, use history_grep as a supplementary text-search fallback." }], details: {} };
+    },
+  });
+
   pi.registerTool({
     name: "history_grep",
     label: "History grep",
     description:
-      "Search the ORIGINAL text of older conversation history that was compacted out of your context. " +
-      "The compaction summary is lossy: before answering that something was never mentioned, or when you need an exact " +
-      "detail (name, number, date, time, place), search here. `pattern` is a case-insensitive regular expression; use " +
+      "Supplementary text-search fallback when automatic locators, history_recall and expanded entries leave insufficient evidence. " +
+      "Search ORIGINAL compacted history on the current branch, including tool output. No matches do not prove absence. " +
+      "`pattern` is a case-insensitive JavaScript regular expression (not SQL LIKE); use " +
       "alternation for synonyms, e.g. `5K|5 km|personal best`. Returns entry ids with snippets; read full text with history_expand.",
     parameters: Type.Object({
       pattern: Type.String({ description: "Case-insensitive JavaScript regular expression" }),
@@ -41,10 +67,10 @@ export default function(pi: ExtensionAPI) {
     name: "history_expand",
     label: "History expand",
     description:
-      "Read original text of a compacted history entry by id (from history_grep), plus neighbouring " +
+      "Read original text of a compacted history entry by id (from automatic locators, history_recall or history_grep), plus neighbouring " +
       "entries for context (output capped at 16000 UTF-16 code units; use before=0 and after=0 to focus on the entry). Neighbouring entries of the same conversation carry the session date in its first user message.",
     parameters: Type.Object({
-      id: Type.String({ description: "Entry id from history_grep" }),
+      id: Type.String({ description: "Entry id from automatic locators, history_recall or history_grep" }),
       before: Type.Optional(Type.Integer({ minimum: 0, maximum: 20, description: "Entries before (default 2)" })),
       after: Type.Optional(Type.Integer({ minimum: 0, maximum: 20, description: "Entries after (default 2)" })),
     }),

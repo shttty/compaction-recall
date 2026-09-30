@@ -5,14 +5,17 @@ export const MAX_HITS = 30;
 export const SNIPPET = 160;
 export const MAX_EXPAND_CHARS = 16000;
 
-export function entryText(e: SessionEntry): string {
-  if (e.type !== "message") return "";
-  const m = e.message;
-  if (!("content" in m)) return "";
+export function messageText(m: { content?: unknown } | null | undefined): string {
+  if (!m) return "";
   if (typeof m.content === "string") return m.content;
+  if (!Array.isArray(m.content)) return "";
   const parts: string[] = [];
-  for (const b of m.content) if ("text" in b && typeof b.text === "string") parts.push(b.text);
+  for (const b of m.content) if (b && typeof b === "object" && "text" in b && typeof b.text === "string") parts.push(b.text);
   return parts.join("\n");
+}
+
+export function entryText(e: SessionEntry): string {
+  return e.type === "message" && "content" in e.message ? messageText(e.message) : "";
 }
 
 /** Message entries that the latest compaction moved out of the live context (oldest first). */
