@@ -77,3 +77,7 @@ Retaining postings avoided repeated full-text tokenization and greatly reduced r
 ## Larger stacked experiment
 
 `STACKED.md` records the separately requested ten-real-haystack (~10.06M tokens by the existing character heuristic) stress experiment. Its scripts, provenance, raw results and summary use the `stacked-` prefix, preserving this single-question experiment.
+
+## Version note after manual-pagination update
+
+The recorded timings and output/coverage files above describe the earlier code committed in `22c2d93`. Subsequent changes separate manual recall pagination (default/max 50) from automatic hints (max five) center snippets on the most informative matched term, and include assistant tool names/inputs while excluding toolResult bodies from all search entrypoints. Existing benchmark artifacts were preserved and have not been rerun to claim results for the new snippets. Current offline tests verify automatic scan/index parity.

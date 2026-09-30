@@ -15,11 +15,11 @@ The adapter uses the registered production context hook and exact history_recall
 
 ## Verified
 
-- `npm run check`: typecheck and **25 tests passed**
+- `npm run check`: typecheck and **37 tests passed** after pagination/snippet/search-scope updates (25 in the initial harness check)
 - Skill creator's `quick_validate.py`: **valid**
 - Fixture checks: only allowlisted role/content/date fields enter history; machine reference answers, has_answer flags and answer-session IDs are excluded
-- Fixture checks: automatic hint equals manual recall output for the same question; actual expand and grep functions work; invalid tools and expand bounds are rejected
-- Official single-corpus CLI smoke: start returns question/date/tool descriptions/hints; a deliberately absent grep pattern returns zero matches; recursive key inspection finds no oracle metadata in either output
+- Fixture checks: automatic and manual recall share ranking/rows for the same small fixture, while manual recall has independent pagination metadata; actual expand and grep functions work; invalid tools and expand bounds are rejected
+- Initial pre-pagination official single-corpus CLI smoke: start returns question/date/tool descriptions/hints; a deliberately absent grep pattern returns zero matches; recursive key inspection finds no oracle metadata in either output
 - The evaluator rejects the unfinished smoke run before emitting reference answers
 - `git diff --check`: clean
 
@@ -34,3 +34,7 @@ When fresh context becomes available, start with a new run label and provide onl
 ## Boundary
 
 Solvers share the local filesystem, so blindness is enforced by instructions and the narrow CLI interface, **not by a security sandbox**. Solvers must not inspect raw corpus, source code, reports, provenance, logs or the evaluator. Historical text returned by tools remains untrusted evidence. Actual recall content can naturally contain the answer; the excluded information is benchmark oracle metadata, not relevant history.
+
+Pagination update: manual recall now defaults/maxes at 50, with nextOffset/hasMore metadata and keyword-centered snippets. Updated adapter tests verify pagination and parameter bounds; this does not constitute a new blind-model run.
+
+Search-scope update: automatic hints, recall and grep now include assistant tool names/inputs but exclude toolResult bodies. Expand retains toolResult readable text and exposes tool inputs for verification. Added mechanical tests cover input-only command/path/Chinese matches, empty-regex exclusion, hidden-content exclusion, deterministic serialization and index parity. This is not an additional blind-model run.

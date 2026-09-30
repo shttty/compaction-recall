@@ -35,7 +35,7 @@ Example for one assigned question, with a unique run label:
 
 ```sh
 node prototype/blind-harness.mjs single start 577d4d32 RUN
-node prototype/blind-harness.mjs single tool 577d4d32 RUN history_recall '{"query":"keywords chosen by the solver"}'
+node prototype/blind-harness.mjs single tool 577d4d32 RUN history_recall '{"query":"keywords chosen by the solver","limit":50,"offset":0}'
 node prototype/blind-harness.mjs single tool 577d4d32 RUN history_expand '{"id":"returned-entry-id","before":0,"after":0}'
 node prototype/blind-harness.mjs single tool 577d4d32 RUN history_grep '{"pattern":"solver-chosen fallback pattern"}'
 node prototype/blind-harness.mjs single answer 577d4d32 RUN '{"answer":"solver answer","evidenceIds":[],"uncertainty":"if any"}'
@@ -43,7 +43,9 @@ node prototype/blind-harness.mjs single answer 577d4d32 RUN '{"answer":"solver a
 
 Replace `single` with `stacked` to query all ten artificial histories. The stacked IDs are 577d4d32, 778164c6, 51b23612, ceb54acb, 3d86fd0a, 15745da0, gpt4_65aabe59, 982b5123, e47becba, 118b2229. Question wording and question date come from `start`; neither caller nor solver should rewrite the actual question. The solver may reformulate tool queries.
 
-The workflow is automatic hints → recall as needed → expand to verify → grep when evidence remains insufficient. This is guidance, not a requirement to invoke every tool. Automatic useful IDs may be expanded immediately. Record abstention/uncertainty rather than forcing an answer. Set a bounded per-question tool/time budget appropriate to the requested run; stop and report exhaustion without treating it as evidence of absence.
+Search scope is normal user/assistant text plus assistant tool-call names/arguments; auto/recall/grep exclude toolResult bodies, thinking and images. Expand can read toolResult text and tool inputs by id.
+
+The workflow is automatic hints → recall as needed → expand to verify → grep when evidence remains insufficient. This is guidance, not a requirement to invoke every tool. Automatic useful IDs may be expanded immediately. Automatic hints remain capped at five; manual recall defaults/maxes at fifty per page. Continue using returned nextOffset when hasMore is true, rather than assuming offset + limit; keep the query/branch unchanged across pages. Record abstention/uncertainty rather than forcing an answer. Set a bounded per-question tool/time budget appropriate to the requested run; stop and report exhaustion without treating it as evidence of absence.
 
 ## Evaluate after answers, without backflow
 

@@ -46,10 +46,10 @@ test('uses latest current-branch compaction boundary and deduplicates ids', () =
   assert.deepEqual(ids(buildLocator('quasar', branch(msg('alternate', 'quasar')))), ['alternate']);
 });
 
-test('automatic candidates exclude tool results, custom messages, summaries, thinking and call args', () => {
+test('automatic candidates exclude tool results, custom messages, summaries and hidden content', () => {
   const assistant = msg('assistant', 'ordinary answer', 'assistant');
   assistant.message.content.push({ type: 'thinking', thinking: 'quasar', text: 'quasar' },
-    { type: 'toolCall', arguments: { query: 'quasar' }, text: 'quasar' }, { type: 'image', data: 'quasar' }, null);
+    { type: 'toolCall', name: 'lookup', arguments: { query: 'ordinary input' }, text: 'quasar' }, { type: 'image', data: 'quasar' }, null);
   assert.equal(buildLocator('quasar', branch(msg('tool', 'quasar', 'toolResult'), msg('custom', 'quasar', 'custom'), assistant)), undefined);
   assert.deepEqual(ids(buildLocator('ordinary', branch(assistant))), ['assistant']);
   assert.equal(entryText({ ...assistant, message: { ...assistant.message, content: [null, undefined, 3, { type: 'text', text: 'ok' }] } }), 'ok');

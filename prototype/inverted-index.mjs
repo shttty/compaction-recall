@@ -71,7 +71,7 @@ export class CompactionIndex {
       const entry = this.documents.get(recency);
       candidates.push({ id: entry.id, date: entry.timestamp.slice(0, 10), role: entry.message.role,
         text: locatorText(entry.message), offset: matched[0].offset,
-        matches: new Set(matched.map(x => x.term)), recency });
+        matches: new Set(matched.map(x => x.term)), offsets: new Map(matched.map(x => [x.term, x.offset])), recency });
     }
     return renderLocators(candidates, frequency, this.documents.size);
   }

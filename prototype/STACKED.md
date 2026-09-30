@@ -106,3 +106,7 @@ These are direct locator measurements only. No model answered the questions, no 
 On this stacked real-text workload, keeping a per-compaction inverted index substantially reduces repeated retrieval latency while retaining exact scan behavior. It costs roughly **11 seconds of cumulative indexing and 260 MiB of extra retained heap**. It does not improve lexical ranking or resolve interference between concatenated histories. The final full-scan median is about 6.4 seconds, so one isolated final query would not repay all preceding index work; repeated queries can amortize it. This supports further engineering evaluation, not an automatic production switch or an end-to-end quality claim.
 
 Machine-readable analysis: `stacked-summary.json`; exact queries, output strings and raw timings: `stacked-results.json`. `summarize-stacked.mjs` reproduces the statistics and distinguishes cross-history duplicate evidence from own-source evidence.
+
+## Version note after manual-pagination update
+
+The recorded timings and output/coverage files above describe the earlier code committed in `22c2d93`. Subsequent changes separate manual recall pagination (default/max 50) from automatic hints (max five) center snippets on the most informative matched term, and include assistant tool names/inputs while excluding toolResult bodies from all search entrypoints. Existing benchmark artifacts were preserved and have not been rerun to claim results for the new snippets. Current offline tests verify automatic scan/index parity.

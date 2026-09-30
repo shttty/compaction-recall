@@ -53,6 +53,10 @@ export function createBlindHarness(questions) {
       // Mirror the registered public schema's basic types/bounds; no additional retrieval behavior.
       const required = name === 'history_recall' ? 'query' : name === 'history_grep' ? 'pattern' : 'id';
       if (typeof parameters[required] !== 'string') throw new Error(`${required} must be a string`);
+      if (name === 'history_recall') {
+        if (parameters.limit !== undefined && (!Number.isInteger(parameters.limit) || parameters.limit < 1 || parameters.limit > 50)) throw new Error('limit must be an integer from 1 to 50');
+        if (parameters.offset !== undefined && (!Number.isSafeInteger(parameters.offset) || parameters.offset < 0)) throw new Error('offset must be a nonnegative safe integer');
+      }
       if (name === 'history_expand') for (const field of ['before','after']) {
         if (parameters[field] !== undefined && (!Number.isInteger(parameters[field]) || parameters[field] < 0 || parameters[field] > 20)) throw new Error(`${field} must be an integer from 0 to 20`);
       }

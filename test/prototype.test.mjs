@@ -34,3 +34,11 @@ test('experimental index handles duplicate ids, malformed content, missing bound
     assert.equal(index.query(query, branch), buildLocator(query, branch));
   }
 });
+
+test('index preserves informative-term snippet centering exactly', () => {
+  const b=initialBranch([msg('focus','common '+'😀'.repeat(200)+' rareNebula '+'🌟'.repeat(200)),
+    msg('other1','common ordinary one'),msg('other2','common ordinary two')]);
+  const index=new CompactionIndex();
+  assert.equal(index.query('common rareNebula',b),buildLocator('common rareNebula',b));
+  assert.match(index.query('common rareNebula',b),/rareNebula/);
+});
