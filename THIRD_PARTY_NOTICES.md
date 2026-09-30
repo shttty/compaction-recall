@@ -1,0 +1,40 @@
+# Third-party notices
+
+This repository was extracted from the recall spike in pi-lossless-context. The
+following upstream design attribution and license notice are retained for
+provenance. The broader DAG, indexing and compaction implementation described
+below is not included in pi-recall. This notice does not assign a license to
+pi-recall itself.
+
+## hermes-lcm
+
+pi-lossless-context ports the design of [hermes-lcm](https://github.com/stephenschoettler/hermes-lcm) by Stephen
+Schoettler to the Pi coding agent (reference version `8d1b1e6d3d63f5fc7b209e8d7ec1dc9b814f2e54`, v1.0.0-rc.1). The code
+here is a new TypeScript implementation, but the core design comes from hermes-lcm: keeping the raw conversation
+recoverable next to a searchable index, the hierarchical summary DAG (leaf summaries that are never rewritten,
+condensed level by level, with source lineage), the detailed → bullets → deterministic-truncation summary fallback,
+and the `lcm_grep` / `lcm_expand` recall tools.
+
+```
+MIT License
+
+Copyright (c) 2026 Stephen Schoettler
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```

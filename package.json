@@ -1,0 +1,33 @@
+{
+  "name": "pi-recall",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Lightweight Pi compacted-history grep and expansion, without a database or compaction hooks",
+  "type": "module",
+  "keywords": [
+    "pi-package"
+  ],
+  "pi": {
+    "extensions": [
+      "./index.ts"
+    ]
+  },
+  "scripts": {
+    "typecheck": "tsc -p .",
+    "test": "node --test test/*.test.mjs",
+    "check": "npm run typecheck && npm test"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "typebox": "*"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "0.85.1",
+    "@types/node": "24.19.0",
+    "typescript": "5.9.3",
+    "typebox": "1.3.7"
+  }
+}
