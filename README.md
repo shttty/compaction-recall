@@ -1,6 +1,6 @@
 # pi-recall
 
-Pi 原生压缩之后，自动给主模型一份与当前用户消息有关的短定位索引，再用 `history_recall` 主动定位、`history_expand` 核实原文；证据不足时用 `history_grep` 补充检索当前分支被压掉的原文。独立的小扩展，不加载主插件 `src/`，不接管压缩，不新增 SQLite、FTS、向量索引、后台任务或模型调用。已验证宿主 SDK：0.85.1。
+Pi 原生压缩之后，自动给主模型一份与当前用户消息有关的短定位索引，再用 `history_recall` 主动定位、`history_expand` 核实原文；证据不足时用 `history_grep` 补充检索当前分支被压掉的原文。独立的小扩展，不加载主插件 `src/`，不接管压缩，不新增 SQLite、FTS、向量索引、后台任务或模型调用。已验证宿主 SDK：1.0.0。
 
 本仓库从 `pi-lossless-context/prototype/recall-spike` 独立提取。原有 grep / expand 工具保留语义，新增的自动定位与 history_recall 不接管压缩；所有相对导入都在本仓库内，不依赖原项目。原项目目录和 benchmark 兼容入口保留在原处。`FINDINGS.md` 是历史实验结果，不是本次整理后重新跑分的结论。
 
@@ -18,7 +18,7 @@ pi -e ./index.ts
 pi install /absolute/path/to/pi-recall
 ```
 
-`package.json` 的 `pi.extensions` 指向 `index.ts`。本仓库也支持 `pi -e ./recall-extension.ts`。两个入口只选一个，避免重复注册。宿主提供 Pi SDK 和 `typebox`，不捆绑另一套 SDK；开发和测试使用本仓库 `package-lock.json` 锁定的依赖（Pi SDK 0.85.1）。本次没有安装到任何个人 profile，也没有发布包。
+`package.json` 的 `pi.extensions` 指向 `index.ts`。本仓库也支持 `pi -e ./recall-extension.ts`。两个入口只选一个，避免重复注册。宿主提供 Pi SDK 和 `typebox`，不捆绑另一套 SDK；开发和测试使用本仓库 `package-lock.json` 锁定的依赖（Pi SDK 1.0.0）。本次没有安装到任何个人 profile，也没有发布包。
 
 ## 工具与范围
 
@@ -34,7 +34,7 @@ pi install /absolute/path/to/pi-recall
 
 ## 自动短定位索引
 
-- 在 SDK 0.85.1 的 `context` hook 中运行：每次模型请求先移除本扩展旧的定位消息，从实际 `event.messages` 找最后一条 `role: user` 的文字，再扫描当前分支的已压缩原文。已被消费的 steering / follow-up 消息因此也会成为新查询。不依赖 `input` 或 `before_agent_start`，不记录查询状态、不缓存、不启动后台工作。
+- 在 SDK 1.0.0 的 `context` hook 中运行：每次模型请求先移除本扩展旧的定位消息，从实际 `event.messages` 找最后一条 `role: user` 的文字，再扫描当前分支的已压缩原文。已被消费的 steering / follow-up 消息因此也会成为新查询。不依赖 `input` 或 `before_agent_start`，不记录查询状态、不缓存、不启动后台工作。
 - 自动候选包括用户 / 助手正文和助手工具调用名称 / 输入；自动定位、recall、grep 都排除工具结果正文，只有 expand 可按 id 读取它。thinking、图片、摘要和自定义消息不进入搜索。最新用户消息只有图片或没有有效关键词时，不回退到更早的问题；无压缩、无匹配时不添加提示。
 - 查询最多取前 4,000 个 Unicode 码点、24 个去重关键词。英文不区分大小写，保留代码标识符并拆出 `snake_case`、`camelCase`、`HTTPServer` 的词段；连续汉字用重叠双字词组，过滤一组常见中英文停用词。没有模型、embedding、词典分词或新依赖。
 - 按不同查询词的覆盖评分，较少历史条目包含的词权重更高（`1 + log((文档数 + 1) / (含词文档数 + 1))`），重复堆词不会提高分数；同分时按覆盖词数、然后按分支条目新旧排序。先按 id 和相同片段（忽略空白差异）去重，确定性地保留分支中较新的代表，再计算相关性排序；自动提示先选前 5 条，最后应用长度预算，不用第 6 名以后回填。每条包括真实 entry id、条目日期、角色及最多 120 个 Unicode 码点的上下文片段（另可加省略号）：以本条匹配词中历史文档频率最低、信息权重最高的词为中心，约各取前后半个窗口；同频时选原文位置更早的词，靠近文本边缘时平移窗口，不切断 Unicode 代理对；整个提示含固定说明和元数据不超过 1,500 个 Unicode 码点。前 5 条里预算放不下的整行略过，绝不截断或捏造 id。
