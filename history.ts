@@ -1,5 +1,5 @@
 // Pure current-branch history helpers. No storage, hooks or model calls.
-import type { SessionEntry } from "@earendil-works/pi-coding-agent";
+import type { ContextEditEntry, SessionEntry } from "@earendil-works/pi-coding-agent";
 
 export const MAX_HITS = 30;
 export const SNIPPET = 160;
@@ -62,6 +62,33 @@ export function entryText(e: SessionEntry): string {
   return e.type === "message" ? messageText(e.message) : "";
 }
 
+/** Apply the latest branch-local edits, including edits after the requested raw-entry boundary. */
+export function branchMessageEntries(branch: SessionEntry[], end = branch.length): SessionEntry[] {
+  const edits = new Map<string, ContextEditEntry["replacement"]>();
+  for (const entry of branch) {
+    if (entry.type === "context_edit") edits.set(entry.targetId, entry.replacement);
+  }
+  const entries: SessionEntry[] = [];
+  for (let i = 0; i < end; i++) {
+    const entry = branch[i];
+    if (entry.type !== "message") continue;
+    const replacement = edits.get(entry.id);
+    if (replacement === null) continue;
+    const { message } = entry;
+    if (replacement === undefined ||
+      (message.role !== "user" && message.role !== "assistant" && message.role !== "toolResult")) {
+      entries.push(entry);
+      continue;
+    }
+    // Match Pi 1.0 projectContextEntry, without its compaction-aware history exclusion.
+    const content = message.role !== "user" && typeof replacement.content === "string"
+      ? [{ type: "text" as const, text: replacement.content }]
+      : replacement.content;
+    entries.push({ ...entry, message: { ...message, content } as typeof message });
+  }
+  return entries;
+}
+
 /** Message entries that the latest compaction moved out of the live context (oldest first). */
 export function compactedEntries(branch: SessionEntry[]): SessionEntry[] {
   let latest = -1;
@@ -69,7 +96,8 @@ export function compactedEntries(branch: SessionEntry[]): SessionEntry[] {
   if (latest < 0) return [];
   const c = branch[latest];
   const kept = c.type === "compaction" ? branch.findIndex((e) => e.id === c.firstKeptEntryId) : -1;
-  return branch.slice(0, kept < 0 ? latest : kept).filter((e) => e.type === "message");
+  // Resolve the boundary on raw entries: omitting firstKeptEntryId must not widen history.
+  return branchMessageEntries(branch, kept < 0 ? latest : kept);
 }
 
 export function toRegExp(pattern: string): RegExp {

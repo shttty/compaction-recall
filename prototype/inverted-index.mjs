@@ -6,6 +6,7 @@ import { lex, locatorText, queryTerms, renderLocators, recallPageFromCandidates 
 export class CompactionIndex {
   constructor(timer) { this.timer = timer; }
   entries = [];
+  branch = [];
   documents = new Map(); // SessionManager entry references; never retained full-text copies.
   postings = new Map(); // term -> Map(entry position -> first lexical occurrence)
   seen = new Set();
@@ -30,8 +31,9 @@ export class CompactionIndex {
   }
 
   // Call after compaction; queries also call this to account for branch selection/reset.
-  // SessionManager entries are assumed immutable. Changed object references force rebuild.
+  // Raw entries are immutable; include context_edit entries when checking freshness.
   sync(branch) {
+    if (this.builds && branch.length === this.branch.length && branch.every((entry, i) => entry === this.branch[i])) return;
     const next = measured(this.timer, "branch_selection", () => compactedEntries(branch));
     let prefix = next.length >= this.entries.length;
     for (let i = 0; prefix && i < this.entries.length; i++) prefix = next[i] === this.entries[i];
@@ -56,6 +58,7 @@ export class CompactionIndex {
       });
     }
     this.entries = next;
+    this.branch = branch.slice();
   }
 
   collect(query, branch) {

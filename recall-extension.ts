@@ -14,6 +14,7 @@ export default function(pi: ExtensionAPI) {
     label: "History recall",
     description:
       "Primary keyword lookup of compacted conversation history on the current branch. " +
+      "Honors the latest branch-local context edits: omitted entries are unavailable and replacements hide original content. " +
       "Use automatic locator hints, then this tool with focused or rewritten keywords to find related entry ids. " +
       "Uses the same lexical ranking as automatic hints, not semantic search: supply alternative wording or synonyms yourself. " +
       "Searches user/assistant text plus assistant tool-call names and arguments; excludes toolResult bodies, thinking and images. Paginated results: limit defaults to 50 (maximum 50), offset defaults to 0. " +
@@ -38,7 +39,7 @@ export default function(pi: ExtensionAPI) {
     label: "History grep",
     description:
       "Supplementary text-search fallback when automatic locators, history_recall and expanded entries leave insufficient evidence. " +
-      "Search ORIGINAL user/assistant text and assistant tool-call names/arguments on the current compacted branch; exclude toolResult bodies, thinking and images. No matches do not prove absence. " +
+      "Search branch-effective user/assistant text and assistant tool-call names/arguments on the current compacted branch, honoring context edits; exclude toolResult bodies, thinking and images. No matches do not prove absence. " +
       "`pattern` is a case-insensitive JavaScript regular expression (not SQL LIKE); use " +
       "alternation for synonyms, e.g. `5K|5 km|personal best`. Returns entry ids with snippets; read full text with history_expand.",
     parameters: Type.Object({
@@ -71,7 +72,7 @@ export default function(pi: ExtensionAPI) {
     name: "history_expand",
     label: "History expand",
     description:
-      "Read original text of a compacted history entry by id (from automatic locators, history_recall or history_grep), plus neighbouring " +
+      "Read branch-effective text (honoring context edits) of a compacted history entry by id (from automatic locators, history_recall or history_grep), plus neighbouring " +
       "entries for context, including tool-call names/arguments and readable toolResult text (output capped at 16000 UTF-16 code units; use before=0 and after=0 to focus on the entry). Neighbouring entries of the same conversation carry the session date in its first user message.",
     parameters: Type.Object({
       id: Type.String({ description: "Entry id from automatic locators, history_recall or history_grep" }),

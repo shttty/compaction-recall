@@ -19,13 +19,15 @@ No full branch scan on each ordinary completion: counting is cheap and the branc
 
 ## Search correctness
 
-The main thread retains SessionManager entry references for generation/prefix validation. Worker payloads contain only id/date/role, source position, and searchable user/assistant text plus tool-call names/arguments. Tool-result bodies, thinking, images, custom/summary contents and whole JSONL are never sent or retained by the worker.
+The main thread retains an immutable raw branch-reference snapshot, including `context_edit` entries, and reuses its effective message projection until that snapshot changes. Both compacted and preindexed live entries use the shared branch-effective projection: latest replacements win and omissions disappear, including edits appended after compaction. Boundary selection uses raw ids before applying omissions, so omitting `firstKeptEntryId` cannot expose live messages. Worker payloads contain only id/date/role, source position, and searchable user/assistant text plus tool-call names/arguments. Tool-result bodies, thinking, images, custom/summary contents and whole JSONL are never sent or retained by the worker.
 
 Live text is tokenized in the worker, but **does not enter search candidates or eligible-corpus document frequency/N**. At compaction, cached tokens for newly eligible entries activate without re-tokenizing the entire history. Eligible token caches are released after their postings are installed. Original ids/dates/order and shared output formatters are preserved; fake worker boundary metadata never appears in returned results.
 
 During a live-only pre-index batch, queries can use the previous valid eligible index because its searchable corpus is unchanged. When newly compacted entries become eligible, queries await that generation rather than returning incomplete/stale evidence. First cold queries can still wait for readiness; prewarming reduces that wait only when it actually completes before the request. There is no promise that background work removes latency.
 
 Generation IDs reject stale responses. Prefix changes, fork/reset, duplicate-id changes or shutdown cancel obsolete work. Worker termination completes before a replacement starts. Errors/exit switch the generation to a cooperative-yielding exact fallback, without an automatic restart loop. Fallback preserves scope and pagination; a later session reset can start a new worker. No result from another branch is returned.
+
+Edited projections invalidate stale worker/fallback content through the existing generation rebuild path, including cached live tokens before promotion. Branch restoration reprojects even when raw message identities are unchanged. Repeated queries on an unchanged edited branch share the same preparation rather than repeatedly cancelling it because replacement entries are fresh clones. This deliberately uses whole-branch reference checks and coarse rebuilds, not per-entry invalidation hooks. Regression command: `node --test test/prototype-context-edit.test.mjs test/background-index.test.mjs test/prototype.test.mjs`.
 
 ## Blocking and memory boundaries
 

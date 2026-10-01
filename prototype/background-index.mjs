@@ -1,7 +1,7 @@
 import { Worker } from 'node:worker_threads';
 import { performance } from 'node:perf_hooks';
 import { setImmediate as yieldImmediate } from 'node:timers/promises';
-import { compactedEntries } from '../history.ts';
+import { branchMessageEntries, compactedEntries } from '../history.ts';
 import { locatorText } from '../locator.ts';
 import { CompactionIndex } from './inverted-index.mjs';
 const cancelled=()=>Object.assign(new Error('Index generation cancelled'),{name:'AbortError'});
@@ -9,11 +9,14 @@ export class BackgroundIndex {
  constructor({timer,workerFactory=()=>new Worker(new URL('./index-worker.mjs',import.meta.url)),yieldFn=yieldImmediate}={}){
   Object.assign(this,{timer,workerFactory,yieldFn});this.generation=0;this.nextRequest=0;this.pending=new Map();this.entries=[];this.eligibleCount=0;this.ready=false;this.disposed=false;this.failed=false;this.worker=null;this.preparation=null;this.fallback=null;
  }
+ branch=null;
+ fullEntries=[];
+ compacted=[];
  event(stage,fields={}){this.timer?.mark(stage,fields);}
  async yield(){await this.yieldFn();}
  stopWorker(){const worker=this.worker;this.worker=null;for(const {reject} of this.pending.values())reject(cancelled());this.pending.clear();if(worker)this.termination=worker.terminate();return this.termination;}
- reset(){this.generation++;this.stopWorker();this.entries=[];this.eligibleCount=0;this.ready=false;this.serveWhilePreparing=false;this.failed=false;this.preparation=null;this.fallback=null;}
- async dispose(){this.disposed=true;this.generation++;await this.stopWorker();this.entries=[];this.preparation=null;this.fallback=null;}
+ reset(){this.generation++;this.stopWorker();this.branch=null;this.fullEntries=[];this.compacted=[];this.entries=[];this.eligibleCount=0;this.ready=false;this.serveWhilePreparing=false;this.failed=false;this.preparation=null;this.fallback=null;}
+ async dispose(){this.disposed=true;this.generation++;await this.stopWorker();this.branch=null;this.fullEntries=[];this.compacted=[];this.entries=[];this.preparation=null;this.fallback=null;}
  startWorker(){
   if(this.worker)return;
   const started=performance.now(),worker=this.workerFactory();this.worker=worker;
@@ -38,7 +41,14 @@ export class BackgroundIndex {
  }
  prepare(branch,{preindexLive=false}={}){
   if(this.disposed)return Promise.reject(cancelled());
-  const select=performance.now(),eligible=compactedEntries(branch),full=branch.filter(e=>e.type==='message');
+  const select=performance.now();
+  // Cache one immutable raw branch snapshot, not the freshly cloned replacements.
+  // Any branch change reprojects edits, including edits appended after compaction.
+  if(!this.branch||branch.length!==this.branch.length||branch.some((entry,i)=>entry!==this.branch[i])){
+   this.branch=branch.slice();this.fullEntries=branchMessageEntries(branch);
+   this.compacted=this.fullEntries.slice(0,compactedEntries(branch).length);
+  }
+  const eligible=this.compacted,full=this.fullEntries;
   const preserve=this.entries.length>=eligible.length&&this.entries.every((e,i)=>e===full[i]);
   const next=preindexLive?full:preserve?this.entries:eligible;this.event('main_branch_selection',{mainThreadMs:performance.now()-select});
   const same=next.length===this.entries.length&&next.every((e,i)=>e===this.entries[i]);
@@ -86,7 +96,7 @@ export class BackgroundIndex {
     if(generation!==this.generation||this.disposed)throw cancelled();index.add(this.entries[i],i);
     if(performance.now()-slice>=4){await this.yield();slice=performance.now();}
    }
-   index.entries=this.entries.slice(0,this.eligibleCount);index.builds=1;return index;
+   index.entries=this.entries.slice(0,this.eligibleCount);index.branch=this.branch;index.builds=1;return index;
   })();return this.fallback;
  }
  async query(query,branch,{mode='auto',options={}}={}){
@@ -101,7 +111,7 @@ export class BackgroundIndex {
   try{return await this.rpc('query',{query,mode,options},generation);}
   catch(error){
    if(generation!==this.generation||this.disposed)throw cancelled();this.failed=true;this.stopWorker();
-   const index=await this.cooperativeFallback(generation);return mode==='manual'?index.recall(query,branch,options):index.query(query,branch);
+   const index=await this.cooperativeFallback(generation);if(generation!==this.generation||this.disposed)throw cancelled();return mode==='manual'?index.recall(query,branch,options):index.query(query,branch);
   }
  }
 }
