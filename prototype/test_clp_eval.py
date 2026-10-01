@@ -92,14 +92,26 @@ class EvaluationRunnerTest(unittest.TestCase):
         self.assertIsNotNone(result["timing"]["startupToRpcReadyMs"])
 
 
-    def test_run_writes_all_arms_and_resumes_identical_manifest_without_calls(self):
+    def test_snapshot_fingerprint_tracks_preparation_code(self):
+        question = {"question_id": "fixture", "history": "same"}
+        digest = e.object_sha(question)
+        baseline, _ = e.fingerprint(question, digest)
+        changed_source = e.COMPRESSION_ORCHESTRATION_SOURCE + "\n# altered orchestration"
+        with patch.object(e, "COMPRESSION_ORCHESTRATION_SOURCE", changed_source):
+            changed, config = e.fingerprint(question, digest)
+        self.assertNotEqual(baseline, changed)
+        self.assertIn("compression_orchestration", config["code"])
+
+    def test_run_recovers_durable_outputs_and_rejects_changed_inputs(self):
         with tempfile.TemporaryDirectory() as td:
             home = Path(td) / "evaluation"
             data = home / "data" / "dev8"
             data.mkdir(parents=True)
             question = {"question_id": "fixture", "question_type": "single-session-user",
                         "question": "fixture question", "question_date": "2024-01-01",
-                        "haystack_dates": [], "haystack_sessions": []}
+                        "haystack_dates": ["2024/01/01 (Mon) 12:00"],
+                        "haystack_sessions": [[{"role": role, "content": f"fixture turn {index}"}
+                                               for index, role in enumerate(["user", "assistant"] * 8)]]}
             e.write_json(data / "questions.json", {"fixture": question})
             e.write_json(data / "gold.json", {"fixture": "judge-only gold"})
             e.write_json(data / "manifest.json", {"source_sha256": "data-hash"})
@@ -107,36 +119,110 @@ class EvaluationRunnerTest(unittest.TestCase):
             plugin_dir.mkdir()
             wrapper = Path(td) / "adapter.mjs"
             wrapper.write_text("unused")
-            snapshot = Path(td) / "snapshot.jsonl"
-            snapshot.write_text("snapshot")
             plugin = {"files": {"index.ts": "candidate-hash"}, "resolved_commit": e.ALLOWED_PLUGIN_REFS[0],
                       "archive_sha256": "archive-hash", "closure_sha256": "closure-hash"}
-            snapshot_manifest = {"fingerprint": "snapshot-key", "snapshot_sha256": "snapshot-hash",
-                                 "compaction_seconds": 1.0}
 
             def answer(q, snap, run_dir, arm, pinned, adapter):
                 return {"question_id": q["question_id"], "arm": arm, "outcome": "answered",
-                        "answer": "fixture answer", "tool_calls": [], "timing": {}}
+                        "answer": "fixture\u2028answer\u2029", "tool_calls": [], "timing": {}}
 
-            with patch.object(e, "EVAL_HOME", home), patch.object(e, "pin_plugin", return_value=(plugin_dir, plugin)), \
+            def grade(q, gold, result):
+                return {**result, "judge": {"correct": True}}
+
+            compact_calls = []
+
+            def compact(session, env, cwd):
+                compact_calls.append(session)
+                return {"success": True, "timing": {"processWallMs": 1}}
+
+            with patch.object(e, "EVAL_HOME", home), patch.object(e, "pin_plugin", return_value=(plugin_dir, plugin)) as pin, \
                  patch.object(e, "pin_wrapper", return_value=(wrapper, "wrapper-hash")), \
-                 patch.object(e, "prepare_snapshot", return_value=(snapshot, snapshot_manifest, False)) as prepare, \
+                 patch.object(e, "compact", new=compact), \
                  patch.object(e, "answer", side_effect=answer) as answer_call, \
-                 patch.object(e, "grade", side_effect=lambda q, gold, result: {**result, "judge": {"correct": True}}), \
+                 patch.object(e, "grade", side_effect=grade) as grade_call, \
+                 patch.object(e.b, "API", "https://unit.invalid"), patch.object(e.b, "KEY", "unit-secret"), \
                  patch.object(e.subprocess, "Popen", side_effect=AssertionError("unexpected Pi/model process")), \
                  patch.object(e.b, "chat", side_effect=AssertionError("unexpected judge request")), \
                  patch("builtins.print"):
                 e.run("dev8", "orchestration", e.ALLOWED_PLUGIN_REFS[0], "fixture")
                 self.assertEqual(answer_call.call_count, 3)
-                self.assertEqual(prepare.call_count, 1)
+                self.assertEqual(grade_call.call_count, 3)
+                self.assertEqual(len(compact_calls), 3)
                 e.run("dev8", "orchestration", e.ALLOWED_PLUGIN_REFS[0], "fixture")
                 self.assertEqual(answer_call.call_count, 3)
-                self.assertEqual(prepare.call_count, 1)
-            rows = [json.loads(line) for line in (home / "runs/orchestration/results.jsonl").read_text().splitlines()]
-            self.assertEqual([row["arm"] for row in rows], ["native", "grep", "production"])
-            manifest = json.loads((home / "runs/orchestration/manifest.json").read_text())
-            self.assertEqual(manifest["plugin_commit"], e.ALLOWED_PLUGIN_REFS[0])
-            self.assertEqual(len({row["snapshot"]["sha256"] for row in rows}), 1)
+                self.assertEqual(grade_call.call_count, 3)
+                self.assertEqual(len(compact_calls), 3)
+
+                run_dir = home / "runs/orchestration"
+                ledger = run_dir / "results.jsonl"
+                ledger.unlink()
+                for arm in ("native", "grep", "production"):
+                    arm_dir = run_dir / arm / "fixture"
+                    (arm_dir / "judge.json").unlink()
+                    state = json.loads((arm_dir / "status.json").read_text())
+                    state["state"] = "answer-complete"
+                    e.write_json(arm_dir / "status.json", state)
+                e.run("dev8", "orchestration", e.ALLOWED_PLUGIN_REFS[0], "fixture")
+                self.assertEqual(answer_call.call_count, 3)
+                self.assertEqual(grade_call.call_count, 6)
+                rows = e.jsonl_records(ledger)
+                self.assertEqual([row["arm"] for row in rows], ["native", "grep", "production"])
+                self.assertTrue(all(row["answer"] == "fixture\u2028answer\u2029" for row in rows))
+
+                ledger.unlink()
+                for arm in ("native", "grep", "production"):
+                    arm_dir = run_dir / arm / "fixture"
+                    state = json.loads((arm_dir / "status.json").read_text())
+                    state["state"] = "judge-complete"
+                    e.write_json(arm_dir / "status.json", state)
+                e.run("dev8", "orchestration", e.ALLOWED_PLUGIN_REFS[0], "fixture")
+                self.assertEqual(answer_call.call_count, 3)
+                self.assertEqual(grade_call.call_count, 6)
+                rows = e.jsonl_records(ledger)
+                self.assertTrue(all(row["answer"] == "fixture\u2028answer\u2029" for row in rows))
+                manifest = json.loads((run_dir / "manifest.json").read_text())
+                self.assertEqual(manifest["plugin_commit"], e.ALLOWED_PLUGIN_REFS[0])
+                self.assertEqual(manifest["questions_file_sha256"], e.file_sha(data / "questions.json"))
+                self.assertEqual(manifest["gold_file_sha256"], e.file_sha(data / "gold.json"))
+
+                native = run_dir / "native" / "fixture"
+                native_answer = (native / "answer.json").read_bytes()
+                native_judge = (native / "judge.json").read_bytes()
+                native_state = json.loads((native / "status.json").read_text())
+                ledger.unlink()
+                (native / "answer.json").unlink()
+                (native / "judge.json").unlink()
+                native_state["state"] = "answer-inflight"
+                e.write_json(native / "status.json", native_state)
+                with self.assertRaisesRegex(RuntimeError, "Answer attempt is ambiguous"):
+                    e.run("dev8", "orchestration", e.ALLOWED_PLUGIN_REFS[0], "fixture")
+                self.assertEqual(answer_call.call_count, 3)
+                self.assertEqual(grade_call.call_count, 6)
+
+                (native / "answer.json").write_bytes(native_answer)
+                (native / "judge.json").write_bytes(native_judge)
+                native_state["state"] = "judge-complete"
+                e.write_json(native / "status.json", native_state)
+                grep = run_dir / "grep" / "fixture"
+                (grep / "judge.json").unlink()
+                grep_state = json.loads((grep / "status.json").read_text())
+                grep_state["state"] = "judge-inflight"
+                e.write_json(grep / "status.json", grep_state)
+                with self.assertRaisesRegex(RuntimeError, "Judge attempt is ambiguous"):
+                    e.run("dev8", "orchestration", e.ALLOWED_PLUGIN_REFS[0], "fixture")
+                self.assertEqual(answer_call.call_count, 3)
+                self.assertEqual(grade_call.call_count, 6)
+
+                changed_question = {**question, "question": "changed input"}
+                e.write_json(data / "questions.json", {"fixture": changed_question})
+                e.write_json(data / "gold.json", {"fixture": "changed gold"})
+                pin_count = pin.call_count
+                with self.assertRaisesRegex(RuntimeError, "input files changed"):
+                    e.run("dev8", "orchestration", e.ALLOWED_PLUGIN_REFS[0], "fixture")
+                self.assertEqual(pin.call_count, pin_count)
+                self.assertEqual(answer_call.call_count, 3)
+                self.assertEqual(grade_call.call_count, 6)
+
     def test_sdk_loads_both_immutable_pins_with_isolated_grep_tools(self):
         pins = [e.pin_plugin(ref) for ref in e.ALLOWED_PLUGIN_REFS]
         wrapper_path, wrapper_hash = e.pin_wrapper()

@@ -50,10 +50,18 @@ def write_json(path, value, private=True):
     path = pathlib.Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
-    temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
-    if private:
-        temporary.chmod(0o600)
+    with temporary.open("w", encoding="utf-8") as output:
+        output.write(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
+        if private:
+            os.fchmod(output.fileno(), 0o600)
+        output.flush()
+        os.fsync(output.fileno())
     os.replace(temporary, path)
+    directory_fd = os.open(path.parent, os.O_RDONLY)
+    try:
+        os.fsync(directory_fd)
+    finally:
+        os.close(directory_fd)
 
 
 def valid_manifest(path, fingerprint):
@@ -69,6 +77,27 @@ def file_sha(path):
         while chunk := source.read(1024 * 1024):
             digest.update(chunk)
     return digest.hexdigest()
+
+def read_json_hashed(path):
+    payload = pathlib.Path(path).read_bytes()
+    return json.loads(payload), hashlib.sha256(payload).hexdigest()
+
+
+def jsonl_records(path):
+    if not pathlib.Path(path).exists():
+        return []
+    return [json.loads(line) for line in b.jsonl_lines(path)]
+
+
+def append_jsonl(path, value):
+    with pathlib.Path(path).open("a", encoding="utf-8") as output:
+        output.write(json.dumps(value, ensure_ascii=False) + "\n")
+        output.flush()
+        os.fsync(output.fileno())
+
+
+def object_sha(value):
+    return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
 
 
 LOCAL_IMPORT = re.compile(r"(?:from\s+|import\s*)['\"](\.{1,2}/[^'\"]+)['\"]")
@@ -327,10 +356,17 @@ def fingerprint(q, q_digest):
     helper_names = ("parse_date", "iso", "build_session", "chunk_cuts", "append_entries", "jsonl_lines")
     helper_code = "\n".join(inspect.getsource(getattr(b, name)) for name in helper_names)
     code["bench_compression_helpers"] = hashlib.sha256(helper_code.encode()).hexdigest()
-    code["compression_driver"] = hashlib.sha256(inspect.getsource(compact).encode()).hexdigest()
+    orchestration_code = COMPRESSION_ORCHESTRATION_SOURCE
+    code["compression_orchestration"] = hashlib.sha256(orchestration_code.encode()).hexdigest()
+    code["compression_source_selector"] = hashlib.sha256(inspect.getsource(compression_orchestration_source).encode()).hexdigest()
+    code["package_lock_sha256"] = file_sha(ROOT / "package-lock.json")
     sdk = json.loads((ROOT / "node_modules/@earendil-works/pi-coding-agent/package.json").read_text())["version"]
-    config = {"provider": "clp", "model": MODEL, "effort": EFFORT, "system": SYSTEM,
-              "segments": SEGMENTS, "compactions": 3, "question_sha256": q_digest, "sdk": sdk, "code": code}
+    config = {"provider": "clp", "provider_api": "openai-responses",
+              "endpoint_sha256": hashlib.sha256(b.API.encode()).hexdigest(),
+              "model": MODEL, "effort": EFFORT, "system": SYSTEM, "pi_flags": PI_FLAGS,
+              "segments": SEGMENTS, "compactions": SEGMENTS - 1, "context_window": 372000,
+              "max_tokens": 128000, "preflight_reserve": 5000, "preflight_ceiling": 340000,
+              "question_sha256": q_digest, "sdk": sdk, "code": code}
     return hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest(), config
 
 
@@ -438,7 +474,7 @@ def compact(session, env, cwd):
                        "processWallMs": (time.monotonic() - start) * 1000}}
 
 
-def prepare_snapshot(q, q_digest, snapshot_root, cwd):
+def prepare_snapshot(q, q_digest, snapshot_root, cwd, require_cached=False):
     snap_key, inputs = fingerprint(q, q_digest)
     folder = snapshot_root / snap_key
     session, build = folder / f"{q['question_id']}.jsonl", folder / "build.jsonl"
@@ -447,6 +483,9 @@ def prepare_snapshot(q, q_digest, snapshot_root, cwd):
         cached = json.loads(manifest.read_text())
         if cached.get("snapshot_sha256") == file_sha(session) and not cached.get("failed"):
             return session, cached, True
+
+    if require_cached:
+        raise RuntimeError("Saved answer/judge state has no validated snapshot cache; refusing recompression")
 
     folder.mkdir(parents=True, exist_ok=True, mode=0o700)
     source = folder / "source.tmp.jsonl"
@@ -510,6 +549,13 @@ def prepare_snapshot(q, q_digest, snapshot_root, cwd):
     write_json(manifest, snapshot_manifest)
     return session, snapshot_manifest, False
 
+def compression_orchestration_source():
+    names = ("write_json", "write_session", "preflight", "agent_env", "rpc_line", "compact", "prepare_snapshot")
+    return "\n".join(inspect.getsource(globals()[name]) for name in names)
+
+
+COMPRESSION_ORCHESTRATION_SOURCE = compression_orchestration_source()
+
 
 def answer_outcome(outcome, text, terminal=None):
     if terminal == "error" or outcome not in ("completed", "offline-ready"):
@@ -561,7 +607,6 @@ def answer(q, snapshot, run_dir, arm, plugin_dir, wrapper_path):
         result = {"question_id": q["question_id"], "arm": arm, "outcome": "model-error", "answer": "",
                   "tool_calls": [], "timing": {}, "answerWallMs": (time.monotonic() - start) * 1000,
                   "tokens": None, "modelCalls": None, "rc": -1, "error": safe_error(f"{type(exc).__name__}: {exc}")}
-    write_json(result_dir / "result.json", result)
     return result
 
 
@@ -593,70 +638,194 @@ def grade(q, gold, result):
 
 def run(set_name, run_name, plugin_ref, only=None):
     data_dir = EVAL_HOME / "data" / set_name
-    questions = json.loads((data_dir / "questions.json").read_text())
-    gold = json.loads((data_dir / "gold.json").read_text())
-    selection = json.loads((data_dir / "manifest.json").read_text())
+    questions, questions_sha = read_json_hashed(data_dir / "questions.json")
+    gold, gold_sha = read_json_hashed(data_dir / "gold.json")
+    selection, selection_sha = read_json_hashed(data_dir / "manifest.json")
     if only:
         questions = {qid: q for qid, q in questions.items() if qid == only}
     if not questions:
         raise ValueError(f"No question selected for {set_name}: {only}")
     run_dir = EVAL_HOME / "runs" / run_name
+    manifest_path = run_dir / "manifest.json"
+    if run_dir.exists():
+        if not manifest_path.exists():
+            raise RuntimeError(f"Existing run has no manifest; refusing resume: {run_dir}")
+        prior = json.loads(manifest_path.read_text())
+        expected_inputs = {"questions_file_sha256": questions_sha, "gold_file_sha256": gold_sha,
+                           "selection_manifest_sha256": selection_sha}
+        if any(prior.get(key) != value for key, value in expected_inputs.items()):
+            raise RuntimeError(f"Existing run input files changed; refusing resume: {run_dir}")
+        if prior.get("plugin_ref") != plugin_ref:
+            raise RuntimeError(f"Existing run uses a different plugin ref; refusing resume: {run_dir}")
+
     plugin_dir, plugin_manifest = pin_plugin(plugin_ref)
     wrapper_path, wrapper_hash = pin_wrapper()
     snapshot_root = EVAL_HOME / "snapshots"
     snapshot_root.mkdir(parents=True, exist_ok=True); snapshot_root.chmod(0o700)
-    candidate_files = plugin_manifest["files"]
-    run_manifest = {"run": run_name, "set": set_name, "questions": list(questions), "data_sha256": selection["source_sha256"],
-                    "provider": "clp", "answer_model": MODEL, "answer_effort": EFFORT, "judge_model": b.JUDGE_MODEL,
-                    "judge_effort": b.JUDGE_EFFORT,
+    run_manifest = {"run": run_name, "set": set_name, "questions": list(questions),
+                    "data_sha256": selection["source_sha256"], "questions_file_sha256": questions_sha,
+                    "gold_file_sha256": gold_sha, "provider": "clp", "answer_model": MODEL,
+                    "answer_effort": EFFORT, "judge_model": b.JUDGE_MODEL, "judge_effort": b.JUDGE_EFFORT,
                     "sdk": json.loads((ROOT / "node_modules/@earendil-works/pi-coding-agent/package.json").read_text())["version"],
                     "arms": ["native", "grep", "production"], "segments": SEGMENTS, "compactions": SEGMENTS - 1,
-                    "system_prompt": SYSTEM, "selection_manifest_sha256": file_sha(data_dir / "manifest.json"),
+                    "system_prompt": SYSTEM, "selection_manifest_sha256": selection_sha,
                     "plugin_ref": plugin_ref, "plugin_commit": plugin_manifest["resolved_commit"],
                     "plugin_archive_sha256": plugin_manifest["archive_sha256"],
                     "plugin_closure_sha256": plugin_manifest["closure_sha256"], "plugin_path": str(plugin_dir),
-                    "candidate_sha256": candidate_files, "eval_wrapper_sha256": wrapper_hash,
+                    "candidate_sha256": plugin_manifest["files"], "eval_wrapper_sha256": wrapper_hash,
                     "eval_wrapper_path": str(wrapper_path), "runner_sha256": file_sha(__file__)}
-    run_manifest["fingerprint"] = hashlib.sha256(json.dumps(run_manifest, sort_keys=True).encode()).hexdigest()
-    manifest_path = run_dir / "manifest.json"
+    run_manifest["fingerprint"] = object_sha(run_manifest)
     if run_dir.exists():
-        if not manifest_path.exists() or json.loads(manifest_path.read_text()) != run_manifest:
+        if json.loads(manifest_path.read_text()) != run_manifest:
             raise RuntimeError(f"Existing run does not match this manifest: {run_dir}")
     else:
         run_dir.mkdir(parents=True); run_dir.chmod(0o700)
         write_json(manifest_path, run_manifest)
+    run_fingerprint = run_manifest["fingerprint"]
     work_cwd = run_dir / "cwd"; work_cwd.mkdir(mode=0o700, exist_ok=True)
     results_path = run_dir / "results.jsonl"
+    ledger, failed_questions = {}, set()
+    for row in jsonl_records(results_path):
+        if row.get("run_fingerprint") != run_fingerprint:
+            raise RuntimeError("Results ledger contains a row from another run fingerprint")
+        qid, arm = row.get("question_id"), row.get("arm")
+        if row.get("outcome") == "compression-error":
+            if qid in failed_questions:
+                raise RuntimeError(f"Duplicate compression failure row for {qid}")
+            failed_questions.add(qid)
+        else:
+            if arm not in run_manifest["arms"] or (qid, arm) in ledger:
+                raise RuntimeError(f"Unexpected or duplicate results row for {qid}/{arm}")
+            ledger[(qid, arm)] = row
+
+    def validate_identity(record, identity, label):
+        if any(record.get(key) != value for key, value in identity.items()):
+            raise RuntimeError(f"Saved {label} identity mismatch for {identity['question_id']}/{identity['arm']}")
+
+    def load_arm_records(arm_dir, identity):
+        state_path, answer_path, judge_path = (arm_dir / "status.json", arm_dir / "answer.json", arm_dir / "judge.json")
+        present = any(path.exists() for path in (state_path, answer_path, judge_path))
+        if present and not state_path.exists():
+            raise RuntimeError(f"Saved arm output has no state record: {arm_dir}")
+        state = json.loads(state_path.read_text()) if state_path.exists() else None
+        answer_record = json.loads(answer_path.read_text()) if answer_path.exists() else None
+        judge_record = json.loads(judge_path.read_text()) if judge_path.exists() else None
+        for record, label in ((state, "state"), (answer_record, "answer"), (judge_record, "judge")):
+            if record is not None:
+                validate_identity(record, identity, label)
+        return state, answer_record, judge_record
+
+    def verify_result_snapshot(result, identity, label):
+        snapshot = result.get("snapshot", {})
+        if (result.get("run_fingerprint") != identity["run_fingerprint"] or
+                snapshot.get("fingerprint") != identity["snapshot_fingerprint"] or
+                snapshot.get("sha256") != identity["snapshot_sha256"]):
+            raise RuntimeError(f"Saved {label} content identity mismatch for {identity['question_id']}/{identity['arm']}")
+
     for qid, q in questions.items():
-        done = set()
-        failed = False
-        if results_path.exists():
-            for line in results_path.read_text().splitlines():
-                row = json.loads(line)
-                if row.get("question_id") == qid:
-                    done.add(row.get("arm"))
-                    failed |= row.get("outcome") == "compression-error"
-        if failed or {"native", "grep", "production"}.issubset(done):
+        if qid in failed_questions:
             continue
-        qdigest = hashlib.sha256(json.dumps(q, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
+        qdigest = object_sha(q)
+        expected_snapshot_key, _ = fingerprint(q, qdigest)
+        arm_dirs = {arm: run_dir / arm / qid for arm in run_manifest["arms"]}
+        existing_rows = {arm: ledger.get((qid, arm)) for arm in run_manifest["arms"]}
+        if all(existing_rows.values()):
+            for arm, row in existing_rows.items():
+                identity = {"run_fingerprint": run_fingerprint, "question_id": qid, "arm": arm,
+                            "snapshot_fingerprint": expected_snapshot_key,
+                            "snapshot_sha256": row.get("snapshot", {}).get("sha256")}
+                state, answer_record, judge_record = load_arm_records(arm_dirs[arm], identity)
+                if state is None or state.get("state") != "judge-complete" or answer_record is None or judge_record is None:
+                    raise RuntimeError(f"Completed ledger row lacks durable arm records for {qid}/{arm}")
+                verify_result_snapshot(answer_record["result"], identity, "answer")
+                if judge_record.get("answer_sha256") != object_sha(answer_record["result"]):
+                    raise RuntimeError(f"Saved judge output does not match its answer for {qid}/{arm}")
+                if judge_record.get("result") != row:
+                    raise RuntimeError(f"Completed ledger row differs from saved judge result for {qid}/{arm}")
+                verify_result_snapshot(row, identity, "ledger")
+            continue
+
+        has_saved_state = (any(any((arm_dir / name).exists() for name in ("status.json", "answer.json", "judge.json"))
+                               for arm_dir in arm_dirs.values()) or any(existing_rows.values()))
         try:
-            snapshot, snapshot_manifest, reused = prepare_snapshot(q, qdigest, snapshot_root, work_cwd)
+            snapshot, snapshot_manifest, reused = prepare_snapshot(
+                q, qdigest, snapshot_root, work_cwd, require_cached=has_saved_state)
         except Exception as exc:
-            failure = {"question_id": qid, "outcome": "compression-error", "error": safe_error(f"{type(exc).__name__}: {exc}")}
-            with results_path.open("a") as stream:
-                stream.write(json.dumps(failure, ensure_ascii=False) + "\n"); stream.flush()
+            if has_saved_state:
+                raise
+            failure = {"question_id": qid, "outcome": "compression-error", "run_fingerprint": run_fingerprint,
+                       "error": safe_error(f"{type(exc).__name__}: {exc}")}
+            append_jsonl(results_path, failure)
+            failed_questions.add(qid)
             continue
-        for arm in ("native", "grep", "production"):
-            if arm in done:
+        snapshot_info = {"fingerprint": expected_snapshot_key, "sha256": snapshot_manifest["snapshot_sha256"],
+                         "reused": reused, "compressionSeconds": snapshot_manifest["compaction_seconds"]}
+
+        for arm in run_manifest["arms"]:
+            identity = {"run_fingerprint": run_fingerprint, "question_id": qid, "arm": arm,
+                        "snapshot_fingerprint": expected_snapshot_key, "snapshot_sha256": snapshot_info["sha256"]}
+            arm_dir = arm_dirs[arm]
+            state, answer_record, judge_record = load_arm_records(arm_dir, identity)
+            row = existing_rows[arm]
+            if row is not None:
+                if state is None or state.get("state") != "judge-complete" or answer_record is None or judge_record is None:
+                    raise RuntimeError(f"Ledger row lacks durable arm records for {qid}/{arm}")
+                verify_result_snapshot(answer_record["result"], identity, "answer")
+                if judge_record.get("answer_sha256") != object_sha(answer_record["result"]) or judge_record.get("result") != row:
+                    raise RuntimeError(f"Ledger row differs from saved judge result for {qid}/{arm}")
+                verify_result_snapshot(row, identity, "ledger")
                 continue
-            result = answer(q, snapshot, run_dir, arm, plugin_dir, wrapper_path)
-            result["snapshot"] = {"fingerprint": snapshot_manifest["fingerprint"], "sha256": snapshot_manifest["snapshot_sha256"],
-                                  "reused": reused, "compressionSeconds": snapshot_manifest["compaction_seconds"]}
+
+            state_name = state.get("state") if state else None
+            if judge_record is not None:
+                if answer_record is None or state_name not in ("judge-inflight", "judge-complete"):
+                    raise RuntimeError(f"Saved judge output has inconsistent state for {qid}/{arm}")
+                verify_result_snapshot(answer_record["result"], identity, "answer")
+                if judge_record.get("answer_sha256") != object_sha(answer_record["result"]):
+                    raise RuntimeError(f"Saved judge output does not match its answer for {qid}/{arm}")
+                result = judge_record["result"]
+                verify_result_snapshot(result, identity, "judge")
+                write_json(arm_dir / "status.json", {**identity, "state": "judge-complete"})
+                append_jsonl(results_path, result)
+                ledger[(qid, arm)] = result
+                continue
+
+            if state_name == "judge-inflight":
+                raise RuntimeError(f"Judge attempt is ambiguous for {qid}/{arm}; refusing replay")
+            if state_name == "judge-complete":
+                raise RuntimeError(f"Judge state has no saved output for {qid}/{arm}")
+            if answer_record is not None:
+                if state_name not in ("answer-inflight", "answer-complete"):
+                    raise RuntimeError(f"Saved answer has inconsistent state for {qid}/{arm}")
+                result = answer_record["result"]
+                verify_result_snapshot(result, identity, "answer")
+                if state_name == "answer-inflight":
+                    write_json(arm_dir / "status.json", {**identity, "state": "answer-complete"})
+            else:
+                if state_name == "answer-inflight":
+                    raise RuntimeError(f"Answer attempt is ambiguous for {qid}/{arm}; refusing replay")
+                if state_name == "answer-complete":
+                    raise RuntimeError(f"Answer state has no saved output for {qid}/{arm}")
+                if state_name is not None:
+                    raise RuntimeError(f"Unknown arm state {state_name!r} for {qid}/{arm}")
+                write_json(arm_dir / "status.json", {**identity, "state": "answer-inflight"})
+                result = answer(q, snapshot, run_dir, arm, plugin_dir, wrapper_path)
+                result.update({"run_fingerprint": run_fingerprint, "snapshot": snapshot_info})
+                answer_record = {**identity, "result": result}
+                write_json(arm_dir / "answer.json", answer_record)
+                write_json(arm_dir / "status.json", {**identity, "state": "answer-complete"})
+
+            write_json(arm_dir / "status.json", {**identity, "state": "judge-inflight"})
             result = grade(q, gold[qid], result)
-            with results_path.open("a") as stream:
-                stream.write(json.dumps(result, ensure_ascii=False) + "\n"); stream.flush()
+            result["run_fingerprint"] = run_fingerprint
+            judge_record = {**identity, "answer_sha256": object_sha(answer_record["result"]), "result": result}
+            write_json(arm_dir / "judge.json", judge_record)
+            write_json(arm_dir / "status.json", {**identity, "state": "judge-complete"})
+            append_jsonl(results_path, result)
+            ledger[(qid, arm)] = result
             print(json.dumps({"question_id": qid, "arm": arm, "outcome": result["outcome"],
-                              "correct": result.get("judge", {}).get("correct"), "tool_calls": len(result["tool_calls"])}), flush=True)
+                              "correct": result.get("judge", {}).get("correct"),
+                              "tool_calls": len(result.get("tool_calls", []))}), flush=True)
 
 
 def main():
