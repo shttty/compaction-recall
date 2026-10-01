@@ -11,10 +11,14 @@ import { buildLocator, RECALL_PAGE_CHARS } from '../locator.ts';
 import { discoverAndLoadExtensions } from '@earendil-works/pi-coding-agent';
 
 const stamp = '2026-09-30T00:00:00.000Z';
-const msg = (id, text, role = 'user') => ({ type: 'message', id, timestamp: stamp,
-  parentId: null, message: { role, content: [{ type: 'text', text }], timestamp: 0 } });
-const compact = (id, firstKeptEntryId) => ({ type: 'compaction', id, timestamp: stamp,
-  parentId: null, firstKeptEntryId, summary: 'not searchable summary', tokensBefore: 100 });
+const msg = (id, text, role = 'user') => ({
+  type: 'message', id, timestamp: stamp,
+  parentId: null, message: { role, content: [{ type: 'text', text }], timestamp: 0 }
+});
+const compact = (id, firstKeptEntryId) => ({
+  type: 'compaction', id, timestamp: stamp,
+  parentId: null, firstKeptEntryId, summary: 'not searchable summary', tokensBefore: 100
+});
 const text = (result) => result.content[0].text;
 function harness(initial) {
   let branch = initial;
@@ -22,9 +26,11 @@ function harness(initial) {
   // Context transform is the only hook; three recall tools share the same current-branch scope.
   register({ registerTool: (tool) => tools.set(tool.name, tool), on: (event) => assert.equal(event, "context") });
   assert.deepEqual([...tools.keys()], ['history_recall', 'history_grep', 'history_expand']);
-  return { tools, setBranch: (value) => { branch = value; },
+  return {
+    tools, setBranch: (value) => { branch = value; },
     run: (name, params) => tools.get(name).execute('test', params, undefined, undefined,
-      { sessionManager: { getBranch: () => branch } }) };
+      { sessionManager: { getBranch: () => branch } })
+  };
 }
 
 test('package and historical entry share one factory', () => {
@@ -86,23 +92,73 @@ test('calls use the current branch each time, excluding alternate and live entri
 
 test('expand honors neighbors, zero bounds and raw tool text', async () => {
   const h = harness([msg('a', 'before'), msg('b', 'stdout', 'toolResult'), msg('d', 'after'),
-    msg('live', 'tail'), compact('c', 'live')]);
+  msg('live', 'tail'), compact('c', 'live')]);
   const result = await h.run('history_expand', { id: 'b' });
-  assert.deepEqual(result.details, { from: 'a', to: 'd' });
+  assert.deepEqual([result.details.from, result.details.to], ['a', 'd']);
   assert.match(text(result), /toolResult \(requested\)\nstdout/);
   const alone = await h.run('history_expand', { id: 'b', before: 0, after: 0 });
-  assert.deepEqual(alone.details, { from: 'b', to: 'b' });
+  assert.deepEqual([alone.details.from, alone.details.to], ['b', 'b']);
   assert.doesNotMatch(text(alone), /before|after|tail/);
 });
 
-test('legacy expansion cap is explicit and applies to formatted neighbor output', async () => {
-  const h = harness([msg('a', 'x'.repeat(MAX_EXPAND_CHARS * 2)), msg('b', 'requested body'),
-    msg('live', 'tail'), compact('c', 'live')]);
-  const result = await h.run('history_expand', { id: 'b' });
-  assert.ok(text(result).endsWith('\n[truncated]'));
-  assert.ok(text(result).length <= MAX_EXPAND_CHARS + '\n[truncated]'.length);
-  assert.doesNotMatch(text(result), /requested body/);
-  assert.match(text(await h.run('history_expand', { id: 'b', before: 0, after: 0 })), /requested body/);
+test('expand keeps the target visible and pages long Unicode text without gaps', async () => {
+  const target = `start${'😀x'.repeat(9000)}end`;
+  const input = [msg('huge-before', 'z'.repeat(MAX_EXPAND_CHARS * 2)), msg('target', target),
+  msg('live', 'tail'), compact('c', 'live')];
+  const snapshot = structuredClone(input);
+  const h = harness(input);
+  const first = await h.run('history_expand', { id: 'target', before: 1, after: 0 });
+  assert.match(text(first), /\[target\].*\(requested\)/);
+  assert.match(text(first), /start/);
+  assert.equal(first.details.offset, 0);
+  assert.equal(first.details.hasMore, true);
+  assert.equal(first.details.nextOffset, first.details.returned);
+  assert.equal(first.details.total, [...target].length);
+  assert.ok(Array.from(text(first)).length <= MAX_EXPAND_CHARS);
+  assert.deepEqual([first.details.from, first.details.to], ['target', 'target']);
+  assert.match(text(first), /\[page offset=0 returned=\d+ total=\d+ nextOffset=\d+ hasMore=true\]$/);
+  assert.deepEqual(input, snapshot);
+
+  const pages = [first];
+  while (pages.at(-1).details.hasMore) {
+    const previous = pages.at(-1).details;
+    pages.push(await h.run('history_expand', { id: 'target', before: 1, after: 0, offset: previous.nextOffset }));
+  }
+  assert.ok(pages.every((page) => {
+    const output = text(page);
+    const body = output.replace(/\n\[page offset=.*\]$/, '').slice(output.indexOf('\n') + 1);
+    const { offset, returned, total, nextOffset, hasMore } = page.details;
+    assert.match(output, new RegExp(`\\[page offset=${offset} returned=${returned} total=${total} nextOffset=${nextOffset} hasMore=${hasMore}\\]$`));
+    assert.doesNotMatch(body, /^[\uDC00-\uDFFF]|[\uD800-\uDBFF]$/);
+    return offset + returned === nextOffset;
+  }));
+  assert.equal(pages.at(-1).details.hasMore, false);
+  assert.equal(pages.at(-1).details.nextOffset, [...target].length);
+  const joined = pages.map((page) => text(page).replace(/\n\[page offset=.*\]$/, '').slice(text(page).indexOf('\n') + 1)).join('');
+  assert.equal(joined, target);
+  assert.match(text(pages.at(-1)), /end/);
+  assert.doesNotMatch(text(first), /huge-before/);
+  assert.deepEqual(input, snapshot);
+});
+
+test('expand reports only complete neighbors and handles empty/out-of-range pages', async () => {
+  const h = harness([msg('before', 'context before'), msg('target', 'short'), msg('after', 'context after'),
+  msg('live', 'tail'), compact('c', 'live')]);
+  const result = await h.run('history_expand', { id: 'target' });
+  assert.match(text(result), /context before/);
+  assert.match(text(result), /context after/);
+  assert.deepEqual([result.details.from, result.details.to], ['before', 'after']);
+  assert.equal(result.details.total, 5);
+  assert.equal(result.details.returned, 5);
+  assert.equal(result.details.hasMore, false);
+  const empty = await h.run('history_expand', { id: 'target', offset: 0, before: 0, after: 0 });
+  assert.equal(empty.details.nextOffset, 5);
+  const beyond = await h.run('history_expand', { id: 'target', offset: 99, before: 0, after: 0 });
+  assert.equal(beyond.details.offset, 5);
+  assert.equal(beyond.details.returned, 0);
+  assert.equal(beyond.details.hasMore, false);
+  assert.equal(beyond.details.nextOffset, 5);
+  assert.match(text(await h.run('history_expand', { id: 'missing' })), /No compacted entry/);
 });
 
 test('SDK loads standalone package and legacy entry from isolated runtime-only copy', async () => {
@@ -128,7 +184,7 @@ test('SDK loads standalone package and legacy entry from isolated runtime-only c
 
 test('manual recall shares automatic ranking and candidates with independent pagination', async () => {
   const entries = [msg('old', 'quasar old'), msg('best', 'quasar nebula'), msg('recent', 'quasar recent'),
-    msg('tool', 'quasar nebula', 'toolResult'), msg('live', 'quasar nebula live'), compact('c', 'live')];
+  msg('tool', 'quasar nebula', 'toolResult'), msg('live', 'quasar nebula live'), compact('c', 'live')];
   const h = harness(entries);
   const result = text(await h.run('history_recall', { query: 'quasar nebula' }));
   const resultRows = result.trim().split('\n').filter(line => line.startsWith('{')).map(JSON.parse);

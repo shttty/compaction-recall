@@ -1,9 +1,35 @@
 // pi-recall tool registration; retained as the historical lme-bench entry point.
 import { Type } from "typebox";
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import type { ExtensionAPI, SessionEntry } from "@earendil-works/pi-coding-agent";
 import { MAX_HITS, SNIPPET, MAX_EXPAND_CHARS, entryText, searchableEntryText, compactedEntries, toRegExp } from "./history.ts";
 
 import { buildRecallPage, withLocators } from "./locator.ts";
+
+function codePointLength(text: string): number {
+  let length = 0;
+  for (const _point of text) length++;
+  return length;
+}
+
+function codePointSlice(text: string, offset: number, limit: number): string {
+  if (limit <= 0) return "";
+  let start = 0;
+  let end = 0;
+  let index = 0;
+  for (const point of text) {
+    if (index === offset) start = end;
+    end += point.length;
+    index++;
+    if (index === offset + limit) break;
+  }
+  if (offset >= index) start = end;
+  return text.slice(start, end);
+}
+
+function expandHeader(e: SessionEntry, requested: boolean): string {
+  const role = e.type === "message" ? e.message.role : e.type;
+  return `--- [${e.id}] ${e.timestamp} ${role}${requested ? " (requested)" : ""}\n`;
+}
 
 export default function(pi: ExtensionAPI) {
   pi.on("context", (event, ctx) => ({
@@ -72,26 +98,55 @@ export default function(pi: ExtensionAPI) {
     name: "history_expand",
     label: "History expand",
     description:
-      "Read branch-effective text (honoring context edits) of a compacted history entry by id (from automatic locators, history_recall or history_grep), plus neighbouring " +
-      "entries for context, including tool-call names/arguments and readable toolResult text (output capped at 16000 UTF-16 code units; use before=0 and after=0 to focus on the entry). Neighbouring entries of the same conversation carry the session date in its first user message.",
+      "Read branch-effective text (honoring context edits) of a compacted history entry by id (from automatic locators, history_recall or history_grep). The requested entry is shown first; output is bounded to 16000 Unicode codepoints. " +
+      "Use offset (default 0), in Unicode codepoints of the requested entry, to continue a long entry; when hasMore is true, pass nextOffset with the same id and before/after values. Neighbor entries (before/after default 2, maximum 20) are included only when the full target is shown and each full neighbor fits. " +
+      "Includes tool-call names/arguments and readable toolResult text; excludes thinking and images. Only the current compacted branch is readable.",
     parameters: Type.Object({
       id: Type.String({ description: "Entry id from automatic locators, history_recall or history_grep" }),
       before: Type.Optional(Type.Integer({ minimum: 0, maximum: 20, description: "Entries before (default 2)" })),
       after: Type.Optional(Type.Integer({ minimum: 0, maximum: 20, description: "Entries after (default 2)" })),
+      offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Unicode codepoint offset within the requested entry (default 0); use nextOffset to continue" })),
     }),
     async execute(_id, params, _signal, _onUpdate, ctx) {
       const entries = compactedEntries(ctx.sessionManager.getBranch());
       const at = entries.findIndex((e) => e.id === params.id);
       if (at < 0) return { content: [{ type: "text", text: `No compacted entry with id ${params.id}.` }], details: {} };
-      const from = Math.max(0, at - (params.before ?? 2));
-      const to = Math.min(entries.length, at + (params.after ?? 2) + 1);
-      let out = "";
-      for (const e of entries.slice(from, to)) {
-        const role = e.type === "message" ? e.message.role : e.type;
-        out += `\n--- [${e.id}] ${e.timestamp} ${role}${e.id === params.id ? " (requested)" : ""}\n${entryText(e)}\n`;
+
+      const target = entries[at];
+      const targetText = entryText(target);
+      const total = codePointLength(targetText);
+      const offset = Math.min(params.offset ?? 0, total);
+      const header = expandHeader(target, true);
+      const statusReserve = codePointLength(`\n[page offset=${Number.MAX_SAFE_INTEGER} returned=${Number.MAX_SAFE_INTEGER} total=${Number.MAX_SAFE_INTEGER} nextOffset=${Number.MAX_SAFE_INTEGER} hasMore=true]`);
+      const available = Math.max(0, MAX_EXPAND_CHARS - codePointLength(header) - statusReserve);
+      const pageText = codePointSlice(targetText, offset, available);
+      const returned = codePointLength(pageText);
+      const nextOffset = offset + returned;
+      const hasMore = nextOffset < total;
+      let out = header + pageText;
+      let from = at;
+      let to = at;
+
+      if (!hasMore && offset === 0) {
+        const neighbors = [
+          ...entries.slice(Math.max(0, at - (params.before ?? 2)), at).reverse(),
+          ...entries.slice(at + 1, Math.min(entries.length, at + (params.after ?? 2) + 1)),
+        ];
+        for (const neighbor of neighbors) {
+          const section = `\n${expandHeader(neighbor, false)}${entryText(neighbor)}`;
+          if (codePointLength(out) + codePointLength(section) + statusReserve > MAX_EXPAND_CHARS) break;
+          out += section;
+          from = Math.min(from, entries.indexOf(neighbor));
+          to = Math.max(to, entries.indexOf(neighbor));
+        }
       }
-      if (out.length > MAX_EXPAND_CHARS) out = out.slice(0, MAX_EXPAND_CHARS) + "\n[truncated]";
-      return { content: [{ type: "text", text: out.trim() }], details: { from: entries[from].id, to: entries[to - 1].id } };
+      const pageInfo = `\n[page offset=${offset} returned=${returned} total=${total} nextOffset=${nextOffset} hasMore=${hasMore}]`;
+      out += pageInfo;
+
+      return {
+        content: [{ type: "text", text: out }],
+        details: { from: entries[from].id, to: entries[to].id, offset, total, returned, nextOffset, hasMore },
+      };
     },
   });
 }
