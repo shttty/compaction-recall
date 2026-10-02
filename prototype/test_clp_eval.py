@@ -92,15 +92,40 @@ class EvaluationRunnerTest(unittest.TestCase):
         self.assertIsNotNone(result["timing"]["startupToRpcReadyMs"])
 
 
-    def test_snapshot_fingerprint_tracks_preparation_code(self):
+    def test_compression_helper_source_mutations_change_snapshot_fingerprint(self):
         question = {"question_id": "fixture", "history": "same"}
         digest = e.object_sha(question)
         baseline, _ = e.fingerprint(question, digest)
-        changed_source = e.COMPRESSION_ORCHESTRATION_SOURCE + "\n# altered orchestration"
-        with patch.object(e, "COMPRESSION_ORCHESTRATION_SOURCE", changed_source):
-            changed, config = e.fingerprint(question, digest)
-        self.assertNotEqual(baseline, changed)
-        self.assertIn("compression_orchestration", config["code"])
+        original_getsource = e.inspect.getsource
+        for name in ("child_env", "valid_manifest", "file_sha", "safe_error"):
+            target = getattr(e, name)
+
+            def changed_source(function, target=target):
+                source = original_getsource(function)
+                return source + "\n# offline source-only mutation" if function is target else source
+
+            with patch.object(e.inspect, "getsource", side_effect=changed_source):
+                with patch.object(e, "COMPRESSION_ORCHESTRATION_SOURCE", e.compression_orchestration_source()):
+                    changed, config = e.fingerprint(question, digest)
+            self.assertNotEqual(baseline, changed, name)
+            self.assertIn("compression_orchestration", config["code"])
+
+    def test_answer_only_source_mutations_do_not_change_snapshot_fingerprint(self):
+        question = {"question_id": "fixture", "history": "same"}
+        digest = e.object_sha(question)
+        baseline, _ = e.fingerprint(question, digest)
+        original_getsource = e.inspect.getsource
+        for name in ("answer", "answer_outcome", "grade"):
+            target = getattr(e, name)
+
+            def changed_source(function, target=target):
+                source = original_getsource(function)
+                return source + "\n# offline answer-only mutation" if function is target else source
+
+            with patch.object(e.inspect, "getsource", side_effect=changed_source):
+                with patch.object(e, "COMPRESSION_ORCHESTRATION_SOURCE", e.compression_orchestration_source()):
+                    unchanged, _ = e.fingerprint(question, digest)
+            self.assertEqual(baseline, unchanged, name)
 
     def test_run_recovers_durable_outputs_and_rejects_changed_inputs(self):
         with tempfile.TemporaryDirectory() as td:

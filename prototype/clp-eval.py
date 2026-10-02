@@ -550,7 +550,8 @@ def prepare_snapshot(q, q_digest, snapshot_root, cwd, require_cached=False):
     return session, snapshot_manifest, False
 
 def compression_orchestration_source():
-    names = ("write_json", "write_session", "preflight", "agent_env", "rpc_line", "compact", "prepare_snapshot")
+    names = ("write_json", "write_session", "preflight", "agent_env", "child_env", "rpc_line", "compact",
+             "prepare_snapshot", "valid_manifest", "file_sha", "safe_error")
     return "\n".join(inspect.getsource(globals()[name]) for name in names)
 
 
