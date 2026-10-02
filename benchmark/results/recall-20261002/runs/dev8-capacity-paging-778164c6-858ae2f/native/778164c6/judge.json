@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "1c6c7bdd10c477270e2ea9f325760b760146e8e04202ee3a6fc5b4539b8d8542",
+  "question_id": "778164c6",
+  "arm": "native",
+  "snapshot_fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+  "snapshot_sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+  "answer_sha256": "e8cccf5615432355be0c92f28443d7d957dac7606b09c421ca964a6b4bed911e",
+  "result": {
+    "question_id": "778164c6",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "I can’t find that earlier recommendation in the conversation history available to me, so I don’t know which dish I named.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 691.5166599210352,
+      "firstVisibleTextFromSpawnMs": 14172.737083863467,
+      "firstThinkingFromSpawnMs": 12891.92690094933,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 14910.150283016264,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 15617.231740849093
+    },
+    "answerWallMs": 15704.925758996978,
+    "tokens": {
+      "input": 1137,
+      "output": 209,
+      "cacheRead": 271104,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "1c6c7bdd10c477270e2ea9f325760b760146e8e04202ee3a6fc5b4539b8d8542",
+    "snapshot": {
+      "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+      "sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+      "reused": true,
+      "compressionSeconds": 117.88170368992724
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 3.414129478856921,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

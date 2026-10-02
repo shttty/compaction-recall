@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "73423bcfcb0000723630917001135f073f821b395db7c1692bc1895fe4d17097",
+  "question_id": "3d86fd0a",
+  "arm": "native",
+  "snapshot_fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+  "snapshot_sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+  "answer_sha256": "9265cf679bb10558d8f0ab7f67f892febb9085d0a83f918dacbc2338decc74e4",
+  "result": {
+    "question_id": "3d86fd0a",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "Answer (step by step):\n\n1. I checked the conversation for mentions of Sophia and where you met her.\n2. The chat mentions Sarah at a Bible study and other friends, but it doesn’t say where you met Sophia.\n\nSo I can’t determine where you met Sophia from the information here.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 691.5093569550663,
+      "firstVisibleTextFromSpawnMs": 19065.006338059902,
+      "firstThinkingFromSpawnMs": 18918.01417293027,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 19530.4494490847,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 20237.55873600021
+    },
+    "answerWallMs": 20292.044684989378,
+    "tokens": {
+      "input": 261,
+      "output": 191,
+      "cacheRead": 284416,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "73423bcfcb0000723630917001135f073f821b395db7c1692bc1895fe4d17097",
+    "snapshot": {
+      "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+      "sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+      "reused": true,
+      "compressionSeconds": 118.48971851309761
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 3.587472161045298,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "9c2685d08996d369a72690b6b51a657178281d0a9a49355e7c2e7dc67802860c",
+  "question_id": "982b5123",
+  "arm": "native",
+  "snapshot_fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+  "snapshot_sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+  "answer_sha256": "d8505c26bc462c7e377c03e3569917f4d996b490221797b33b27969312a77f64",
+  "result": {
+    "question_id": "982b5123",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant information:** The conversation mentions Airbnb generally, but it doesn’t say that you booked an Airbnb in San Francisco or when you booked it.\n\n**Step 2 — Answer:** I can’t determine how many months ago you booked it from the information provided.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 668.3410899713635,
+      "firstVisibleTextFromSpawnMs": 10528.070562053472,
+      "firstThinkingFromSpawnMs": 10423.785981955007,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 10499.884658958763,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 11183.799648890272
+    },
+    "answerWallMs": 11260.541562922299,
+    "tokens": {
+      "input": 584,
+      "output": 114,
+      "cacheRead": 285440,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "9c2685d08996d369a72690b6b51a657178281d0a9a49355e7c2e7dc67802860c",
+    "snapshot": {
+      "fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+      "sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+      "reused": true,
+      "compressionSeconds": 90.14432884985581
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.388496581930667,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

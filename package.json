@@ -1,15 +1,32 @@
 {
-  "name": "pi-recall",
-  "version": "0.0.0",
-  "private": true,
-  "description": "Lightweight Pi compacted-history grep and expansion, without a database or compaction hooks",
+  "name": "pi-context-recall",
+  "version": "0.1.0",
+  "description": "Lexical recall for Pi's compacted history, with automatic locators and bounded grep/expand tools",
+  "license": "MIT",
+  "author": "shttty",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shttty/pi-context-recall.git"
+  },
+  "homepage": "https://github.com/shttty/pi-context-recall#readme",
+  "bugs": {
+    "url": "https://github.com/shttty/pi-context-recall/issues"
+  },
+  "files": [
+    "src/",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "doc/BENCHMARK_RESULTS.md"
+  ],
   "type": "module",
   "keywords": [
     "pi-package"
   ],
   "pi": {
     "extensions": [
-      "./index.ts"
+      "./src/index.ts"
     ]
   },
   "scripts": {

@@ -1,0 +1,58 @@
+{
+  "run_fingerprint": "e95b478bc8dd237b61d4ea931af067b536e12937029fa90d22ca3fcd42a8bf89",
+  "question_id": "577d4d32",
+  "arm": "production",
+  "snapshot_fingerprint": "728377e49d7ae65eeefc2d0ba2370455db60ad66817f9313a21297cee3abaf72",
+  "snapshot_sha256": "d7b5076ee97c60114df34953652c43bb40076bfefcde88f0ee604e752d85f9ab",
+  "answer_sha256": "0c041a09e3cea1fc3458c26cb7b75a89eee549e33f1885d465027ae357ae8c9f",
+  "result": {
+    "question_id": "577d4d32",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "**Relevant information:** You said you stop checking work emails and messages by **7 pm** to separate work from personal time.\n\n**Answer:** You stop at **7 pm**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 674.4145120028406,
+      "firstVisibleTextFromSpawnMs": 23908.07316894643,
+      "firstThinkingFromSpawnMs": null,
+      "firstToolDeltaFromSpawnMs": 6289.745416957885,
+      "promptToCompleteMs": 25446.398349944502,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 2,
+      "userMessages": 1,
+      "processWallMs": 26136.398839997128
+    },
+    "answerWallMs": 26218.75665895641,
+    "tokens": {
+      "input": 282463,
+      "output": 154,
+      "cacheRead": 556032,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "e95b478bc8dd237b61d4ea931af067b536e12937029fa90d22ca3fcd42a8bf89",
+    "snapshot": {
+      "fingerprint": "728377e49d7ae65eeefc2d0ba2370455db60ad66817f9313a21297cee3abaf72",
+      "sha256": "d7b5076ee97c60114df34953652c43bb40076bfefcde88f0ee604e752d85f9ab",
+      "reused": false,
+      "compressionSeconds": 90.46668021590449
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 1.8315703889820725,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

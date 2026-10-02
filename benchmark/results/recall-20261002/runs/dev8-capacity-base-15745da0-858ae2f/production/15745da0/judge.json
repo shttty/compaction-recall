@@ -1,0 +1,58 @@
+{
+  "run_fingerprint": "b3a63b23216ce3de07a5e77d8ac9a6ce9f56b28f7da789de96b972e339adcb4c",
+  "question_id": "15745da0",
+  "arm": "production",
+  "snapshot_fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+  "snapshot_sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+  "answer_sha256": "5322c0da732e67c8ade9d1f232f2257a54096fa24d1e4c1029e1da717ccca191",
+  "result": {
+    "question_id": "15745da0",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant information:** You said on May 20 that you had been collecting vintage cameras for three months.\n\n**Step 2 — Answer:** Based on what you shared, you’ve been collecting vintage cameras for **about three months**. Would you like me to continue?",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 707.4711220338941,
+      "firstVisibleTextFromSpawnMs": 30729.20410707593,
+      "firstThinkingFromSpawnMs": 30587.026959983632,
+      "firstToolDeltaFromSpawnMs": 8534.366278909147,
+      "promptToCompleteMs": 31150.17989696935,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 2,
+      "userMessages": 1,
+      "processWallMs": 31873.225182062015
+    },
+    "answerWallMs": 31961.04494202882,
+    "tokens": {
+      "input": 269432,
+      "output": 290,
+      "cacheRead": 531456,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "b3a63b23216ce3de07a5e77d8ac9a6ce9f56b28f7da789de96b972e339adcb4c",
+    "snapshot": {
+      "fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+      "sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+      "reused": false,
+      "compressionSeconds": 93.741309504956
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 3.509265593951568,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

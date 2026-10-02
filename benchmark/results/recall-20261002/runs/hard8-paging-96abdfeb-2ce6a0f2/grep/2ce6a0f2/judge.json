@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "2a32adce8c0be41be322f9e378601f8e78732a593b5d9eb7f6226e1676e5fdba",
+  "question_id": "2ce6a0f2",
+  "arm": "grep",
+  "snapshot_fingerprint": "db248508b7da4e0eb68e9e5e6f378301648a5a908aed593c015821ea727c2038",
+  "snapshot_sha256": "492ac01be23812d407d06359e8f951006676e495f80a488c75d49b3e778cc50c",
+  "answer_sha256": "219282af037cba104f4ef926ef228163481df12092ede49dbd072a34a84f1bfd",
+  "result": {
+    "question_id": "2ce6a0f2",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant information:** You said you attended a guided tour at the Modern Art Museum last weekend, focused on Frida Kahlo and Diego Rivera’s work.\n\n**Step 2 — Count:** The other recent events you mentioned were a Natural History Museum visit and book readings; neither was described as an art-related event.\n\n**Answer: 1 art-related event.**",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 819.3603709805757,
+      "firstVisibleTextFromSpawnMs": 22393.43917206861,
+      "firstThinkingFromSpawnMs": 17437.773014884442,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 23400.449346052483,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 24251.502508064732
+    },
+    "answerWallMs": 24339.204523013905,
+    "tokens": {
+      "input": 271423,
+      "output": 369,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "2a32adce8c0be41be322f9e378601f8e78732a593b5d9eb7f6226e1676e5fdba",
+    "snapshot": {
+      "fingerprint": "db248508b7da4e0eb68e9e5e6f378301648a5a908aed593c015821ea727c2038",
+      "sha256": "492ac01be23812d407d06359e8f951006676e495f80a488c75d49b3e778cc50c",
+      "reused": true,
+      "compressionSeconds": 111.40956617030315
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.475588633911684,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

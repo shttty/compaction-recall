@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "bd4eea6b820a3947c8bc2f0107b5fd8824600587c5cf816ef88614174d398889",
+  "question_id": "3d86fd0a",
+  "arm": "native",
+  "snapshot_fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+  "snapshot_sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+  "answer_sha256": "d3027cacaf9537ec72e77276bb7d9a6d2fa3af80e925bc3b011c6802c1c05b80",
+  "result": {
+    "question_id": "3d86fd0a",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant information:** The conversation mentions your Bible study group at a friend’s house and a discussion with Sarah. It does not mention Sophia or where you met her.\n\n**Step 2 — Conclusion:** I can’t determine where you met Sophia from the chat history provided.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 690.1095078792423,
+      "firstVisibleTextFromSpawnMs": 10285.194906871766,
+      "firstThinkingFromSpawnMs": null,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 11124.775286996737,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 11830.43591096066
+    },
+    "answerWallMs": 11882.262252038345,
+    "tokens": {
+      "input": 284677,
+      "output": 113,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "bd4eea6b820a3947c8bc2f0107b5fd8824600587c5cf816ef88614174d398889",
+    "snapshot": {
+      "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+      "sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+      "reused": false,
+      "compressionSeconds": 118.48971851309761
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.002975777024403,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

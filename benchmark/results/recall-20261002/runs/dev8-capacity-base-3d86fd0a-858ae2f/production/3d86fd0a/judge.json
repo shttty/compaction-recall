@@ -1,0 +1,58 @@
+{
+  "run_fingerprint": "bd4eea6b820a3947c8bc2f0107b5fd8824600587c5cf816ef88614174d398889",
+  "question_id": "3d86fd0a",
+  "arm": "production",
+  "snapshot_fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+  "snapshot_sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+  "answer_sha256": "f18f821a845b90e3fffc27fd273b46749c9e7d2fef39d0065123e79ddd6746c5",
+  "result": {
+    "question_id": "3d86fd0a",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "1. The relevant history says Sophia’s “How We Met” location was recorded as **“Coffee Shop (City).”**\n2. So, you met Sophia at a **coffee shop in the city**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 715.3700920753181,
+      "firstVisibleTextFromSpawnMs": 32222.034954931587,
+      "firstThinkingFromSpawnMs": null,
+      "firstToolDeltaFromSpawnMs": 11529.879044974223,
+      "promptToCompleteMs": 34074.390694033355,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 2,
+      "userMessages": 1,
+      "processWallMs": 34821.413645055145
+    },
+    "answerWallMs": 34877.850763034075,
+    "tokens": {
+      "input": 288129,
+      "output": 109,
+      "cacheRead": 571392,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "bd4eea6b820a3947c8bc2f0107b5fd8824600587c5cf816ef88614174d398889",
+    "snapshot": {
+      "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+      "sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+      "reused": false,
+      "compressionSeconds": 118.48971851309761
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 3.865665344055742,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "run_fingerprint": "7a3bf0623846d56f5627869090ceb11f6c5ef2b5ee5428f85d4ca2e9eb91a18e",
+  "question_id": "gpt4_7fce9456",
+  "arm": "grep",
+  "snapshot_fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
+  "snapshot_sha256": "628f86402269e4fc5a0099f35681bdeedf55bab0fea45d1e52d179422b57380f",
+  "answer_sha256": "f696eea4535c70a77d61ef33e8f251cc196fb6908bf5ceffcfe9388390cb994d",
+  "result": {
+    "question_id": "gpt4_7fce9456",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "**Step by step:**\n1. You mentioned viewing a condo around the end of January.\n2. You also mentioned viewing a one-bedroom condo on February 10.\n3. You saw the Brookside townhouse on February 22, then made an offer on February 25.\n\nSo, based on the properties mentioned, you viewed **three properties** before making the offer—assuming the two condo viewings were separate.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_grep",
+      "history_grep",
+      "history_grep",
+      "history_grep",
+      "history_expand",
+      "history_grep",
+      "history_grep",
+      "history_expand",
+      "history_grep",
+      "history_expand",
+      "history_grep"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 844.3162520416081,
+      "firstVisibleTextFromSpawnMs": 146355.1238020882,
+      "firstThinkingFromSpawnMs": 9645.100159104913,
+      "firstToolDeltaFromSpawnMs": 9756.82804803364,
+      "promptToCompleteMs": 146284.08228885382,
+      "providerTTFTMs": null,
+      "modelTurns": 12,
+      "toolBatches": 11,
+      "toolCalls": 11,
+      "userMessages": 1,
+      "processWallMs": 147144.29714204744
+    },
+    "answerWallMs": 147231.93307803012,
+    "tokens": {
+      "input": 26882,
+      "output": 1794,
+      "cacheRead": 3503104,
+      "cacheWrite": 0
+    },
+    "modelCalls": 12,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "7a3bf0623846d56f5627869090ceb11f6c5ef2b5ee5428f85d4ca2e9eb91a18e",
+    "snapshot": {
+      "fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
+      "sha256": "628f86402269e4fc5a0099f35681bdeedf55bab0fea45d1e52d179422b57380f",
+      "reused": true,
+      "compressionSeconds": 112.73651911481284
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 4.449170170119032,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

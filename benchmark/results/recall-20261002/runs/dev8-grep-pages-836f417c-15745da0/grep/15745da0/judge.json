@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "fd5de2f7e5ed2532141e982e7da96c646a300a30c00e259296972dc7aa274c30",
+  "question_id": "15745da0",
+  "arm": "grep",
+  "snapshot_fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+  "snapshot_sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+  "answer_sha256": "b0dc3118ade0a1d22c9ef0f7c348d49e5aafe58806bbd73945c83c13a2065e5e",
+  "result": {
+    "question_id": "15745da0",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant information:** You said you have a collection of old cameras from the 1970s and 1980s and are considering selling them.\n\n**Step 2 — What follows:** You didn’t say how long you’ve been collecting them, so I can’t determine the duration.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 800.0666401349008,
+      "firstVisibleTextFromSpawnMs": 10124.091326957569,
+      "firstThinkingFromSpawnMs": 10064.86287410371,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 10029.869825113565,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 10861.595852999017
+    },
+    "answerWallMs": 10944.808069849387,
+    "tokens": {
+      "input": 265587,
+      "output": 153,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "fd5de2f7e5ed2532141e982e7da96c646a300a30c00e259296972dc7aa274c30",
+    "snapshot": {
+      "fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+      "sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+      "reused": true,
+      "compressionSeconds": 93.741309504956
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.859204154228792,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

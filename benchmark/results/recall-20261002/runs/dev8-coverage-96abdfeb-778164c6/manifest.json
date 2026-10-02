@@ -1,0 +1,43 @@
+{
+  "run": "dev8-coverage-96abdfeb-778164c6",
+  "set": "dev8",
+  "questions": [
+    "778164c6"
+  ],
+  "data_sha256": "fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9",
+  "questions_file_sha256": "ebd6f11a63514820611093d99c62fd5dab6ec8dda50fa73f56f69ff54225e4ad",
+  "gold_file_sha256": "c768cb9808e067d29789ee8d927345f810a9d66c1519ddac7357117f78b7fe64",
+  "provider": "clp",
+  "answer_model": "gpt-6-luna",
+  "answer_effort": "high",
+  "judge_model": "gpt-6-luna",
+  "judge_effort": "xhigh",
+  "sdk": "1.0.0",
+  "arms": [
+    "native",
+    "grep",
+    "production"
+  ],
+  "segments": 4,
+  "compactions": 3,
+  "system_prompt": "You are a helpful assistant.",
+  "selection_manifest_sha256": "f808d35f1dde6007e5f0c8e8feda1ea29b18886a7ac3b8683f6bf4841b6bb7c2",
+  "plugin_ref": "5acf40efa9cb33146d3e9526fc411a769511cee8",
+  "plugin_commit": "5acf40efa9cb33146d3e9526fc411a769511cee8",
+  "plugin_archive_sha256": "5bf7577582a6d95fc05bdad230b37411976fd1bf6b29a45d714d55d8c4579222",
+  "plugin_closure_sha256": "fb2571c5e199db5519036f83418487d3c1369124ffb1b82ed14f28e6b6e987ab",
+  "plugin_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/plugins/5acf40efa9cb33146d3e9526fc411a769511cee8",
+  "candidate_sha256": {
+    "history.ts": "9d92ed13681576c72f0bc6e960ad252bcd2511599d71cd5d441600070892bbbb",
+    "index.ts": "f04ab577ec620b29e3c1c34df925e6314f6ae57e7c4816ebcc0aa31b1d0b3d16",
+    "locator.ts": "0daa32f3312b52e1116d2655b53a252923ac726bf6a4fd4f83c4bfba81627fd8",
+    "package-lock.json": "61407c39e7f0a197927e15af51a2ad92151538f68bfc5a6365fe53e3c62a5bc8",
+    "package.json": "9810a119352627887e3abf712abd593b3c15020e30544e84e158196a41fa1e51",
+    "recall-extension.ts": "dd7940b59fa1da2c8795810d4ca407954cc70815d3941df82dab4329ccb8853f",
+    "timing.ts": "1fdfefb6081e7e9937636665e8dbc4a2ba693e7877841860c31464ed4041d375"
+  },
+  "eval_wrapper_sha256": "c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72",
+  "eval_wrapper_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/wrappers/c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72.mjs",
+  "runner_sha256": "96abdfebae58f8a612509f0ef6502e180c35b7b8712f9d06f179d9bc1a2f2777",
+  "fingerprint": "bdb89c09243ad117bca5a1054ada268a6d5aa2a85444aec960bb3035f89a71ae"
+}

@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "81ce86a9ddc492e3f9088e3a378f537c5c4299f2d030133e7256460fb1f49ff5",
+  "question_id": "gpt4_a1b77f9c",
+  "arm": "native",
+  "snapshot_fingerprint": "8f6364fa7669bee31aa28d191980b477eae4b9d4ae6227b66ed9bb55221ee458",
+  "snapshot_sha256": "7cc3eabc438d64bdb6e5108bf18ad93656f7eb2daa10a258287a4e9b6321f7af",
+  "answer_sha256": "443e2a9821315851e98570ecabe039abb4b70b4edb58f032939f71d0a475a571",
+  "result": {
+    "question_id": "gpt4_a1b77f9c",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "1. **“The Nightingale”** was mentioned as a book recommendation, but no time spent reading it was given.\n2. **“The Power”** was mentioned as finished listening to, but no listening duration was given.\n3. **“Sapiens: A Brief History of Humankind”** and any time spent listening to it were not mentioned.\n\nSo, the total number of weeks **can’t be determined from the conversation**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 709.607640048489,
+      "firstVisibleTextFromSpawnMs": 14049.551627133042,
+      "firstThinkingFromSpawnMs": 12962.344733066857,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 14059.061779873446,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 14784.199046902359
+    },
+    "answerWallMs": 14830.986628076062,
+    "tokens": {
+      "input": 648,
+      "output": 240,
+      "cacheRead": 281344,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "81ce86a9ddc492e3f9088e3a378f537c5c4299f2d030133e7256460fb1f49ff5",
+    "snapshot": {
+      "fingerprint": "8f6364fa7669bee31aa28d191980b477eae4b9d4ae6227b66ed9bb55221ee458",
+      "sha256": "7cc3eabc438d64bdb6e5108bf18ad93656f7eb2daa10a258287a4e9b6321f7af",
+      "reused": true,
+      "compressionSeconds": 124.69937260216102
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 8.106411452870816,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

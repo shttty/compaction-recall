@@ -1,0 +1,65 @@
+{
+  "run_fingerprint": "e7d6b42dc8064bdf8132619f0e58d11c819bb2ba64306c44e5f366d240690d98",
+  "question_id": "gpt4_a1b77f9c",
+  "arm": "production",
+  "snapshot_fingerprint": "8f6364fa7669bee31aa28d191980b477eae4b9d4ae6227b66ed9bb55221ee458",
+  "snapshot_sha256": "7cc3eabc438d64bdb6e5108bf18ad93656f7eb2daa10a258287a4e9b6321f7af",
+  "answer_sha256": "56b1d8006920a9bee4cc9c7d13f4ec1b24c8e01f1f058b83abb685674ecdcf26",
+  "result": {
+    "question_id": "gpt4_a1b77f9c",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "### 1. Extract the relevant dates\n\n| Book | Started | Finished | Time spent |\n|---|---|---|---|\n| *The Nightingale* — reading | January 1, 2022 | January 15, 2022 | 14 days = **2 weeks** |\n| *Sapiens: A Brief History of Humankind* — listening | February 1, 2022 | March 1, 2022 | 28 days = **4 weeks** |\n| *The Power* — listening | March 6, 2022 | March 20, 2022 | 14 days = **2 weeks** |\n\n### 2. Add the durations\n\n**2 + 4 + 2 = 8 weeks total.**\n\nUsing these start-and-finish dates, you spent **8 weeks** reading and listening to the three books.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand",
+      "history_expand",
+      "history_expand",
+      "history_expand",
+      "history_expand",
+      "history_expand",
+      "history_expand",
+      "history_recall"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 684.443922014907,
+      "firstVisibleTextFromSpawnMs": 46520.87850589305,
+      "firstThinkingFromSpawnMs": 36256.79171597585,
+      "firstToolDeltaFromSpawnMs": 9374.681090936065,
+      "promptToCompleteMs": 53952.500655082986,
+      "providerTTFTMs": null,
+      "modelTurns": 4,
+      "toolBatches": 3,
+      "toolCalls": 9,
+      "userMessages": 1,
+      "processWallMs": 54652.68729603849
+    },
+    "answerWallMs": 54690.340981120244,
+    "tokens": {
+      "input": 289631,
+      "output": 548,
+      "cacheRead": 854144,
+      "cacheWrite": 0
+    },
+    "modelCalls": 4,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "e7d6b42dc8064bdf8132619f0e58d11c819bb2ba64306c44e5f366d240690d98",
+    "snapshot": {
+      "fingerprint": "8f6364fa7669bee31aa28d191980b477eae4b9d4ae6227b66ed9bb55221ee458",
+      "sha256": "7cc3eabc438d64bdb6e5108bf18ad93656f7eb2daa10a258287a4e9b6321f7af",
+      "reused": true,
+      "compressionSeconds": 124.69937260216102
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 3.802155321929604,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

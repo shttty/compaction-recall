@@ -1,0 +1,1 @@
+{"question_id": "gpt4_65aabe59", "outcome": "compression-error", "run_fingerprint": "1150826dbcb3413dac4f05c102b4cb45511eaca414700d221b3aed5207837cca", "error": "ValueError: Conservative context estimate 343768 exceeds 340000 safety ceiling"}

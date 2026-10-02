@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "4ae685600f1214174b7d20dc016853dbf3aa4217a1cf56ad54696dddb83be7f5",
+  "question_id": "gpt4_65aabe59",
+  "arm": "native",
+  "snapshot_fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+  "snapshot_sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+  "answer_sha256": "a3df81ea72ab7260647b719a692d303d3c2fb53626a66776cd43f0e42b2b0906",
+  "result": {
+    "question_id": "gpt4_65aabe59",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant information:** The conversation above doesn’t mention setting up either a smart thermostat or a mesh network system.\n\n**Step 2 — Reasoning:** Since there’s no information about either setup, I can’t determine which device you set up first.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 694.1528560128063,
+      "firstVisibleTextFromSpawnMs": 10796.453359071165,
+      "firstThinkingFromSpawnMs": 10728.870935970917,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 10773.469054838642,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 11483.150534098968
+    },
+    "answerWallMs": 11568.399206968024,
+    "tokens": {
+      "input": 296,
+      "output": 107,
+      "cacheRead": 286464,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "4ae685600f1214174b7d20dc016853dbf3aa4217a1cf56ad54696dddb83be7f5",
+    "snapshot": {
+      "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+      "sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+      "reused": true,
+      "compressionSeconds": 88.37053048610687
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 4.020495692035183,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

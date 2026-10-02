@@ -1,0 +1,59 @@
+{
+  "run_fingerprint": "ce50ed47f9255eb7cf0c8f7d42c4ff55a360eec7a754de2d3b34b33a809f4854",
+  "question_id": "982b5123",
+  "arm": "grep",
+  "snapshot_fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+  "snapshot_sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+  "answer_sha256": "03a3207657516c649a91da1962ff7805ed5c86114fd34921a0548c4cb6867e12",
+  "result": {
+    "question_id": "982b5123",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "**Relevant information:** You said you had stayed in Haight-Ashbury for your friend’s wedding and had to book the Airbnb **three months in advance**.\n\n**Answer:** The conversation doesn’t say how many months ago you booked it—only that you booked it three months before the wedding.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_grep",
+      "history_expand",
+      "history_grep"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 823.0303809978068,
+      "firstVisibleTextFromSpawnMs": 42256.071256008,
+      "firstThinkingFromSpawnMs": 10000.533092068508,
+      "firstToolDeltaFromSpawnMs": 10069.936431013048,
+      "promptToCompleteMs": 45265.623660059646,
+      "providerTTFTMs": null,
+      "modelTurns": 4,
+      "toolBatches": 3,
+      "toolCalls": 3,
+      "userMessages": 1,
+      "processWallMs": 46120.336504187435
+    },
+    "answerWallMs": 46207.61362998746,
+    "tokens": {
+      "input": 292438,
+      "output": 370,
+      "cacheRead": 864768,
+      "cacheWrite": 0
+    },
+    "modelCalls": 4,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "ce50ed47f9255eb7cf0c8f7d42c4ff55a360eec7a754de2d3b34b33a809f4854",
+    "snapshot": {
+      "fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+      "sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+      "reused": true,
+      "compressionSeconds": 90.14432884985581
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.747381569817662,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

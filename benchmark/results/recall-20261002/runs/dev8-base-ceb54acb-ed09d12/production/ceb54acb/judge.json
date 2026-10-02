@@ -1,0 +1,58 @@
+{
+  "run_fingerprint": "fe9a870a71b08b4ea4a554bd9dcf3141a54ab7093fe1b5f541b9d479fc622e54",
+  "question_id": "ceb54acb",
+  "arm": "production",
+  "snapshot_fingerprint": "cad11a369837f1c794aecfd49ac251c0c102ab0c2e39913e34898969877ef317",
+  "snapshot_sha256": "3058a1764a3a8f25afa1d5271e85c05bea12181f7d72a7087098cc08d2952b82",
+  "answer_sha256": "6165b6ef88586b7e39a2dacd185bdb3db8d65254ebc9305e8a019a522817e534",
+  "result": {
+    "question_id": "ceb54acb",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant information:** The earlier reply suggested “sexual compulsions,” then listed four alternatives.\n\n**Step 2 — The four other options were:**\n1. Sexual fixations  \n2. Problematic sexual behaviors  \n3. Sexual impulsivity  \n4. Compulsive sexuality",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 685.0047749467194,
+      "firstVisibleTextFromSpawnMs": 28853.3354930114,
+      "firstThinkingFromSpawnMs": 28703.37923592888,
+      "firstToolDeltaFromSpawnMs": 6738.482810091227,
+      "promptToCompleteMs": 29790.009138174355,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 2,
+      "userMessages": 1,
+      "processWallMs": 30490.66205904819
+    },
+    "answerWallMs": 30573.537174146622,
+    "tokens": {
+      "input": 281507,
+      "output": 196,
+      "cacheRead": 558080,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "fe9a870a71b08b4ea4a554bd9dcf3141a54ab7093fe1b5f541b9d479fc622e54",
+    "snapshot": {
+      "fingerprint": "cad11a369837f1c794aecfd49ac251c0c102ab0c2e39913e34898969877ef317",
+      "sha256": "3058a1764a3a8f25afa1d5271e85c05bea12181f7d72a7087098cc08d2952b82",
+      "reused": false,
+      "compressionSeconds": 81.27917772508226
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 2.2566510629840195,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

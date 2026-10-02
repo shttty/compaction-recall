@@ -1,0 +1,64 @@
+{
+  "run_fingerprint": "43bd9cc72c12dc6fabaf9e1bfff935a505860429d81478b54635f0f0ea5e5636",
+  "question_id": "gpt4_731e37d7",
+  "arm": "production",
+  "snapshot_fingerprint": "6a7641195a1d9639b91616f10af65c54a37e195595db4992856305319069b880",
+  "snapshot_sha256": "76a135a9d974688b037f2a9f3c13f7e4e7803ac0f434a194a46864eeaca16125",
+  "answer_sha256": "8151ddecd10db4718666f5ba4e961737df2cf89daa293ce1bdcaefa48a704e05",
+  "result": {
+    "question_id": "gpt4_731e37d7",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "**Step by step:**\n\n1. Writing workshop in November: **$200**\n2. Mindfulness workshop on December 12: **$20**\n3. Digital marketing workshop: **$500**\n\n**Total of the stated workshop costs: $200 + $20 + $500 = $720.**\n\nA three-day entrepreneurship workshop was also mentioned, but no cost was given, so it isn’t included. The digital marketing workshop was dated March 15–16, which is after the stated current date of February 26; if counting only workshops already attended by February 26, the known total would be **$220**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_recall",
+      "history_recall",
+      "history_expand",
+      "history_expand",
+      "history_expand",
+      "history_expand",
+      "history_grep"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 707.642967114225,
+      "firstVisibleTextFromSpawnMs": 79661.91866109148,
+      "firstThinkingFromSpawnMs": 10379.949816968292,
+      "firstToolDeltaFromSpawnMs": 10656.262025004253,
+      "promptToCompleteMs": 80819.11190692335,
+      "providerTTFTMs": null,
+      "modelTurns": 6,
+      "toolBatches": 5,
+      "toolCalls": 8,
+      "userMessages": 1,
+      "processWallMs": 81558.7102000136
+    },
+    "answerWallMs": 81641.21029991657,
+    "tokens": {
+      "input": 290196,
+      "output": 1287,
+      "cacheRead": 1385984,
+      "cacheWrite": 0
+    },
+    "modelCalls": 6,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "43bd9cc72c12dc6fabaf9e1bfff935a505860429d81478b54635f0f0ea5e5636",
+    "snapshot": {
+      "fingerprint": "6a7641195a1d9639b91616f10af65c54a37e195595db4992856305319069b880",
+      "sha256": "76a135a9d974688b037f2a9f3c13f7e4e7803ac0f434a194a46864eeaca16125",
+      "reused": true,
+      "compressionSeconds": 70.90560843213461
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 4.1942438061814755,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

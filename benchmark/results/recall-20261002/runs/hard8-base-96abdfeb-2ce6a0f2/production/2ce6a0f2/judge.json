@@ -1,0 +1,65 @@
+{
+  "run_fingerprint": "b4f250ece99c30cd45884a12fcb4a5b7f0f840877844fa874bb62562f493b098",
+  "question_id": "2ce6a0f2",
+  "arm": "production",
+  "snapshot_fingerprint": "db248508b7da4e0eb68e9e5e6f378301648a5a908aed593c015821ea727c2038",
+  "snapshot_sha256": "492ac01be23812d407d06359e8f951006676e495f80a488c75d49b3e778cc50c",
+  "answer_sha256": "f3866fbbef3f186849d7fb61d02b94f8a08466e9ce35f38bbfd382e6528c817a",
+  "result": {
+    "question_id": "2ce6a0f2",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "1. **Women in Art exhibition** — You said you attended it on February 10 and enjoyed Rachel Lee’s work.\n2. **Modern Art Museum guided tour** — You said you attended a tour focused on Frida Kahlo and Diego Rivera last weekend.\n\nBoth fall within the month before March 8, 2023, so you attended **2 art-related events**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_grep",
+      "history_expand",
+      "history_recall",
+      "history_recall",
+      "history_expand",
+      "history_recall",
+      "history_grep",
+      "history_grep"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 705.9235498309135,
+      "firstVisibleTextFromSpawnMs": 123357.5128079392,
+      "firstThinkingFromSpawnMs": 43470.73863283731,
+      "firstToolDeltaFromSpawnMs": 11003.473217831925,
+      "promptToCompleteMs": 123666.83660703711,
+      "providerTTFTMs": null,
+      "modelTurns": 10,
+      "toolBatches": 9,
+      "toolCalls": 9,
+      "userMessages": 1,
+      "processWallMs": 124404.59873178042
+    },
+    "answerWallMs": 124492.64982901514,
+    "tokens": {
+      "input": 287900,
+      "output": 1083,
+      "cacheRead": 2486784,
+      "cacheWrite": 0
+    },
+    "modelCalls": 10,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "b4f250ece99c30cd45884a12fcb4a5b7f0f840877844fa874bb62562f493b098",
+    "snapshot": {
+      "fingerprint": "db248508b7da4e0eb68e9e5e6f378301648a5a908aed593c015821ea727c2038",
+      "sha256": "492ac01be23812d407d06359e8f951006676e495f80a488c75d49b3e778cc50c",
+      "reused": false,
+      "compressionSeconds": 111.40956617030315
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 6.332618012093008,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

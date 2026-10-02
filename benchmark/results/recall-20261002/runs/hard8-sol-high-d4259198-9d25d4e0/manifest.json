@@ -1,0 +1,49 @@
+{
+  "run": "hard8-sol-high-d4259198-9d25d4e0",
+  "set": "hard8",
+  "questions": [
+    "9d25d4e0"
+  ],
+  "data_sha256": "fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9",
+  "questions_file_sha256": "a4be8a22c30a2d0bbe36399e6a61ddbfa8de3e358dad2492e709ca2aca726cd2",
+  "gold_file_sha256": "f3d12417203bbb20c4630349c9e60d4a7304be0a40f49a045f8700fbd490279f",
+  "provider": "clp",
+  "answer_selection": "sol-6.1-high",
+  "answer_model": "gpt-6.1-sol",
+  "answer_effort": "high",
+  "answer_context_window": 372000,
+  "answer_max_tokens": 8192,
+  "answer_input": [
+    "text"
+  ],
+  "judge_model": "gpt-6-luna",
+  "judge_effort": "xhigh",
+  "sdk": "1.0.0",
+  "arms": [
+    "native",
+    "grep",
+    "production"
+  ],
+  "segments": 4,
+  "compactions": 3,
+  "system_prompt": "You are a helpful assistant.",
+  "selection_manifest_sha256": "3b4a4a63c5f1ccaad75a6c5315f02c4016691599cac803ae27fac17716ef3d47",
+  "plugin_ref": "8149e1f6caece71de148c92a88790e5d35212d9e",
+  "plugin_commit": "8149e1f6caece71de148c92a88790e5d35212d9e",
+  "plugin_archive_sha256": "214b986b32f19ef1e234b2e9d54a8ce284d730f48081884b8e47bb181e46b77d",
+  "plugin_closure_sha256": "2b10216389d69f8039d4373966dd6bc50e8a352050866fdf24cd44b2e47bf90a",
+  "plugin_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/plugins/8149e1f6caece71de148c92a88790e5d35212d9e",
+  "candidate_sha256": {
+    "history.ts": "9d92ed13681576c72f0bc6e960ad252bcd2511599d71cd5d441600070892bbbb",
+    "index.ts": "f04ab577ec620b29e3c1c34df925e6314f6ae57e7c4816ebcc0aa31b1d0b3d16",
+    "locator.ts": "0daa32f3312b52e1116d2655b53a252923ac726bf6a4fd4f83c4bfba81627fd8",
+    "package-lock.json": "61407c39e7f0a197927e15af51a2ad92151538f68bfc5a6365fe53e3c62a5bc8",
+    "package.json": "9810a119352627887e3abf712abd593b3c15020e30544e84e158196a41fa1e51",
+    "recall-extension.ts": "8c3f1fc7817f681f370c7462b55fbdf3b1e3b1ecd8e83f2bed087cb8663b92f1",
+    "timing.ts": "1fdfefb6081e7e9937636665e8dbc4a2ba693e7877841860c31464ed4041d375"
+  },
+  "eval_wrapper_sha256": "c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72",
+  "eval_wrapper_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/wrappers/c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72.mjs",
+  "runner_sha256": "d4259198e3290ffca46a3aa9245a74213aa076e8867b7079e8d70f96b6af3b55",
+  "fingerprint": "b9f4af6174d0941373c103619110c506f9256acbaf1e46ba772543dcb9e352b0"
+}

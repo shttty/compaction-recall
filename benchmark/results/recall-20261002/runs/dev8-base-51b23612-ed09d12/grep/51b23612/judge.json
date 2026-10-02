@@ -1,0 +1,58 @@
+{
+  "run_fingerprint": "aef2ca53d76b94246ce1f5df94dc82735c67bf0f4507a051ffb46a416dc4ac14",
+  "question_id": "51b23612",
+  "arm": "grep",
+  "snapshot_fingerprint": "682ae8a10ec373022c37440749940221a9c91e0c7ebb8ffaa2604276e26aa434",
+  "snapshot_sha256": "d6431880dc1718f1929430c4e1340d6b3664886bb722fa07dd45e881cd7d1faa",
+  "answer_sha256": "270621b655f2c31021defbc3cf460a99b1fe68afee27ad912d9eeaa0e393791e",
+  "result": {
+    "question_id": "51b23612",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "The example mentioned was the Soviet animated series *Nu, pogodi!* (“Just You Wait!”). The earlier answer described it as mocking Western culture and presenting the Soviet Union as superior. However, that characterization may be inaccurate: *Nu, pogodi!* is best known as a slapstick comedy about a wolf chasing a hare, rather than as a clear example of anti-Western political propaganda.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_grep",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 784.6643878147006,
+      "firstVisibleTextFromSpawnMs": 31708.74991780147,
+      "firstThinkingFromSpawnMs": 12588.93731283024,
+      "firstToolDeltaFromSpawnMs": 12787.107887910679,
+      "promptToCompleteMs": 34810.03824202344,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 2,
+      "userMessages": 1,
+      "processWallMs": 35626.37809291482
+    },
+    "answerWallMs": 35710.28449595906,
+    "tokens": {
+      "input": 276071,
+      "output": 190,
+      "cacheRead": 542720,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "aef2ca53d76b94246ce1f5df94dc82735c67bf0f4507a051ffb46a416dc4ac14",
+    "snapshot": {
+      "fingerprint": "682ae8a10ec373022c37440749940221a9c91e0c7ebb8ffaa2604276e26aa434",
+      "sha256": "d6431880dc1718f1929430c4e1340d6b3664886bb722fa07dd45e881cd7d1faa",
+      "reused": false,
+      "compressionSeconds": 143.6763677529525
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 4.104956645984203,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

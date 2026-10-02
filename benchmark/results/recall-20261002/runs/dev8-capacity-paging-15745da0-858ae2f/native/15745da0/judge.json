@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "0ddccad9131257c0b9d2baab1f4ab498468d19d76d4678a4519a0ce942eeb70d",
+  "question_id": "15745da0",
+  "arm": "native",
+  "snapshot_fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+  "snapshot_sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+  "answer_sha256": "e3d15dba4b4d992952f509788662fe708f1e37824f2d5257adcce6a33df426ca",
+  "result": {
+    "question_id": "15745da0",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant information:** You said you have a collection of old cameras from the 1970s and 1980s and are considering selling them.\n\n**Step 2 — Conclusion:** You haven’t said how long you’ve been collecting them, so I can’t determine the duration from the conversation.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 681.6554709803313,
+      "firstVisibleTextFromSpawnMs": 8356.189704034477,
+      "firstThinkingFromSpawnMs": 8275.885576149449,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 8354.74084992893,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 9051.962169120088
+    },
+    "answerWallMs": 9129.027761984617,
+    "tokens": {
+      "input": 265006,
+      "output": 153,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "0ddccad9131257c0b9d2baab1f4ab498468d19d76d4678a4519a0ce942eeb70d",
+    "snapshot": {
+      "fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+      "sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+      "reused": true,
+      "compressionSeconds": 93.741309504956
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 3.7343784940894693,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

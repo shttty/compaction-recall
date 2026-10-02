@@ -1,0 +1,81 @@
+# 插件行为与限制
+
+Pi 原生压缩之后，自动给主模型一份与当前用户消息有关的短定位索引，再用 `history_recall` 主动定位、`history_expand` 核实原文；证据不足时用 `history_grep` 补充检索当前分支被压掉的原文。生产代码全部在 `src/`；不接管压缩，不新增 SQLite、FTS、向量索引、后台任务或模型调用。已验证宿主 SDK：1.0.0。
+
+本仓库从 `pi-lossless-context/prototype/recall-spike` 独立提取。运行时相对导入均在本仓库内，不依赖原项目；这是来源路径，不是当前入口。[FINDINGS.md](FINDINGS.md) 是历史实验结果，不是目录整理后重新跑分的结论。
+
+## 加载
+
+在仓库根目录临时加载，不改 profile：
+
+```sh
+pi -e ./src/index.ts
+```
+
+也可以将整个目录作为本地 Pi package 安装；这会修改用户的 Pi settings，需要你自己决定执行：
+
+```sh
+pi install /absolute/path/to/pi-recall
+```
+
+`package.json` 的 `pi.extensions` 指向 `src/index.ts`，也支持 `pi -e ./src/recall-extension.ts`。两个入口只选一个；根目录不保留 shim。宿主提供 Pi SDK 和 `typebox`，开发/测试使用锁定依赖（Pi SDK 1.0.0）。
+
+## 工具与范围
+
+建议流程：自动短索引 → `history_recall` 用当前问题或改写关键词定位相关 id → `history_expand` 核实原文 → 如果证据仍不足，再用 `history_grep` 补充。自动索引已经给出有用 id 时，也可以直接展开。由主模型判断证据是否充足，扩展没有人为的“足够证据”分数门槛，也不强制自动调用 grep。grep 的定位类似底层文本搜索后备，但实现仍是 JavaScript 正则，不是 SQLite / SQL LIKE，不新增数据库。
+
+- `history_recall({ query, limit?, offset? })`：主要的主动检索入口，复用自动索引的词面候选与相关性排序，但使用独立分页：默认及上限均为 50 条，`offset` 默认 0。正文和 `details` 都返回 `total`（去重后的命中总数）、`offset`、`limit`、`returned`、`nextOffset`、`hasMore`；继续同一查询时传回 `nextOffset`，不能直接假设 `offset + limit`。每页以 16,000 个 Unicode 码点为保护预算，正常的 50 条短结果可放下，转义内容或很长的元数据可能使本页少于 50 条；下一页从未返回的那条继续，绝不跳过。极端情况下单条 id / 元数据本身超过预算，会单独返回该条并设置 `budgetExceeded: true`，保证 id 完整且翻页能前进。这个预算不是 token 承诺。分页在相同查询和未变化的当前分支上保持稳定；分支或压缩边界改变后应从 offset 0 重查，不提供持久分页快照。搜索当前分支已压缩的用户 / 助手正文，以及助手 `toolCall` 的工具名和输入参数；排除 `toolResult` 正文。返回真实 id、条目日期、角色和短片段。可以改写关键词再次查找；例如原文是 `bicycle repair`，查询 `cycling` 不保证命中，改用 `bicycle repair` 才有词面依据。没有语义同义词扩展，也没有“无命中就证明从未提过”的保证。
+- `history_grep({ pattern, limit?, offset? })`：证据不足时的补充后备，搜索当前分支有效压缩历史中的用户 / 助手正文及助手 tool-call 名称 / 输入，排除 `toolResult`、thinking、图片；尊重 `context_edit`。大小写不敏感的 JavaScript `gi` 正则；非法 regex 回退为字面量，空 regex 保留 JS 零宽匹配语义。按分支顺序对**匹配 entry**分页：默认 `limit: 30`，最大 50，`offset` 默认 0；同一 pattern 和未变化分支下用 `nextOffset` 续页，改变编辑或压缩边界后从 0 重查。正文和 `details` 都给 `offset`、`returned`、`nextOffset`、`hasMore`；`returned` 是本页实际消费的匹配 entry 数（含显式跳过的超长 metadata），不是正则出现数；`total` 是所有原始 regex 匹配数，`totalEntries` 是匹配 entry 数。最多 30 条代表性片段行、每 entry 最多 3 个，完整输出最多 16,000 Unicode 码点。`covered` 是本次响应片段中完整可见的其他原始匹配数（仅本页片段）；`omitted = total - snippets - covered` 是本次响应任何片段都未展示的全局原始匹配数，包含前后其他页及超长 metadata 的遗漏，不记录或扣除之前响应读过的内容。正文页头也明确给出此全局口径。超长 metadata 只有在该 entry 实际被消费时才警告并计入遗漏，分页仍推进。长匹配可以裁切；片段对超出可见范围的匹配不计覆盖，空白折叠也不伪称覆盖。每条只展示代表性上下文，不保证展示所有 match 文本；用 `history_expand` 读取完整 entry，或用更窄 pattern 查找未展示上下文。无命中不证明历史从未提过。固定输出界限为每页最多 30 条片段行、每行最多 500 码点，连同固定页头 / 状态及保守的 32 位计数位数仍低于 16,000 码点；实现保留运行时预算检查。
+- `history_expand({ id, before?, after?, offset? })`：按自动索引、recall 或 grep 的 id 展开原文；请求条目始终优先显示，前后邻居默认各 2 条、各可设 0–20。输出上限为 16,000 个 Unicode 码点；正文和 `details` 都返回请求条目的码点 `offset`、`total`、`returned`、`nextOffset`、`hasMore`。若 `hasMore: true`，对相同 id 和 before/after 传回 `nextOffset`，可逐页读完长条目；offset 超过正文长度时按正文末尾处理。只允许当前已压缩段里的 id，不读当前上下文或其他分支。
+- 每次调用从 `ctx.sessionManager.getBranch()` 重新取当前分支。以最新 compaction 的原始 `firstKeptEntryId` 为界，仅暴露该条目之前的 message；尚未压缩则返回空。如果边界 id 缺失，沿用 spike 行为：选择最新 compaction 之前的消息。边界消息被省略时仍以它的原始位置划界，不把保留段误当作已压缩历史。
+- 自动定位、recall、grep、expand（包括前后邻居）共用当前分支的 `context_edit` 投影：整条分支扫描，同一目标最后一次编辑生效；`replacement: null` 的条目不可检索或展开，替换条目只暴露替换内容，不回退到原文。字符串及合法文本块均支持，助手 / toolResult 的字符串按 Pi 1.0 归一化为文本块。压缩前后追加的编辑都生效；不修改原始条目，回到编辑之前或另一分支会恢复该分支的视图。编辑后手动分页应从 offset 0 重查。这里的“原文”指分支编辑生效后的正文，不是绕过编辑读取原始存储；仍不搜索 toolResult，但未省略的结果可展开.
+- 自动定位、recall、grep 共用可搜索文本提取：用户 / 助手的字符串或 `type: text` 正文，加上助手 `toolCall` 的工具名和完整输入参数。参数以对象键排序的确定性 JSON 表示，不在提取阶段截断；空值安全，异常循环引用以 `[Circular]` 标记，无法序列化的异常对象有显式占位。不会把 thinking、图片内容、摘要或自定义消息加入搜索。`toolResult` 记录完全排除，空正则也不对它产生伪命中。这是对旧版 grep 搜索范围的有意修改，正则语法、排序和计数规则不变。
+- `history_expand` 单独读取可读原文：可按 id 查看 `toolResult` 的文字结果，也包含助手工具调用名称 / 输入；仍排除 thinking / 图片。请求条目的分页 offset 以 Unicode 码点计数，不切断代理对；目标条目先返回，只有目标本页完整且邻居整条可放入剩余预算时才返回邻居。页状态会显示在模型可见文本中；继续时沿用 id、before、after 和 `nextOffset`。工具结果不会写进搜索索引，也不另存副本；Pi 已经删掉或省略的内容无法恢复。
+- 只查当前分支，不跨会话、不跨 `parentSession`、不搜索被放弃的分支，也不搜索 compaction 摘要。
+
+## 自动短定位索引
+
+- 在 SDK 1.0.0 的 `context` hook 中运行：每次模型请求先移除本扩展旧的定位消息，从实际 `event.messages` 找最后一条 `role: user` 的文字，再扫描当前分支的已压缩原文。已被消费的 steering / follow-up 消息因此也会成为新查询。不依赖 `input` 或 `before_agent_start`，不记录查询状态、不缓存、不启动后台工作。
+- 自动候选包括用户 / 助手正文和助手工具调用名称 / 输入；自动定位、recall、grep 都排除工具结果正文，只有 expand 可按 id 读取它。thinking、图片、摘要和自定义消息不进入搜索。最新用户消息只有图片或没有有效关键词时，不回退到更早的问题；无压缩、无匹配时不添加提示。
+- 查询最多取前 4,000 个 Unicode 码点、24 个去重关键词。英文不区分大小写，保留代码标识符并拆出 `snake_case`、`camelCase`、`HTTPServer` 的词段；连续汉字用重叠双字词组，过滤一组常见中英文停用词。没有模型、embedding、词典分词或新依赖。
+- 按不同查询词的覆盖评分，较少历史条目包含的词权重更高（`1 + log((文档数 + 1) / (含词文档数 + 1))`），重复堆词不会提高分数；同分时按覆盖词数、然后按分支条目新旧排序。先按 id 和相同片段（忽略空白差异）去重，确定性地保留分支中较新的代表，再计算相关性排序；自动提示先选前 5 条，最后应用长度预算，不用第 6 名以后回填。每条包括真实 entry id、条目日期、角色及最多 120 个 Unicode 码点的上下文片段（另可加省略号）：以本条匹配词中历史文档频率最低、信息权重最高的词为中心，约各取前后半个窗口；同频时选原文位置更早的词，靠近文本边缘时平移窗口，不切断 Unicode 代理对；整个提示含固定说明和元数据不超过 1,500 个 Unicode 码点。前 5 条里预算放不下的整行略过，绝不截断或捏造 id。
+- 提示作为 `display: false` 的自定义消息紧随最后一条真实用户消息插入，仅改变本次请求上下文，不写进 session、不修改输入消息、不累积提示，也不拆开后续助手工具调用与结果。UI 隐藏并不等于隐私隔离：提示会随模型请求发送给当前配置的模型服务。
+- 固定说明将片段标为不可信历史数据，而非指令或已验证答案，提示以 `history_recall` 改写关键词定位、用 `history_expand` 的 id 核实精确细节，证据不足时再用 `history_grep` 补充搜索。JSON 转义隔离换行、控制字符和提示分隔符；这降低结构混淆风险，但不能保证模型完全免受历史文本的提示注入影响。日期只是条目日期，不推断事件日期或原文属于哪条摘要。
+
+离线测试只验证注册、边界、排序和上下文转换等机制，不证明检索质量或主模型回答准确率提升。已有真实 DEV8 / HARD8 三组对比、失败记录和父级审计见 [benchmark/README.md](BENCHMARK.md)；均为小样本、单轮描述性结果。本次归置没有重跑评测或进行在线模型调用。
+
+这是词面提示，不是语义检索：同义词、单字中文、代词指代、拼写变体、无文字图片以及查询前 4,000 字之外的内容可能漏检；常见词和汉字交界双字也可能误匹配。没有提示不能证明历史没有该信息，提示也不强制模型执行回查。每次请求先线性扫描整条当前分支的编辑，再扫描已压缩的有效文本并排序命中条目；不缓存生产投影，大会话会增加本地处理成本。
+
+## 文件
+
+- `src/index.ts`：公开 Pi package 入口
+- `src/recall-extension.ts`：三个工具及 context hook 注册、结果格式；替代加载入口
+- `src/history.ts`：无副作用的条目文本、压缩边界及正则辅助函数
+- `src/locator.ts`：词面定位、自动短索引预算、手动分页和非持久上下文转换
+- `test/locator.test.mjs`：自动定位与上下文生命周期回归测试
+- `test/recall.test.mjs`：离线行为与独立目录加载测试
+
+## 离线验证
+
+需要 Node 24+ 和 npm。在仓库根目录执行：
+
+```sh
+npm ci --ignore-scripts
+npm run check
+```
+
+安装依赖需要网络或已有 npm 缓存；`typecheck` 和 `test` 离线运行，不调用模型。测试覆盖检索、定位、边界和上下文生命周期；SDK 从临时隔离目录加载 package、`src/index.ts` 和兼容入口。隔离目录只包含 `src/` 与 manifest，不含 Git 数据，测试后删除；不修改个人 profile。
+
+## 来源与许可
+
+提取自 `pi-lossless-context` 的工作区版本，基于提交 `62012df340d0774698ece6705062777b82d2f0e3`，包含当时尚未提交的 recall 整理。没有复制原仓库 Git 历史、会话、日志、凭据或数据库。
+
+本项目现采用 [MIT LICENSE](../LICENSE)，Copyright (c) 2026 shttty。[THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) 保留上游 hermes-lcm 的设计来源及其 MIT 声明；第三方声明与本项目 LICENSE 分别保留，不将第三方声明当作本项目授权的替代。
+
+## 当前限制
+
+grep 的正则行为和 expand 的边界 / 截断规则沿用 recall spike；搜索范围已按新需求纳入工具名 / 输入并排除 toolResult，不再与旧版检索语义完全相同。没有重新运行在线基准。手动正则扫描是线性的遍历，但正则本身没有执行超时，避免高回溯的复杂表达式。grep 结果仍按原文顺序，不按相关性排序。自动定位独立按相关性排序，但不自动调用工具。
+
+- `history_expand` 原先对选中消息拼接后按 16,000 个 UTF-16 单元做头部截断，导致长前文挤掉目标、长目标尾部不可达且可能切断代理对。现在每页最多 16,000 个 Unicode 码点，目标优先，返回可见的页状态与码点 offset；模型可用 `nextOffset` 读取目标后续页。只有目标完整时才尝试加入完整邻居；未显示的邻居不会计入 `details.from/to`。grep 完整回复也最多 16,000 个 Unicode 码点，单行最多 500；匹配 entry 按原文顺序分页，最多 30 个片段 / 每 entry 3 个，单个片段对超长匹配仍会裁切。`covered` 只计当前响应片段真实覆盖的其他原始匹配，`omitted` 计全局未展示的原始匹配，包括不在当前页的命中；超长 metadata 仅在消费时明确警告并计为遗漏。代理对内多个 JS regex occurrence 即使映射到同一 Unicode 码点范围，也按独立 occurrence 统计。超长匹配被裁切的部分不计覆盖；空白折叠也不伪称覆盖。
+
+实验设计和已完成结果统一见 [BENCHMARK.md](BENCHMARK.md)。它们不改变生产实现，不代表本次迁路径提高了检索或答题准确率。

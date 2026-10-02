@@ -1,0 +1,1843 @@
+{
+  "runner_commit": "858ae2fe5729edf7067dc34d8f7bf902ab4423f4",
+  "plugin_commit": "8149e1f6caece71de148c92a88790e5d35212d9e",
+  "question_ids": [
+    "778164c6",
+    "51b23612",
+    "ceb54acb",
+    "577d4d32",
+    "3d86fd0a",
+    "15745da0",
+    "gpt4_65aabe59",
+    "982b5123"
+  ],
+  "validated_answer_records": 24,
+  "all_three_arms_share_actual_snapshot_bytes": true,
+  "guarded_resume_new_model_calls": 0,
+  "tracked_artifacts_unchanged": true,
+  "tracked_artifact_sha256": {
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/manifest.json": "9101e4fab9ff416d843ea043411dd8e4d15ed98e2e027700ab4ec0d614801990",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/results.jsonl": "b6b3a775d0f264aad8853e3a6b673833a93b3339b3b33b9425306e5b7991dde7",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af/778164c6.jsonl": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af/manifest.json": "9b9a62edaa07bb67f2e22d1eb70eb6405831e16d7d6785b3984093faf8f5ffdd",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af/progress.json": "16cfee6239b8e230dd5af142ac1feaff88daf5253842737456d94f2822467956",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/native/778164c6/status.json": "ce20ba2a4a3a50547b5f04a66143d1c223c3e58d5fc3fbfad31c520a4167ed02",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/native/778164c6/answer.json": "9136b8d7adb026b4858d7ba1fcf2e8e1ae9c460ed05ea3c1257ef5557c9bda76",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/native/778164c6/judge.json": "869b969425fd07b048cdf634dda1227d9c9d09927ca7bed72254a32bf6460f27",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/grep/778164c6/status.json": "8747e66e1ea16b026d3b1ba1ec643d7012b5b8ba93e626e15a16b5b1e069a567",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/grep/778164c6/answer.json": "55d66998fd3e7ff9e4f12c95a9ae98dcec9c54e64b47f5a6ca19f4983d1f74b8",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/grep/778164c6/judge.json": "99bb0691384145f7e4b72f5e2bf9ac5f49f9e0d9e6827df8640d10c11f45be36",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/production/778164c6/status.json": "b2b9621e4fe803ef02f6300594170b6723b0690fae8f3d36b0a8d5c5955657c1",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/production/778164c6/answer.json": "6561814bf4e25fde4caabf258ed16f4324fe046ab3f5c4f666f80500050c2265",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/production/778164c6/judge.json": "7b210cf5706b4d8d02eb1ff9a108ffd5b31cb093153086213906d681f60c684b",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/manifest.json": "5430a44987407d2fc9ebb2051c7cc9a83143db516badcc6771f14c09640981b3",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/results.jsonl": "ce25d397cb98c93adfac4f64b6c8a2aa033679c8192f5e2f1bfeb32fee0dda8b",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8/51b23612.jsonl": "18786f6b61f47f7f5c7bd4371669c7862ba11531a98adda1938575a5dc47cdbd",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8/manifest.json": "151e176ee66491624d323dc2ea53046f24d1a139d80d7ef542701b28121cd987",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8/progress.json": "312f5f66485a043be50d025d6cdb99de4e49d2df6980868c792dfb88c5eff94b",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/native/51b23612/status.json": "b2e0b27615ef4acb3ada7d2196d23557df8cbbbdab9afad4437f9dbc6eb59686",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/native/51b23612/answer.json": "7018ada74bf611638f8d480b77aad11916bb8a0039e707129992a1031737bef2",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/native/51b23612/judge.json": "20e67d2e42ff73cd6db1d2ee60ab7530ffd62bcd8e25168cecad96483db16e88",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/grep/51b23612/status.json": "df367fde58c06e08175a340b1458b31ed92365f141b2082880558759409a6518",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/grep/51b23612/answer.json": "1dd1ebe160ab21f4a0d926b454eea44fcfe0d8dc30bc40ee2c16fdd74ff14c9c",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/grep/51b23612/judge.json": "b83300f6c0671d79cc5e04c7133e25e311d530de86353de000dbba30a4da2741",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/production/51b23612/status.json": "b4202965127b85e05aa9aaf54aa097dd556dda9c14ee51a80303b151be4d7244",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/production/51b23612/answer.json": "8de3d320faf66b9f3136acafea59512cfb0f81c0b3820f8aa0fc44042e8ebe47",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/production/51b23612/judge.json": "2302c957edc3576351b7932a86aaa33efc5a8e0095b60db0c6c0276e1b03953a",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/manifest.json": "145e322ad5d38934de6345d6fc72ca75858a3a71a144c5c6ad40e67c6688289c",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/results.jsonl": "1114dc859965e6bc9114a82b8f786dc376af941ee5ea65427d942b869faf04ec",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7/ceb54acb.jsonl": "9d3333d19ef460a8cb495bf6ef455828e19069d29ebdda1344af8c3c98c6630e",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7/manifest.json": "496712488329d7379f0d3b2234500e16e8badb789d2a25e406cae3064e9de905",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7/progress.json": "19d63a9bc1031fedb9fc8e820d9ea4b6159f36fbb02b9c208cb2e4a3716f7c66",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/native/ceb54acb/status.json": "00d3f7a7944f35673745fc9a963d3335dcb6954440782f39bbe9cc4aeb997438",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/native/ceb54acb/answer.json": "567ea6e71407d7c1a2246ef8adbf1634a9050c9469458a0501db82734ca785b8",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/native/ceb54acb/judge.json": "1ea71177e3cba7cb94f980be57de50cf3f6fd828e8633023b18e673d86b5cbbe",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/grep/ceb54acb/status.json": "3e6415bb7eebfac340cf566080b698082a58ad133ddcabe0d8529c0f566f507b",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/grep/ceb54acb/answer.json": "851cfb9d4221bb7ab94976fddcab22f0e32de40982a3867ba132e71cafc592e6",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/grep/ceb54acb/judge.json": "f575c61160f62e2f64191375ac4be026109793518471c17a318db3493064d6f8",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/production/ceb54acb/status.json": "76dd501dc24efbabd5ca8736499a733bb8bdf05f40928ab9c5838c40640daa30",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/production/ceb54acb/answer.json": "62def4c0587e1c38a13593c576903b1ab0a7fb7237eb58462c8417051ce4a6b2",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/production/ceb54acb/judge.json": "300bd1d122a4d06728f1b0e0cbe166f9fa15eb1dae9d0877a2404cdae6eece51",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/manifest.json": "d40643f0ce2e256005e9581a83b363774f13c1e563e5eacf62cb101844b578fb",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/results.jsonl": "472e5dbbc7919b242699b748e93b83ae9cee70166dfe7bead2b54baedba2217e",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da/577d4d32.jsonl": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da/manifest.json": "385eaddb992a4f9389ee416ecd40b4794f5e1f0a56a580f3649c5eeb4a396405",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da/progress.json": "e4eb6fd16c373ec55b4bd3dc7a36a1a91c0c9be8930137f1a5d0c5fb64442000",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/native/577d4d32/status.json": "d262c301788f5c7694873cfcdbe566cbe8e63e31eadfefc889faa4d903a628f0",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/native/577d4d32/answer.json": "ef7eb89c950ff6505c7211516e97783a80c01d39e3296165f5ca677883ca4ed2",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/native/577d4d32/judge.json": "db882e401b3fdafb46555f8ca4910b39232ab6e916dc41cec95b7843d5dec0f9",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/grep/577d4d32/status.json": "53a98b54dce6a15aa028e30600be579b7cc952f8c501140a0a8b155738de0ab8",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/grep/577d4d32/answer.json": "9a64fd40bb874d4c2e1f638776812ddb239f3dd02404d192c28b96d4fe2dcc72",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/grep/577d4d32/judge.json": "c22807d61d6e10642e67d4aa64004eacbd876f116ca531356cf43148cd929a04",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/production/577d4d32/status.json": "339849528adc5d1042d54412c1f3e264255af318e9c36d70bb0030c9157970e3",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/production/577d4d32/answer.json": "b33a8e11acac59bb3d7d2cb0d82a666f4c89f6107dd16f32b9d16054f46c2b53",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/production/577d4d32/judge.json": "317689f50437b455cf177dcb89e7edcd37b9ad2518f46394cba67db0832151b7",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/manifest.json": "620f683513b1efc8b3a20f19fd696560d6bddedd0487ab5327d981bae94954e5",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/results.jsonl": "712d50d1c08dad9346df72fe4f76da5b48475c9738a90c26d3a899ff04644a65",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80/3d86fd0a.jsonl": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80/manifest.json": "5ca5f50a85dc6366da97b7d0467df4c3eb40c6756df330c11ad14c786193c145",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80/progress.json": "886d238767d4de8c2dfa10cfe6702c92b2a368198ab724de54d8d9c46426b7a4",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/native/3d86fd0a/status.json": "25aaef93d4d6c6682a95b7bcd1ca5760a1379884a416047e1dbe0e5372151f5a",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/native/3d86fd0a/answer.json": "726c81f8a1c7e884d7da23bdc8957d0ef77b485d3ca492329a88f73e923bdcfa",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/native/3d86fd0a/judge.json": "c5d3694ffa433ab0988ad7dc421a0b0190938ed0242d25dfa83eb09fa69aefef",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/grep/3d86fd0a/status.json": "4443b3cb912234fcd25499d490bbcecb41dfb595d725ae8c4b2dda55eed9d3e3",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/grep/3d86fd0a/answer.json": "7218a5e3cfcdfa13cc66d218ce5df8c8c2eac47e230be5e761c369f892d83a7a",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/grep/3d86fd0a/judge.json": "0d391b1eeb25c13cf3b33fdcb805afe15a35ba6b42f506139a06fcc77f0dfc42",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/production/3d86fd0a/status.json": "6d363234eaecb55e8b38d7b5d98aa9eaf5a0f8ae21c44a16c63fa752fd98e3ef",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/production/3d86fd0a/answer.json": "fd9ee4510b4f256e75cc70785c465e32ecffc7233d6dbe73ef27969e191420ba",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/production/3d86fd0a/judge.json": "145c58668555b033c4463678e84489a62aa5025abfa16daa36e8206aac0e260c",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/manifest.json": "5a7e3be85ed81efff5be18cda892249f23e221cc523013027be140b88cd09ee9",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/results.jsonl": "95ef00ff2ecbd5a1accc9355f49c02491c020678201eb48d61e67211cc427011",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f/15745da0.jsonl": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f/manifest.json": "e2e9fb6c0e1aa6754fca99257ef20db48873cc93358ff60831f18ad446925f19",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f/progress.json": "0a35ab837832ee4a960b4c820399f4fdc540558440b27a8bf5cc0ba9144de04f",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/native/15745da0/status.json": "3aa3610e461c940c6b1586d5ae9478568231111d78c6d35ca5e15d9a875b21b3",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/native/15745da0/answer.json": "30832150e4b95a47d2d0c3899b67136eeb0db0c8163fb634bfd735b23206e0f5",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/native/15745da0/judge.json": "b46b73704d11cd0a84b5eea1a4a4e0fbc124786a07e0a7c09b47d4a85379e8cf",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/grep/15745da0/status.json": "362d22d6bf01e893b9e2f4e71268619992e3d95cfee7d482124c1907b8a1ba30",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/grep/15745da0/answer.json": "061e88b34f20e680c111da13b85e138225c49696bef853afeae31358b4838b2e",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/grep/15745da0/judge.json": "a0a0a90eecbdebd624f139314a4bf4f9103c6227d2ad13a6728ddab66bdfb4cb",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/production/15745da0/status.json": "e872544544c905be813469e7b94cd8c6940c3fac78b549044f570b6fe206845d",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/production/15745da0/answer.json": "7e6800b17500b195b4d0af6662c5b28febbb1e035fd653bd0f13cd0e41e25674",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/production/15745da0/judge.json": "effac329935b21512d3b0f68f70fe7901b64639085a6746392cbc5dd953b8109",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/manifest.json": "e11be1f43e9e5a29fb0d6ab125665b475ab918d8f5f9193f595c1b7a95cbc6af",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/results.jsonl": "32ccccb382b6f92952f8f7cd871d67d1f25ffeaf776de62822ac5c2170a3c762",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb/gpt4_65aabe59.jsonl": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb/manifest.json": "d6ee2b8bd5eb53337acde90e5d5eddf33325c2fb155ddb73d8d9fdf50511d784",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb/progress.json": "e1dc67bed47b28ebec89b6f73b5e7bf15c5a7aa6617cd00e8f93761b056cfb27",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/native/gpt4_65aabe59/status.json": "8bbf3e0257e0bf7ee5e3cb763a6a2277c58c73a962f36759e53cc030976665d8",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/native/gpt4_65aabe59/answer.json": "d9b3e120647d4b16d1530e23d4ed8b9859d01caf1c7c813fd827593823b3216d",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/native/gpt4_65aabe59/judge.json": "6ea58b2e47bdf0f689c556438fca614f5b9678663f88ddf22e4ecbbc5ac86172",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/grep/gpt4_65aabe59/status.json": "fbd208a2ef9bbf97900be52d0cb0ac5ccc298f4b90555a0cfe82f0fcfa070234",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/grep/gpt4_65aabe59/answer.json": "b9b9311e175dba67f012dfb77d9eb6e252f4bbc702d059ec838aa0a0f2a10116",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/grep/gpt4_65aabe59/judge.json": "43b09c2483c15eee015b19713d1151410ea80369d0a64f147650b88da73cfd99",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/production/gpt4_65aabe59/status.json": "9cd04319b86bcc5bba7c970947fe9769b480e39832b86fcc09f98f6597753634",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/production/gpt4_65aabe59/answer.json": "c32e5cf5522258af624efc02d1bea34701e792efe74fbd06e32b0009cad85c71",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/production/gpt4_65aabe59/judge.json": "b43644bbff90a5db60c9101b8598fbde319274a97cfc656020158166e129343d",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/manifest.json": "0cd34e0d2f05c111507e9bfe41c69738bf85761666866584f84f845551e9d704",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/results.jsonl": "7aac6cc1c212dd2c5800908d66b70756d42eec84bb4fa293a189dcf3b4d03907",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5/982b5123.jsonl": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5/manifest.json": "433438a7fd3e5954248b655b70428c4e69153f68e275d493a695c270d928356b",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5/progress.json": "75a201ebce1210bb2a3d49d4ad7acf5c35b4e3c189076c789e860b5ba2173e75",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/native/982b5123/status.json": "06c8407801cf12af04849001007c7482cd4bb74a37cf911def129f709a55e736",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/native/982b5123/answer.json": "6ac990f52f17bffc1ea0f69ae8c572a40178bcde28e5aa087a9714536dd9a79f",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/native/982b5123/judge.json": "a2c118714ac0a7d8bb9a75af23d6d8ad7070bfccc585d5675f937d20b83ccd6b",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/grep/982b5123/status.json": "dda2d6a9cd9d4c272f2b15ef3f18cc58a507be32cf25849b79723cbd83bb6533",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/grep/982b5123/answer.json": "1977457500d64cb93c57136b8be0663f60a3e8cb53f379f259b79546b1245b3e",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/grep/982b5123/judge.json": "857c85896b7adc7fcf55f8918c7340809b74f085a35c37f608125d21a4d2a2fa",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/production/982b5123/status.json": "c3df5c5474bc851f848b5c077e6d3321981ab7abfd6c9d8630042d93ffeb7615",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/production/982b5123/answer.json": "8182f9f08478b6b849b911ab2bba71e252f109e4ff2544269e1f36478816a4c1",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/production/982b5123/judge.json": "d4797ea77e07012b291f6d91a093a8cb4559456fb1f55c5bab10683a2fa7314b"
+  },
+  "metrics": {
+    "native": {
+      "correct": 0,
+      "questions": 8,
+      "accuracy": 0.0,
+      "answer_wall_seconds_total": 107.08197204722092,
+      "answer_wall_seconds_mean": 13.385246505902614,
+      "answer_tokens": {
+        "input": 1110766,
+        "output": 1385,
+        "cacheRead": 1108992,
+        "cacheWrite": 0
+      },
+      "answer_tokens_total_with_cache": 2221143,
+      "model_calls": 8,
+      "tool_calls": 0,
+      "provider_TTFT": null,
+      "billing_cost": null
+    },
+    "grep": {
+      "correct": 3,
+      "questions": 8,
+      "accuracy": 0.375,
+      "answer_wall_seconds_total": 221.84310748660937,
+      "answer_wall_seconds_mean": 27.73038843582617,
+      "answer_tokens": {
+        "input": 1962327,
+        "output": 2472,
+        "cacheRead": 2493952,
+        "cacheWrite": 0
+      },
+      "answer_tokens_total_with_cache": 4458751,
+      "model_calls": 16,
+      "tool_calls": 8,
+      "provider_TTFT": null,
+      "billing_cost": null
+    },
+    "production": {
+      "correct": 8,
+      "questions": 8,
+      "accuracy": 1.0,
+      "answer_wall_seconds_total": 264.01242272299714,
+      "answer_wall_seconds_mean": 33.00155284037464,
+      "answer_tokens": {
+        "input": 1986040,
+        "output": 2139,
+        "cacheRead": 4737536,
+        "cacheWrite": 0
+      },
+      "answer_tokens_total_with_cache": 6725715,
+      "model_calls": 24,
+      "tool_calls": 18,
+      "provider_TTFT": null,
+      "billing_cost": null
+    }
+  },
+  "verdicts": {
+    "778164c6": {
+      "native": "no",
+      "grep": "yes",
+      "production": "yes"
+    },
+    "51b23612": {
+      "native": "no",
+      "grep": "yes",
+      "production": "yes"
+    },
+    "ceb54acb": {
+      "native": "no",
+      "grep": "yes",
+      "production": "yes"
+    },
+    "577d4d32": {
+      "native": "no",
+      "grep": "no",
+      "production": "yes"
+    },
+    "3d86fd0a": {
+      "native": "no",
+      "grep": "no",
+      "production": "yes"
+    },
+    "15745da0": {
+      "native": "no",
+      "grep": "no",
+      "production": "yes"
+    },
+    "gpt4_65aabe59": {
+      "native": "no",
+      "grep": "no",
+      "production": "yes"
+    },
+    "982b5123": {
+      "native": "no",
+      "grep": "no",
+      "production": "yes"
+    }
+  },
+  "snapshots": {
+    "778164c6": {
+      "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+      "sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+      "compression_seconds": 117.88170368992724,
+      "estimated_tokens": [
+        306310,
+        331014,
+        329339
+      ],
+      "compression_provider_tokens": null
+    },
+    "51b23612": {
+      "fingerprint": "3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8",
+      "sha256": "18786f6b61f47f7f5c7bd4371669c7862ba11531a98adda1938575a5dc47cdbd",
+      "compression_seconds": 140.69230400095694,
+      "estimated_tokens": [
+        298127,
+        320533,
+        323945
+      ],
+      "compression_provider_tokens": null
+    },
+    "ceb54acb": {
+      "fingerprint": "80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7",
+      "sha256": "9d3333d19ef460a8cb495bf6ef455828e19069d29ebdda1344af8c3c98c6630e",
+      "compression_seconds": 89.44119733083062,
+      "estimated_tokens": [
+        312561,
+        329254,
+        325841
+      ],
+      "compression_provider_tokens": null
+    },
+    "577d4d32": {
+      "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+      "sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+      "compression_seconds": 81.82407163479365,
+      "estimated_tokens": [
+        308813,
+        328392,
+        333562
+      ],
+      "compression_provider_tokens": null
+    },
+    "3d86fd0a": {
+      "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+      "sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+      "compression_seconds": 118.48971851309761,
+      "estimated_tokens": [
+        315602,
+        332046,
+        339654
+      ],
+      "compression_provider_tokens": null
+    },
+    "15745da0": {
+      "fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+      "sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+      "compression_seconds": 93.741309504956,
+      "estimated_tokens": [
+        288888,
+        314955,
+        318384
+      ],
+      "compression_provider_tokens": null
+    },
+    "gpt4_65aabe59": {
+      "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+      "sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+      "compression_seconds": 88.37053048610687,
+      "estimated_tokens": [
+        327556,
+        343436,
+        346197
+      ],
+      "compression_provider_tokens": null
+    },
+    "982b5123": {
+      "fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+      "sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+      "compression_seconds": 90.14432884985581,
+      "estimated_tokens": [
+        323094,
+        341391,
+        341715
+      ],
+      "compression_provider_tokens": null
+    }
+  },
+  "manifests": {
+    "778164c6": {
+      "run": "dev8-grep-pages-836f417c-778164c6",
+      "set": "dev8",
+      "questions": [
+        "778164c6"
+      ],
+      "data_sha256": "fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9",
+      "questions_file_sha256": "ebd6f11a63514820611093d99c62fd5dab6ec8dda50fa73f56f69ff54225e4ad",
+      "gold_file_sha256": "c768cb9808e067d29789ee8d927345f810a9d66c1519ddac7357117f78b7fe64",
+      "provider": "clp",
+      "answer_model": "gpt-6-luna",
+      "answer_effort": "high",
+      "judge_model": "gpt-6-luna",
+      "judge_effort": "xhigh",
+      "sdk": "1.0.0",
+      "arms": [
+        "native",
+        "grep",
+        "production"
+      ],
+      "segments": 4,
+      "compactions": 3,
+      "system_prompt": "You are a helpful assistant.",
+      "selection_manifest_sha256": "f808d35f1dde6007e5f0c8e8feda1ea29b18886a7ac3b8683f6bf4841b6bb7c2",
+      "plugin_ref": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_commit": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_archive_sha256": "214b986b32f19ef1e234b2e9d54a8ce284d730f48081884b8e47bb181e46b77d",
+      "plugin_closure_sha256": "2b10216389d69f8039d4373966dd6bc50e8a352050866fdf24cd44b2e47bf90a",
+      "plugin_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/plugins/8149e1f6caece71de148c92a88790e5d35212d9e",
+      "candidate_sha256": {
+        "history.ts": "9d92ed13681576c72f0bc6e960ad252bcd2511599d71cd5d441600070892bbbb",
+        "index.ts": "f04ab577ec620b29e3c1c34df925e6314f6ae57e7c4816ebcc0aa31b1d0b3d16",
+        "locator.ts": "0daa32f3312b52e1116d2655b53a252923ac726bf6a4fd4f83c4bfba81627fd8",
+        "package-lock.json": "61407c39e7f0a197927e15af51a2ad92151538f68bfc5a6365fe53e3c62a5bc8",
+        "package.json": "9810a119352627887e3abf712abd593b3c15020e30544e84e158196a41fa1e51",
+        "recall-extension.ts": "8c3f1fc7817f681f370c7462b55fbdf3b1e3b1ecd8e83f2bed087cb8663b92f1",
+        "timing.ts": "1fdfefb6081e7e9937636665e8dbc4a2ba693e7877841860c31464ed4041d375"
+      },
+      "eval_wrapper_sha256": "c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72",
+      "eval_wrapper_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/wrappers/c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72.mjs",
+      "runner_sha256": "836f417cd465fb8300b9a84ae5ae372b0ceca3275e13ddfb9988dc7180a4e4e4",
+      "fingerprint": "edf1668b5367aa34291e73b03d3968ae2d74b124a8f442b9eaca348607e6e0c0"
+    },
+    "51b23612": {
+      "run": "dev8-grep-pages-836f417c-51b23612",
+      "set": "dev8",
+      "questions": [
+        "51b23612"
+      ],
+      "data_sha256": "fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9",
+      "questions_file_sha256": "ebd6f11a63514820611093d99c62fd5dab6ec8dda50fa73f56f69ff54225e4ad",
+      "gold_file_sha256": "c768cb9808e067d29789ee8d927345f810a9d66c1519ddac7357117f78b7fe64",
+      "provider": "clp",
+      "answer_model": "gpt-6-luna",
+      "answer_effort": "high",
+      "judge_model": "gpt-6-luna",
+      "judge_effort": "xhigh",
+      "sdk": "1.0.0",
+      "arms": [
+        "native",
+        "grep",
+        "production"
+      ],
+      "segments": 4,
+      "compactions": 3,
+      "system_prompt": "You are a helpful assistant.",
+      "selection_manifest_sha256": "f808d35f1dde6007e5f0c8e8feda1ea29b18886a7ac3b8683f6bf4841b6bb7c2",
+      "plugin_ref": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_commit": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_archive_sha256": "214b986b32f19ef1e234b2e9d54a8ce284d730f48081884b8e47bb181e46b77d",
+      "plugin_closure_sha256": "2b10216389d69f8039d4373966dd6bc50e8a352050866fdf24cd44b2e47bf90a",
+      "plugin_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/plugins/8149e1f6caece71de148c92a88790e5d35212d9e",
+      "candidate_sha256": {
+        "history.ts": "9d92ed13681576c72f0bc6e960ad252bcd2511599d71cd5d441600070892bbbb",
+        "index.ts": "f04ab577ec620b29e3c1c34df925e6314f6ae57e7c4816ebcc0aa31b1d0b3d16",
+        "locator.ts": "0daa32f3312b52e1116d2655b53a252923ac726bf6a4fd4f83c4bfba81627fd8",
+        "package-lock.json": "61407c39e7f0a197927e15af51a2ad92151538f68bfc5a6365fe53e3c62a5bc8",
+        "package.json": "9810a119352627887e3abf712abd593b3c15020e30544e84e158196a41fa1e51",
+        "recall-extension.ts": "8c3f1fc7817f681f370c7462b55fbdf3b1e3b1ecd8e83f2bed087cb8663b92f1",
+        "timing.ts": "1fdfefb6081e7e9937636665e8dbc4a2ba693e7877841860c31464ed4041d375"
+      },
+      "eval_wrapper_sha256": "c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72",
+      "eval_wrapper_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/wrappers/c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72.mjs",
+      "runner_sha256": "836f417cd465fb8300b9a84ae5ae372b0ceca3275e13ddfb9988dc7180a4e4e4",
+      "fingerprint": "8b7f09d3e8d9bc4feeaa69c3edee0baa01e73368d868f2e88c6373dd170d2d8d"
+    },
+    "ceb54acb": {
+      "run": "dev8-grep-pages-836f417c-ceb54acb",
+      "set": "dev8",
+      "questions": [
+        "ceb54acb"
+      ],
+      "data_sha256": "fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9",
+      "questions_file_sha256": "ebd6f11a63514820611093d99c62fd5dab6ec8dda50fa73f56f69ff54225e4ad",
+      "gold_file_sha256": "c768cb9808e067d29789ee8d927345f810a9d66c1519ddac7357117f78b7fe64",
+      "provider": "clp",
+      "answer_model": "gpt-6-luna",
+      "answer_effort": "high",
+      "judge_model": "gpt-6-luna",
+      "judge_effort": "xhigh",
+      "sdk": "1.0.0",
+      "arms": [
+        "native",
+        "grep",
+        "production"
+      ],
+      "segments": 4,
+      "compactions": 3,
+      "system_prompt": "You are a helpful assistant.",
+      "selection_manifest_sha256": "f808d35f1dde6007e5f0c8e8feda1ea29b18886a7ac3b8683f6bf4841b6bb7c2",
+      "plugin_ref": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_commit": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_archive_sha256": "214b986b32f19ef1e234b2e9d54a8ce284d730f48081884b8e47bb181e46b77d",
+      "plugin_closure_sha256": "2b10216389d69f8039d4373966dd6bc50e8a352050866fdf24cd44b2e47bf90a",
+      "plugin_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/plugins/8149e1f6caece71de148c92a88790e5d35212d9e",
+      "candidate_sha256": {
+        "history.ts": "9d92ed13681576c72f0bc6e960ad252bcd2511599d71cd5d441600070892bbbb",
+        "index.ts": "f04ab577ec620b29e3c1c34df925e6314f6ae57e7c4816ebcc0aa31b1d0b3d16",
+        "locator.ts": "0daa32f3312b52e1116d2655b53a252923ac726bf6a4fd4f83c4bfba81627fd8",
+        "package-lock.json": "61407c39e7f0a197927e15af51a2ad92151538f68bfc5a6365fe53e3c62a5bc8",
+        "package.json": "9810a119352627887e3abf712abd593b3c15020e30544e84e158196a41fa1e51",
+        "recall-extension.ts": "8c3f1fc7817f681f370c7462b55fbdf3b1e3b1ecd8e83f2bed087cb8663b92f1",
+        "timing.ts": "1fdfefb6081e7e9937636665e8dbc4a2ba693e7877841860c31464ed4041d375"
+      },
+      "eval_wrapper_sha256": "c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72",
+      "eval_wrapper_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/wrappers/c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72.mjs",
+      "runner_sha256": "836f417cd465fb8300b9a84ae5ae372b0ceca3275e13ddfb9988dc7180a4e4e4",
+      "fingerprint": "e900e9d5f8807b24ef224810c3036245c02ef5e90b1f72d7efff8d4d6b344fce"
+    },
+    "577d4d32": {
+      "run": "dev8-grep-pages-836f417c-577d4d32",
+      "set": "dev8",
+      "questions": [
+        "577d4d32"
+      ],
+      "data_sha256": "fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9",
+      "questions_file_sha256": "ebd6f11a63514820611093d99c62fd5dab6ec8dda50fa73f56f69ff54225e4ad",
+      "gold_file_sha256": "c768cb9808e067d29789ee8d927345f810a9d66c1519ddac7357117f78b7fe64",
+      "provider": "clp",
+      "answer_model": "gpt-6-luna",
+      "answer_effort": "high",
+      "judge_model": "gpt-6-luna",
+      "judge_effort": "xhigh",
+      "sdk": "1.0.0",
+      "arms": [
+        "native",
+        "grep",
+        "production"
+      ],
+      "segments": 4,
+      "compactions": 3,
+      "system_prompt": "You are a helpful assistant.",
+      "selection_manifest_sha256": "f808d35f1dde6007e5f0c8e8feda1ea29b18886a7ac3b8683f6bf4841b6bb7c2",
+      "plugin_ref": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_commit": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_archive_sha256": "214b986b32f19ef1e234b2e9d54a8ce284d730f48081884b8e47bb181e46b77d",
+      "plugin_closure_sha256": "2b10216389d69f8039d4373966dd6bc50e8a352050866fdf24cd44b2e47bf90a",
+      "plugin_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/plugins/8149e1f6caece71de148c92a88790e5d35212d9e",
+      "candidate_sha256": {
+        "history.ts": "9d92ed13681576c72f0bc6e960ad252bcd2511599d71cd5d441600070892bbbb",
+        "index.ts": "f04ab577ec620b29e3c1c34df925e6314f6ae57e7c4816ebcc0aa31b1d0b3d16",
+        "locator.ts": "0daa32f3312b52e1116d2655b53a252923ac726bf6a4fd4f83c4bfba81627fd8",
+        "package-lock.json": "61407c39e7f0a197927e15af51a2ad92151538f68bfc5a6365fe53e3c62a5bc8",
+        "package.json": "9810a119352627887e3abf712abd593b3c15020e30544e84e158196a41fa1e51",
+        "recall-extension.ts": "8c3f1fc7817f681f370c7462b55fbdf3b1e3b1ecd8e83f2bed087cb8663b92f1",
+        "timing.ts": "1fdfefb6081e7e9937636665e8dbc4a2ba693e7877841860c31464ed4041d375"
+      },
+      "eval_wrapper_sha256": "c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72",
+      "eval_wrapper_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/wrappers/c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72.mjs",
+      "runner_sha256": "836f417cd465fb8300b9a84ae5ae372b0ceca3275e13ddfb9988dc7180a4e4e4",
+      "fingerprint": "6b8f2f90e9069d9e30230c0d3d11c57c7f2f6a4caf9680c7836703e586778fec"
+    },
+    "3d86fd0a": {
+      "run": "dev8-grep-pages-836f417c-3d86fd0a",
+      "set": "dev8",
+      "questions": [
+        "3d86fd0a"
+      ],
+      "data_sha256": "fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9",
+      "questions_file_sha256": "ebd6f11a63514820611093d99c62fd5dab6ec8dda50fa73f56f69ff54225e4ad",
+      "gold_file_sha256": "c768cb9808e067d29789ee8d927345f810a9d66c1519ddac7357117f78b7fe64",
+      "provider": "clp",
+      "answer_model": "gpt-6-luna",
+      "answer_effort": "high",
+      "judge_model": "gpt-6-luna",
+      "judge_effort": "xhigh",
+      "sdk": "1.0.0",
+      "arms": [
+        "native",
+        "grep",
+        "production"
+      ],
+      "segments": 4,
+      "compactions": 3,
+      "system_prompt": "You are a helpful assistant.",
+      "selection_manifest_sha256": "f808d35f1dde6007e5f0c8e8feda1ea29b18886a7ac3b8683f6bf4841b6bb7c2",
+      "plugin_ref": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_commit": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_archive_sha256": "214b986b32f19ef1e234b2e9d54a8ce284d730f48081884b8e47bb181e46b77d",
+      "plugin_closure_sha256": "2b10216389d69f8039d4373966dd6bc50e8a352050866fdf24cd44b2e47bf90a",
+      "plugin_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/plugins/8149e1f6caece71de148c92a88790e5d35212d9e",
+      "candidate_sha256": {
+        "history.ts": "9d92ed13681576c72f0bc6e960ad252bcd2511599d71cd5d441600070892bbbb",
+        "index.ts": "f04ab577ec620b29e3c1c34df925e6314f6ae57e7c4816ebcc0aa31b1d0b3d16",
+        "locator.ts": "0daa32f3312b52e1116d2655b53a252923ac726bf6a4fd4f83c4bfba81627fd8",
+        "package-lock.json": "61407c39e7f0a197927e15af51a2ad92151538f68bfc5a6365fe53e3c62a5bc8",
+        "package.json": "9810a119352627887e3abf712abd593b3c15020e30544e84e158196a41fa1e51",
+        "recall-extension.ts": "8c3f1fc7817f681f370c7462b55fbdf3b1e3b1ecd8e83f2bed087cb8663b92f1",
+        "timing.ts": "1fdfefb6081e7e9937636665e8dbc4a2ba693e7877841860c31464ed4041d375"
+      },
+      "eval_wrapper_sha256": "c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72",
+      "eval_wrapper_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/wrappers/c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72.mjs",
+      "runner_sha256": "836f417cd465fb8300b9a84ae5ae372b0ceca3275e13ddfb9988dc7180a4e4e4",
+      "fingerprint": "dfb132af0d65ded9a3fc0a72a39a2b1be966074769862092d0be7768e1f5b097"
+    },
+    "15745da0": {
+      "run": "dev8-grep-pages-836f417c-15745da0",
+      "set": "dev8",
+      "questions": [
+        "15745da0"
+      ],
+      "data_sha256": "fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9",
+      "questions_file_sha256": "ebd6f11a63514820611093d99c62fd5dab6ec8dda50fa73f56f69ff54225e4ad",
+      "gold_file_sha256": "c768cb9808e067d29789ee8d927345f810a9d66c1519ddac7357117f78b7fe64",
+      "provider": "clp",
+      "answer_model": "gpt-6-luna",
+      "answer_effort": "high",
+      "judge_model": "gpt-6-luna",
+      "judge_effort": "xhigh",
+      "sdk": "1.0.0",
+      "arms": [
+        "native",
+        "grep",
+        "production"
+      ],
+      "segments": 4,
+      "compactions": 3,
+      "system_prompt": "You are a helpful assistant.",
+      "selection_manifest_sha256": "f808d35f1dde6007e5f0c8e8feda1ea29b18886a7ac3b8683f6bf4841b6bb7c2",
+      "plugin_ref": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_commit": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_archive_sha256": "214b986b32f19ef1e234b2e9d54a8ce284d730f48081884b8e47bb181e46b77d",
+      "plugin_closure_sha256": "2b10216389d69f8039d4373966dd6bc50e8a352050866fdf24cd44b2e47bf90a",
+      "plugin_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/plugins/8149e1f6caece71de148c92a88790e5d35212d9e",
+      "candidate_sha256": {
+        "history.ts": "9d92ed13681576c72f0bc6e960ad252bcd2511599d71cd5d441600070892bbbb",
+        "index.ts": "f04ab577ec620b29e3c1c34df925e6314f6ae57e7c4816ebcc0aa31b1d0b3d16",
+        "locator.ts": "0daa32f3312b52e1116d2655b53a252923ac726bf6a4fd4f83c4bfba81627fd8",
+        "package-lock.json": "61407c39e7f0a197927e15af51a2ad92151538f68bfc5a6365fe53e3c62a5bc8",
+        "package.json": "9810a119352627887e3abf712abd593b3c15020e30544e84e158196a41fa1e51",
+        "recall-extension.ts": "8c3f1fc7817f681f370c7462b55fbdf3b1e3b1ecd8e83f2bed087cb8663b92f1",
+        "timing.ts": "1fdfefb6081e7e9937636665e8dbc4a2ba693e7877841860c31464ed4041d375"
+      },
+      "eval_wrapper_sha256": "c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72",
+      "eval_wrapper_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/wrappers/c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72.mjs",
+      "runner_sha256": "836f417cd465fb8300b9a84ae5ae372b0ceca3275e13ddfb9988dc7180a4e4e4",
+      "fingerprint": "fd5de2f7e5ed2532141e982e7da96c646a300a30c00e259296972dc7aa274c30"
+    },
+    "gpt4_65aabe59": {
+      "run": "dev8-grep-pages-836f417c-gpt4_65aabe59",
+      "set": "dev8",
+      "questions": [
+        "gpt4_65aabe59"
+      ],
+      "data_sha256": "fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9",
+      "questions_file_sha256": "ebd6f11a63514820611093d99c62fd5dab6ec8dda50fa73f56f69ff54225e4ad",
+      "gold_file_sha256": "c768cb9808e067d29789ee8d927345f810a9d66c1519ddac7357117f78b7fe64",
+      "provider": "clp",
+      "answer_model": "gpt-6-luna",
+      "answer_effort": "high",
+      "judge_model": "gpt-6-luna",
+      "judge_effort": "xhigh",
+      "sdk": "1.0.0",
+      "arms": [
+        "native",
+        "grep",
+        "production"
+      ],
+      "segments": 4,
+      "compactions": 3,
+      "system_prompt": "You are a helpful assistant.",
+      "selection_manifest_sha256": "f808d35f1dde6007e5f0c8e8feda1ea29b18886a7ac3b8683f6bf4841b6bb7c2",
+      "plugin_ref": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_commit": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_archive_sha256": "214b986b32f19ef1e234b2e9d54a8ce284d730f48081884b8e47bb181e46b77d",
+      "plugin_closure_sha256": "2b10216389d69f8039d4373966dd6bc50e8a352050866fdf24cd44b2e47bf90a",
+      "plugin_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/plugins/8149e1f6caece71de148c92a88790e5d35212d9e",
+      "candidate_sha256": {
+        "history.ts": "9d92ed13681576c72f0bc6e960ad252bcd2511599d71cd5d441600070892bbbb",
+        "index.ts": "f04ab577ec620b29e3c1c34df925e6314f6ae57e7c4816ebcc0aa31b1d0b3d16",
+        "locator.ts": "0daa32f3312b52e1116d2655b53a252923ac726bf6a4fd4f83c4bfba81627fd8",
+        "package-lock.json": "61407c39e7f0a197927e15af51a2ad92151538f68bfc5a6365fe53e3c62a5bc8",
+        "package.json": "9810a119352627887e3abf712abd593b3c15020e30544e84e158196a41fa1e51",
+        "recall-extension.ts": "8c3f1fc7817f681f370c7462b55fbdf3b1e3b1ecd8e83f2bed087cb8663b92f1",
+        "timing.ts": "1fdfefb6081e7e9937636665e8dbc4a2ba693e7877841860c31464ed4041d375"
+      },
+      "eval_wrapper_sha256": "c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72",
+      "eval_wrapper_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/wrappers/c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72.mjs",
+      "runner_sha256": "836f417cd465fb8300b9a84ae5ae372b0ceca3275e13ddfb9988dc7180a4e4e4",
+      "fingerprint": "0e85f5691ea038832a7e0427b8922d0069a09b20bd2d6b777ea37bd5860fe45a"
+    },
+    "982b5123": {
+      "run": "dev8-grep-pages-836f417c-982b5123",
+      "set": "dev8",
+      "questions": [
+        "982b5123"
+      ],
+      "data_sha256": "fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9",
+      "questions_file_sha256": "ebd6f11a63514820611093d99c62fd5dab6ec8dda50fa73f56f69ff54225e4ad",
+      "gold_file_sha256": "c768cb9808e067d29789ee8d927345f810a9d66c1519ddac7357117f78b7fe64",
+      "provider": "clp",
+      "answer_model": "gpt-6-luna",
+      "answer_effort": "high",
+      "judge_model": "gpt-6-luna",
+      "judge_effort": "xhigh",
+      "sdk": "1.0.0",
+      "arms": [
+        "native",
+        "grep",
+        "production"
+      ],
+      "segments": 4,
+      "compactions": 3,
+      "system_prompt": "You are a helpful assistant.",
+      "selection_manifest_sha256": "f808d35f1dde6007e5f0c8e8feda1ea29b18886a7ac3b8683f6bf4841b6bb7c2",
+      "plugin_ref": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_commit": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "plugin_archive_sha256": "214b986b32f19ef1e234b2e9d54a8ce284d730f48081884b8e47bb181e46b77d",
+      "plugin_closure_sha256": "2b10216389d69f8039d4373966dd6bc50e8a352050866fdf24cd44b2e47bf90a",
+      "plugin_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/plugins/8149e1f6caece71de148c92a88790e5d35212d9e",
+      "candidate_sha256": {
+        "history.ts": "9d92ed13681576c72f0bc6e960ad252bcd2511599d71cd5d441600070892bbbb",
+        "index.ts": "f04ab577ec620b29e3c1c34df925e6314f6ae57e7c4816ebcc0aa31b1d0b3d16",
+        "locator.ts": "0daa32f3312b52e1116d2655b53a252923ac726bf6a4fd4f83c4bfba81627fd8",
+        "package-lock.json": "61407c39e7f0a197927e15af51a2ad92151538f68bfc5a6365fe53e3c62a5bc8",
+        "package.json": "9810a119352627887e3abf712abd593b3c15020e30544e84e158196a41fa1e51",
+        "recall-extension.ts": "8c3f1fc7817f681f370c7462b55fbdf3b1e3b1ecd8e83f2bed087cb8663b92f1",
+        "timing.ts": "1fdfefb6081e7e9937636665e8dbc4a2ba693e7877841860c31464ed4041d375"
+      },
+      "eval_wrapper_sha256": "c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72",
+      "eval_wrapper_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/wrappers/c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72.mjs",
+      "runner_sha256": "836f417cd465fb8300b9a84ae5ae372b0ceca3275e13ddfb9988dc7180a4e4e4",
+      "fingerprint": "9c2685d08996d369a72690b6b51a657178281d0a9a49355e7c2e7dc67802860c"
+    }
+  },
+  "records": [
+    {
+      "question_id": "778164c6",
+      "arm": "native",
+      "outcome": "answered",
+      "answer": "1. **Relevant history:** I don’t see a previous discussion here about Caribbean dishes or a Jamaican snapper dish with fruit.\n2. **Conclusion:** I can’t identify the dish from the conversation available to me.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [],
+      "timing": {
+        "startupToRpcReadyMs": 686.7394880391657,
+        "firstVisibleTextFromSpawnMs": 11459.67055298388,
+        "firstThinkingFromSpawnMs": 10132.450855104253,
+        "firstToolDeltaFromSpawnMs": null,
+        "promptToCompleteMs": 11432.964658131823,
+        "providerTTFTMs": null,
+        "modelTurns": 1,
+        "toolBatches": 0,
+        "toolCalls": 0,
+        "userMessages": 1,
+        "processWallMs": 12135.229506064206
+      },
+      "answerWallMs": 12208.549546077847,
+      "tokens": {
+        "input": 272241,
+        "output": 195,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "modelCalls": 1,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "edf1668b5367aa34291e73b03d3968ae2d74b124a8f442b9eaca348607e6e0c0",
+      "snapshot": {
+        "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+        "sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+        "reused": true,
+        "compressionSeconds": 117.88170368992724
+      },
+      "judge": {
+        "verdict": "no",
+        "correct": false,
+        "status": "graded",
+        "seconds": 4.14702298399061,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "778164c6",
+      "arm": "grep",
+      "outcome": "answered",
+      "answer": "1. The fruit-containing snapper dish mentioned earlier was **Grilled Snapper with Mango Salsa**.\n2. It was described as popular in several Caribbean countries, not specifically as Jamaican. The Jamaican dish recommended was **Escovitch Fish**, topped with spicy pickled vegetables.\n\nSo you may be thinking of **Grilled Snapper with Mango Salsa**.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [
+        "history_grep",
+        "history_expand"
+      ],
+      "timing": {
+        "startupToRpcReadyMs": 819.5739798247814,
+        "firstVisibleTextFromSpawnMs": 31171.494935872033,
+        "firstThinkingFromSpawnMs": 10163.319523911923,
+        "firstToolDeltaFromSpawnMs": 10184.72237396054,
+        "promptToCompleteMs": 31408.062542090192,
+        "providerTTFTMs": null,
+        "modelTurns": 3,
+        "toolBatches": 2,
+        "toolCalls": 2,
+        "userMessages": 1,
+        "processWallMs": 32243.299749912694
+      },
+      "answerWallMs": 32325.105851050466,
+      "tokens": {
+        "input": 275920,
+        "output": 354,
+        "cacheRead": 545792,
+        "cacheWrite": 0
+      },
+      "modelCalls": 3,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "edf1668b5367aa34291e73b03d3968ae2d74b124a8f442b9eaca348607e6e0c0",
+      "snapshot": {
+        "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+        "sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+        "reused": true,
+        "compressionSeconds": 117.88170368992724
+      },
+      "judge": {
+        "verdict": "yes",
+        "correct": true,
+        "status": "graded",
+        "seconds": 4.036479046801105,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "778164c6",
+      "arm": "production",
+      "outcome": "answered",
+      "answer": "1. **Relevant details:** I listed *Escovitch Fish* as the Jamaican snapper dish and recommended it as the first one to try. I also mentioned *Grilled Snapper with Mango Salsa* as a Caribbean snapper dish featuring fruit.\n2. **Putting that together:** The fruit-containing dish you’re thinking of was **grilled snapper with mango salsa**. It wasn’t identified as specifically Jamaican; the Jamaican dish was **Escovitch Fish**.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [
+        "history_recall",
+        "history_expand"
+      ],
+      "timing": {
+        "startupToRpcReadyMs": 695.489204954356,
+        "firstVisibleTextFromSpawnMs": 36410.23851791397,
+        "firstThinkingFromSpawnMs": 11147.82157400623,
+        "firstToolDeltaFromSpawnMs": 11255.51761686802,
+        "promptToCompleteMs": 37732.83655801788,
+        "providerTTFTMs": null,
+        "modelTurns": 3,
+        "toolBatches": 2,
+        "toolCalls": 2,
+        "userMessages": 1,
+        "processWallMs": 38460.11121291667
+      },
+      "answerWallMs": 38545.59103399515,
+      "tokens": {
+        "input": 276402,
+        "output": 420,
+        "cacheRead": 546816,
+        "cacheWrite": 0
+      },
+      "modelCalls": 3,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "edf1668b5367aa34291e73b03d3968ae2d74b124a8f442b9eaca348607e6e0c0",
+      "snapshot": {
+        "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+        "sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+        "reused": true,
+        "compressionSeconds": 117.88170368992724
+      },
+      "judge": {
+        "verdict": "yes",
+        "correct": true,
+        "status": "graded",
+        "seconds": 5.722213675035164,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "51b23612",
+      "arm": "native",
+      "outcome": "answered",
+      "answer": "**Step 1 — Relevant information:** I can’t find a mention in the conversation above of political propaganda, humor, or a Soviet cartoon mocking Western culture.\n\n**Step 2 — Conclusion:** I can’t reliably identify which cartoon you mean from this chat. If you remember a character, scene, or approximate decade, I can help narrow it down.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [],
+      "timing": {
+        "startupToRpcReadyMs": 686.6321419365704,
+        "firstVisibleTextFromSpawnMs": 11795.830585993826,
+        "firstThinkingFromSpawnMs": null,
+        "firstToolDeltaFromSpawnMs": null,
+        "promptToCompleteMs": 11656.14676498808,
+        "providerTTFTMs": null,
+        "modelTurns": 1,
+        "toolBatches": 0,
+        "toolCalls": 0,
+        "userMessages": 1,
+        "processWallMs": 12358.305662870407
+      },
+      "answerWallMs": 12447.1967399586,
+      "tokens": {
+        "input": 587,
+        "output": 195,
+        "cacheRead": 270080,
+        "cacheWrite": 0
+      },
+      "modelCalls": 1,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "8b7f09d3e8d9bc4feeaa69c3edee0baa01e73368d868f2e88c6373dd170d2d8d",
+      "snapshot": {
+        "fingerprint": "3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8",
+        "sha256": "18786f6b61f47f7f5c7bd4371669c7862ba11531a98adda1938575a5dc47cdbd",
+        "reused": true,
+        "compressionSeconds": 140.69230400095694
+      },
+      "judge": {
+        "verdict": "no",
+        "correct": false,
+        "status": "graded",
+        "seconds": 3.6718762840609998,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "51b23612",
+      "arm": "grep",
+      "outcome": "answered",
+      "answer": "**Relevant information:** In our earlier conversation about political propaganda and satire, I mentioned a Soviet cartoon called **“Nu, pogodi!”** and described it as mocking Western culture.\n\n**Answer:** The cartoon I named was **“Nu, pogodi!”**, often translated as **“Well, Just You Wait!”** I should clarify that my earlier description was misleading: it is best known as a comic series about a wolf chasing a hare, not primarily as propaganda mocking Western culture.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [
+        "history_grep",
+        "history_expand"
+      ],
+      "timing": {
+        "startupToRpcReadyMs": 805.3075780626386,
+        "firstVisibleTextFromSpawnMs": 36615.30117900111,
+        "firstThinkingFromSpawnMs": 21773.321730084717,
+        "firstToolDeltaFromSpawnMs": 13377.35486892052,
+        "promptToCompleteMs": 39190.591813996434,
+        "providerTTFTMs": null,
+        "modelTurns": 3,
+        "toolBatches": 2,
+        "toolCalls": 2,
+        "userMessages": 1,
+        "processWallMs": 40011.47063798271
+      },
+      "answerWallMs": 40096.51129692793,
+      "tokens": {
+        "input": 274002,
+        "output": 428,
+        "cacheRead": 541696,
+        "cacheWrite": 0
+      },
+      "modelCalls": 3,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "8b7f09d3e8d9bc4feeaa69c3edee0baa01e73368d868f2e88c6373dd170d2d8d",
+      "snapshot": {
+        "fingerprint": "3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8",
+        "sha256": "18786f6b61f47f7f5c7bd4371669c7862ba11531a98adda1938575a5dc47cdbd",
+        "reused": true,
+        "compressionSeconds": 140.69230400095694
+      },
+      "judge": {
+        "verdict": "yes",
+        "correct": true,
+        "status": "graded",
+        "seconds": 4.287727982038632,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "51b23612",
+      "arm": "production",
+      "outcome": "answered",
+      "answer": "**Step 1 — Relevant information from our earlier conversation:** We mentioned the Soviet cartoon *Nu, pogodi!* as an example in a discussion of propaganda that used humor or satire.\n\n**Step 2 — What was said about it:** The earlier reply described it as mocking Western culture and portraying the Soviet Union as superior.\n\n**Step 3 — Important clarification:** That description may have overstated the cartoon’s political role. *Nu, pogodi!* is mainly known as a slapstick comedy about a wolf chasing a hare, rather than as a cartoon specifically made to mock Western culture.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [
+        "history_recall",
+        "history_expand"
+      ],
+      "timing": {
+        "startupToRpcReadyMs": 690.77631784603,
+        "firstVisibleTextFromSpawnMs": 28593.36606389843,
+        "firstThinkingFromSpawnMs": 28506.80803298019,
+        "firstToolDeltaFromSpawnMs": 7156.042183982208,
+        "promptToCompleteMs": 29849.896237952635,
+        "providerTTFTMs": null,
+        "modelTurns": 3,
+        "toolBatches": 2,
+        "toolCalls": 2,
+        "userMessages": 1,
+        "processWallMs": 30556.23234785162
+      },
+      "answerWallMs": 30649.239100981504,
+      "tokens": {
+        "input": 276515,
+        "output": 356,
+        "cacheRead": 545792,
+        "cacheWrite": 0
+      },
+      "modelCalls": 3,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "8b7f09d3e8d9bc4feeaa69c3edee0baa01e73368d868f2e88c6373dd170d2d8d",
+      "snapshot": {
+        "fingerprint": "3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8",
+        "sha256": "18786f6b61f47f7f5c7bd4371669c7862ba11531a98adda1938575a5dc47cdbd",
+        "reused": true,
+        "compressionSeconds": 140.69230400095694
+      },
+      "judge": {
+        "verdict": "yes",
+        "correct": true,
+        "status": "graded",
+        "seconds": 5.870158251840621,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "ceb54acb",
+      "arm": "native",
+      "outcome": "answered",
+      "answer": "**Step 1 — Relevant information:** I can’t find an earlier message in the chat history provided that mentions “sexual compulsions” or lists alternative terms.\n\n**Step 2 — Conclusion:** I can’t reliably recall the other four options without that context. If you paste the earlier message or describe the behaviors, I can help identify or suggest suitable terms.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [],
+      "timing": {
+        "startupToRpcReadyMs": 684.3649640213698,
+        "firstVisibleTextFromSpawnMs": 12277.182004181668,
+        "firstThinkingFromSpawnMs": 12146.292590070516,
+        "firstToolDeltaFromSpawnMs": null,
+        "promptToCompleteMs": 12510.64796000719,
+        "providerTTFTMs": null,
+        "modelTurns": 1,
+        "toolBatches": 0,
+        "toolCalls": 0,
+        "userMessages": 1,
+        "processWallMs": 13226.66735202074
+      },
+      "answerWallMs": 13312.803822103888,
+      "tokens": {
+        "input": 149,
+        "output": 180,
+        "cacheRead": 278272,
+        "cacheWrite": 0
+      },
+      "modelCalls": 1,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "e900e9d5f8807b24ef224810c3036245c02ef5e90b1f72d7efff8d4d6b344fce",
+      "snapshot": {
+        "fingerprint": "80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7",
+        "sha256": "9d3333d19ef460a8cb495bf6ef455828e19069d29ebdda1344af8c3c98c6630e",
+        "reused": true,
+        "compressionSeconds": 89.44119733083062
+      },
+      "judge": {
+        "verdict": "no",
+        "correct": false,
+        "status": "graded",
+        "seconds": 4.260081772925332,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "ceb54acb",
+      "arm": "grep",
+      "outcome": "answered",
+      "answer": "**Step 1 — Relevant information:** The earlier suggestions included “sexual compulsions,” followed by four alternatives.\n\n**Step 2 — The other four options were:**\n1. Sexual fixations  \n2. Problematic sexual behaviors  \n3. Sexual impulsivity  \n4. Compulsive sexuality",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [
+        "history_grep",
+        "history_expand"
+      ],
+      "timing": {
+        "startupToRpcReadyMs": 813.8347170315683,
+        "firstVisibleTextFromSpawnMs": 32645.642955088988,
+        "firstThinkingFromSpawnMs": 9451.988426037133,
+        "firstToolDeltaFromSpawnMs": 9734.585394151509,
+        "promptToCompleteMs": 33865.3906150721,
+        "providerTTFTMs": null,
+        "modelTurns": 3,
+        "toolBatches": 2,
+        "toolCalls": 2,
+        "userMessages": 1,
+        "processWallMs": 34694.91873215884
+      },
+      "answerWallMs": 34779.518553987145,
+      "tokens": {
+        "input": 282448,
+        "output": 258,
+        "cacheRead": 557056,
+        "cacheWrite": 0
+      },
+      "modelCalls": 3,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "e900e9d5f8807b24ef224810c3036245c02ef5e90b1f72d7efff8d4d6b344fce",
+      "snapshot": {
+        "fingerprint": "80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7",
+        "sha256": "9d3333d19ef460a8cb495bf6ef455828e19069d29ebdda1344af8c3c98c6630e",
+        "reused": true,
+        "compressionSeconds": 89.44119733083062
+      },
+      "judge": {
+        "verdict": "yes",
+        "correct": true,
+        "status": "graded",
+        "seconds": 1.9981725870165974,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "ceb54acb",
+      "arm": "production",
+      "outcome": "answered",
+      "answer": "**Relevant information:** The previous chat suggested “sexual compulsions,” followed by four alternative terms.\n\n**Answer:** The other four options were:\n1. **Sexual fixations**\n2. **Problematic sexual behaviors**\n3. **Sexual impulsivity**\n4. **Compulsive sexuality**",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [
+        "history_recall",
+        "history_expand"
+      ],
+      "timing": {
+        "startupToRpcReadyMs": 694.4221078883857,
+        "firstVisibleTextFromSpawnMs": 25427.87636606954,
+        "firstThinkingFromSpawnMs": null,
+        "firstToolDeltaFromSpawnMs": 7463.073194026947,
+        "promptToCompleteMs": 25338.668421143666,
+        "providerTTFTMs": null,
+        "modelTurns": 3,
+        "toolBatches": 2,
+        "toolCalls": 2,
+        "userMessages": 1,
+        "processWallMs": 26048.646688926965
+      },
+      "answerWallMs": 26121.477144071832,
+      "tokens": {
+        "input": 282256,
+        "output": 185,
+        "cacheRead": 559104,
+        "cacheWrite": 0
+      },
+      "modelCalls": 3,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "e900e9d5f8807b24ef224810c3036245c02ef5e90b1f72d7efff8d4d6b344fce",
+      "snapshot": {
+        "fingerprint": "80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7",
+        "sha256": "9d3333d19ef460a8cb495bf6ef455828e19069d29ebdda1344af8c3c98c6630e",
+        "reused": true,
+        "compressionSeconds": 89.44119733083062
+      },
+      "judge": {
+        "verdict": "yes",
+        "correct": true,
+        "status": "graded",
+        "seconds": 2.352961459197104,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "577d4d32",
+      "arm": "native",
+      "outcome": "answered",
+      "answer": "1. You said you’re aiming to get ready for bed around **10:00–10:30 pm**.\n2. The earlier plan set **10:20 pm** as your phone-free time.\n\nSo, stop checking work emails and messages at **10:20 pm** and leave them until morning.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [],
+      "timing": {
+        "startupToRpcReadyMs": 671.4692669920623,
+        "firstVisibleTextFromSpawnMs": 19960.835616802797,
+        "firstThinkingFromSpawnMs": 16214.531278936192,
+        "firstToolDeltaFromSpawnMs": null,
+        "promptToCompleteMs": 21517.549765994772,
+        "providerTTFTMs": null,
+        "modelTurns": 1,
+        "toolBatches": 0,
+        "toolCalls": 0,
+        "userMessages": 1,
+        "processWallMs": 22204.613955924287
+      },
+      "answerWallMs": 22295.43383908458,
+      "tokens": {
+        "input": 762,
+        "output": 306,
+        "cacheRead": 275200,
+        "cacheWrite": 0
+      },
+      "modelCalls": 1,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "6b8f2f90e9069d9e30230c0d3d11c57c7f2f6a4caf9680c7836703e586778fec",
+      "snapshot": {
+        "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+        "sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+        "reused": true,
+        "compressionSeconds": 81.82407163479365
+      },
+      "judge": {
+        "verdict": "no",
+        "correct": false,
+        "status": "graded",
+        "seconds": 6.7394869609270245,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "577d4d32",
+      "arm": "grep",
+      "outcome": "answered",
+      "answer": "1. **What you’ve said:** You aim to get ready for bed around **10–10:30 pm** and have found that checking your phone around **10:30 pm** can lead to prolonged scrolling.\n2. **What was suggested:** Set a phone-free cutoff at about **10:20 pm** and use that time to wind down instead.\n3. **Answer:** You haven’t specified a separate cutoff for work emails and messages, but **10:20 pm** is the suggested time to stop checking them too—earlier if you want a full screen-free hour before bed.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [],
+      "timing": {
+        "startupToRpcReadyMs": 795.1421269681305,
+        "firstVisibleTextFromSpawnMs": 20008.866908960044,
+        "firstThinkingFromSpawnMs": 14296.024078968912,
+        "firstToolDeltaFromSpawnMs": null,
+        "promptToCompleteMs": 24737.21905099228,
+        "providerTTFTMs": null,
+        "modelTurns": 1,
+        "toolBatches": 0,
+        "toolCalls": 0,
+        "userMessages": 1,
+        "processWallMs": 25547.858740901574
+      },
+      "answerWallMs": 25636.32434583269,
+      "tokens": {
+        "input": 575,
+        "output": 384,
+        "cacheRead": 275968,
+        "cacheWrite": 0
+      },
+      "modelCalls": 1,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "6b8f2f90e9069d9e30230c0d3d11c57c7f2f6a4caf9680c7836703e586778fec",
+      "snapshot": {
+        "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+        "sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+        "reused": true,
+        "compressionSeconds": 81.82407163479365
+      },
+      "judge": {
+        "verdict": "no",
+        "correct": false,
+        "status": "graded",
+        "seconds": 5.202921472955495,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "577d4d32",
+      "arm": "production",
+      "outcome": "answered",
+      "answer": "1. You said you’re trying to stop checking work emails and messages by **7 pm**.\n2. You said this helps separate work from personal time and lets you relax.\n\nSo, you stop checking work emails and messages at **7 pm**.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [
+        "history_recall",
+        "history_expand"
+      ],
+      "timing": {
+        "startupToRpcReadyMs": 699.583237990737,
+        "firstVisibleTextFromSpawnMs": 28969.49700010009,
+        "firstThinkingFromSpawnMs": 28861.748924013227,
+        "firstToolDeltaFromSpawnMs": 7888.575281016529,
+        "promptToCompleteMs": 29928.761739982292,
+        "providerTTFTMs": null,
+        "modelTurns": 3,
+        "toolBatches": 2,
+        "toolCalls": 2,
+        "userMessages": 1,
+        "processWallMs": 30644.002547953278
+      },
+      "answerWallMs": 30729.98850978911,
+      "tokens": {
+        "input": 3942,
+        "output": 159,
+        "cacheRead": 832000,
+        "cacheWrite": 0
+      },
+      "modelCalls": 3,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "6b8f2f90e9069d9e30230c0d3d11c57c7f2f6a4caf9680c7836703e586778fec",
+      "snapshot": {
+        "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+        "sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+        "reused": true,
+        "compressionSeconds": 81.82407163479365
+      },
+      "judge": {
+        "verdict": "yes",
+        "correct": true,
+        "status": "graded",
+        "seconds": 3.2165513709187508,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "3d86fd0a",
+      "arm": "native",
+      "outcome": "answered",
+      "answer": "**Relevant information:** The conversation mentions your aunt, your friend, family members, and people such as Sarah and Dr. Smith, but it doesn’t say where you met anyone named Sophia.\n\n**Answer:** I can’t determine where you met Sophia from the conversation provided.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [],
+      "timing": {
+        "startupToRpcReadyMs": 674.6751270256937,
+        "firstVisibleTextFromSpawnMs": 10302.86478297785,
+        "firstThinkingFromSpawnMs": 10209.68349603936,
+        "firstToolDeltaFromSpawnMs": null,
+        "promptToCompleteMs": 11040.090502006933,
+        "providerTTFTMs": null,
+        "modelTurns": 1,
+        "toolBatches": 0,
+        "toolCalls": 0,
+        "userMessages": 1,
+        "processWallMs": 11746.409649960697
+      },
+      "answerWallMs": 11803.324052831158,
+      "tokens": {
+        "input": 284677,
+        "output": 118,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "modelCalls": 1,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "dfb132af0d65ded9a3fc0a72a39a2b1be966074769862092d0be7768e1f5b097",
+      "snapshot": {
+        "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+        "sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+        "reused": true,
+        "compressionSeconds": 118.48971851309761
+      },
+      "judge": {
+        "verdict": "no",
+        "correct": false,
+        "status": "graded",
+        "seconds": 5.384937707800418,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "3d86fd0a",
+      "arm": "grep",
+      "outcome": "answered",
+      "answer": "**Relevant information:** The conversation mentions several people, including Sarah and your aunt, but it doesn’t say that you met someone named Sophia or where you met her.\n\n**Answer:** I can’t determine where you met Sophia from the chat history provided.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [],
+      "timing": {
+        "startupToRpcReadyMs": 796.1903798859566,
+        "firstVisibleTextFromSpawnMs": 17269.72699793987,
+        "firstThinkingFromSpawnMs": 15204.763256013393,
+        "firstToolDeltaFromSpawnMs": null,
+        "promptToCompleteMs": 17290.91026983224,
+        "providerTTFTMs": null,
+        "modelTurns": 1,
+        "toolBatches": 0,
+        "toolCalls": 0,
+        "userMessages": 1,
+        "processWallMs": 18102.598911849782
+      },
+      "answerWallMs": 18156.635086983442,
+      "tokens": {
+        "input": 285258,
+        "output": 201,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "modelCalls": 1,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "dfb132af0d65ded9a3fc0a72a39a2b1be966074769862092d0be7768e1f5b097",
+      "snapshot": {
+        "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+        "sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+        "reused": true,
+        "compressionSeconds": 118.48971851309761
+      },
+      "judge": {
+        "verdict": "no",
+        "correct": false,
+        "status": "graded",
+        "seconds": 4.092303656041622,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "3d86fd0a",
+      "arm": "production",
+      "outcome": "answered",
+      "answer": "1. **Relevant information:** You said Sophia’s “How We Met” entry was “Coffee Shop (City).”\n2. **Answer:** You met Sophia at a coffee shop in the city.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [
+        "history_recall",
+        "history_expand"
+      ],
+      "timing": {
+        "startupToRpcReadyMs": 697.2422329708934,
+        "firstVisibleTextFromSpawnMs": 32064.593384973705,
+        "firstThinkingFromSpawnMs": 31997.909447876737,
+        "firstToolDeltaFromSpawnMs": 7568.202975904569,
+        "promptToCompleteMs": 32058.164081070572,
+        "providerTTFTMs": null,
+        "modelTurns": 3,
+        "toolBatches": 2,
+        "toolCalls": 2,
+        "userMessages": 1,
+        "processWallMs": 32771.0451669991
+      },
+      "answerWallMs": 32825.48991404474,
+      "tokens": {
+        "input": 289454,
+        "output": 156,
+        "cacheRead": 571392,
+        "cacheWrite": 0
+      },
+      "modelCalls": 3,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "dfb132af0d65ded9a3fc0a72a39a2b1be966074769862092d0be7768e1f5b097",
+      "snapshot": {
+        "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+        "sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+        "reused": true,
+        "compressionSeconds": 118.48971851309761
+      },
+      "judge": {
+        "verdict": "yes",
+        "correct": true,
+        "status": "graded",
+        "seconds": 2.121798323933035,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "15745da0",
+      "arm": "native",
+      "outcome": "answered",
+      "answer": "**Relevant information:** You said you have a collection of old cameras from the 1970s and 1980s that you’re considering selling.\n\n**Reasoning:** You didn’t say when you started collecting them or how long you’ve had them.\n\n**Answer:** I can’t determine how long you’ve been collecting vintage cameras from the information provided.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [],
+      "timing": {
+        "startupToRpcReadyMs": 672.8829310741276,
+        "firstVisibleTextFromSpawnMs": 9388.377306051552,
+        "firstThinkingFromSpawnMs": 9167.522025061771,
+        "firstToolDeltaFromSpawnMs": null,
+        "promptToCompleteMs": 9289.056344889104,
+        "providerTTFTMs": null,
+        "modelTurns": 1,
+        "toolBatches": 0,
+        "toolCalls": 0,
+        "userMessages": 1,
+        "processWallMs": 9993.54565399699
+      },
+      "answerWallMs": 10068.8968191389,
+      "tokens": {
+        "input": 265006,
+        "output": 150,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "modelCalls": 1,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "fd5de2f7e5ed2532141e982e7da96c646a300a30c00e259296972dc7aa274c30",
+      "snapshot": {
+        "fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+        "sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+        "reused": true,
+        "compressionSeconds": 93.741309504956
+      },
+      "judge": {
+        "verdict": "no",
+        "correct": false,
+        "status": "graded",
+        "seconds": 5.755186290014535,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "15745da0",
+      "arm": "grep",
+      "outcome": "answered",
+      "answer": "**Step 1 — Relevant information:** You said you have a collection of old cameras from the 1970s and 1980s and are considering selling them.\n\n**Step 2 — What follows:** You didn’t say how long you’ve been collecting them, so I can’t determine the duration.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [],
+      "timing": {
+        "startupToRpcReadyMs": 800.0666401349008,
+        "firstVisibleTextFromSpawnMs": 10124.091326957569,
+        "firstThinkingFromSpawnMs": 10064.86287410371,
+        "firstToolDeltaFromSpawnMs": null,
+        "promptToCompleteMs": 10029.869825113565,
+        "providerTTFTMs": null,
+        "modelTurns": 1,
+        "toolBatches": 0,
+        "toolCalls": 0,
+        "userMessages": 1,
+        "processWallMs": 10861.595852999017
+      },
+      "answerWallMs": 10944.808069849387,
+      "tokens": {
+        "input": 265587,
+        "output": 153,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "modelCalls": 1,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "fd5de2f7e5ed2532141e982e7da96c646a300a30c00e259296972dc7aa274c30",
+      "snapshot": {
+        "fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+        "sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+        "reused": true,
+        "compressionSeconds": 93.741309504956
+      },
+      "judge": {
+        "verdict": "no",
+        "correct": false,
+        "status": "graded",
+        "seconds": 5.859204154228792,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "15745da0",
+      "arm": "production",
+      "outcome": "answered",
+      "answer": "**Relevant information:** On May 20, you said you had been collecting vintage cameras for three months.\n\n**Reasoning and answer:** Based on that statement, you’ve been collecting vintage cameras for **about three months**.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [
+        "history_recall",
+        "history_expand"
+      ],
+      "timing": {
+        "startupToRpcReadyMs": 693.4693399816751,
+        "firstVisibleTextFromSpawnMs": 34728.89256896451,
+        "firstThinkingFromSpawnMs": 33224.993956973776,
+        "firstToolDeltaFromSpawnMs": 9555.317688034847,
+        "promptToCompleteMs": 35191.943967016414,
+        "providerTTFTMs": null,
+        "modelTurns": 3,
+        "toolBatches": 2,
+        "toolCalls": 2,
+        "userMessages": 1,
+        "processWallMs": 35901.00417891517
+      },
+      "answerWallMs": 35980.83405289799,
+      "tokens": {
+        "input": 269191,
+        "output": 251,
+        "cacheRead": 532480,
+        "cacheWrite": 0
+      },
+      "modelCalls": 3,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "fd5de2f7e5ed2532141e982e7da96c646a300a30c00e259296972dc7aa274c30",
+      "snapshot": {
+        "fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+        "sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+        "reused": true,
+        "compressionSeconds": 93.741309504956
+      },
+      "judge": {
+        "verdict": "yes",
+        "correct": true,
+        "status": "graded",
+        "seconds": 4.775198491988704,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "gpt4_65aabe59",
+      "arm": "native",
+      "outcome": "answered",
+      "answer": "1. **Relevant information:** The conversation mentions a smart thermostat only as a general energy-efficiency suggestion. It doesn’t mention you setting one up, or setting up a mesh network system.\n2. **Conclusion:** I can’t tell which device you set up first from the chat history.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [],
+      "timing": {
+        "startupToRpcReadyMs": 672.2482182085514,
+        "firstVisibleTextFromSpawnMs": 10689.821978099644,
+        "firstThinkingFromSpawnMs": 10478.403366170824,
+        "firstToolDeltaFromSpawnMs": null,
+        "promptToCompleteMs": 12899.40572809428,
+        "providerTTFTMs": null,
+        "modelTurns": 1,
+        "toolBatches": 0,
+        "toolCalls": 0,
+        "userMessages": 1,
+        "processWallMs": 13603.34650799632
+      },
+      "answerWallMs": 13685.225665103644,
+      "tokens": {
+        "input": 286760,
+        "output": 127,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "modelCalls": 1,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "0e85f5691ea038832a7e0427b8922d0069a09b20bd2d6b777ea37bd5860fe45a",
+      "snapshot": {
+        "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+        "sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+        "reused": true,
+        "compressionSeconds": 88.37053048610687
+      },
+      "judge": {
+        "verdict": "no",
+        "correct": false,
+        "status": "graded",
+        "seconds": 6.570996236987412,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "gpt4_65aabe59",
+      "arm": "grep",
+      "outcome": "answered",
+      "answer": "1. I don’t see a message in the conversation saying when you set up either device.\n2. A smart thermostat was mentioned as a general suggestion, but not as something you set up. The mesh network system wasn’t discussed.\n\nSo I can’t determine which one you set up first from the available chat history.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [],
+      "timing": {
+        "startupToRpcReadyMs": 803.4851648844779,
+        "firstVisibleTextFromSpawnMs": 12790.642600040883,
+        "firstThinkingFromSpawnMs": 12513.47613404505,
+        "firstToolDeltaFromSpawnMs": null,
+        "promptToCompleteMs": 12759.760057087988,
+        "providerTTFTMs": null,
+        "modelTurns": 1,
+        "toolBatches": 0,
+        "toolCalls": 0,
+        "userMessages": 1,
+        "processWallMs": 13594.832673901692
+      },
+      "answerWallMs": 13684.5188960433,
+      "tokens": {
+        "input": 287341,
+        "output": 140,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "modelCalls": 1,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "0e85f5691ea038832a7e0427b8922d0069a09b20bd2d6b777ea37bd5860fe45a",
+      "snapshot": {
+        "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+        "sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+        "reused": true,
+        "compressionSeconds": 88.37053048610687
+      },
+      "judge": {
+        "verdict": "no",
+        "correct": false,
+        "status": "graded",
+        "seconds": 7.80101987789385,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "gpt4_65aabe59",
+      "arm": "production",
+      "outcome": "answered",
+      "answer": "1. You said you set up your smart thermostat about a month ago.\n2. You said you upgraded to a mesh network system about three weeks ago.\n3. Since a month ago was earlier, you set up the **smart thermostat first**.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [
+        "history_recall",
+        "history_expand",
+        "history_expand"
+      ],
+      "timing": {
+        "startupToRpcReadyMs": 693.1354340631515,
+        "firstVisibleTextFromSpawnMs": 30118.379661114886,
+        "firstThinkingFromSpawnMs": 30009.451965102926,
+        "firstToolDeltaFromSpawnMs": 9248.231641948223,
+        "promptToCompleteMs": 30280.162448994815,
+        "providerTTFTMs": null,
+        "modelTurns": 3,
+        "toolBatches": 2,
+        "toolCalls": 3,
+        "userMessages": 1,
+        "processWallMs": 30988.918226910755
+      },
+      "answerWallMs": 31081.45236503333,
+      "tokens": {
+        "input": 295677,
+        "output": 270,
+        "cacheRead": 575488,
+        "cacheWrite": 0
+      },
+      "modelCalls": 3,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "0e85f5691ea038832a7e0427b8922d0069a09b20bd2d6b777ea37bd5860fe45a",
+      "snapshot": {
+        "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+        "sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+        "reused": true,
+        "compressionSeconds": 88.37053048610687
+      },
+      "judge": {
+        "verdict": "yes",
+        "correct": true,
+        "status": "graded",
+        "seconds": 2.7180134640075266,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "982b5123",
+      "arm": "native",
+      "outcome": "answered",
+      "answer": "**Step 1 — Relevant information:** The conversation mentions Airbnb generally, but it doesn’t say that you booked an Airbnb in San Francisco or when you booked it.\n\n**Step 2 — Answer:** I can’t determine how many months ago you booked it from the information provided.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [],
+      "timing": {
+        "startupToRpcReadyMs": 668.3410899713635,
+        "firstVisibleTextFromSpawnMs": 10528.070562053472,
+        "firstThinkingFromSpawnMs": 10423.785981955007,
+        "firstToolDeltaFromSpawnMs": null,
+        "promptToCompleteMs": 10499.884658958763,
+        "providerTTFTMs": null,
+        "modelTurns": 1,
+        "toolBatches": 0,
+        "toolCalls": 0,
+        "userMessages": 1,
+        "processWallMs": 11183.799648890272
+      },
+      "answerWallMs": 11260.541562922299,
+      "tokens": {
+        "input": 584,
+        "output": 114,
+        "cacheRead": 285440,
+        "cacheWrite": 0
+      },
+      "modelCalls": 1,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "9c2685d08996d369a72690b6b51a657178281d0a9a49355e7c2e7dc67802860c",
+      "snapshot": {
+        "fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+        "sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+        "reused": true,
+        "compressionSeconds": 90.14432884985581
+      },
+      "judge": {
+        "verdict": "no",
+        "correct": false,
+        "status": "graded",
+        "seconds": 5.388496581930667,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "982b5123",
+      "arm": "grep",
+      "outcome": "answered",
+      "answer": "**Relevant information:** You said you stayed in Haight-Ashbury for your friend’s wedding and had to book the Airbnb **three months in advance**.\n\n**Reasoning:** That tells us how far ahead of the stay you booked, not when the stay happened relative to today.\n\n**Answer:** You booked it three months before your stay; the conversation doesn’t specify how many months ago that was.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [
+        "history_grep",
+        "history_expand"
+      ],
+      "timing": {
+        "startupToRpcReadyMs": 801.8633120227605,
+        "firstVisibleTextFromSpawnMs": 38030.99514800124,
+        "firstThinkingFromSpawnMs": 11239.287350093946,
+        "firstToolDeltaFromSpawnMs": 11314.777640160173,
+        "promptToCompleteMs": 45297.72934713401,
+        "providerTTFTMs": null,
+        "modelTurns": 3,
+        "toolBatches": 2,
+        "toolCalls": 2,
+        "userMessages": 1,
+        "processWallMs": 46131.32104999386
+      },
+      "answerWallMs": 46219.68538593501,
+      "tokens": {
+        "input": 291196,
+        "output": 554,
+        "cacheRead": 573440,
+        "cacheWrite": 0
+      },
+      "modelCalls": 3,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "9c2685d08996d369a72690b6b51a657178281d0a9a49355e7c2e7dc67802860c",
+      "snapshot": {
+        "fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+        "sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+        "reused": true,
+        "compressionSeconds": 90.14432884985581
+      },
+      "judge": {
+        "verdict": "no",
+        "correct": false,
+        "status": "graded",
+        "seconds": 3.9604350361041725,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    },
+    {
+      "question_id": "982b5123",
+      "arm": "production",
+      "outcome": "answered",
+      "answer": "1. You said your San Francisco wedding trip was **two months ago**.\n2. You said you booked the Airbnb **three months before that trip**.\n3. So you booked it about **five months ago**.",
+      "terminalStopReason": "stop",
+      "providerError": null,
+      "tool_calls": [
+        "history_recall",
+        "history_expand",
+        "history_expand"
+      ],
+      "timing": {
+        "startupToRpcReadyMs": 691.8129208497703,
+        "firstVisibleTextFromSpawnMs": 35574.0387130063,
+        "firstThinkingFromSpawnMs": 21440.88216777891,
+        "firstToolDeltaFromSpawnMs": 9563.214517896995,
+        "promptToCompleteMs": 37268.747966969386,
+        "providerTTFTMs": null,
+        "modelTurns": 3,
+        "toolBatches": 2,
+        "toolCalls": 3,
+        "userMessages": 1,
+        "processWallMs": 37992.291094968095
+      },
+      "answerWallMs": 38078.35060218349,
+      "tokens": {
+        "input": 292603,
+        "output": 342,
+        "cacheRead": 574464,
+        "cacheWrite": 0
+      },
+      "modelCalls": 3,
+      "rc": 0,
+      "error": null,
+      "run_fingerprint": "9c2685d08996d369a72690b6b51a657178281d0a9a49355e7c2e7dc67802860c",
+      "snapshot": {
+        "fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+        "sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+        "reused": true,
+        "compressionSeconds": 90.14432884985581
+      },
+      "judge": {
+        "verdict": "yes",
+        "correct": true,
+        "status": "graded",
+        "seconds": 6.690551731036976,
+        "model": "gpt-6-luna",
+        "effort": "xhigh"
+      }
+    }
+  ],
+  "original_shared_snapshot_compression_seconds": 820.5851640105247,
+  "compression_provider_usage_known": false,
+  "answer_usage_semantics": "SDK1.0.0 Responses normalizes input to uncached tokens; total includes cacheRead/cacheWrite. Answer assistant responses only; excludes compression/judge usage.",
+  "billing_cost": null,
+  "candidate_gain_claim": false,
+  "runner_uncommitted_hash_frozen": true,
+  "runner_sha256": "836f417cd465fb8300b9a84ae5ae372b0ceca3275e13ddfb9988dc7180a4e4e4",
+  "all_snapshots_reused_from_baseline": true,
+  "baseline_artifacts_unchanged": true
+}

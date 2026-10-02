@@ -1,0 +1,65 @@
+{
+  "run_fingerprint": "286fa358459233d9cab508df075da22a430da05da94cd42668f9be48f5da716b",
+  "question_id": "gpt4_a1b77f9c",
+  "arm": "grep",
+  "snapshot_fingerprint": "8f6364fa7669bee31aa28d191980b477eae4b9d4ae6227b66ed9bb55221ee458",
+  "snapshot_sha256": "7cc3eabc438d64bdb6e5108bf18ad93656f7eb2daa10a258287a4e9b6321f7af",
+  "answer_sha256": "3fd9cbbc0e5f9f7c54900d0ff087e833a2c94c865ee915e45ca6dc4b9f5e18e0",
+  "result": {
+    "question_id": "gpt4_a1b77f9c",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "1. **The Nightingale:** Started January 1 and finished January 15 — **2 weeks**.\n2. **Sapiens: A Brief History of Humankind:** Started February 1 and finished March 1 — **4 weeks**.\n3. **The Power:** Started March 6 and finished March 20 — **2 weeks**.\n\n**Total: 2 + 4 + 2 = 8 weeks.**",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_grep",
+      "history_grep",
+      "history_grep",
+      "history_grep",
+      "history_grep",
+      "history_grep",
+      "history_expand",
+      "history_expand",
+      "history_grep"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 807.3500029277056,
+      "firstVisibleTextFromSpawnMs": 73931.48619798012,
+      "firstThinkingFromSpawnMs": 11631.290275836363,
+      "firstToolDeltaFromSpawnMs": 14806.181548861787,
+      "promptToCompleteMs": 74309.11931605078,
+      "providerTTFTMs": null,
+      "modelTurns": 7,
+      "toolBatches": 6,
+      "toolCalls": 9,
+      "userMessages": 1,
+      "processWallMs": 75148.32450984977
+    },
+    "answerWallMs": 75192.69680604339,
+    "tokens": {
+      "input": 294811,
+      "output": 966,
+      "cacheRead": 1723392,
+      "cacheWrite": 0
+    },
+    "modelCalls": 7,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "286fa358459233d9cab508df075da22a430da05da94cd42668f9be48f5da716b",
+    "snapshot": {
+      "fingerprint": "8f6364fa7669bee31aa28d191980b477eae4b9d4ae6227b66ed9bb55221ee458",
+      "sha256": "7cc3eabc438d64bdb6e5108bf18ad93656f7eb2daa10a258287a4e9b6321f7af",
+      "reused": false,
+      "compressionSeconds": 124.69937260216102
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 3.5902237019035965,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

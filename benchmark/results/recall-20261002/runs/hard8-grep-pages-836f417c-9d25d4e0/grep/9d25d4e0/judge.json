@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "29e8c84a493937b255ae4783d732edec1dc6fbacbaece4aa158b2dcf0b74a1fd",
+  "question_id": "9d25d4e0",
+  "arm": "grep",
+  "snapshot_fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
+  "snapshot_sha256": "f4e9825ba69cc0742e2c82d3a45cd1d3e4c4d33da2f6d14942d6988fe0259a99",
+  "answer_sha256": "ee338690edbad3fed4575062ef60234693ee18f3246295a1b435a8be5f7b26c5",
+  "result": {
+    "question_id": "9d25d4e0",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "**Answer (step by step):**\n\n1. In the conversation, you mentioned owning a watch with a broken strap, another watch, an aquamarine ring, and an antique pearl necklace.\n2. You also said you had lost silver stud earrings and were thinking about buying a replacement pair; you hadn’t said that you’d bought them.\n3. No jewelry purchases or acquisitions dated within the last two months (since March 30, 2023) were mentioned.\n\n**So, based on the chat history, you acquired 0 pieces of jewelry in the last two months.**",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 797.985757002607,
+      "firstVisibleTextFromSpawnMs": 15478.807976935059,
+      "firstThinkingFromSpawnMs": 12135.45749289915,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 16504.39582997933,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 17317.967081908137
+    },
+    "answerWallMs": 17368.53913287632,
+    "tokens": {
+      "input": 279111,
+      "output": 392,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "29e8c84a493937b255ae4783d732edec1dc6fbacbaece4aa158b2dcf0b74a1fd",
+    "snapshot": {
+      "fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
+      "sha256": "f4e9825ba69cc0742e2c82d3a45cd1d3e4c4d33da2f6d14942d6988fe0259a99",
+      "reused": true,
+      "compressionSeconds": 101.38162532495335
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.170611782930791,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "candidate": "8149e1f6caece71de148c92a88790e5d35212d9e",
+  "actual_sessions_verified": 24,
+  "guarded_resume_provider_calls": 0,
+  "all_historical_artifacts_rehashed_unchanged": true,
+  "baseline_and_previous_paging_same_snapshot_bytes": true,
+  "comparison": [
+    {
+      "plugin_commit": "f5715d1901b6bedf19811030f18f3733eefb7bc4",
+      "scores": {
+        "native": 1,
+        "grep": 1,
+        "production": 3
+      },
+      "mean_answer_seconds": {
+        "native": 19.9,
+        "grep": 33.1,
+        "production": 88.0
+      },
+      "production_answer_tokens_including_cache": 16073204
+    },
+    {
+      "plugin_commit": "7d1980b8b7512ec8568c3ddaaecdccb8e0ad4014",
+      "scores": {
+        "native": 0,
+        "grep": 1,
+        "production": 2
+      },
+      "mean_answer_seconds": {
+        "native": 18.2,
+        "grep": 47.6,
+        "production": 103.1
+      },
+      "production_answer_tokens_including_cache": 16959766
+    },
+    {
+      "plugin_commit": "8149e1f6caece71de148c92a88790e5d35212d9e",
+      "scores": {
+        "native": 0,
+        "grep": 1,
+        "production": 3
+      },
+      "mean_answer_seconds": {
+        "native": 17.7,
+        "grep": 27.0,
+        "production": 94.7
+      },
+      "production_answer_tokens_including_cache": 16443912
+    }
+  ],
+  "production_delta_vs_base": {
+    "production_mean_answer_seconds_vs_base": 6.7,
+    "production_answer_tokens_with_cache_vs_base": 370708
+  },
+  "production_verdict_changes_vs_base": {
+    "2ce6a0f2": [
+      "no",
+      "yes"
+    ],
+    "gpt4_731e37d7": [
+      "yes",
+      "no"
+    ]
+  },
+  "grep_offset_nonzero_calls": [
+    {
+      "question_id": "gpt4_a1b77f9c",
+      "arm": "grep",
+      "offset": 30,
+      "previous_next_offset": 30,
+      "pattern_matches_previous_query": false,
+      "returned": 30,
+      "same_query_continuation_verified": false
+    },
+    {
+      "question_id": "gpt4_a1b77f9c",
+      "arm": "grep",
+      "offset": 60,
+      "previous_next_offset": 60,
+      "pattern_matches_previous_query": false,
+      "returned": 17,
+      "same_query_continuation_verified": false
+    },
+    {
+      "question_id": "gpt4_15e38248",
+      "arm": "grep",
+      "offset": 30,
+      "previous_next_offset": 30,
+      "pattern_matches_previous_query": true,
+      "returned": 30,
+      "same_query_continuation_verified": true
+    },
+    {
+      "question_id": "2ce6a0f2",
+      "arm": "production",
+      "offset": 30,
+      "previous_next_offset": 30,
+      "pattern_matches_previous_query": false,
+      "returned": 0,
+      "same_query_continuation_verified": false
+    }
+  ],
+  "same_query_grep_continuations": 1,
+  "changed_query_offset_carry_observations": 3,
+  "expand_nonzero_offset_calls": 0,
+  "wrong_grep_no_tool_calls": [
+    "gpt4_7fce9456",
+    "28dc39ac",
+    "6d550036",
+    "2ce6a0f2",
+    "9d25d4e0",
+    "gpt4_731e37d7"
+  ],
+  "production_tool_calls": {
+    "history_recall": 31,
+    "history_expand": 33,
+    "history_grep": 10
+  },
+  "causal_gain_or_regression_claim": false,
+  "promotion_approved": false
+}

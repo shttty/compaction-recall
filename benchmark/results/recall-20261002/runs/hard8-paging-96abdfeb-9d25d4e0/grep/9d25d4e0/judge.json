@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "cc2f1d21b1fc00b40fd8f506733446ba42a5372d8303125761221eb1ae72c015",
+  "question_id": "9d25d4e0",
+  "arm": "grep",
+  "snapshot_fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
+  "snapshot_sha256": "f4e9825ba69cc0742e2c82d3a45cd1d3e4c4d33da2f6d14942d6988fe0259a99",
+  "answer_sha256": "a14c73c32b43609e69f912b2db6f0afc2335c25b920bdfdcd3a9528febbd5334",
+  "result": {
+    "question_id": "9d25d4e0",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "**Relevant information:** You mentioned a watch needing a new strap, another watch needing a battery, an aquamarine ring needing polishing, an antique pearl necklace needing an appraisal, and replacing lost silver stud earrings. You didn’t say when you acquired these items.\n\n**Conclusion:** The chat doesn’t provide enough information to determine how many pieces of jewelry you acquired in the last two months.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 833.205726929009,
+      "firstVisibleTextFromSpawnMs": 13779.376270016655,
+      "firstThinkingFromSpawnMs": 12792.18459688127,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 14947.897806065157,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 15812.737168977037
+    },
+    "answerWallMs": 15869.72892191261,
+    "tokens": {
+      "input": 278941,
+      "output": 259,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "cc2f1d21b1fc00b40fd8f506733446ba42a5372d8303125761221eb1ae72c015",
+    "snapshot": {
+      "fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
+      "sha256": "f4e9825ba69cc0742e2c82d3a45cd1d3e4c4d33da2f6d14942d6988fe0259a99",
+      "reused": true,
+      "compressionSeconds": 101.38162532495335
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.281001114053652,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

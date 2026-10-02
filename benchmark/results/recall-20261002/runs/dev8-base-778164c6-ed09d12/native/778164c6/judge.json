@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "ad0eefca3f82cc61ce29e7cdbf09d1513429c770f24e28fa633ce93ece117e7e",
+  "question_id": "778164c6",
+  "arm": "native",
+  "snapshot_fingerprint": "4af02e7afbc8cefaeaae38265715218a15d1286fbaa3ada81567c702ebd5cdd2",
+  "snapshot_sha256": "9657076b6431c1be353dbf020d15929983cbf97b693d7f23f1665f8bc55994e3",
+  "answer_sha256": "eae7d98530f3950910f6da54caf0c41d03423f80c88633df124d0a439aa0491b",
+  "result": {
+    "question_id": "778164c6",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Relevant information:** I don’t see an earlier discussion of Caribbean dishes or a Jamaican snapper recommendation in the conversation available here.\n\n**Reasoning:** Without that earlier recommendation, I can’t reliably identify the dish. One possibility is **ackee and saltfish**—ackee is a fruit—but it’s traditionally made with saltfish, not snapper, so I can’t say that’s what I recommended.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 673.5564509872347,
+      "firstVisibleTextFromSpawnMs": 17859.716281061992,
+      "firstThinkingFromSpawnMs": 13853.809159016237,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 18209.744568914175,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 18898.91564496793
+    },
+    "answerWallMs": 18970.149841159582,
+    "tokens": {
+      "input": 271931,
+      "output": 457,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "ad0eefca3f82cc61ce29e7cdbf09d1513429c770f24e28fa633ce93ece117e7e",
+    "snapshot": {
+      "fingerprint": "4af02e7afbc8cefaeaae38265715218a15d1286fbaa3ada81567c702ebd5cdd2",
+      "sha256": "9657076b6431c1be353dbf020d15929983cbf97b693d7f23f1665f8bc55994e3",
+      "reused": false,
+      "compressionSeconds": 93.66139406873845
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 4.4299769368954,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

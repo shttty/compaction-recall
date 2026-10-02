@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "3d9a1896e36cd43dc4fa3bbc2132633c3292d4439c2c5c32ae54bd6476c6c305",
+  "question_id": "577d4d32",
+  "arm": "native",
+  "snapshot_fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+  "snapshot_sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+  "answer_sha256": "21dd9d7ac45be06afa41ac2263d95db6a5268361c78fa4fa948733926ab56cb6",
+  "result": {
+    "question_id": "577d4d32",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant details:** You said you tend to check your phone around **10:30 pm** and then get into bed around **11:15 pm**. A **10:20 pm phone-free cutoff** was suggested, alongside aiming for a bedtime routine around **10–10:30 pm**.\n\n**Step 2 — Answer:** We didn’t set a specific cutoff for work emails and messages. The suggested cutoff for putting your phone away was **10:20 pm**, so that’s the closest agreed time to stop checking them—though you hadn’t explicitly confirmed it.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 696.8725151382387,
+      "firstVisibleTextFromSpawnMs": 21512.36849813722,
+      "firstThinkingFromSpawnMs": 15410.941381007433,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 25229.02885079384,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 25941.46742299199
+    },
+    "answerWallMs": 26028.21663208306,
+    "tokens": {
+      "input": 762,
+      "output": 417,
+      "cacheRead": 275200,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "3d9a1896e36cd43dc4fa3bbc2132633c3292d4439c2c5c32ae54bd6476c6c305",
+    "snapshot": {
+      "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+      "sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+      "reused": true,
+      "compressionSeconds": 81.82407163479365
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 6.048725557047874,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

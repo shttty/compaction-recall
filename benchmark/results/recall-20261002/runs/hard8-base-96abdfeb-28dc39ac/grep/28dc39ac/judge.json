@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "efc99d2411ba36b0a1075d131b7c60c58c1e56e98bd60c13815918152adaf784",
+  "question_id": "28dc39ac",
+  "arm": "grep",
+  "snapshot_fingerprint": "ad72fa9de904445a76551cab6ab0e306784a28be5a1344ecc3d70d15474c1146",
+  "snapshot_sha256": "994d1efe60781f260eba9fd146078fc9827dfa69d1b08519bbfd9ea30114f866",
+  "answer_sha256": "5f351e00163ee7dd37d16738b3edafad6d176ba50fdadc263d8aa191ebce6099",
+  "result": {
+    "question_id": "28dc39ac",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "1. You mentioned about **5 gaming sessions** in the past month, each lasting **2–3 hours**:  \n   **5 × 2–3 = 10–15 hours**.\n2. You also mentioned a **5-hour Overwatch session** on a Saturday.\n3. If that Overwatch session was separate from the five sessions, your total is **15–20 hours**. If it was one of those sessions, the total would instead be **10–15 hours**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 822.5215720012784,
+      "firstVisibleTextFromSpawnMs": 18153.33038312383,
+      "firstThinkingFromSpawnMs": 13637.725704116747,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 20403.660112060606,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 21257.75688001886
+    },
+    "answerWallMs": 21342.921048868448,
+    "tokens": {
+      "input": 283623,
+      "output": 344,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "efc99d2411ba36b0a1075d131b7c60c58c1e56e98bd60c13815918152adaf784",
+    "snapshot": {
+      "fingerprint": "ad72fa9de904445a76551cab6ab0e306784a28be5a1344ecc3d70d15474c1146",
+      "sha256": "994d1efe60781f260eba9fd146078fc9827dfa69d1b08519bbfd9ea30114f866",
+      "reused": false,
+      "compressionSeconds": 113.73524570930749
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 3.969076698180288,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

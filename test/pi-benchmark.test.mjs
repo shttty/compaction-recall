@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { registerBenchmarkArm } from '../prototype/pi-benchmark-adapter.mjs';
-import { CompactionIndex } from '../prototype/inverted-index.mjs';
-import { buildRecallPage, withLocators } from '../locator.ts';
-import { initialBranch, msg } from '../prototype/corpus.mjs';
+import { registerBenchmarkArm } from '../benchmark/pi-benchmark-adapter.mjs';
+import { CompactionIndex } from '../benchmark/experimental/inverted-index.mjs';
+import { buildRecallPage, withLocators } from '../src/locator.ts';
+import { initialBranch, msg } from '../benchmark/experimental/corpus.mjs';
 
 test('indexed manual pagination preserves scan output across pages, no hits, forks and resets', () => {
   const index = new CompactionIndex();

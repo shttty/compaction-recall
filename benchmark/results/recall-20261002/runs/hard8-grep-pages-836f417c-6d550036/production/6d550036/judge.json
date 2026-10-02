@@ -1,0 +1,61 @@
+{
+  "run_fingerprint": "9e80a7f87a563047fa8452061066cf4d74f99909d53a11f08d1f4f5f9376f6e3",
+  "question_id": "6d550036",
+  "arm": "production",
+  "snapshot_fingerprint": "35d650a4cde3361782aa54439b0176370d7333353dcb4ac5be0147f6c0588d75",
+  "snapshot_sha256": "0441bbbb5bf249e8c200757a201b80da31465686594cd339ae38abb40ace1ed6",
+  "answer_sha256": "1d614a5971a31fcdd928a35fba64556e8241cd7ce70d01d84a1ec47a74d5a0dd",
+  "result": {
+    "question_id": "6d550036",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "1. **Previously led:** You said you led the data-analysis team for a Marketing Research class project.\n2. **Currently working on:** You mentioned having around five marketing projects to catch up on.\n3. **Count:** That’s **one past project you explicitly led**, plus **about five current projects you’re working on**—roughly **six projects total**, assuming the class project is separate. You didn’t specify that you lead all five current projects.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_recall",
+      "history_expand",
+      "history_grep",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 689.3656367901713,
+      "firstVisibleTextFromSpawnMs": 66926.00620095618,
+      "firstThinkingFromSpawnMs": 19622.833224013448,
+      "firstToolDeltaFromSpawnMs": 7332.170042907819,
+      "promptToCompleteMs": 68000.44228299521,
+      "providerTTFTMs": null,
+      "modelTurns": 6,
+      "toolBatches": 5,
+      "toolCalls": 5,
+      "userMessages": 1,
+      "processWallMs": 68705.55607602
+    },
+    "answerWallMs": 68789.36257609166,
+    "tokens": {
+      "input": 299725,
+      "output": 654,
+      "cacheRead": 1458688,
+      "cacheWrite": 0
+    },
+    "modelCalls": 6,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "9e80a7f87a563047fa8452061066cf4d74f99909d53a11f08d1f4f5f9376f6e3",
+    "snapshot": {
+      "fingerprint": "35d650a4cde3361782aa54439b0176370d7333353dcb4ac5be0147f6c0588d75",
+      "sha256": "0441bbbb5bf249e8c200757a201b80da31465686594cd339ae38abb40ace1ed6",
+      "reused": true,
+      "compressionSeconds": 76.48786530666985
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 13.45862606796436,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

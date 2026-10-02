@@ -1,0 +1,357 @@
+{
+  "plugin_commit": "8149e1f6caece71de148c92a88790e5d35212d9e",
+  "actual_sessions_verified": 24,
+  "actual_runtime_pin_matches_all_manifests": true,
+  "checks": {
+    "778164c6/native": {
+      "session_sha256": "e799e98a6e8055fe77c6dee096b09901e10720f08040e250b78ab5c53d825858",
+      "snapshot_prefix_sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+      "actual_question_and_answer_match": true,
+      "model_calls": 1,
+      "tool_calls": [],
+      "usage_matches": true
+    },
+    "778164c6/grep": {
+      "session_sha256": "f195623c99ed89a5be061655b2dc6495937805df7cb95807e7ededcd61e34344",
+      "snapshot_prefix_sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+      "actual_question_and_answer_match": true,
+      "model_calls": 3,
+      "tool_calls": [
+        "history_grep",
+        "history_expand"
+      ],
+      "usage_matches": true
+    },
+    "778164c6/production": {
+      "session_sha256": "0dc08722f3de565277c211b661eee5554e62da8bc6c1e2799c234c7a84028ddd",
+      "snapshot_prefix_sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+      "actual_question_and_answer_match": true,
+      "model_calls": 3,
+      "tool_calls": [
+        "history_recall",
+        "history_expand"
+      ],
+      "usage_matches": true
+    },
+    "51b23612/native": {
+      "session_sha256": "fb0b9cb87b49170742a2a136647c0c3d5daaa82552e6c1e7f0d987489260a957",
+      "snapshot_prefix_sha256": "18786f6b61f47f7f5c7bd4371669c7862ba11531a98adda1938575a5dc47cdbd",
+      "actual_question_and_answer_match": true,
+      "model_calls": 1,
+      "tool_calls": [],
+      "usage_matches": true
+    },
+    "51b23612/grep": {
+      "session_sha256": "81fd6493d08de39a393b245c885de201fa525a093bf7c55b524f2cb4772db021",
+      "snapshot_prefix_sha256": "18786f6b61f47f7f5c7bd4371669c7862ba11531a98adda1938575a5dc47cdbd",
+      "actual_question_and_answer_match": true,
+      "model_calls": 3,
+      "tool_calls": [
+        "history_grep",
+        "history_expand"
+      ],
+      "usage_matches": true
+    },
+    "51b23612/production": {
+      "session_sha256": "b23cbdc41adb684d99a0b7f55a509b7605feccd3c0286e9ec382f28385e9adf7",
+      "snapshot_prefix_sha256": "18786f6b61f47f7f5c7bd4371669c7862ba11531a98adda1938575a5dc47cdbd",
+      "actual_question_and_answer_match": true,
+      "model_calls": 3,
+      "tool_calls": [
+        "history_recall",
+        "history_expand"
+      ],
+      "usage_matches": true
+    },
+    "ceb54acb/native": {
+      "session_sha256": "84cfa77def3a8bdf74b5aeddb312abfc55add4fddcef3be49fe5aad42853697e",
+      "snapshot_prefix_sha256": "9d3333d19ef460a8cb495bf6ef455828e19069d29ebdda1344af8c3c98c6630e",
+      "actual_question_and_answer_match": true,
+      "model_calls": 1,
+      "tool_calls": [],
+      "usage_matches": true
+    },
+    "ceb54acb/grep": {
+      "session_sha256": "d026c86188a09a5025bae2e2ec6ef6f59fe0000ac0eda8a53f890d3d439a4a15",
+      "snapshot_prefix_sha256": "9d3333d19ef460a8cb495bf6ef455828e19069d29ebdda1344af8c3c98c6630e",
+      "actual_question_and_answer_match": true,
+      "model_calls": 3,
+      "tool_calls": [
+        "history_grep",
+        "history_expand"
+      ],
+      "usage_matches": true
+    },
+    "ceb54acb/production": {
+      "session_sha256": "2b1c0f9314d4b4eb247a6b631fa74555d107b4847f52eb38dd1447e807be5ed7",
+      "snapshot_prefix_sha256": "9d3333d19ef460a8cb495bf6ef455828e19069d29ebdda1344af8c3c98c6630e",
+      "actual_question_and_answer_match": true,
+      "model_calls": 3,
+      "tool_calls": [
+        "history_recall",
+        "history_expand"
+      ],
+      "usage_matches": true
+    },
+    "577d4d32/native": {
+      "session_sha256": "ef88293d165e40975a56eb8451f848f843eb3c65a2ef8beefe65bf332a66fc93",
+      "snapshot_prefix_sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+      "actual_question_and_answer_match": true,
+      "model_calls": 1,
+      "tool_calls": [],
+      "usage_matches": true
+    },
+    "577d4d32/grep": {
+      "session_sha256": "728231cbc1924998c575f39184a0e6ccc1adfcab872a308e4b73d06515afa25c",
+      "snapshot_prefix_sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+      "actual_question_and_answer_match": true,
+      "model_calls": 1,
+      "tool_calls": [],
+      "usage_matches": true
+    },
+    "577d4d32/production": {
+      "session_sha256": "0101234840fef30776d352ac8d37caa879d68ecf1101b230f952079e38e47982",
+      "snapshot_prefix_sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+      "actual_question_and_answer_match": true,
+      "model_calls": 3,
+      "tool_calls": [
+        "history_recall",
+        "history_expand"
+      ],
+      "usage_matches": true
+    },
+    "3d86fd0a/native": {
+      "session_sha256": "1b8edafbe1435e94cb9fa9beb074a5f0c380d75be4c40ced05e3e938bda3847d",
+      "snapshot_prefix_sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+      "actual_question_and_answer_match": true,
+      "model_calls": 1,
+      "tool_calls": [],
+      "usage_matches": true
+    },
+    "3d86fd0a/grep": {
+      "session_sha256": "e9b1b3ccbdc3d0017547aab1605909854b96654dced42e87214749fad27724fe",
+      "snapshot_prefix_sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+      "actual_question_and_answer_match": true,
+      "model_calls": 1,
+      "tool_calls": [],
+      "usage_matches": true
+    },
+    "3d86fd0a/production": {
+      "session_sha256": "6629959d9527fff0abde6dd725e0f309019c3d14d87663cb62d22bae4d055928",
+      "snapshot_prefix_sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+      "actual_question_and_answer_match": true,
+      "model_calls": 3,
+      "tool_calls": [
+        "history_recall",
+        "history_expand"
+      ],
+      "usage_matches": true
+    },
+    "15745da0/native": {
+      "session_sha256": "4ccfdf15617a26355ac53da49139f19a517eb54065546ca5afbb58ae6b8a7801",
+      "snapshot_prefix_sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+      "actual_question_and_answer_match": true,
+      "model_calls": 1,
+      "tool_calls": [],
+      "usage_matches": true
+    },
+    "15745da0/grep": {
+      "session_sha256": "70408a72359a9e241b72b2ad587f446293f83f46494b1cb1293f99e4728be3c4",
+      "snapshot_prefix_sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+      "actual_question_and_answer_match": true,
+      "model_calls": 1,
+      "tool_calls": [],
+      "usage_matches": true
+    },
+    "15745da0/production": {
+      "session_sha256": "f24733e861233984fc52c3f689be6ce6b7fd82eaf96bbd652871967452d4c4ec",
+      "snapshot_prefix_sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+      "actual_question_and_answer_match": true,
+      "model_calls": 3,
+      "tool_calls": [
+        "history_recall",
+        "history_expand"
+      ],
+      "usage_matches": true
+    },
+    "gpt4_65aabe59/native": {
+      "session_sha256": "10379196d29245ed8d06013da68847d2d2d5583517a362a8f8440207ddc61294",
+      "snapshot_prefix_sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+      "actual_question_and_answer_match": true,
+      "model_calls": 1,
+      "tool_calls": [],
+      "usage_matches": true
+    },
+    "gpt4_65aabe59/grep": {
+      "session_sha256": "f9c63ab6ac8c79cd452b8135d9576391f0d469ae826f95e78be7bbfca908905e",
+      "snapshot_prefix_sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+      "actual_question_and_answer_match": true,
+      "model_calls": 1,
+      "tool_calls": [],
+      "usage_matches": true
+    },
+    "gpt4_65aabe59/production": {
+      "session_sha256": "a84e016d80035d6a7632ad60b2e20b1c04d1d40a5be09f36797b0f784865548d",
+      "snapshot_prefix_sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+      "actual_question_and_answer_match": true,
+      "model_calls": 3,
+      "tool_calls": [
+        "history_recall",
+        "history_expand",
+        "history_expand"
+      ],
+      "usage_matches": true
+    },
+    "982b5123/native": {
+      "session_sha256": "181b1bc52299a2b1dd5122783cd213ef557b2dfa0078e58a59dabb5d3a9446c3",
+      "snapshot_prefix_sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+      "actual_question_and_answer_match": true,
+      "model_calls": 1,
+      "tool_calls": [],
+      "usage_matches": true
+    },
+    "982b5123/grep": {
+      "session_sha256": "32f94952332a6c3d667a6f2573a4a2a8913611e0186116010ac3276fa0716c51",
+      "snapshot_prefix_sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+      "actual_question_and_answer_match": true,
+      "model_calls": 3,
+      "tool_calls": [
+        "history_grep",
+        "history_expand"
+      ],
+      "usage_matches": true
+    },
+    "982b5123/production": {
+      "session_sha256": "c95660bab39a7f83ff9320913f8ae7d1c34e09b2f1f3e96ee41fc5ebc3888270",
+      "snapshot_prefix_sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+      "actual_question_and_answer_match": true,
+      "model_calls": 3,
+      "tool_calls": [
+        "history_recall",
+        "history_expand",
+        "history_expand"
+      ],
+      "usage_matches": true
+    }
+  },
+  "tracked_session_sha256": {
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/native/778164c6/session.jsonl": "e799e98a6e8055fe77c6dee096b09901e10720f08040e250b78ab5c53d825858",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/grep/778164c6/session.jsonl": "f195623c99ed89a5be061655b2dc6495937805df7cb95807e7ededcd61e34344",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-778164c6/production/778164c6/session.jsonl": "0dc08722f3de565277c211b661eee5554e62da8bc6c1e2799c234c7a84028ddd",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/native/51b23612/session.jsonl": "fb0b9cb87b49170742a2a136647c0c3d5daaa82552e6c1e7f0d987489260a957",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/grep/51b23612/session.jsonl": "81fd6493d08de39a393b245c885de201fa525a093bf7c55b524f2cb4772db021",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-51b23612/production/51b23612/session.jsonl": "b23cbdc41adb684d99a0b7f55a509b7605feccd3c0286e9ec382f28385e9adf7",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/native/ceb54acb/session.jsonl": "84cfa77def3a8bdf74b5aeddb312abfc55add4fddcef3be49fe5aad42853697e",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/grep/ceb54acb/session.jsonl": "d026c86188a09a5025bae2e2ec6ef6f59fe0000ac0eda8a53f890d3d439a4a15",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-ceb54acb/production/ceb54acb/session.jsonl": "2b1c0f9314d4b4eb247a6b631fa74555d107b4847f52eb38dd1447e807be5ed7",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/native/577d4d32/session.jsonl": "ef88293d165e40975a56eb8451f848f843eb3c65a2ef8beefe65bf332a66fc93",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/grep/577d4d32/session.jsonl": "728231cbc1924998c575f39184a0e6ccc1adfcab872a308e4b73d06515afa25c",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-577d4d32/production/577d4d32/session.jsonl": "0101234840fef30776d352ac8d37caa879d68ecf1101b230f952079e38e47982",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/native/3d86fd0a/session.jsonl": "1b8edafbe1435e94cb9fa9beb074a5f0c380d75be4c40ced05e3e938bda3847d",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/grep/3d86fd0a/session.jsonl": "e9b1b3ccbdc3d0017547aab1605909854b96654dced42e87214749fad27724fe",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-3d86fd0a/production/3d86fd0a/session.jsonl": "6629959d9527fff0abde6dd725e0f309019c3d14d87663cb62d22bae4d055928",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/native/15745da0/session.jsonl": "4ccfdf15617a26355ac53da49139f19a517eb54065546ca5afbb58ae6b8a7801",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/grep/15745da0/session.jsonl": "70408a72359a9e241b72b2ad587f446293f83f46494b1cb1293f99e4728be3c4",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-15745da0/production/15745da0/session.jsonl": "f24733e861233984fc52c3f689be6ce6b7fd82eaf96bbd652871967452d4c4ec",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/native/gpt4_65aabe59/session.jsonl": "10379196d29245ed8d06013da68847d2d2d5583517a362a8f8440207ddc61294",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/grep/gpt4_65aabe59/session.jsonl": "f9c63ab6ac8c79cd452b8135d9576391f0d469ae826f95e78be7bbfca908905e",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-gpt4_65aabe59/production/gpt4_65aabe59/session.jsonl": "a84e016d80035d6a7632ad60b2e20b1c04d1d40a5be09f36797b0f784865548d",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/native/982b5123/session.jsonl": "181b1bc52299a2b1dd5122783cd213ef557b2dfa0078e58a59dabb5d3a9446c3",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/grep/982b5123/session.jsonl": "32f94952332a6c3d667a6f2573a4a2a8913611e0186116010ac3276fa0716c51",
+    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/dev8-grep-pages-836f417c-982b5123/production/982b5123/session.jsonl": "c95660bab39a7f83ff9320913f8ae7d1c34e09b2f1f3e96ee41fc5ebc3888270"
+  },
+  "guarded_resume_provider_calls": 0,
+  "all_session_bytes_unchanged": true,
+  "ledger_and_snapshot_artifacts_still_unchanged": true,
+  "grep_call_arguments": [
+    {
+      "question_id": "778164c6",
+      "arm": "grep",
+      "arguments": {
+        "pattern": "snapper|Jamaican|Caribbean",
+        "limit": 10,
+        "offset": 0
+      },
+      "result_details_keys": [
+        "total",
+        "totalEntries",
+        "offset",
+        "limit",
+        "returned",
+        "nextOffset",
+        "hasMore",
+        "snippets",
+        "covered",
+        "omitted",
+        "metadataSkipped"
+      ]
+    },
+    {
+      "question_id": "51b23612",
+      "arm": "grep",
+      "arguments": {
+        "pattern": "Soviet|cartoon|Western culture|propaganda",
+        "limit": 30,
+        "offset": 0
+      },
+      "result_details_keys": [
+        "total",
+        "totalEntries",
+        "offset",
+        "limit",
+        "returned",
+        "nextOffset",
+        "hasMore",
+        "snippets",
+        "covered",
+        "omitted",
+        "metadataSkipped"
+      ]
+    },
+    {
+      "question_id": "ceb54acb",
+      "arm": "grep",
+      "arguments": {
+        "pattern": "sexual compulsions|compulsions|alternative terms",
+        "limit": 10,
+        "offset": 0
+      },
+      "result_details_keys": [
+        "total",
+        "totalEntries",
+        "offset",
+        "limit",
+        "returned",
+        "nextOffset",
+        "hasMore",
+        "snippets",
+        "covered",
+        "omitted",
+        "metadataSkipped"
+      ]
+    },
+    {
+      "question_id": "982b5123",
+      "arm": "grep",
+      "arguments": {
+        "pattern": "Airbnb|San Francisco|booked",
+        "limit": 10,
+        "offset": 0
+      },
+      "result_details_keys": [
+        "total",
+        "totalEntries",
+        "offset",
+        "limit",
+        "returned",
+        "nextOffset",
+        "hasMore",
+        "snippets",
+        "covered",
+        "omitted",
+        "metadataSkipped"
+      ]
+    }
+  ],
+  "causal_gain_claim": false
+}

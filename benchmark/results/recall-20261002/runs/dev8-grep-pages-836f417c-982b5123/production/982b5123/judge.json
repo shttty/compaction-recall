@@ -1,0 +1,59 @@
+{
+  "run_fingerprint": "9c2685d08996d369a72690b6b51a657178281d0a9a49355e7c2e7dc67802860c",
+  "question_id": "982b5123",
+  "arm": "production",
+  "snapshot_fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+  "snapshot_sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+  "answer_sha256": "39426b1a599bc6bd14dc1fbb4d13a4e38f3f4caa35ecd941ca5b0c4fbe5d61dc",
+  "result": {
+    "question_id": "982b5123",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "1. You said your San Francisco wedding trip was **two months ago**.\n2. You said you booked the Airbnb **three months before that trip**.\n3. So you booked it about **five months ago**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 691.8129208497703,
+      "firstVisibleTextFromSpawnMs": 35574.0387130063,
+      "firstThinkingFromSpawnMs": 21440.88216777891,
+      "firstToolDeltaFromSpawnMs": 9563.214517896995,
+      "promptToCompleteMs": 37268.747966969386,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 3,
+      "userMessages": 1,
+      "processWallMs": 37992.291094968095
+    },
+    "answerWallMs": 38078.35060218349,
+    "tokens": {
+      "input": 292603,
+      "output": 342,
+      "cacheRead": 574464,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "9c2685d08996d369a72690b6b51a657178281d0a9a49355e7c2e7dc67802860c",
+    "snapshot": {
+      "fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+      "sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+      "reused": true,
+      "compressionSeconds": 90.14432884985581
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 6.690551731036976,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { BackgroundIndex } from '../prototype/background-index.mjs';
-import { buildLocator, buildRecallPage } from '../locator.ts';
-import { initialBranch, extendedBranch, msg } from '../prototype/corpus.mjs';
+import { BackgroundIndex } from '../benchmark/experimental/background-index.mjs';
+import { buildLocator, buildRecallPage } from '../src/locator.ts';
+import { initialBranch, extendedBranch, msg } from '../benchmark/experimental/corpus.mjs';
 
 test('worker prewarm, incremental compaction, pagination and fork have exact scan parity',async()=>{
  const index=new BackgroundIndex();

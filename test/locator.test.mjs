@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import register from '../index.ts';
-import { entryText } from '../history.ts';
-import { buildLocator, queryTerms, withLocators, LOCATOR_TYPE, LOCATOR_CHARS, QUERY_TERMS, QUERY_CHARS } from '../locator.ts';
+import register from '../src/index.ts';
+import { entryText } from '../src/history.ts';
+import { buildLocator, queryTerms, withLocators, LOCATOR_TYPE, LOCATOR_CHARS, QUERY_TERMS, QUERY_CHARS } from '../src/locator.ts';
 const stamp = '2026-09-30T00:00:00.000Z';
 const msg = (id, text, role = 'user') => ({ type: 'message', id, timestamp: stamp, parentId: null,
   message: { role, content: [{ type: 'text', text }], timestamp: 1 } });

@@ -1,0 +1,67 @@
+{
+  "run_fingerprint": "7a3bf0623846d56f5627869090ceb11f6c5ef2b5ee5428f85d4ca2e9eb91a18e",
+  "question_id": "gpt4_7fce9456",
+  "arm": "production",
+  "snapshot_fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
+  "snapshot_sha256": "628f86402269e4fc5a0099f35681bdeedf55bab0fea45d1e52d179422b57380f",
+  "answer_sha256": "121f732a11a00fa281782c80c9332f92f308d5fc7f0fc70c9b738a50ac50a3cf",
+  "result": {
+    "question_id": "gpt4_7fce9456",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "1. **Relevant details:** You mentioned viewing the Brookside townhouse on February 22 and making an offer on February 25. You also mentioned other properties, including one in Cedar Creek and a condo, but no total count of properties viewed.\n2. **Conclusion:** The conversation history doesn’t specify how many properties you viewed before making the offer.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand",
+      "history_recall",
+      "history_expand",
+      "history_grep",
+      "history_recall",
+      "history_expand",
+      "history_expand",
+      "history_grep",
+      "history_recall",
+      "history_recall"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 717.8831300698221,
+      "firstVisibleTextFromSpawnMs": 129336.74218109809,
+      "firstThinkingFromSpawnMs": 44798.828263999894,
+      "firstToolDeltaFromSpawnMs": 8975.534613942727,
+      "promptToCompleteMs": 130081.52426686138,
+      "providerTTFTMs": null,
+      "modelTurns": 12,
+      "toolBatches": 11,
+      "toolCalls": 11,
+      "userMessages": 1,
+      "processWallMs": 130831.32360992022
+    },
+    "answerWallMs": 130916.22198116966,
+    "tokens": {
+      "input": 25530,
+      "output": 860,
+      "cacheRead": 3505152,
+      "cacheWrite": 0
+    },
+    "modelCalls": 12,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "7a3bf0623846d56f5627869090ceb11f6c5ef2b5ee5428f85d4ca2e9eb91a18e",
+    "snapshot": {
+      "fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
+      "sha256": "628f86402269e4fc5a0099f35681bdeedf55bab0fea45d1e52d179422b57380f",
+      "reused": true,
+      "compressionSeconds": 112.73651911481284
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 4.43876398797147,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

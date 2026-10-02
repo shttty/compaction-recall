@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "b4f250ece99c30cd45884a12fcb4a5b7f0f840877844fa874bb62562f493b098",
+  "question_id": "2ce6a0f2",
+  "arm": "grep",
+  "snapshot_fingerprint": "db248508b7da4e0eb68e9e5e6f378301648a5a908aed593c015821ea727c2038",
+  "snapshot_sha256": "492ac01be23812d407d06359e8f951006676e495f80a488c75d49b3e778cc50c",
+  "answer_sha256": "efbee538ff695bcfc12189c04888b07f00b5955324594f3780ca8a45b209cca8",
+  "result": {
+    "question_id": "2ce6a0f2",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "1. **Relevant information:** You mentioned attending a guided tour at the Modern Art Museum focused on Frida Kahlo and Diego Rivera’s work last weekend.\n2. **Count:** The other events you mentioned were literary or museum visits, not art-related events.\n\n**Answer: 1 art-related event.**",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 823.8577409647405,
+      "firstVisibleTextFromSpawnMs": 20482.87861305289,
+      "firstThinkingFromSpawnMs": 20294.78057799861,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 20641.058297129348,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 21496.580275008455
+    },
+    "answerWallMs": 21577.403750969097,
+    "tokens": {
+      "input": 271331,
+      "output": 310,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "b4f250ece99c30cd45884a12fcb4a5b7f0f840877844fa874bb62562f493b098",
+    "snapshot": {
+      "fingerprint": "db248508b7da4e0eb68e9e5e6f378301648a5a908aed593c015821ea727c2038",
+      "sha256": "492ac01be23812d407d06359e8f951006676e495f80a488c75d49b3e778cc50c",
+      "reused": false,
+      "compressionSeconds": 111.40956617030315
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.749263537814841,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "run_fingerprint": "c43e77896a953b0a838c64ecdd07af467f40d3ca24a144abe23bb6556185a20d",
+  "question_id": "3d86fd0a",
+  "arm": "production",
+  "snapshot_fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+  "snapshot_sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+  "answer_sha256": "c91710f12e3451e1c034c05380fcc13e2fe1d88654ede0b2df41b97d8d1c14cd",
+  "result": {
+    "question_id": "3d86fd0a",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "1. The notes say Sophia’s “How We Met” location was a coffee shop in the city.\n2. So, you met Sophia at a coffee shop in the city.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 705.5334530305117,
+      "firstVisibleTextFromSpawnMs": 28179.619677131996,
+      "firstThinkingFromSpawnMs": null,
+      "firstToolDeltaFromSpawnMs": 7887.757609132677,
+      "promptToCompleteMs": 31869.353430112824,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 2,
+      "userMessages": 1,
+      "processWallMs": 32590.47169308178
+    },
+    "answerWallMs": 32645.862981909886,
+    "tokens": {
+      "input": 288631,
+      "output": 147,
+      "cacheRead": 571392,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "c43e77896a953b0a838c64ecdd07af467f40d3ca24a144abe23bb6556185a20d",
+    "snapshot": {
+      "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+      "sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+      "reused": true,
+      "compressionSeconds": 118.48971851309761
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 2.9909361829049885,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

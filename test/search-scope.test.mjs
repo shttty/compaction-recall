@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import register from '../index.ts';
-import { buildLocator, buildRecallPage } from '../locator.ts';
-import { searchableEntryText, entryText } from '../history.ts';
-import { CompactionIndex } from '../prototype/inverted-index.mjs';
+import register from '../src/index.ts';
+import { buildLocator, buildRecallPage } from '../src/locator.ts';
+import { searchableEntryText, entryText } from '../src/history.ts';
+import { CompactionIndex } from '../benchmark/experimental/inverted-index.mjs';
 const msg=(id,content,role='assistant')=>({type:'message',id,parentId:null,timestamp:'2026-09-30T00:00:00.000Z',message:{role,content,timestamp:0}});
 const branch=old=>[...old,msg('live','tail','user'),{type:'compaction',id:'c',timestamp:'2026-09-30T00:00:00.000Z',firstKeptEntryId:'live'}];
 const tools=b=>{const t=new Map();register({registerTool:x=>t.set(x.name,x),on(){}});return(name,params)=>t.get(name).execute('scope',params,undefined,undefined,{sessionManager:{getBranch:()=>b}});};

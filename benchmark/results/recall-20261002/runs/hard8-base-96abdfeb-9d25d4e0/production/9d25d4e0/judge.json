@@ -1,0 +1,62 @@
+{
+  "run_fingerprint": "2c8187ae2cbeac02780989115efccd98a000a99189d2745ae40d62fa4f52cabe",
+  "question_id": "9d25d4e0",
+  "arm": "production",
+  "snapshot_fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
+  "snapshot_sha256": "f4e9825ba69cc0742e2c82d3a45cd1d3e4c4d33da2f6d14942d6988fe0259a99",
+  "answer_sha256": "98b9e61e88c2c3fb394b204750f1074ea3dc14e0168d6c8abca346d69992241d",
+  "result": {
+    "question_id": "9d25d4e0",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "**Relevant information:**\n- You got a silver necklace with a pendant on April 15.\n- You got an engagement ring about a month before May 20.\n- You got emerald earrings at a flea market the weekend before May 26.\n- You also bought your sister a silver necklace on May 25.\n\n**Count:** You acquired **3 pieces for yourself** during the past two months. Including the necklace you bought as a gift for your sister, you purchased **4 pieces total**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand",
+      "history_expand",
+      "history_expand",
+      "history_expand",
+      "history_recall"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 707.4796080123633,
+      "firstVisibleTextFromSpawnMs": 49715.56766703725,
+      "firstThinkingFromSpawnMs": 28006.59502716735,
+      "firstToolDeltaFromSpawnMs": 7219.489155104384,
+      "promptToCompleteMs": 50660.08349205367,
+      "providerTTFTMs": null,
+      "modelTurns": 4,
+      "toolBatches": 3,
+      "toolCalls": 6,
+      "userMessages": 1,
+      "processWallMs": 51383.302164962515
+    },
+    "answerWallMs": 51435.96347910352,
+    "tokens": {
+      "input": 291137,
+      "output": 887,
+      "cacheRead": 847360,
+      "cacheWrite": 0
+    },
+    "modelCalls": 4,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "2c8187ae2cbeac02780989115efccd98a000a99189d2745ae40d62fa4f52cabe",
+    "snapshot": {
+      "fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
+      "sha256": "f4e9825ba69cc0742e2c82d3a45cd1d3e4c4d33da2f6d14942d6988fe0259a99",
+      "reused": false,
+      "compressionSeconds": 101.38162532495335
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 5.016800994053483,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

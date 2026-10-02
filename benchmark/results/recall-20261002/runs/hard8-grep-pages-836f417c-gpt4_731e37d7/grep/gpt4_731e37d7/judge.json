@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "6ab222bd4990d8d3dceadb32693d73e4605327535e51f9ddc49dc46e5c45a7a9",
+  "question_id": "gpt4_731e37d7",
+  "arm": "grep",
+  "snapshot_fingerprint": "6a7641195a1d9639b91616f10af65c54a37e195595db4992856305319069b880",
+  "snapshot_sha256": "76a135a9d974688b037f2a9f3c13f7e4e7803ac0f434a194a46864eeaca16125",
+  "answer_sha256": "974866c0ebd7377b68b8ab50370596897255a445aaf3843127155d37aa8599ce",
+  "result": {
+    "question_id": "gpt4_731e37d7",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "1. **Relevant information:** You mentioned attending an art workshop, a photography workshop, a digital marketing workshop, a vegan cooking class, and a writing workshop.\n2. **Costs:** You didn’t say how much any of these workshops cost.\n3. **Conclusion:** I can’t calculate your total spending from the information provided.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 796.6152639128268,
+      "firstVisibleTextFromSpawnMs": 16151.46069205366,
+      "firstThinkingFromSpawnMs": 11483.595083933324,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 16196.141911903396,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 17008.331006858498
+    },
+    "answerWallMs": 17087.907711043954,
+    "tokens": {
+      "input": 271497,
+      "output": 206,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "6ab222bd4990d8d3dceadb32693d73e4605327535e51f9ddc49dc46e5c45a7a9",
+    "snapshot": {
+      "fingerprint": "6a7641195a1d9639b91616f10af65c54a37e195595db4992856305319069b880",
+      "sha256": "76a135a9d974688b037f2a9f3c13f7e4e7803ac0f434a194a46864eeaca16125",
+      "reused": true,
+      "compressionSeconds": 70.90560843213461
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 4.308875564020127,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

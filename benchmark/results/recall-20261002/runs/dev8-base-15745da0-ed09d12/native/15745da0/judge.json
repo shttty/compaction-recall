@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "fe835fcdb5f3b2e24a2ef4cba4095c48a447a0d7cf9b7704341d461683fcd613",
+  "question_id": "15745da0",
+  "arm": "native",
+  "snapshot_fingerprint": "dea55d2c378f6dc8e53ddad28092969ac5f94d2a54be8ead40d5a5632edecf6f",
+  "snapshot_sha256": "fa6689c57cb2897192d7548e5a64314e185a9af6f969f651161728b19d0d6924",
+  "answer_sha256": "0f8d095fbfaa4c059d2fb413a533f5d13690183bde49a64fe10240871e0469de",
+  "result": {
+    "question_id": "15745da0",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "1. You mentioned owning a collection of old cameras from the 1970s and 1980s.\n2. You didn’t say when you started collecting them.\n\n**So, I can’t determine how long you’ve been collecting vintage cameras from the chat history.**",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 669.8169859591872,
+      "firstVisibleTextFromSpawnMs": 11288.043786073104,
+      "firstThinkingFromSpawnMs": 10878.847446059808,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 11865.287146996707,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 12566.689145984128
+    },
+    "answerWallMs": 12646.821381058544,
+    "tokens": {
+      "input": 264615,
+      "output": 128,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "fe835fcdb5f3b2e24a2ef4cba4095c48a447a0d7cf9b7704341d461683fcd613",
+    "snapshot": {
+      "fingerprint": "dea55d2c378f6dc8e53ddad28092969ac5f94d2a54be8ead40d5a5632edecf6f",
+      "sha256": "fa6689c57cb2897192d7548e5a64314e185a9af6f969f651161728b19d0d6924",
+      "reused": false,
+      "compressionSeconds": 89.64191072480753
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 3.8485673568211496,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

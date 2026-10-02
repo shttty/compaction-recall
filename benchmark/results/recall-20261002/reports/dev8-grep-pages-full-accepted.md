@@ -1,0 +1,9 @@
+# Full DEV8 8149e1f6 accepted; HARD8 gate open after frozen-input cache preflight
+
+Real full DEV8 finished once in 6min20.014s: native0/8, grep3/8, production8/8. All24 actual answers and explicit judges are durable, identity-bound and error-free. Parent ledger and actual-session audits both passed; same frozen snapshot bytes, exact questions and generated answers/model identities/usage/tool-call IDs match. Completed-state guarded resumes made zero provider calls and changed no tracked bytes. Previous baseline/paging/coverage artifact hashes still match. Source/archive/closure/SDK/wrapper and three WIP files remain frozen.
+
+This is descriptive, not an extra DEV8 accuracy gain: earlier expand-pagination also reached8/8. Production never used history_grep; all four grep calls in the control arm used offset0, with no observed continuation requests. Four wrong grep answers made no tool calls. Do not infer benefits from this run for traversing new grep pages or infer billing/providerTTFT.
+
+Frozen HARD8 inputs and source SHA match existing audited source projections; eight IDs are disjoint from DEV8, annotated evidence spans at least two pre-final chunks. Reusing exact old baseline HARD8 snapshots has been verified across all eight questions and all later capacity checkpoints, with zero provider calls. Existing single-question SDK/runner pilot, fullDEV8 and historical HARD8 input validation are already satisfied; no new paired baseline/paging or redundant pilot run is needed.
+
+Standing goal at lcm:71356:0-362 authorizes this next eight-question harder test with CLP/gpt-6-luna. Permit only the exact8149e1f6 archive via frozen newHARD8 launcher, parallelism2, new run prefixes and cached snapshots. Do not repeat prior runs. No48/merge/push/profileinstall/deploy/publish. Unknown inflight state fails closed.

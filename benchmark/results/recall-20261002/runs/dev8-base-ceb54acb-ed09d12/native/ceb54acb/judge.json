@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "fe9a870a71b08b4ea4a554bd9dcf3141a54ab7093fe1b5f541b9d479fc622e54",
+  "question_id": "ceb54acb",
+  "arm": "native",
+  "snapshot_fingerprint": "cad11a369837f1c794aecfd49ac251c0c102ab0c2e39913e34898969877ef317",
+  "snapshot_sha256": "3058a1764a3a8f25afa1d5271e85c05bea12181f7d72a7087098cc08d2952b82",
+  "answer_sha256": "103ceff6c2ac8931ff69357cd93236211894483e3aeea6cc6604285694a1de3c",
+  "result": {
+    "question_id": "ceb54acb",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant information:** I don’t see an earlier message in the chat history available here that mentions “sexual compulsions” or lists alternative terms.\n\n**Step 2 — Conclusion:** I can’t reliably identify the other four options without that earlier context. If you paste the relevant exchange, I can retrieve them.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 678.1748060602695,
+      "firstVisibleTextFromSpawnMs": 9696.007144171745,
+      "firstThinkingFromSpawnMs": 9656.764451181516,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 11069.789544912055,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 11779.600979061797
+    },
+    "answerWallMs": 11865.339938784018,
+    "tokens": {
+      "input": 278152,
+      "output": 148,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "fe9a870a71b08b4ea4a554bd9dcf3141a54ab7093fe1b5f541b9d479fc622e54",
+    "snapshot": {
+      "fingerprint": "cad11a369837f1c794aecfd49ac251c0c102ab0c2e39913e34898969877ef317",
+      "sha256": "3058a1764a3a8f25afa1d5271e85c05bea12181f7d72a7087098cc08d2952b82",
+      "reused": false,
+      "compressionSeconds": 81.27917772508226
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.1620304668322206,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

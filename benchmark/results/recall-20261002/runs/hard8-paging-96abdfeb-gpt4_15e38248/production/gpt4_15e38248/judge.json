@@ -1,0 +1,62 @@
+{
+  "run_fingerprint": "fd153dba6ec47fb127cbc70d48e155572dd3995b7f50ed6d0c47a829c5202301",
+  "question_id": "gpt4_15e38248",
+  "arm": "production",
+  "snapshot_fingerprint": "23e7e9d70cb857784467e4c665f09e50654643dc9e376e730daa56a9ad2d56df",
+  "snapshot_sha256": "eee8ce094a34de38b43f0c412c18ff1852ff16730e1fb32d3b11c183beb5192f",
+  "answer_sha256": "2708090b153cc731ad0d99f978f6dac92e0f8a92c3018ac43111c3e1c35e6b43",
+  "result": {
+    "question_id": "gpt4_15e38248",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "1. **Bought:** One coffee table from West Elm.\n2. **Assembled:** One IKEA bookshelf for your home office.\n3. **Fixed:** One wobbly leg on your kitchen table.\n\n**Total: 3 pieces of furniture.** I didn’t find any mention of furniture you sold.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_recall",
+      "history_expand",
+      "history_expand",
+      "history_recall",
+      "history_grep"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 729.6140100806952,
+      "firstVisibleTextFromSpawnMs": 68017.11133099161,
+      "firstThinkingFromSpawnMs": 36275.31672921032,
+      "firstToolDeltaFromSpawnMs": 7217.559227021411,
+      "promptToCompleteMs": 70272.85250485875,
+      "providerTTFTMs": null,
+      "modelTurns": 6,
+      "toolBatches": 5,
+      "toolCalls": 6,
+      "userMessages": 1,
+      "processWallMs": 71018.0952490773
+    },
+    "answerWallMs": 71112.1417870745,
+    "tokens": {
+      "input": 286053,
+      "output": 557,
+      "cacheRead": 1393152,
+      "cacheWrite": 0
+    },
+    "modelCalls": 6,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "fd153dba6ec47fb127cbc70d48e155572dd3995b7f50ed6d0c47a829c5202301",
+    "snapshot": {
+      "fingerprint": "23e7e9d70cb857784467e4c665f09e50654643dc9e376e730daa56a9ad2d56df",
+      "sha256": "eee8ce094a34de38b43f0c412c18ff1852ff16730e1fb32d3b11c183beb5192f",
+      "reused": true,
+      "compressionSeconds": 112.86164950625971
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.046901589026675,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

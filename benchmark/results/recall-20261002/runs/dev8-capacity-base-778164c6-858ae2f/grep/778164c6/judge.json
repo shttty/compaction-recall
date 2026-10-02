@@ -1,0 +1,58 @@
+{
+  "run_fingerprint": "6a2ee1d0d1d0450724aa0186956cb72cd96ef7d3e25b5d7e728350a1555db0ae",
+  "question_id": "778164c6",
+  "arm": "grep",
+  "snapshot_fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+  "snapshot_sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+  "answer_sha256": "94641eff60755104acc0e9ce915280704bdd511bb818dcf91f8eb48ec3717008",
+  "result": {
+    "question_id": "778164c6",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "1. The Jamaican snapper dish I recommended was **Escovitch Fish**, made with spicy pickled vegetables—not fruit.\n2. The dish with fruit in the earlier list was **Grilled Snapper with Mango Salsa**.\n\nSo you’re probably thinking of **Grilled Snapper with Mango Salsa**; I didn’t specifically identify it as Jamaican.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_grep",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 823.8863639999181,
+      "firstVisibleTextFromSpawnMs": 30903.1176189892,
+      "firstThinkingFromSpawnMs": 12666.508391033858,
+      "firstToolDeltaFromSpawnMs": 12668.562280014157,
+      "promptToCompleteMs": 32784.203042974696,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 2,
+      "userMessages": 1,
+      "processWallMs": 33623.67900297977
+    },
+    "answerWallMs": 33705.62957483344,
+    "tokens": {
+      "input": 277179,
+      "output": 352,
+      "cacheRead": 545792,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "6a2ee1d0d1d0450724aa0186956cb72cd96ef7d3e25b5d7e728350a1555db0ae",
+    "snapshot": {
+      "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+      "sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+      "reused": false,
+      "compressionSeconds": 117.88170368992724
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 4.805573851102963,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import { mkdtempSync,mkdirSync,writeFileSync,rmSync } from 'node:fs';import {tmpdir} from 'node:os';import {join} from 'node:path';
-import { loadPreindexConfig } from '../prototype/preindex-config.mjs';
+import { loadPreindexConfig } from '../benchmark/experimental/preindex-config.mjs';
 const fixture=work=>{const dir=mkdtempSync(join(tmpdir(),'pi-recall-config-'));mkdirSync(join(dir,'.pi'));try{work(dir,content=>writeFileSync(join(dir,'.pi','pi-recall.json'),content));}finally{rmSync(dir,{recursive:true,force:true});}};
 test('defaults10/10 and independent environment > file > default precedence',()=>fixture((dir,write)=>{
  assert.deepEqual(loadPreindexConfig(dir,{env:{}}),{userCycles:10,toolRounds:10});

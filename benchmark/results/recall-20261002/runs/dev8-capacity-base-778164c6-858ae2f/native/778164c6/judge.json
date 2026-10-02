@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "6a2ee1d0d1d0450724aa0186956cb72cd96ef7d3e25b5d7e728350a1555db0ae",
+  "question_id": "778164c6",
+  "arm": "native",
+  "snapshot_fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+  "snapshot_sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+  "answer_sha256": "129045e23936b8f95a9e304bab6d3467a75564a9500e45f55da6d2e7d12a2774",
+  "result": {
+    "question_id": "778164c6",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Relevant information:** I don’t see an earlier recommendation in the conversation above for a Jamaican snapper dish containing fruit.\n\n**Conclusion:** I can’t reliably identify its name from this chat.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 677.3262850474566,
+      "firstVisibleTextFromSpawnMs": 10905.08986194618,
+      "firstThinkingFromSpawnMs": 9521.113842958584,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 10622.990660136566,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 11315.802684985101
+    },
+    "answerWallMs": 11388.087309896946,
+    "tokens": {
+      "input": 272241,
+      "output": 182,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "6a2ee1d0d1d0450724aa0186956cb72cd96ef7d3e25b5d7e728350a1555db0ae",
+    "snapshot": {
+      "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+      "sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+      "reused": false,
+      "compressionSeconds": 117.88170368992724
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 3.539361922070384,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

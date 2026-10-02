@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "0ae9414732bcddaf6f0477ef9fdb7f2a6a7b4784c4f95583234db283ecdf5f9e",
+  "question_id": "982b5123",
+  "arm": "native",
+  "snapshot_fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+  "snapshot_sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+  "answer_sha256": "902cae987529e830133145e1188efec1f47433aa6972f1eb455851bbc34ddeaa",
+  "result": {
+    "question_id": "982b5123",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Relevant information:** The conversation mentions Airbnb generally, but it does not say that you booked an Airbnb in San Francisco or give a booking date.\n\n**Reasoning:** Without a booking date, I can’t calculate how many months ago it was.\n\n**Answer:** I don’t have enough information to determine that.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 700.6560580339283,
+      "firstVisibleTextFromSpawnMs": 11052.296647103503,
+      "firstThinkingFromSpawnMs": 10903.804158093408,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 10962.704216130078,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 11694.963421905413
+    },
+    "answerWallMs": 11775.688647059724,
+    "tokens": {
+      "input": 286024,
+      "output": 140,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "0ae9414732bcddaf6f0477ef9fdb7f2a6a7b4784c4f95583234db283ecdf5f9e",
+    "snapshot": {
+      "fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+      "sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+      "reused": false,
+      "compressionSeconds": 90.14432884985581
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 4.018756455043331,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

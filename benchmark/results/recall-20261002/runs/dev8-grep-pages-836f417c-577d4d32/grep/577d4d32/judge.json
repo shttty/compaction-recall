@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "6b8f2f90e9069d9e30230c0d3d11c57c7f2f6a4caf9680c7836703e586778fec",
+  "question_id": "577d4d32",
+  "arm": "grep",
+  "snapshot_fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+  "snapshot_sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+  "answer_sha256": "aec4fbc39bfdd2ca019384419c836831b7234c2f6c13fd975c610f4d4a526db2",
+  "result": {
+    "question_id": "577d4d32",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "1. **What you’ve said:** You aim to get ready for bed around **10–10:30 pm** and have found that checking your phone around **10:30 pm** can lead to prolonged scrolling.\n2. **What was suggested:** Set a phone-free cutoff at about **10:20 pm** and use that time to wind down instead.\n3. **Answer:** You haven’t specified a separate cutoff for work emails and messages, but **10:20 pm** is the suggested time to stop checking them too—earlier if you want a full screen-free hour before bed.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 795.1421269681305,
+      "firstVisibleTextFromSpawnMs": 20008.866908960044,
+      "firstThinkingFromSpawnMs": 14296.024078968912,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 24737.21905099228,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 25547.858740901574
+    },
+    "answerWallMs": 25636.32434583269,
+    "tokens": {
+      "input": 575,
+      "output": 384,
+      "cacheRead": 275968,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "6b8f2f90e9069d9e30230c0d3d11c57c7f2f6a4caf9680c7836703e586778fec",
+    "snapshot": {
+      "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+      "sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+      "reused": true,
+      "compressionSeconds": 81.82407163479365
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.202921472955495,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

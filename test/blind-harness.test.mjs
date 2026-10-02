@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createBlindHarness, buildBlindCorpus } from '../prototype/blind-harness-core.mjs';
+import { createBlindHarness, buildBlindCorpus } from '../benchmark/blind-harness-core.mjs';
 const question = { question_id: 'blindq', question: 'What is the quasar code?', question_date: '2023/06/01 (Thu) 12:00',
   answer: 'ORACLE_SENTINEL_DO_NOT_EXPOSE', answer_session_ids: ['secret-evidence'],
   haystack_dates: ['2023/05/20 (Sat) 12:00'], haystack_sessions: [[

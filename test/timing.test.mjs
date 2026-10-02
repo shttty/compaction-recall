@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { StageTiming } from '../prototype/stage-timing.mjs';
-import { registerStageEvents } from '../prototype/pi-stage-events.mjs';
-import { CompactionIndex } from '../prototype/inverted-index.mjs';
-import { buildRecallPage, buildLocator } from '../locator.ts';
-import { initialBranch, extendedBranch, msg } from '../prototype/corpus.mjs';
+import { StageTiming } from '../benchmark/experimental/stage-timing.mjs';
+import { registerStageEvents } from '../benchmark/pi-stage-events.mjs';
+import { CompactionIndex } from '../benchmark/experimental/inverted-index.mjs';
+import { buildRecallPage, buildLocator } from '../src/locator.ts';
+import { initialBranch, extendedBranch, msg } from '../benchmark/experimental/corpus.mjs';
 
 test('timed index preserves response parity and distinguishes cold build, warm query and update',()=>{
  let t=0;const timing=new StageTiming(()=>++t),index=new CompactionIndex(timing);

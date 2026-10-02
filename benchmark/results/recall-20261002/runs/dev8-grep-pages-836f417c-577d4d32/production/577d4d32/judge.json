@@ -1,0 +1,58 @@
+{
+  "run_fingerprint": "6b8f2f90e9069d9e30230c0d3d11c57c7f2f6a4caf9680c7836703e586778fec",
+  "question_id": "577d4d32",
+  "arm": "production",
+  "snapshot_fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+  "snapshot_sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+  "answer_sha256": "1f229d13f052d6c821112cb26d229a63ad4b66fc574bc6d271ca822e200625e6",
+  "result": {
+    "question_id": "577d4d32",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "1. You said you’re trying to stop checking work emails and messages by **7 pm**.\n2. You said this helps separate work from personal time and lets you relax.\n\nSo, you stop checking work emails and messages at **7 pm**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 699.583237990737,
+      "firstVisibleTextFromSpawnMs": 28969.49700010009,
+      "firstThinkingFromSpawnMs": 28861.748924013227,
+      "firstToolDeltaFromSpawnMs": 7888.575281016529,
+      "promptToCompleteMs": 29928.761739982292,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 2,
+      "userMessages": 1,
+      "processWallMs": 30644.002547953278
+    },
+    "answerWallMs": 30729.98850978911,
+    "tokens": {
+      "input": 3942,
+      "output": 159,
+      "cacheRead": 832000,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "6b8f2f90e9069d9e30230c0d3d11c57c7f2f6a4caf9680c7836703e586778fec",
+    "snapshot": {
+      "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+      "sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+      "reused": true,
+      "compressionSeconds": 81.82407163479365
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 3.2165513709187508,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

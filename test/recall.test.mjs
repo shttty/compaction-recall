@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
-import { cpSync, mkdtempSync, rmSync, readFileSync } from 'node:fs';
+import { cpSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import register from '../index.ts';
-import legacyRegister from '../recall-extension.ts';
-import { compactedEntries, entryText, MAX_EXPAND_CHARS } from '../history.ts';
-import { buildLocator, RECALL_PAGE_CHARS } from '../locator.ts';
+import register from '../src/index.ts';
+import legacyRegister from '../src/recall-extension.ts';
+import { compactedEntries, entryText, MAX_EXPAND_CHARS } from '../src/history.ts';
+import { buildLocator, RECALL_PAGE_CHARS } from '../src/locator.ts';
 import { discoverAndLoadExtensions } from '@earendil-works/pi-coding-agent';
 
 const stamp = '2026-09-30T00:00:00.000Z';
@@ -35,9 +35,6 @@ function harness(initial) {
 
 test('package and historical entry share one factory', () => {
   assert.equal(register, legacyRegister);
-  const manifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url)));
-  assert.equal(manifest.name, 'pi-recall');
-  assert.deepEqual(manifest.pi.extensions, ['./index.ts']);
 });
 
 test('no compaction, latest boundary, repeated compaction and missing boundary', () => {
@@ -420,12 +417,12 @@ test('expand reports only complete neighbors and handles empty/out-of-range page
 test('SDK loads standalone package and legacy entry from isolated runtime-only copy', async () => {
   const root = mkdtempSync(join(tmpdir(), 'pi-recall-test-'));
   try {
-    const source = fileURLToPath(new URL('..', import.meta.url));
+    const source = process.env.PI_RECALL_TEST_PACKAGE || fileURLToPath(new URL('..', import.meta.url));
     const archive = join(root, 'pi-recall');
-    for (const file of ['package.json', 'index.ts', 'recall-extension.ts', 'history.ts', 'locator.ts', 'timing.ts']) {
-      cpSync(join(source, file), join(archive, file));
+    for (const file of ['package.json', 'src']) {
+      cpSync(join(source, file), join(archive, file), { recursive: true });
     }
-    for (const path of [archive, join(archive, 'index.ts'), join(archive, 'recall-extension.ts')]) {
+    for (const path of [archive, join(archive, 'src/index.ts'), join(archive, 'src/recall-extension.ts')]) {
       const loaded = await discoverAndLoadExtensions([path], resolve(root), join(root, 'agent'));
       assert.deepEqual(loaded.errors, [], JSON.stringify(loaded.errors));
       assert.equal(loaded.extensions.length, 1);
@@ -448,7 +445,15 @@ test('SDK loads standalone package and legacy entry from isolated runtime-only c
       assert.equal(typeof contextHook, 'function');
       const transformed = await contextHook({ messages: [{ role: 'user', content: 'quasar' }] },
         { sessionManager: { getBranch: () => branch } });
-      assert.ok(transformed.messages);
+      assert.match(JSON.stringify(transformed.messages), /sdk-match/);
+      const context = { sessionManager: { getBranch: () => branch } };
+      const recalled = await extension.tools.get('history_recall').definition.execute(
+        'sdk-recall', { query: 'quasar' }, undefined, undefined, context);
+      assert.match(text(recalled), /sdk-match/);
+      assert.doesNotMatch(text(recalled), /sdk-live/);
+      const expanded = await extension.tools.get('history_expand').definition.execute(
+        'sdk-expand', { id: 'sdk-match', before: 0, after: 0 }, undefined, undefined, context);
+      assert.match(text(expanded), /quasar sdk fixture/);
     }
   } finally {
     rmSync(root, { recursive: true, force: true });

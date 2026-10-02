@@ -1,0 +1,59 @@
+{
+  "run_fingerprint": "9ca32cbea35ac7afa804f11fda28973b5492e9fb59dc413264f474aa036bcdac",
+  "question_id": "gpt4_65aabe59",
+  "arm": "grep",
+  "snapshot_fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+  "snapshot_sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+  "answer_sha256": "668dd69ac99f719488c44ec367c46b7a2c6666ef9bff4dc0beaba6aeda256c2e",
+  "result": {
+    "question_id": "gpt4_65aabe59",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant information from your messages:**\n- You said you set up your smart thermostat **a month ago**.\n- Later, you said you **recently upgraded** your home Wi‑Fi router to a mesh network system.\n\n**Step 2 — Compare the timelines:**\nThe thermostat was set up earlier; the mesh network upgrade happened more recently.\n\n**Answer:** You set up the **smart thermostat first**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_grep",
+      "history_expand",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 821.3946749456227,
+      "firstVisibleTextFromSpawnMs": 36827.28228997439,
+      "firstThinkingFromSpawnMs": 10864.639140898362,
+      "firstToolDeltaFromSpawnMs": 11037.636359920725,
+      "promptToCompleteMs": 40647.78673183173,
+      "providerTTFTMs": null,
+      "modelTurns": 4,
+      "toolBatches": 3,
+      "toolCalls": 3,
+      "userMessages": 1,
+      "processWallMs": 41484.7876150161
+    },
+    "answerWallMs": 41573.06784205139,
+    "tokens": {
+      "input": 292865,
+      "output": 312,
+      "cacheRead": 862720,
+      "cacheWrite": 0
+    },
+    "modelCalls": 4,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "9ca32cbea35ac7afa804f11fda28973b5492e9fb59dc413264f474aa036bcdac",
+    "snapshot": {
+      "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+      "sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+      "reused": false,
+      "compressionSeconds": 88.37053048610687
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 2.83973201806657,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

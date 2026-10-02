@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "aef2ca53d76b94246ce1f5df94dc82735c67bf0f4507a051ffb46a416dc4ac14",
+  "question_id": "51b23612",
+  "arm": "native",
+  "snapshot_fingerprint": "682ae8a10ec373022c37440749940221a9c91e0c7ebb8ffaa2604276e26aa434",
+  "snapshot_sha256": "d6431880dc1718f1929430c4e1340d6b3664886bb722fa07dd45e881cd7d1faa",
+  "answer_sha256": "63ed11d0dba02c4fd3747edd83e00059c232524f1be187b9dc279bb62be5c14c",
+  "result": {
+    "question_id": "51b23612",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant information:** I don’t see an earlier discussion of political propaganda, humor, or a Soviet cartoon in the conversation available here.\n\n**Step 2 — Conclusion:** I can’t reliably identify which cartoon was mentioned. If you recall any details—such as its subject, characters, or approximate era—I can help narrow it down.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 662.173202028498,
+      "firstVisibleTextFromSpawnMs": 12398.598151979968,
+      "firstThinkingFromSpawnMs": 12272.712738951668,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 14442.823387915269,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 15136.60514797084
+    },
+    "answerWallMs": 15225.263972068205,
+    "tokens": {
+      "input": 270556,
+      "output": 142,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "aef2ca53d76b94246ce1f5df94dc82735c67bf0f4507a051ffb46a416dc4ac14",
+    "snapshot": {
+      "fingerprint": "682ae8a10ec373022c37440749940221a9c91e0c7ebb8ffaa2604276e26aa434",
+      "sha256": "d6431880dc1718f1929430c4e1340d6b3664886bb722fa07dd45e881cd7d1faa",
+      "reused": false,
+      "compressionSeconds": 143.6763677529525
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 3.6754757850430906,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

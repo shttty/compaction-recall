@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "b455a072ac8df7421570dab6ddb911577ea93050797dd7804a86fede84cfbe43",
+  "question_id": "2ce6a0f2",
+  "arm": "native",
+  "snapshot_fingerprint": "db248508b7da4e0eb68e9e5e6f378301648a5a908aed593c015821ea727c2038",
+  "snapshot_sha256": "492ac01be23812d407d06359e8f951006676e495f80a488c75d49b3e778cc50c",
+  "answer_sha256": "ceb2fa6af62d491f250e25c371e38f2a8bc1a3fc6b989cfbb26378e26356bb55",
+  "result": {
+    "question_id": "2ce6a0f2",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant events mentioned in the past month:**\n- A book-reading event at a local bookstore.\n- A guided tour at the Modern Art Museum focused on Frida Kahlo and Diego Rivera.\n- A literary festival where you were volunteering today.\n\n**Step 2 — Count them:**\nThat’s **three art- or literature-related events** if we include the festival you attended as a volunteer. If you mean events you attended as an audience member, the count is **two**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 659.4500441569835,
+      "firstVisibleTextFromSpawnMs": 35635.96985209733,
+      "firstThinkingFromSpawnMs": 13151.13234007731,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 36982.85714816302,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 37657.88458613679
+    },
+    "answerWallMs": 37735.96089100465,
+    "tokens": {
+      "input": 271012,
+      "output": 780,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "b455a072ac8df7421570dab6ddb911577ea93050797dd7804a86fede84cfbe43",
+    "snapshot": {
+      "fingerprint": "db248508b7da4e0eb68e9e5e6f378301648a5a908aed593c015821ea727c2038",
+      "sha256": "492ac01be23812d407d06359e8f951006676e495f80a488c75d49b3e778cc50c",
+      "reused": true,
+      "compressionSeconds": 111.40956617030315
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.487493762047961,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

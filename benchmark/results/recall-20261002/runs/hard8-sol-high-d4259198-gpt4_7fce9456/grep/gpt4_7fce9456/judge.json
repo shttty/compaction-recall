@@ -1,0 +1,63 @@
+{
+  "run_fingerprint": "23ffed5a60e1214caf39c28c02810049d0c00534401969e60cffe0bba2ce6228",
+  "question_id": "gpt4_7fce9456",
+  "arm": "grep",
+  "snapshot_fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
+  "snapshot_sha256": "628f86402269e4fc5a0099f35681bdeedf55bab0fea45d1e52d179422b57380f",
+  "answer_sha256": "0e9d20b18a40f8376f68402763eecd570d0500a50ce3cabad56bd8bb761564c1",
+  "result": {
+    "question_id": "gpt4_7fce9456",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "### 1. Relevant information\nYou mentioned viewing these properties:\n- **Late January:** A condo in a trendy part of town that felt small and was outside your budget.\n- **February 1:** A property in **Cedar Creek** that was too expensive.\n- **February 10:** A **1-bedroom condo** that you ruled out because of highway noise.\n- **February 15:** A **2-bedroom condo** with modern appliances and a community pool; your offer was rejected on February 17.\n- **February 22:** The **3-bedroom townhouse in Brookside**, on which you made an offer on **February 25**.\n\n### 2. Count and answer\nThat makes **5 properties viewed before you made the Brookside offer**, including the townhouse itself—or **4 other properties** before viewing the townhouse.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_grep",
+      "history_expand",
+      "history_grep",
+      "history_expand",
+      "history_grep",
+      "history_expand",
+      "history_grep"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 803.721470059827,
+      "firstVisibleTextFromSpawnMs": 81690.88447303511,
+      "firstThinkingFromSpawnMs": 71384.0668790508,
+      "firstToolDeltaFromSpawnMs": 11748.600067105144,
+      "promptToCompleteMs": 86975.27676587924,
+      "providerTTFTMs": null,
+      "modelTurns": 8,
+      "toolBatches": 7,
+      "toolCalls": 7,
+      "userMessages": 1,
+      "processWallMs": 87810.86655100808
+    },
+    "answerWallMs": 87892.91166397743,
+    "tokens": {
+      "input": 299407,
+      "output": 552,
+      "cacheRead": 2035584,
+      "cacheWrite": 0
+    },
+    "modelCalls": 8,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "23ffed5a60e1214caf39c28c02810049d0c00534401969e60cffe0bba2ce6228",
+    "snapshot": {
+      "fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
+      "sha256": "628f86402269e4fc5a0099f35681bdeedf55bab0fea45d1e52d179422b57380f",
+      "reused": true,
+      "compressionSeconds": 112.73651911481284
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 9.41827558609657,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

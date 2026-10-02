@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "c7166a3c6d28e2d77b1ea00c813a636fa54302f6d71dbd05851d7cf402b2dabe",
+  "question_id": "ceb54acb",
+  "arm": "native",
+  "snapshot_fingerprint": "80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7",
+  "snapshot_sha256": "9d3333d19ef460a8cb495bf6ef455828e19069d29ebdda1344af8c3c98c6630e",
+  "answer_sha256": "d876855f6477137b9e00413efb073226f7aa26a884ccab72103a5de7fda9590d",
+  "result": {
+    "question_id": "ceb54acb",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "1. **Relevant information:** I don’t see an earlier message in the conversation available to me that mentions “sexual compulsions” or lists alternative terms for behaviors.\n2. **Answer:** I can’t reliably name the other four options without that context. If you paste the earlier exchange, I can identify them.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 704.4176638592035,
+      "firstVisibleTextFromSpawnMs": 11223.131849896163,
+      "firstThinkingFromSpawnMs": 10302.034588996321,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 10845.807406818494,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 11581.82106888853
+    },
+    "answerWallMs": 11671.966582071036,
+    "tokens": {
+      "input": 149,
+      "output": 152,
+      "cacheRead": 278272,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "c7166a3c6d28e2d77b1ea00c813a636fa54302f6d71dbd05851d7cf402b2dabe",
+    "snapshot": {
+      "fingerprint": "80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7",
+      "sha256": "9d3333d19ef460a8cb495bf6ef455828e19069d29ebdda1344af8c3c98c6630e",
+      "reused": true,
+      "compressionSeconds": 89.44119733083062
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 3.4198012829292566,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

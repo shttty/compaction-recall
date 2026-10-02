@@ -1,0 +1,58 @@
+{
+  "run_fingerprint": "3d9a1896e36cd43dc4fa3bbc2132633c3292d4439c2c5c32ae54bd6476c6c305",
+  "question_id": "577d4d32",
+  "arm": "production",
+  "snapshot_fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+  "snapshot_sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+  "answer_sha256": "9953c0f42952ee4c2317a21f0f7d8832abd6e188621d1ffefdda9ed17f76ced4",
+  "result": {
+    "question_id": "577d4d32",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "1. **Relevant information:** You said you were stopping work emails and messages by **7 pm** to separate work from personal time.\n2. **Answer:** You stop checking work emails and messages at **7 pm**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 697.4700158461928,
+      "firstVisibleTextFromSpawnMs": 36720.68387083709,
+      "firstThinkingFromSpawnMs": 13248.970655025914,
+      "firstToolDeltaFromSpawnMs": 13550.240461947396,
+      "promptToCompleteMs": 37431.25149002299,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 2,
+      "userMessages": 1,
+      "processWallMs": 38160.43581487611
+    },
+    "answerWallMs": 38253.703648922965,
+    "tokens": {
+      "input": 280650,
+      "output": 225,
+      "cacheRead": 553984,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "3d9a1896e36cd43dc4fa3bbc2132633c3292d4439c2c5c32ae54bd6476c6c305",
+    "snapshot": {
+      "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+      "sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+      "reused": true,
+      "compressionSeconds": 81.82407163479365
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 3.73509344807826,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "1483068c623386b67e521bc5335ea88ee6ca728fe8317a12a319aba09d854171",
+  "question_id": "28dc39ac",
+  "arm": "native",
+  "snapshot_fingerprint": "ad72fa9de904445a76551cab6ab0e306784a28be5a1344ecc3d70d15474c1146",
+  "snapshot_sha256": "994d1efe60781f260eba9fd146078fc9827dfa69d1b08519bbfd9ea30114f866",
+  "answer_sha256": "df25026ccf82410fc49617cd8e35c81244c28ef86efbd883a50b5e3052187110",
+  "result": {
+    "question_id": "28dc39ac",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Step 1: Extract the relevant information**\n- You mentioned **around 5 gaming sessions in the past month**, each lasting **2–3 hours**.\n- You also mentioned spending **5 hours playing Overwatch on Saturday**. You repeated this detail, so it should only be counted once.\n\n**Step 2: Calculate the total**\n- Five sessions: \\(5 \\times 2–3 = 10–15\\) hours.\n- Adding the Overwatch session: \\(10–15 + 5 = 15–20\\) hours.\n\n**Answer: Approximately 15–20 hours**, assuming the Overwatch session was separate from those five sessions. If it was included, your total would instead be approximately **10–15 hours**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 672.4697959143668,
+      "firstVisibleTextFromSpawnMs": 13483.267439994961,
+      "firstThinkingFromSpawnMs": 12328.209202969447,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 17301.034395117313,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 17989.090885035694
+    },
+    "answerWallMs": 18078.05977598764,
+    "tokens": {
+      "input": 283304,
+      "output": 222,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "1483068c623386b67e521bc5335ea88ee6ca728fe8317a12a319aba09d854171",
+    "snapshot": {
+      "fingerprint": "ad72fa9de904445a76551cab6ab0e306784a28be5a1344ecc3d70d15474c1146",
+      "sha256": "994d1efe60781f260eba9fd146078fc9827dfa69d1b08519bbfd9ea30114f866",
+      "reused": true,
+      "compressionSeconds": 113.73524570930749
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.241249714978039,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

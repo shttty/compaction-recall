@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "edf1668b5367aa34291e73b03d3968ae2d74b124a8f442b9eaca348607e6e0c0",
+  "question_id": "778164c6",
+  "arm": "native",
+  "snapshot_fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+  "snapshot_sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+  "answer_sha256": "c1d3e434386c91c6cc43584d270829f1bf4a36e127662ca18388af6f1faeb32b",
+  "result": {
+    "question_id": "778164c6",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "1. **Relevant history:** I don’t see a previous discussion here about Caribbean dishes or a Jamaican snapper dish with fruit.\n2. **Conclusion:** I can’t identify the dish from the conversation available to me.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 686.7394880391657,
+      "firstVisibleTextFromSpawnMs": 11459.67055298388,
+      "firstThinkingFromSpawnMs": 10132.450855104253,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 11432.964658131823,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 12135.229506064206
+    },
+    "answerWallMs": 12208.549546077847,
+    "tokens": {
+      "input": 272241,
+      "output": 195,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "edf1668b5367aa34291e73b03d3968ae2d74b124a8f442b9eaca348607e6e0c0",
+    "snapshot": {
+      "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+      "sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+      "reused": true,
+      "compressionSeconds": 117.88170368992724
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 4.14702298399061,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

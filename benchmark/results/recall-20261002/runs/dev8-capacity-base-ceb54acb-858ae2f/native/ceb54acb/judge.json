@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "e26b1c34eddbc7861077976660ac8544934a3ea01669b7203891b92b618e590b",
+  "question_id": "ceb54acb",
+  "arm": "native",
+  "snapshot_fingerprint": "80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7",
+  "snapshot_sha256": "9d3333d19ef460a8cb495bf6ef455828e19069d29ebdda1344af8c3c98c6630e",
+  "answer_sha256": "f26e2e9cc94842ad4772df9d9979bdc18606806560068aa6f163a1dfee5669bb",
+  "result": {
+    "question_id": "ceb54acb",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Relevant information:** I can’t find an earlier exchange in the chat history shown here that mentions “sexual compulsions” or lists alternative terms.\n\n**Reasoning:** Without that list, I can’t reliably identify the other four options, and I don’t want to guess.\n\n**Answer:** I can’t remind you of the four terms from this history. If you paste the earlier message or describe the behaviors, I can help reconstruct the options.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 692.8921351209283,
+      "firstVisibleTextFromSpawnMs": 11771.04085101746,
+      "firstThinkingFromSpawnMs": null,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 12938.890233868733,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 13647.347801132128
+    },
+    "answerWallMs": 13733.499465044588,
+    "tokens": {
+      "input": 278421,
+      "output": 187,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "e26b1c34eddbc7861077976660ac8544934a3ea01669b7203891b92b618e590b",
+    "snapshot": {
+      "fingerprint": "80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7",
+      "sha256": "9d3333d19ef460a8cb495bf6ef455828e19069d29ebdda1344af8c3c98c6630e",
+      "reused": false,
+      "compressionSeconds": 89.44119733083062
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 3.63532955897972,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

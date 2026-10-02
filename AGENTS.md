@@ -1,9 +1,12 @@
 # pi-recall agent conventions
 
-- Read README.md for scope and known limitations. FINDINGS.md records historical prototype results, not a fresh benchmark run.
+- Read README.md for entrypoints and doc/PLUGIN.md for scope and limitations. doc/FINDINGS.md records historical prototype results, not a fresh benchmark run.
 - Keep this package independent: runtime imports must stay inside the repository except for host-provided Pi SDK and typebox.
-- index.ts is the public entry; recall-extension.ts remains an alternate compatibility entry. Do not register both at once.
-- history.ts contains pure current-branch history helpers; locator.ts supplies an ephemeral context-hook locator index. The production extension has no compaction hooks, storage, background tasks or model calls. Explicitly authorized local-model experiments may live in prototype/; do not import them into the extension runtime.
+- src/index.ts is the public entry; src/recall-extension.ts remains an alternate compatibility entry. Do not register both at once or add root shims.
+- src/history.ts contains pure current-branch history helpers; src/locator.ts supplies an ephemeral context-hook locator index. The production extension has no compaction hooks, storage, background tasks or model calls. Experimental implementations live in benchmark/experimental/; never import them into the production runtime.
 - Run `npm ci --ignore-scripts` to install locked development dependencies and `npm run check` for type checking, offline behavior tests and isolated SDK loading.
+- Keep all offline tests in test/. Run `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'`; these tests use explicit synthetic helper/config/profile fixtures, never personal configuration or sibling worktrees.
+- benchmark/evaluate.py requires an explicit external --config for real operations. No embedded provider/model defaults, personal profile copying or implicit .env loading. Keep frozen benchmark results and provenance byte-for-byte; path/config changes must not relabel or resume historical runs.
+- doc/ holds current usage and historical method notes. README.md is the root index. Do not put task progress or controller artifacts in the repository.
 - Do not run benchmarks, live model calls, install into a user's Pi profile, publish, or change remote repositories without authorization.
-- Do not select a project license on the maintainer's behalf. Preserve THIRD_PARTY_NOTICES.md.
+- The project is MIT licensed; preserve LICENSE and THIRD_PARTY_NOTICES.md. Keep npm files limited to production src, bilingual README, licenses and the clean aggregate results doc; never package raw benchmarks, tests, sessions, profiles or controller artifacts.

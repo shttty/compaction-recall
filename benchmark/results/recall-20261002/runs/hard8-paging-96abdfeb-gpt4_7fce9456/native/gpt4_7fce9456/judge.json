@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "7a3bf0623846d56f5627869090ceb11f6c5ef2b5ee5428f85d4ca2e9eb91a18e",
+  "question_id": "gpt4_7fce9456",
+  "arm": "native",
+  "snapshot_fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
+  "snapshot_sha256": "628f86402269e4fc5a0099f35681bdeedf55bab0fea45d1e52d179422b57380f",
+  "answer_sha256": "cb095bc94b3a375e55cf5eb692bb853ad6f400eefed04ea2525f8271a529354e",
+  "result": {
+    "question_id": "gpt4_7fce9456",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant information:** I don’t see any earlier messages mentioning a townhouse in the Brookside neighborhood or how many properties you viewed.\n\n**Step 2 — Answer:** The number of properties isn’t specified in the conversation.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 706.7722929641604,
+      "firstVisibleTextFromSpawnMs": 12791.944724973291,
+      "firstThinkingFromSpawnMs": 12662.51095593907,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 17137.729323934764,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 17860.059041995555
+    },
+    "answerWallMs": 17936.2177439034,
+    "tokens": {
+      "input": 545,
+      "output": 99,
+      "cacheRead": 284416,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "7a3bf0623846d56f5627869090ceb11f6c5ef2b5ee5428f85d4ca2e9eb91a18e",
+    "snapshot": {
+      "fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
+      "sha256": "628f86402269e4fc5a0099f35681bdeedf55bab0fea45d1e52d179422b57380f",
+      "reused": true,
+      "compressionSeconds": 112.73651911481284
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.55917625897564,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

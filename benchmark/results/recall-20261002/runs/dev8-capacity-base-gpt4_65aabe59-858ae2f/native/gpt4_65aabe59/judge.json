@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "9ca32cbea35ac7afa804f11fda28973b5492e9fb59dc413264f474aa036bcdac",
+  "question_id": "gpt4_65aabe59",
+  "arm": "native",
+  "snapshot_fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+  "snapshot_sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+  "answer_sha256": "a76e90d26c4af6744fea12b279a80c1b1a82a9a4e9be766ef21c53561cd3ed84",
+  "result": {
+    "question_id": "gpt4_65aabe59",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "1. **Relevant information:** The conversation mentions neither setting up a smart thermostat nor setting up a mesh network system.\n2. **Conclusion:** I can’t determine which device you set up first from the chat history provided.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 690.6099689658731,
+      "firstVisibleTextFromSpawnMs": 10060.218557948247,
+      "firstThinkingFromSpawnMs": 9948.229375993833,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 10066.67419616133,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 10788.954178104177
+    },
+    "answerWallMs": 10867.970182793215,
+    "tokens": {
+      "input": 286760,
+      "output": 103,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "9ca32cbea35ac7afa804f11fda28973b5492e9fb59dc413264f474aa036bcdac",
+    "snapshot": {
+      "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+      "sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+      "reused": false,
+      "compressionSeconds": 88.37053048610687
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 3.8274893211200833,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

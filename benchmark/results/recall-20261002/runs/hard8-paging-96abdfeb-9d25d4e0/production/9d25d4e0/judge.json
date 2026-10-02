@@ -1,0 +1,61 @@
+{
+  "run_fingerprint": "cc2f1d21b1fc00b40fd8f506733446ba42a5372d8303125761221eb1ae72c015",
+  "question_id": "9d25d4e0",
+  "arm": "production",
+  "snapshot_fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
+  "snapshot_sha256": "f4e9825ba69cc0742e2c82d3a45cd1d3e4c4d33da2f6d14942d6988fe0259a99",
+  "answer_sha256": "75786968f8f7a6142eb589ad5c0dbc056748e4151882e2e16e454e0353677645",
+  "result": {
+    "question_id": "9d25d4e0",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "**Step 1 — Relevant details:** In the past two months, you mentioned getting a silver pendant necklace for yourself on April 15 and a pair of emerald earrings at a flea market the weekend before May 26. You also bought a silver pendant necklace for your sister around May 25.\n\n**Step 2 — Count:** That’s **3 jewelry items acquired or purchased** in total: two for yourself and one as a gift. If you mean jewelry you acquired for your own collection, the count is **2**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_recall",
+      "history_expand",
+      "history_expand",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 713.3640050888062,
+      "firstVisibleTextFromSpawnMs": 48695.57617907412,
+      "firstThinkingFromSpawnMs": 40811.58857396804,
+      "firstToolDeltaFromSpawnMs": 8861.772580072284,
+      "promptToCompleteMs": 48926.70743004419,
+      "providerTTFTMs": null,
+      "modelTurns": 4,
+      "toolBatches": 3,
+      "toolCalls": 5,
+      "userMessages": 1,
+      "processWallMs": 49655.796342063695
+    },
+    "answerWallMs": 49709.57979699597,
+    "tokens": {
+      "input": 286635,
+      "output": 731,
+      "cacheRead": 840192,
+      "cacheWrite": 0
+    },
+    "modelCalls": 4,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "cc2f1d21b1fc00b40fd8f506733446ba42a5372d8303125761221eb1ae72c015",
+    "snapshot": {
+      "fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
+      "sha256": "f4e9825ba69cc0742e2c82d3a45cd1d3e4c4d33da2f6d14942d6988fe0259a99",
+      "reused": true,
+      "compressionSeconds": 101.38162532495335
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 5.511999781941995,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

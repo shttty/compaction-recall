@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "17debe5f5778fe4ed6e86542034ebb5793ed47f78eb4b598c5045a794494c420",
+  "question_id": "gpt4_7fce9456",
+  "arm": "native",
+  "snapshot_fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
+  "snapshot_sha256": "628f86402269e4fc5a0099f35681bdeedf55bab0fea45d1e52d179422b57380f",
+  "answer_sha256": "f3c60214398d927246fbd62de4d72cb053da19578e0eebed7ff8fddf4693d9d4",
+  "result": {
+    "question_id": "gpt4_7fce9456",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "1. **Relevant information:** The conversation mentions that you and your partner were buying a home and had been looking for about three months, but it does not say how many properties you viewed or mention a townhouse in Brookside.\n2. **Answer:** I can’t determine the number from the chat history provided.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 661.7189741227776,
+      "firstVisibleTextFromSpawnMs": 10475.240471074358,
+      "firstThinkingFromSpawnMs": null,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 10513.034297153354,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 11190.288200043142
+    },
+    "answerWallMs": 11269.882922060788,
+    "tokens": {
+      "input": 545,
+      "output": 130,
+      "cacheRead": 284416,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "17debe5f5778fe4ed6e86542034ebb5793ed47f78eb4b598c5045a794494c420",
+    "snapshot": {
+      "fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
+      "sha256": "628f86402269e4fc5a0099f35681bdeedf55bab0fea45d1e52d179422b57380f",
+      "reused": true,
+      "compressionSeconds": 112.73651911481284
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 4.884941539959982,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

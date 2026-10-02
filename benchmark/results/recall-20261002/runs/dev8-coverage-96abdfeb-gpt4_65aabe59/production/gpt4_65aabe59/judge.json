@@ -1,0 +1,60 @@
+{
+  "run_fingerprint": "ac056c54837c0411c77ff11552d717464f7ebafc6a12a8f4bba03c702f3784c8",
+  "question_id": "gpt4_65aabe59",
+  "arm": "production",
+  "snapshot_fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+  "snapshot_sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+  "answer_sha256": "2e2778fb841483e45869a3a188f59e9845fac8afe2eca0edccfdf495aa159296",
+  "result": {
+    "question_id": "gpt4_65aabe59",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "1. You said you set up the smart thermostat “a month ago.”\n2. You said you upgraded to the mesh network system “3 weeks ago.”\n3. A month ago was earlier than three weeks ago, so **you set up the smart thermostat first**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand",
+      "history_expand",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 709.459173027426,
+      "firstVisibleTextFromSpawnMs": 30414.050759980455,
+      "firstThinkingFromSpawnMs": 19869.750309968367,
+      "firstToolDeltaFromSpawnMs": 7231.565544847399,
+      "promptToCompleteMs": 30492.015992989764,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 4,
+      "userMessages": 1,
+      "processWallMs": 31233.25778194703
+    },
+    "answerWallMs": 31322.62965803966,
+    "tokens": {
+      "input": 299258,
+      "output": 286,
+      "cacheRead": 575488,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "ac056c54837c0411c77ff11552d717464f7ebafc6a12a8f4bba03c702f3784c8",
+    "snapshot": {
+      "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+      "sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+      "reused": true,
+      "compressionSeconds": 88.37053048610687
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 2.5322561401408166,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

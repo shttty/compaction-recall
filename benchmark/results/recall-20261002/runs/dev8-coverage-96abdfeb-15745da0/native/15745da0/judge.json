@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "617b11f935ce2fe6ca740ba33d2d5060d0898345d8dfbe4bb3b8ca703bdabdb9",
+  "question_id": "15745da0",
+  "arm": "native",
+  "snapshot_fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+  "snapshot_sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+  "answer_sha256": "fbefbe2388a8bca2bba1dcd354a929531ba0cf2f92a8235a44739605a2db64d2",
+  "result": {
+    "question_id": "15745da0",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "**Relevant information:** You mentioned having a collection of old cameras from the 1970s and 1980s that you’re considering selling. You didn’t say when you started collecting them.\n\n**Conclusion:** I can’t determine how long you’ve been collecting vintage cameras from the information provided. Would you like to add that detail?",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 685.6455348897725,
+      "firstVisibleTextFromSpawnMs": 10414.834142895415,
+      "firstThinkingFromSpawnMs": 10289.617801783606,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 10497.873719083145,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 11215.132089797407
+    },
+    "answerWallMs": 11295.115138869733,
+    "tokens": {
+      "input": 1070,
+      "output": 175,
+      "cacheRead": 263936,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "617b11f935ce2fe6ca740ba33d2d5060d0898345d8dfbe4bb3b8ca703bdabdb9",
+    "snapshot": {
+      "fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+      "sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+      "reused": true,
+      "compressionSeconds": 93.741309504956
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 3.7356435519177467,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

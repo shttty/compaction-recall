@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "b6adca12e725e822a3ac5ef734632cef7f03737c847b94263d86201ac323a1e2",
+  "question_id": "6d550036",
+  "arm": "native",
+  "snapshot_fingerprint": "35d650a4cde3361782aa54439b0176370d7333353dcb4ac5be0147f6c0588d75",
+  "snapshot_sha256": "0441bbbb5bf249e8c200757a201b80da31465686594cd339ae38abb40ace1ed6",
+  "answer_sha256": "8478722d405641aaeeb93f12a5605d5719456428318dec75b79288eafb3cc8aa",
+  "result": {
+    "question_id": "6d550036",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "1. The chat mentions **one specific project**: a 2+ year engagement with Spire, which RecruitrLabs had completed.\n2. It also says the company had completed **over 2,700 projects** overall, but it doesn’t say how many you personally led or are currently leading.\n\n**Answer:** The chat doesn’t establish a number of projects you personally led or are currently leading.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 696.621006121859,
+      "firstVisibleTextFromSpawnMs": 12430.805791169405,
+      "firstThinkingFromSpawnMs": 12310.323146171868,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 13713.763171806931,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 14425.9029221721
+    },
+    "answerWallMs": 14509.988526813686,
+    "tokens": {
+      "input": 288696,
+      "output": 225,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "b6adca12e725e822a3ac5ef734632cef7f03737c847b94263d86201ac323a1e2",
+    "snapshot": {
+      "fingerprint": "35d650a4cde3361782aa54439b0176370d7333353dcb4ac5be0147f6c0588d75",
+      "sha256": "0441bbbb5bf249e8c200757a201b80da31465686594cd339ae38abb40ace1ed6",
+      "reused": false,
+      "compressionSeconds": 76.48786530666985
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 4.124254197115079,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

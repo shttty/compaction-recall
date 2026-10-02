@@ -1,0 +1,58 @@
+{
+  "run_fingerprint": "fd5de2f7e5ed2532141e982e7da96c646a300a30c00e259296972dc7aa274c30",
+  "question_id": "15745da0",
+  "arm": "production",
+  "snapshot_fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+  "snapshot_sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+  "answer_sha256": "f4b6ea3da3edb5bcbf4a4379aa19e13854a99d6e06d7f0f3aec82c239164c07f",
+  "result": {
+    "question_id": "15745da0",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "**Relevant information:** On May 20, you said you had been collecting vintage cameras for three months.\n\n**Reasoning and answer:** Based on that statement, you’ve been collecting vintage cameras for **about three months**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 693.4693399816751,
+      "firstVisibleTextFromSpawnMs": 34728.89256896451,
+      "firstThinkingFromSpawnMs": 33224.993956973776,
+      "firstToolDeltaFromSpawnMs": 9555.317688034847,
+      "promptToCompleteMs": 35191.943967016414,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 2,
+      "userMessages": 1,
+      "processWallMs": 35901.00417891517
+    },
+    "answerWallMs": 35980.83405289799,
+    "tokens": {
+      "input": 269191,
+      "output": 251,
+      "cacheRead": 532480,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "fd5de2f7e5ed2532141e982e7da96c646a300a30c00e259296972dc7aa274c30",
+    "snapshot": {
+      "fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
+      "sha256": "cfdd6bd245b80ac5692775b9296f7d832f9c02683535ab3ace1f79efe588c7fc",
+      "reused": true,
+      "compressionSeconds": 93.741309504956
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 4.775198491988704,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

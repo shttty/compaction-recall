@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "dfb132af0d65ded9a3fc0a72a39a2b1be966074769862092d0be7768e1f5b097",
+  "question_id": "3d86fd0a",
+  "arm": "grep",
+  "snapshot_fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+  "snapshot_sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+  "answer_sha256": "dec65283968b652722d7d06f0eb8c6b6762598120fc2e99974592353cec468ee",
+  "result": {
+    "question_id": "3d86fd0a",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "**Relevant information:** The conversation mentions several people, including Sarah and your aunt, but it doesn’t say that you met someone named Sophia or where you met her.\n\n**Answer:** I can’t determine where you met Sophia from the chat history provided.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 796.1903798859566,
+      "firstVisibleTextFromSpawnMs": 17269.72699793987,
+      "firstThinkingFromSpawnMs": 15204.763256013393,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 17290.91026983224,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 18102.598911849782
+    },
+    "answerWallMs": 18156.635086983442,
+    "tokens": {
+      "input": 285258,
+      "output": 201,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "dfb132af0d65ded9a3fc0a72a39a2b1be966074769862092d0be7768e1f5b097",
+    "snapshot": {
+      "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
+      "sha256": "7608e016fcf78d3e50850113a4bd9bf4bc1ba85d2e2676e9c8bb8e05d767d531",
+      "reused": true,
+      "compressionSeconds": 118.48971851309761
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 4.092303656041622,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

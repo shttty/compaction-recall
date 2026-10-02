@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "bdb89c09243ad117bca5a1054ada268a6d5aa2a85444aec960bb3035f89a71ae",
+  "question_id": "778164c6",
+  "arm": "native",
+  "snapshot_fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+  "snapshot_sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+  "answer_sha256": "a1a0ea6833bccbbe6f7669520aa66bc9bc5daf78a0cca62c62caecace9ce5094",
+  "result": {
+    "question_id": "778164c6",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "1. I can’t find a previous recommendation about a Jamaican snapper dish in the conversation available to me.\n2. So I don’t know which dish you mean, and I don’t want to guess.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 712.980723939836,
+      "firstVisibleTextFromSpawnMs": 19367.522968910635,
+      "firstThinkingFromSpawnMs": 14914.837823016569,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 20687.35162401572,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 21415.8719049301
+    },
+    "answerWallMs": 21490.92613393441,
+    "tokens": {
+      "input": 1137,
+      "output": 204,
+      "cacheRead": 271104,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "bdb89c09243ad117bca5a1054ada268a6d5aa2a85444aec960bb3035f89a71ae",
+    "snapshot": {
+      "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+      "sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+      "reused": true,
+      "compressionSeconds": 117.88170368992724
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 3.8159970571286976,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

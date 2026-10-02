@@ -1,0 +1,58 @@
+{
+  "run_fingerprint": "feececb5c0c1934aed56252ba8b0934a53492a2ffb10fe18cbb7c720b3412f54",
+  "question_id": "3d86fd0a",
+  "arm": "production",
+  "snapshot_fingerprint": "56ff2e6a1fa8d31558e1dd8eab11d3d9368ac8056f90a79163d825843ef92345",
+  "snapshot_sha256": "2e75d18b395e58758e2e4a72dcd304f7192cb95a5db5b4afe8108ca89104e8da",
+  "answer_sha256": "37f0fc887631093ff9d39dc3f8c91f587197292aea37126741a540caf9652bd9",
+  "result": {
+    "question_id": "3d86fd0a",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "The relevant note says you met Sophia at a **coffee shop in the city**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 710.236667888239,
+      "firstVisibleTextFromSpawnMs": 20893.79448001273,
+      "firstThinkingFromSpawnMs": null,
+      "firstToolDeltaFromSpawnMs": 7324.840652989224,
+      "promptToCompleteMs": 21208.34717899561,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 2,
+      "userMessages": 1,
+      "processWallMs": 21950.229204958305
+    },
+    "answerWallMs": 22003.826931118965,
+    "tokens": {
+      "input": 288685,
+      "output": 83,
+      "cacheRead": 571392,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "feececb5c0c1934aed56252ba8b0934a53492a2ffb10fe18cbb7c720b3412f54",
+    "snapshot": {
+      "fingerprint": "56ff2e6a1fa8d31558e1dd8eab11d3d9368ac8056f90a79163d825843ef92345",
+      "sha256": "2e75d18b395e58758e2e4a72dcd304f7192cb95a5db5b4afe8108ca89104e8da",
+      "reused": false,
+      "compressionSeconds": 118.81680696690455
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 2.1979626528918743,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "run_fingerprint": "edf1668b5367aa34291e73b03d3968ae2d74b124a8f442b9eaca348607e6e0c0",
+  "question_id": "778164c6",
+  "arm": "grep",
+  "snapshot_fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+  "snapshot_sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+  "answer_sha256": "8624111ebd9429f4e1d06e1aab09e04c421035786ece4f5e8363b49137494c88",
+  "result": {
+    "question_id": "778164c6",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "1. The fruit-containing snapper dish mentioned earlier was **Grilled Snapper with Mango Salsa**.\n2. It was described as popular in several Caribbean countries, not specifically as Jamaican. The Jamaican dish recommended was **Escovitch Fish**, topped with spicy pickled vegetables.\n\nSo you may be thinking of **Grilled Snapper with Mango Salsa**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_grep",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 819.5739798247814,
+      "firstVisibleTextFromSpawnMs": 31171.494935872033,
+      "firstThinkingFromSpawnMs": 10163.319523911923,
+      "firstToolDeltaFromSpawnMs": 10184.72237396054,
+      "promptToCompleteMs": 31408.062542090192,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 2,
+      "userMessages": 1,
+      "processWallMs": 32243.299749912694
+    },
+    "answerWallMs": 32325.105851050466,
+    "tokens": {
+      "input": 275920,
+      "output": 354,
+      "cacheRead": 545792,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "edf1668b5367aa34291e73b03d3968ae2d74b124a8f442b9eaca348607e6e0c0",
+    "snapshot": {
+      "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+      "sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+      "reused": true,
+      "compressionSeconds": 117.88170368992724
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 4.036479046801105,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

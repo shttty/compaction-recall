@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "fbdb377926917b9d04bc3dd560b03292149c6e9b6dafb2842ec3ab930b80b83a",
+  "question_id": "577d4d32",
+  "arm": "native",
+  "snapshot_fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+  "snapshot_sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+  "answer_sha256": "b5766b7459895d1c2a41f6c82ccff4670912a04b81d9286c6ecb18d5940db097",
+  "result": {
+    "question_id": "577d4d32",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "1. You said you’re aiming to get ready for bed around **10–10.30 pm** and read for **20–30 minutes** before sleeping.\n2. We discussed avoiding screens for about **an hour before bed**.\n3. So, a reasonable time to stop checking work emails and messages is **around 9–9.30 pm**. You hadn’t set a specific work-email cut-off, so treat this as a suggested guideline.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 696.3105250615627,
+      "firstVisibleTextFromSpawnMs": 17371.777662076056,
+      "firstThinkingFromSpawnMs": 13920.481914188713,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 18436.532939085737,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 19148.389934096485
+    },
+    "answerWallMs": 19238.17836586386,
+    "tokens": {
+      "input": 762,
+      "output": 347,
+      "cacheRead": 275200,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "fbdb377926917b9d04bc3dd560b03292149c6e9b6dafb2842ec3ab930b80b83a",
+    "snapshot": {
+      "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+      "sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+      "reused": true,
+      "compressionSeconds": 81.82407163479365
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 4.2868261120747775,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

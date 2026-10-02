@@ -8,21 +8,29 @@ coverage/
 .DS_Store
 
 # Public benchmark downloads (not extension runtime or committed fixtures)
-prototype/*.download*
-prototype/range.headers
+benchmark/*.download*
+benchmark/range.headers
 
 # Generated run logs and redundant intermediate benchmark output
-prototype/blind-runs/
-prototype/stacked-progress.json
-prototype/stacked-summary.txt
+benchmark/blind-runs/
+benchmark/stacked-progress.json
+benchmark/stacked-summary.txt
 
 # Local reranker runtimes, model weights and source-window payloads
-prototype/.venv-rerank/
-prototype/models/
-prototype/rerank-candidates.private.json
+benchmark/.venv-rerank/
+benchmark/models/
+benchmark/rerank-candidates.private.json
 
 # Generated local runtime session marker
 /:memory:.ses
 
-# Python prototype bytecode
-prototype/__pycache__/
+# Python test and benchmark bytecode
+__pycache__/
+*.pyc
+
+# Local SDK profiles and authentication (external configuration only)
+.pi/
+.pi-profile/
+auth.json
+models.json
+settings.json

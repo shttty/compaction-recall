@@ -1,0 +1,58 @@
+{
+  "run_fingerprint": "bdb89c09243ad117bca5a1054ada268a6d5aa2a85444aec960bb3035f89a71ae",
+  "question_id": "778164c6",
+  "arm": "grep",
+  "snapshot_fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+  "snapshot_sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+  "answer_sha256": "dad010f27f93837faf1c3a1f05c9437eeb5cab1a86d5e7424d7224a6d676ffc9",
+  "result": {
+    "question_id": "778164c6",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "1. The fruit-containing snapper dish mentioned was **Grilled Snapper with Mango Salsa**.\n2. I described it as a Caribbean dish, not specifically Jamaican. The Jamaican dish I recommended was **Escovitch Fish**, topped with spicy pickled vegetables—not fruit.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_grep",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 815.4909461736679,
+      "firstVisibleTextFromSpawnMs": 30384.136418113485,
+      "firstThinkingFromSpawnMs": 9548.50797005929,
+      "firstToolDeltaFromSpawnMs": 9575.306790182367,
+      "promptToCompleteMs": 29940.166109008715,
+      "providerTTFTMs": null,
+      "modelTurns": 3,
+      "toolBatches": 2,
+      "toolCalls": 2,
+      "userMessages": 1,
+      "processWallMs": 30771.24955202453
+    },
+    "answerWallMs": 30852.316765114665,
+    "tokens": {
+      "input": 276983,
+      "output": 367,
+      "cacheRead": 546816,
+      "cacheWrite": 0
+    },
+    "modelCalls": 3,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "bdb89c09243ad117bca5a1054ada268a6d5aa2a85444aec960bb3035f89a71ae",
+    "snapshot": {
+      "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
+      "sha256": "ce6de694adbb952ca5c3d3b07fa487e43854812691233604613ae53bdaadc490",
+      "reused": true,
+      "compressionSeconds": 117.88170368992724
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 3.90364819788374,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

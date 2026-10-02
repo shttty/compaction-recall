@@ -1,0 +1,71 @@
+{
+  "run_fingerprint": "81ce86a9ddc492e3f9088e3a378f537c5c4299f2d030133e7256460fb1f49ff5",
+  "question_id": "gpt4_a1b77f9c",
+  "arm": "production",
+  "snapshot_fingerprint": "8f6364fa7669bee31aa28d191980b477eae4b9d4ae6227b66ed9bb55221ee458",
+  "snapshot_sha256": "7cc3eabc438d64bdb6e5108bf18ad93656f7eb2daa10a258287a4e9b6321f7af",
+  "answer_sha256": "f947dcf8c0f3cb9a24076b6516291a2a9cefa2b87a8641789139f590555fb77e",
+  "result": {
+    "question_id": "gpt4_a1b77f9c",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "### Timeline from the chat\n- **The Nightingale:** Started Jan. 1 and finished Jan. 15 — **2 weeks**.\n- **Sapiens:** Started Feb. 1 and finished Mar. 1 — **4 weeks**.\n- **The Power:** You said you started listening on Mar. 6. No finish date is given, so counting through Apr. 30 gives **7 weeks and 6 days**.\n\n### Total\nThat’s **13 weeks and 6 days**, or approximately **14 weeks**.\n\nNote: the chat also says you were already listening to *The Power* on Mar. 1, so its exact start date is inconsistent. If Mar. 1 was the actual start, the total would be about **14 weeks and 4 days**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_recall",
+      "history_expand",
+      "history_expand",
+      "history_expand",
+      "history_expand",
+      "history_recall",
+      "history_grep",
+      "history_grep",
+      "history_recall",
+      "history_recall",
+      "history_expand",
+      "history_expand",
+      "history_expand",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 719.613831024617,
+      "firstVisibleTextFromSpawnMs": 116790.60335597023,
+      "firstThinkingFromSpawnMs": 21734.701737994328,
+      "firstToolDeltaFromSpawnMs": 8219.135558931157,
+      "promptToCompleteMs": 119903.04304799065,
+      "providerTTFTMs": null,
+      "modelTurns": 10,
+      "toolBatches": 9,
+      "toolCalls": 15,
+      "userMessages": 1,
+      "processWallMs": 120638.55240610428
+    },
+    "answerWallMs": 120677.32926597819,
+    "tokens": {
+      "input": 312214,
+      "output": 1921,
+      "cacheRead": 2619904,
+      "cacheWrite": 0
+    },
+    "modelCalls": 10,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "81ce86a9ddc492e3f9088e3a378f537c5c4299f2d030133e7256460fb1f49ff5",
+    "snapshot": {
+      "fingerprint": "8f6364fa7669bee31aa28d191980b477eae4b9d4ae6227b66ed9bb55221ee458",
+      "sha256": "7cc3eabc438d64bdb6e5108bf18ad93656f7eb2daa10a258287a4e9b6321f7af",
+      "reused": true,
+      "compressionSeconds": 124.69937260216102
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 4.961153076030314,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

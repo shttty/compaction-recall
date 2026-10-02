@@ -1,0 +1,55 @@
+{
+  "run_fingerprint": "ac056c54837c0411c77ff11552d717464f7ebafc6a12a8f4bba03c702f3784c8",
+  "question_id": "gpt4_65aabe59",
+  "arm": "native",
+  "snapshot_fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+  "snapshot_sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+  "answer_sha256": "89e2eace278f72d8bb1ddfa8c155a51bc08cb2c373f1b2289cb9eccecd1478b1",
+  "result": {
+    "question_id": "gpt4_65aabe59",
+    "arm": "native",
+    "outcome": "answered",
+    "answer": "1. **Relevant information:** The conversation mentions a smart thermostat only as a general suggestion, and it does not mention you setting one up. I couldn’t find any mention of you setting up a mesh network system either.\n2. **Conclusion:** There isn’t enough information in the chat history to tell which device you set up first.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [],
+    "timing": {
+      "startupToRpcReadyMs": 701.4945698902011,
+      "firstVisibleTextFromSpawnMs": 9883.277203887701,
+      "firstThinkingFromSpawnMs": 9748.969908803701,
+      "firstToolDeltaFromSpawnMs": null,
+      "promptToCompleteMs": 10314.13002195768,
+      "providerTTFTMs": null,
+      "modelTurns": 1,
+      "toolBatches": 0,
+      "toolCalls": 0,
+      "userMessages": 1,
+      "processWallMs": 11047.219476895407
+    },
+    "answerWallMs": 11128.831988200545,
+    "tokens": {
+      "input": 296,
+      "output": 136,
+      "cacheRead": 286464,
+      "cacheWrite": 0
+    },
+    "modelCalls": 1,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "ac056c54837c0411c77ff11552d717464f7ebafc6a12a8f4bba03c702f3784c8",
+    "snapshot": {
+      "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
+      "sha256": "69211d4a755af209c2f653d12b5af0d568d0190c65a00a0e8a8deb603fb09265",
+      "reused": true,
+      "compressionSeconds": 88.37053048610687
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 4.745581864146516,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "run_fingerprint": "b9f4af6174d0941373c103619110c506f9256acbaf1e46ba772543dcb9e352b0",
+  "question_id": "9d25d4e0",
+  "arm": "production",
+  "snapshot_fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
+  "snapshot_sha256": "f4e9825ba69cc0742e2c82d3a45cd1d3e4c4d33da2f6d14942d6988fe0259a99",
+  "answer_sha256": "05ccbe4dd59682d8b2733cfbe7d05617599de357087c67fc9e34441b18194a20",
+  "result": {
+    "question_id": "9d25d4e0",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "### 1. Relevant information\nWithin the last two months—approximately March 30 to May 30, 2023—you mentioned acquiring:\n\n| Jewelry | When acquired |\n|---|---|\n| Silver necklace with a small pendant, for yourself | April 15, 2023 |\n| Engagement ring | About a month before your May messages, so approximately April 2023 |\n| Pair of emerald earrings from a flea market | The weekend before May 26, 2023 |\n\nYou also mentioned buying a **separate silver necklace with a small pendant for your sister**, costing **$50**, in your May 25 conversation.\n\n### 2. Counting the acquisitions\nCounting the emerald earrings as one pair, you acquired **3 jewelry items for your own collection**.\n\n**If you include the necklace purchased as a gift for your sister, the total is 4 items.** Existing jewelry, pieces needing repairs, and your grandmother’s diamond necklace that you only tried on are not counted as new acquisitions.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand",
+      "history_expand",
+      "history_expand",
+      "history_grep",
+      "history_grep",
+      "history_grep",
+      "history_expand",
+      "history_grep",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 679.6962881926447,
+      "firstVisibleTextFromSpawnMs": 97328.3720582258,
+      "firstThinkingFromSpawnMs": 42349.7349570971,
+      "firstToolDeltaFromSpawnMs": 9156.640341039747,
+      "promptToCompleteMs": 106947.06566422246,
+      "providerTTFTMs": null,
+      "modelTurns": 9,
+      "toolBatches": 8,
+      "toolCalls": 10,
+      "userMessages": 1,
+      "processWallMs": 107658.82120002061
+    },
+    "answerWallMs": 107709.66626005247,
+    "tokens": {
+      "input": 301274,
+      "output": 695,
+      "cacheRead": 2338944,
+      "cacheWrite": 0
+    },
+    "modelCalls": 9,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "b9f4af6174d0941373c103619110c506f9256acbaf1e46ba772543dcb9e352b0",
+    "snapshot": {
+      "fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
+      "sha256": "f4e9825ba69cc0742e2c82d3a45cd1d3e4c4d33da2f6d14942d6988fe0259a99",
+      "reused": true,
+      "compressionSeconds": 101.38162532495335
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 6.280855627031997,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

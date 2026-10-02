@@ -1,0 +1,59 @@
+{
+  "run_fingerprint": "e6de00e327157e15b804a7e6da5cb5d1d57ba0d980e22947ddbd422925d62a86",
+  "question_id": "982b5123",
+  "arm": "production",
+  "snapshot_fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+  "snapshot_sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+  "answer_sha256": "20afa838f857de9bd36dc4e62e75f83905900691dbc32b86b74cac0948bdb64b",
+  "result": {
+    "question_id": "982b5123",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "1. You said the San Francisco wedding trip was **two months ago**.\n2. You booked the Airbnb **three months in advance**.\n3. So you booked it about **five months ago**.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_expand",
+      "history_expand"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 711.6615520790219,
+      "firstVisibleTextFromSpawnMs": 39291.1781698931,
+      "firstThinkingFromSpawnMs": 16722.109739901498,
+      "firstToolDeltaFromSpawnMs": 7453.159459866583,
+      "promptToCompleteMs": 39759.198506129906,
+      "providerTTFTMs": null,
+      "modelTurns": 4,
+      "toolBatches": 3,
+      "toolCalls": 3,
+      "userMessages": 1,
+      "processWallMs": 40486.55154998414
+    },
+    "answerWallMs": 40575.1315089874,
+    "tokens": {
+      "input": 294080,
+      "output": 406,
+      "cacheRead": 865792,
+      "cacheWrite": 0
+    },
+    "modelCalls": 4,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "e6de00e327157e15b804a7e6da5cb5d1d57ba0d980e22947ddbd422925d62a86",
+    "snapshot": {
+      "fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
+      "sha256": "5c9dcd3d1c33a72daf46ad315f747ec74e1a2dbc6689ec601259479358341bd9",
+      "reused": true,
+      "compressionSeconds": 90.14432884985581
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 6.120977078098804,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

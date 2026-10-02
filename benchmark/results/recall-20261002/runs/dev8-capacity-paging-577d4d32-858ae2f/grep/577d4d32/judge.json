@@ -1,0 +1,57 @@
+{
+  "run_fingerprint": "3d9a1896e36cd43dc4fa3bbc2132633c3292d4439c2c5c32ae54bd6476c6c305",
+  "question_id": "577d4d32",
+  "arm": "grep",
+  "snapshot_fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+  "snapshot_sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+  "answer_sha256": "5b4a749244c2213a202f4fdbfdfc5e296247b8f5f8d6ce4c76254d529e2585de",
+  "result": {
+    "question_id": "577d4d32",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "1. You said you stop checking work emails and messages at **7 pm**.\n2. You mentioned that this helps you separate work from personal time and relax.\n\n**Answer: 7 pm.**",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_grep"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 816.8150640558451,
+      "firstVisibleTextFromSpawnMs": 16244.360469048843,
+      "firstThinkingFromSpawnMs": 9557.556744199246,
+      "firstToolDeltaFromSpawnMs": 9639.166412176564,
+      "promptToCompleteMs": 19832.520175958052,
+      "providerTTFTMs": null,
+      "modelTurns": 2,
+      "toolBatches": 1,
+      "toolCalls": 1,
+      "userMessages": 1,
+      "processWallMs": 20680.989556014538
+    },
+    "answerWallMs": 20767.955482006073,
+    "tokens": {
+      "input": 279100,
+      "output": 117,
+      "cacheRead": 275968,
+      "cacheWrite": 0
+    },
+    "modelCalls": 2,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "3d9a1896e36cd43dc4fa3bbc2132633c3292d4439c2c5c32ae54bd6476c6c305",
+    "snapshot": {
+      "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+      "sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+      "reused": true,
+      "compressionSeconds": 81.82407163479365
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 2.270233237883076,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

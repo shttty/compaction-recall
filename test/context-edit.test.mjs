@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { SessionManager } from '@earendil-works/pi-coding-agent';
-import register from '../index.ts';
-import * as history from '../history.ts';
-import { LOCATOR_TYPE } from '../locator.ts';
+import register from '../src/index.ts';
+import * as history from '../src/history.ts';
+import { LOCATOR_TYPE } from '../src/locator.ts';
 
 const stamp = '2026-10-02T00:00:00.000Z';
 const message = (content, role = 'user') => ({ role, content, timestamp: 1 });

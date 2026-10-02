@@ -1,0 +1,57 @@
+{
+  "run_fingerprint": "d0a94084e206cb09158a25cb7dff2ff94f49954f0627bd4438b88405264efb79",
+  "question_id": "577d4d32",
+  "arm": "grep",
+  "snapshot_fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+  "snapshot_sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+  "answer_sha256": "a63a6154480a3c6c3d90249cc7222dd3fec3fd875efd14da259dd85b9f259056",
+  "result": {
+    "question_id": "577d4d32",
+    "arm": "grep",
+    "outcome": "answered",
+    "answer": "1. You mentioned setting a boundary to stop checking work emails and messages by **7 pm**.\n2. You said this helps you separate work from personal time and relax.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_grep"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 820.965482853353,
+      "firstVisibleTextFromSpawnMs": 23011.867279885337,
+      "firstThinkingFromSpawnMs": 15280.83517192863,
+      "firstToolDeltaFromSpawnMs": 16523.698245873675,
+      "promptToCompleteMs": 23595.047204056755,
+      "providerTTFTMs": null,
+      "modelTurns": 2,
+      "toolBatches": 1,
+      "toolCalls": 1,
+      "userMessages": 1,
+      "processWallMs": 24447.701371042058
+    },
+    "answerWallMs": 24537.164906971157,
+    "tokens": {
+      "input": 276986,
+      "output": 244,
+      "cacheRead": 275968,
+      "cacheWrite": 0
+    },
+    "modelCalls": 2,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "d0a94084e206cb09158a25cb7dff2ff94f49954f0627bd4438b88405264efb79",
+    "snapshot": {
+      "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
+      "sha256": "380336e19fe6ebf54bb7cb0658246a4843079ab9d72d80663189f1942b8d03e9",
+      "reused": false,
+      "compressionSeconds": 81.82407163479365
+    },
+    "judge": {
+      "verdict": "yes",
+      "correct": true,
+      "status": "graded",
+      "seconds": 2.035252499161288,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}

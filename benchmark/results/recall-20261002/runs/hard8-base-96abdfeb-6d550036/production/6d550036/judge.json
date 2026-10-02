@@ -1,0 +1,63 @@
+{
+  "run_fingerprint": "b6adca12e725e822a3ac5ef734632cef7f03737c847b94263d86201ac323a1e2",
+  "question_id": "6d550036",
+  "arm": "production",
+  "snapshot_fingerprint": "35d650a4cde3361782aa54439b0176370d7333353dcb4ac5be0147f6c0588d75",
+  "snapshot_sha256": "0441bbbb5bf249e8c200757a201b80da31465686594cd339ae38abb40ace1ed6",
+  "answer_sha256": "b55a65c5c053199732e9ef63c0239a91aa2af06bf36f903bc180193a91abe620",
+  "result": {
+    "question_id": "6d550036",
+    "arm": "production",
+    "outcome": "answered",
+    "answer": "1. **Project you led:** One Marketing Research class project, where you led the data-analysis team on a market analysis for a product launch.\n2. **Project you’re currently working on:** One customer-data analysis project involving clustering.\n\nSo, **two projects are mentioned**—but only the Marketing Research project is explicitly described as one you led. You said you’re working on the customer-data project, but didn’t specify that you’re leading it.",
+    "terminalStopReason": "stop",
+    "providerError": null,
+    "tool_calls": [
+      "history_recall",
+      "history_recall",
+      "history_expand",
+      "history_recall",
+      "history_expand",
+      "history_expand",
+      "history_recall"
+    ],
+    "timing": {
+      "startupToRpcReadyMs": 708.426000084728,
+      "firstVisibleTextFromSpawnMs": 99569.08166594803,
+      "firstThinkingFromSpawnMs": 17755.003272090107,
+      "firstToolDeltaFromSpawnMs": 7993.10197099112,
+      "promptToCompleteMs": 100284.94895901531,
+      "providerTTFTMs": null,
+      "modelTurns": 8,
+      "toolBatches": 7,
+      "toolCalls": 7,
+      "userMessages": 1,
+      "processWallMs": 101025.25828499347
+    },
+    "answerWallMs": 101108.85758884251,
+    "tokens": {
+      "input": 305579,
+      "output": 1175,
+      "cacheRead": 2063872,
+      "cacheWrite": 0
+    },
+    "modelCalls": 8,
+    "rc": 0,
+    "error": null,
+    "run_fingerprint": "b6adca12e725e822a3ac5ef734632cef7f03737c847b94263d86201ac323a1e2",
+    "snapshot": {
+      "fingerprint": "35d650a4cde3361782aa54439b0176370d7333353dcb4ac5be0147f6c0588d75",
+      "sha256": "0441bbbb5bf249e8c200757a201b80da31465686594cd339ae38abb40ace1ed6",
+      "reused": false,
+      "compressionSeconds": 76.48786530666985
+    },
+    "judge": {
+      "verdict": "no",
+      "correct": false,
+      "status": "graded",
+      "seconds": 5.149853194132447,
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    }
+  }
+}
