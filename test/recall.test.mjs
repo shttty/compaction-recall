@@ -69,14 +69,39 @@ test('grep supports case-insensitive regex OR and literal invalid regex fallback
 });
 
 test('grep limits per-entry and global snippets while counting all matches', async () => {
-  const entries = Array.from({ length: 12 }, (_, i) => msg(String(i), 'hit hit hit hit'));
+  const entries = Array.from({ length: 12 }, (_, i) => msg(String(i), Array.from({ length: 4 }, () => `hit${'x'.repeat(400)}`).join('')));
   const h = harness([...entries, msg('live', 'tail'), compact('c', 'live')]);
   const result = await h.run('history_grep', { pattern: 'hit' });
   assert.equal(result.details.total, 48);
   assert.equal(text(result).split('\n').length, 31);
+  assert.equal(result.details.snippets, 30);
+  assert.equal(result.details.omitted, 18);
   assert.equal(text(result).split('\n').filter(l => l.startsWith('[0]')).length, 3);
   const empty = harness([msg('a', 'ab'), msg('b', 'tail'), compact('c', 'b')]);
-  assert.equal((await empty.run('history_grep', { pattern: '' })).details.total, 3);
+  const zeroWidth = await empty.run('history_grep', { pattern: '' });
+  assert.equal(zeroWidth.details.total, 3);
+  assert.equal(zeroWidth.details.snippets, 1);
+  assert.equal(zeroWidth.details.covered, 2);
+});
+test('grep spends snippet slots on later text beyond already visible context', async () => {
+  const h = harness([msg('coverage', `hit near hit near hit${'x'.repeat(400)}DISTANT hit`), msg('live', 'tail'), compact('c', 'live')]);
+  const result = await h.run('history_grep', { pattern: 'hit' });
+  assert.equal(result.details.total, 4);
+  assert.match(text(result), /4 matches; 2 representative snippets shown \(2 matches already visible/);
+  assert.match(text(result), /DISTANT/);
+});
+test('grep coverage is entry-local and does not cover a partly visible match', async () => {
+  const equalText = harness([msg('first', 'needle'), msg('second', 'needle'), msg('live', 'tail'), compact('c', 'live')]);
+  const separate = await equalText.run('history_grep', { pattern: 'needle' });
+  assert.equal(separate.details.total, 2);
+  assert.equal(separate.details.snippets, 2);
+  assert.equal(separate.details.covered, 0);
+  const partialText = `${'x'.repeat(200)}A${'x'.repeat(149)}${'B'.repeat(20)}`;
+  const partial = harness([msg('partial', partialText), msg('live', 'tail'), compact('c', 'live')]);
+  const partlyCovered = await partial.run('history_grep', { pattern: 'A|B{20}' });
+  assert.equal(partlyCovered.details.total, 2);
+  assert.equal(partlyCovered.details.snippets, 2);
+  assert.equal(partlyCovered.details.covered, 0);
 });
 test('grep bounds long matches and preserves useful clipped Unicode context', async () => {
   const h = harness([msg('long-match', `start😀${'x'.repeat(120000)}end😀`), msg('live', 'tail'), compact('c', 'live')]);
@@ -95,8 +120,9 @@ test('grep budgets multiple large snippets and reports omitted matches', async (
   const h = harness([...entries, msg('live', 'tail'), compact('c', 'live')]);
   const result = await h.run('history_grep', { pattern: 'NEEDLE[\\s\\S]*?END' });
   assert.equal(result.details.total, 48);
+  assert.match(text(result), /48 matches; 30 representative snippets shown/);
+  assert.match(text(result), /18 other matches not shown/);
   assert.ok([...text(result)].length <= 16000);
-  assert.match(text(result), /matches omitted/);
   assert.match(text(result), /snippet clipped/);
   assert.match(text(result), /narrower pattern/);
 });

@@ -26,25 +26,16 @@ function codePointSlice(text: string, offset: number, limit: number): string {
   return text.slice(start, end);
 }
 
-function codePointOffset(text: string, utf16Offset: number, roundUp = false): number {
-  let points = 0;
-  for (let i = 0; i < utf16Offset; points++) {
-    const code = text.charCodeAt(i);
-    const paired = code >= 0xd800 && code <= 0xdbff && i + 1 < text.length &&
-      text.charCodeAt(i + 1) >= 0xdc00 && text.charCodeAt(i + 1) <= 0xdfff;
-    if (paired && i + 1 >= utf16Offset) return points + Number(roundUp);
-    i += paired ? 2 : 1;
-  }
-  return points;
-}
 
-function grepSnippet(text: string, start: number, end: number, budget: number): string {
-  const total = codePointLength(text);
+function grepSnippet(text: string, start: number, end: number, total: number, budget: number): { text: string; visible: { start: number; end: number }[] } {
   let context = SNIPPET;
   let before = codePointSlice(text, Math.max(0, start - context), Math.min(context, start));
   let after = codePointSlice(text, end, Math.min(context, total - end));
   if (end - start + codePointLength(before) + codePointLength(after) <= budget) {
-    return (before + codePointSlice(text, start, end - start) + after).replace(/\s+/g, " ");
+    return {
+      text: (before + codePointSlice(text, start, end - start) + after).replace(/\s+/g, " "),
+      visible: [{ start: Math.max(0, start - context), end: Math.min(total, end + context) }],
+    };
   }
 
   context = 32;
@@ -54,7 +45,14 @@ function grepSnippet(text: string, start: number, end: number, budget: number): 
   const matchBudget = Math.max(0, budget - codePointLength(before) - codePointLength(after) - codePointLength(marker) - 4);
   const first = Math.ceil(matchBudget / 2);
   const last = Math.floor(matchBudget / 2);
-  return `${before}…${codePointSlice(text, start, first)}${marker}${codePointSlice(text, Math.max(start, end - last), last)}…${after}`.replace(/\s+/g, " ");
+  const tailStart = Math.max(start, end - last);
+  return {
+    text: `${before}…${codePointSlice(text, start, first)}${marker}${codePointSlice(text, tailStart, last)}…${after}`.replace(/\s+/g, " "),
+    visible: [
+      { start: Math.max(0, start - context), end: Math.min(total, start + first) },
+      { start: tailStart, end: Math.min(total, end + context) },
+    ],
+  };
 }
 
 function expandHeader(e: SessionEntry, requested: boolean): string {
@@ -98,8 +96,8 @@ export default function(pi: ExtensionAPI) {
       "Supplementary text-search fallback when automatic locators, history_recall and expanded entries leave insufficient evidence. " +
       "Search branch-effective user/assistant text and assistant tool-call names/arguments on the current compacted branch, honoring context edits; exclude toolResult bodies, thinking and images. No matches do not prove absence. " +
       "`pattern` is a case-insensitive JavaScript regular expression (not SQL LIKE); use " +
-      "alternation for synonyms, e.g. `5K|5 km|personal best`. Results are bounded to 16000 Unicode codepoints; snippets may be clipped and matches omitted from display. " +
-      "Read full text with history_expand or use a narrower pattern to find remaining matches.",
+      "alternation for synonyms, e.g. `5K|5 km|personal best`. Results are bounded to 16000 Unicode codepoints and show up to 30 representative snippets, at most 3 per entry; all regex matches are counted, including matches already visible in another snippet. Clipped-out text is not covered. " +
+      "Read full text with history_expand or use a narrower pattern to find matching context not shown.",
     parameters: Type.Object({
       pattern: Type.String({ description: "Case-insensitive JavaScript regular expression" }),
     }),
@@ -108,31 +106,60 @@ export default function(pi: ExtensionAPI) {
       const lines: string[] = [];
       let metadataSkipped = false;
       let total = 0;
+      let coveredMatches = 0;
+      let omitted = 0;
       for (const e of compactedEntries(ctx.sessionManager.getBranch())) {
         const text = searchableEntryText(e);
         if (text === undefined) continue;
+        const totalPoints = codePointLength(text);
         let shown = 0;
+        const visible: { start: number; end: number }[] = [];
+        let scanUtf16 = 0;
+        let scanPoints = 0;
+        const pointOffset = (target: number, roundUp = false) => {
+          while (scanUtf16 < target) {
+            const code = text.charCodeAt(scanUtf16);
+            const paired = code >= 0xd800 && code <= 0xdbff && scanUtf16 + 1 < text.length &&
+              text.charCodeAt(scanUtf16 + 1) >= 0xdc00 && text.charCodeAt(scanUtf16 + 1) <= 0xdfff;
+            if (paired && scanUtf16 + 1 >= target) return scanPoints + Number(roundUp);
+            scanUtf16 += paired ? 2 : 1;
+            scanPoints++;
+          }
+          return scanPoints;
+        };
         for (const m of text.matchAll(rx)) {
           total += 1;
-          if (lines.length >= MAX_HITS || shown >= 3) continue;
-          shown += 1;
+          const i = m.index ?? 0;
+          const start = pointOffset(i);
+          const end = pointOffset(i + m[0].length, true);
+          const alreadyVisible = visible.some((range) => start === end
+            ? start >= range.start && start <= range.end
+            : start >= range.start && end <= range.end);
+          if (alreadyVisible) {
+            coveredMatches += 1;
+            continue;
+          }
+          if (lines.length >= MAX_HITS || shown >= 3) {
+            omitted += 1;
+            continue;
+          }
           const role = e.type === "message" ? e.message.role : e.type;
           const prefix = `[${e.id}] ${e.timestamp.slice(0, 10)} ${role}: `;
           if (codePointLength(prefix) > 140) {
             metadataSkipped = true;
+            omitted += 1;
             continue;
           }
-          const lineBudget = 500 - codePointLength(prefix);
-          const i = m.index ?? 0;
-          const start = codePointOffset(text, i);
-          const end = codePointOffset(text, i + m[0].length, true);
-          lines.push(prefix + grepSnippet(text, start, end, lineBudget));
+          const snippet = grepSnippet(text, start, end, totalPoints, 500 - codePointLength(prefix));
+          lines.push(prefix + snippet.text);
+          visible.push(...snippet.visible);
+          shown += 1;
         }
       }
       const head = total === 0
         ? "No matches in compacted history."
-        : `${total} matches (showing ${lines.length}).${total > lines.length ? " Some matches omitted from display; use a narrower pattern for remaining matches." : ""}${metadataSkipped ? " Entries with oversized metadata were skipped." : ""} Use history_expand for full text.`;
-      return { content: [{ type: "text", text: [head, ...lines].join("\n") }], details: { total } };
+        : `${total} matches; ${lines.length} representative snippets shown (${coveredMatches} matches already visible in those snippets${omitted ? `, ${omitted} other matches not shown` : ""}).${omitted ? " Some matching context may be unseen; use a narrower pattern or history_expand to read full text." : " Use history_expand to read full text."}${metadataSkipped ? " Entries with oversized metadata were skipped." : ""}`;
+      return { content: [{ type: "text", text: [head, ...lines].join("\n") }], details: { total, snippets: lines.length, covered: coveredMatches, omitted } };
     },
   });
 
