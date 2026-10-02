@@ -78,6 +78,65 @@ test('grep limits per-entry and global snippets while counting all matches', asy
   const empty = harness([msg('a', 'ab'), msg('b', 'tail'), compact('c', 'b')]);
   assert.equal((await empty.run('history_grep', { pattern: '' })).details.total, 3);
 });
+test('grep bounds long matches and preserves useful clipped Unicode context', async () => {
+  const h = harness([msg('long-match', `start😀${'x'.repeat(120000)}end😀`), msg('live', 'tail'), compact('c', 'live')]);
+  const result = await h.run('history_grep', { pattern: 'start[\\s\\S]*end😀' });
+  assert.equal(result.details.total, 1);
+  assert.ok([...text(result)].length <= 16000);
+  assert.match(text(result), /\[long-match\]/);
+  assert.match(text(result), /snippet clipped/);
+  assert.match(text(result), /start😀/);
+  assert.match(text(result), /end😀/);
+  assert.match(text(result), /history_expand/);
+});
+
+test('grep budgets multiple large snippets and reports omitted matches', async () => {
+  const entries = Array.from({ length: 12 }, (_, i) => msg(`large-${i}`, Array.from({ length: 4 }, () => `NEEDLE${'x'.repeat(3000)}END`).join(' ')));
+  const h = harness([...entries, msg('live', 'tail'), compact('c', 'live')]);
+  const result = await h.run('history_grep', { pattern: 'NEEDLE[\\s\\S]*?END' });
+  assert.equal(result.details.total, 48);
+  assert.ok([...text(result)].length <= 16000);
+  assert.match(text(result), /matches omitted/);
+  assert.match(text(result), /snippet clipped/);
+  assert.match(text(result), /narrower pattern/);
+});
+
+test('grep bounds extreme metadata without emitting partial ids and honors latest edits', async () => {
+  const edited = msg('edited', 'originalSecret');
+  const omitted = msg('omitted', 'omittedSecret');
+  const enormousId = msg('id'.repeat(12000), 'visibleNeedle');
+  const h = harness([edited, omitted, enormousId, msg('live', 'tail'), compact('c', 'live'),
+    { type: 'context_edit', id: 'edit', timestamp: stamp, parentId: null, targetId: 'edited', replacement: { content: 'visibleNeedle' } },
+    { type: 'context_edit', id: 'omit', timestamp: stamp, parentId: null, targetId: 'omitted', replacement: null }]);
+  const result = await h.run('history_grep', { pattern: 'Needle|Secret' });
+  assert.equal(result.details.total, 2);
+  assert.ok([...text(result)].length <= 16000);
+  assert.match(text(result), /\[edited\]/);
+  assert.doesNotMatch(text(result), /originalSecret|omittedSecret|\[id{20}/);
+  assert.match(text(result), /oversized metadata/);
+});
+
+test('grep keeps normal short result snippets and complete match counts', async () => {
+  const h = harness([msg('short', 'before needle after'), msg('live', 'tail'), compact('c', 'live')]);
+  const result = await h.run('history_grep', { pattern: 'needle' });
+  assert.equal(result.details.total, 1);
+  assert.match(text(result), /before needle after/);
+  assert.doesNotMatch(text(result), /snippet clipped/);
+});
+test('grep retains the normal context window when a short match fits', async () => {
+  const body = `LEFT_EVIDENCE${'a'.repeat(100)}needle${'b'.repeat(100)}RIGHT_EVIDENCE`;
+  const h = harness([msg('context', body), msg('live', 'tail'), compact('c', 'live')]);
+  const result = await h.run('history_grep', { pattern: 'needle' });
+  assert.match(text(result), /LEFT_EVIDENCE/);
+  assert.match(text(result), /RIGHT_EVIDENCE/);
+});
+test('grep maps UTF-16 regex matches onto whole Unicode codepoints', async () => {
+  const h = harness([msg('emoji', '😀'), msg('live', 'tail'), compact('c', 'live')]);
+  const result = await h.run('history_grep', { pattern: '.' });
+  assert.equal(result.details.total, 2);
+  assert.match(text(result), /😀/);
+  assert.doesNotMatch(text(result), /�/);
+});
 
 test('calls use the current branch each time, excluding alternate and live entries', async () => {
   const h = harness([msg('a', 'branch alpha'), msg('live', 'tail'), compact('c', 'live')]);

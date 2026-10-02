@@ -26,6 +26,37 @@ function codePointSlice(text: string, offset: number, limit: number): string {
   return text.slice(start, end);
 }
 
+function codePointOffset(text: string, utf16Offset: number, roundUp = false): number {
+  let points = 0;
+  for (let i = 0; i < utf16Offset; points++) {
+    const code = text.charCodeAt(i);
+    const paired = code >= 0xd800 && code <= 0xdbff && i + 1 < text.length &&
+      text.charCodeAt(i + 1) >= 0xdc00 && text.charCodeAt(i + 1) <= 0xdfff;
+    if (paired && i + 1 >= utf16Offset) return points + Number(roundUp);
+    i += paired ? 2 : 1;
+  }
+  return points;
+}
+
+function grepSnippet(text: string, start: number, end: number, budget: number): string {
+  const total = codePointLength(text);
+  let context = SNIPPET;
+  let before = codePointSlice(text, Math.max(0, start - context), Math.min(context, start));
+  let after = codePointSlice(text, end, Math.min(context, total - end));
+  if (end - start + codePointLength(before) + codePointLength(after) <= budget) {
+    return (before + codePointSlice(text, start, end - start) + after).replace(/\s+/g, " ");
+  }
+
+  context = 32;
+  before = codePointSlice(text, Math.max(0, start - context), Math.min(context, start));
+  after = codePointSlice(text, end, Math.min(context, total - end));
+  const marker = "[snippet clipped]";
+  const matchBudget = Math.max(0, budget - codePointLength(before) - codePointLength(after) - codePointLength(marker) - 4);
+  const first = Math.ceil(matchBudget / 2);
+  const last = Math.floor(matchBudget / 2);
+  return `${before}…${codePointSlice(text, start, first)}${marker}${codePointSlice(text, Math.max(start, end - last), last)}…${after}`.replace(/\s+/g, " ");
+}
+
 function expandHeader(e: SessionEntry, requested: boolean): string {
   const role = e.type === "message" ? e.message.role : e.type;
   return `--- [${e.id}] ${e.timestamp} ${role}${requested ? " (requested)" : ""}\n`;
@@ -67,13 +98,15 @@ export default function(pi: ExtensionAPI) {
       "Supplementary text-search fallback when automatic locators, history_recall and expanded entries leave insufficient evidence. " +
       "Search branch-effective user/assistant text and assistant tool-call names/arguments on the current compacted branch, honoring context edits; exclude toolResult bodies, thinking and images. No matches do not prove absence. " +
       "`pattern` is a case-insensitive JavaScript regular expression (not SQL LIKE); use " +
-      "alternation for synonyms, e.g. `5K|5 km|personal best`. Returns entry ids with snippets; read full text with history_expand.",
+      "alternation for synonyms, e.g. `5K|5 km|personal best`. Results are bounded to 16000 Unicode codepoints; snippets may be clipped and matches omitted from display. " +
+      "Read full text with history_expand or use a narrower pattern to find remaining matches.",
     parameters: Type.Object({
       pattern: Type.String({ description: "Case-insensitive JavaScript regular expression" }),
     }),
     async execute(_id, params, _signal, _onUpdate, ctx) {
       const rx = toRegExp(params.pattern);
       const lines: string[] = [];
+      let metadataSkipped = false;
       let total = 0;
       for (const e of compactedEntries(ctx.sessionManager.getBranch())) {
         const text = searchableEntryText(e);
@@ -83,13 +116,22 @@ export default function(pi: ExtensionAPI) {
           total += 1;
           if (lines.length >= MAX_HITS || shown >= 3) continue;
           shown += 1;
-          const i = m.index ?? 0;
-          const snip = text.slice(Math.max(0, i - SNIPPET), i + m[0].length + SNIPPET).replace(/\s+/g, " ");
           const role = e.type === "message" ? e.message.role : e.type;
-          lines.push(`[${e.id}] ${e.timestamp.slice(0, 10)} ${role}: …${snip}…`);
+          const prefix = `[${e.id}] ${e.timestamp.slice(0, 10)} ${role}: `;
+          if (codePointLength(prefix) > 140) {
+            metadataSkipped = true;
+            continue;
+          }
+          const lineBudget = 500 - codePointLength(prefix);
+          const i = m.index ?? 0;
+          const start = codePointOffset(text, i);
+          const end = codePointOffset(text, i + m[0].length, true);
+          lines.push(prefix + grepSnippet(text, start, end, lineBudget));
         }
       }
-      const head = total === 0 ? "No matches in compacted history." : `${total} matches (showing ${lines.length}).`;
+      const head = total === 0
+        ? "No matches in compacted history."
+        : `${total} matches (showing ${lines.length}).${total > lines.length ? " Some matches omitted from display; use a narrower pattern for remaining matches." : ""}${metadataSkipped ? " Entries with oversized metadata were skipped." : ""} Use history_expand for full text.`;
       return { content: [{ type: "text", text: [head, ...lines].join("\n") }], details: { total } };
     },
   });

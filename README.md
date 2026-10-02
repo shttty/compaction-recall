@@ -25,7 +25,7 @@ pi install /absolute/path/to/pi-recall
 建议流程：自动短索引 → `history_recall` 用当前问题或改写关键词定位相关 id → `history_expand` 核实原文 → 如果证据仍不足，再用 `history_grep` 补充。自动索引已经给出有用 id 时，也可以直接展开。由主模型判断证据是否充足，扩展没有人为的“足够证据”分数门槛，也不强制自动调用 grep。grep 的定位类似底层文本搜索后备，但实现仍是 JavaScript 正则，不是 SQLite / SQL LIKE，不新增数据库。
 
 - `history_recall({ query, limit?, offset? })`：主要的主动检索入口，复用自动索引的词面候选与相关性排序，但使用独立分页：默认及上限均为 50 条，`offset` 默认 0。正文和 `details` 都返回 `total`（去重后的命中总数）、`offset`、`limit`、`returned`、`nextOffset`、`hasMore`；继续同一查询时传回 `nextOffset`，不能直接假设 `offset + limit`。每页以 16,000 个 Unicode 码点为保护预算，正常的 50 条短结果可放下，转义内容或很长的元数据可能使本页少于 50 条；下一页从未返回的那条继续，绝不跳过。极端情况下单条 id / 元数据本身超过预算，会单独返回该条并设置 `budgetExceeded: true`，保证 id 完整且翻页能前进。这个预算不是 token 承诺。分页在相同查询和未变化的当前分支上保持稳定；分支或压缩边界改变后应从 offset 0 重查，不提供持久分页快照。搜索当前分支已压缩的用户 / 助手正文，以及助手 `toolCall` 的工具名和输入参数；排除 `toolResult` 正文。返回真实 id、条目日期、角色和短片段。可以改写关键词再次查找；例如原文是 `bicycle repair`，查询 `cycling` 不保证命中，改用 `bicycle repair` 才有词面依据。没有语义同义词扩展，也没有“无命中就证明从未提过”的保证。
-- `history_grep({ pattern })`：证据不足时的补充后备，搜索范围与自动定位 / recall 一致（正文及工具名 / 输入，排除工具结果）；大小写不敏感的 JavaScript 正则；支持 `SF|San Francisco`。正则无效时按字面量搜索。按会话顺序返回 entry id、日期、角色及片段；最多 30 个片段，每条 entry 最多 3 个，仍统计全部匹配次数。空正则遵循 JavaScript 的零宽匹配语义。
+- `history_grep({ pattern })`：证据不足时的补充后备，搜索范围与自动定位 / recall 一致（正文及工具名 / 输入，排除工具结果）；大小写不敏感的 JavaScript 正则；支持 `SF|San Francisco`。正则无效时按字面量搜索。按会话顺序返回 entry id、日期、角色及片段；最多 30 个片段，每条 entry 最多 3 个，仍统计全部匹配次数。完整模型可读文本（含 header 和元数据）最多 16,000 个 Unicode 码点；每行最多 500 个码点，长匹配片段保留两端并标记裁切，超长 id / 角色元数据对应的片段会跳过并显示警告，不会截断 id。结果会指出展示遗漏；用 `history_expand` 读取完整条目，或用更窄 pattern 查找剩余匹配。空正则遵循 JavaScript 的零宽匹配语义。
 - `history_expand({ id, before?, after?, offset? })`：按自动索引、recall 或 grep 的 id 展开原文；请求条目始终优先显示，前后邻居默认各 2 条、各可设 0–20。输出上限为 16,000 个 Unicode 码点；正文和 `details` 都返回请求条目的码点 `offset`、`total`、`returned`、`nextOffset`、`hasMore`。若 `hasMore: true`，对相同 id 和 before/after 传回 `nextOffset`，可逐页读完长条目；offset 超过正文长度时按正文末尾处理。只允许当前已压缩段里的 id，不读当前上下文或其他分支。
 - 每次调用从 `ctx.sessionManager.getBranch()` 重新取当前分支。以最新 compaction 的原始 `firstKeptEntryId` 为界，仅暴露该条目之前的 message；尚未压缩则返回空。如果边界 id 缺失，沿用 spike 行为：选择最新 compaction 之前的消息。边界消息被省略时仍以它的原始位置划界，不把保留段误当作已压缩历史。
 - 自动定位、recall、grep、expand（包括前后邻居）共用当前分支的 `context_edit` 投影：整条分支扫描，同一目标最后一次编辑生效；`replacement: null` 的条目不可检索或展开，替换条目只暴露替换内容，不回退到原文。字符串及合法文本块均支持，助手 / toolResult 的字符串按 Pi 1.0 归一化为文本块。压缩前后追加的编辑都生效；不修改原始条目，回到编辑之前或另一分支会恢复该分支的视图。编辑后手动分页应从 offset 0 重查。这里的“原文”指分支编辑生效后的正文，不是绕过编辑读取原始存储；仍不搜索 toolResult，但未省略的结果可展开.
@@ -76,7 +76,7 @@ npm run check
 
 grep 的正则行为和 expand 的边界 / 截断规则沿用 recall spike；搜索范围已按新需求纳入工具名 / 输入并排除 toolResult，不再与旧版检索语义完全相同。没有重新运行在线基准。手动正则扫描是线性的遍历，但正则本身没有执行超时，避免高回溯的复杂表达式。grep 结果仍按原文顺序，不按相关性排序。自动定位独立按相关性排序，但不自动调用工具。
 
-- `history_expand` 原先对选中消息拼接后按 16,000 个 UTF-16 单元做头部截断，导致长前文挤掉目标、长目标尾部不可达且可能切断代理对。现在每页最多 16,000 个 Unicode 码点，目标优先，返回可见的页状态与码点 offset；模型可用 `nextOffset` 读取目标后续页。只有目标完整时才尝试加入完整邻居；未显示的邻居不会计入 `details.from/to`。grep 的匹配计数是完整计数，片段本身没有全局字符上限，特别长的正则匹配可能产生很大的片段。
+- `history_expand` 原先对选中消息拼接后按 16,000 个 UTF-16 单元做头部截断，导致长前文挤掉目标、长目标尾部不可达且可能切断代理对。现在每页最多 16,000 个 Unicode 码点，目标优先，返回可见的页状态与码点 offset；模型可用 `nextOffset` 读取目标后续页。只有目标完整时才尝试加入完整邻居；未显示的邻居不会计入 `details.from/to`。grep 现在也将完整回复（header、元数据、片段和状态）限制为 16,000 个 Unicode 码点；单行上限为 500，超长匹配片段标记裁切且尽量保留两端上下文。匹配总数仍完整，但达到展示上限或元数据过长时会明确提示遗漏；可用 `history_expand` 或更窄正则继续查找。
 
 ## 压缩时索引原型实验
 
