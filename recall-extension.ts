@@ -54,6 +54,41 @@ function grepSnippet(text: string, start: number, end: number, total: number, bu
     ],
   };
 }
+function unchangedSourceRanges(text: string, ranges: { start: number; end: number }[]): { start: number; end: number; includeStart: boolean; includeEnd: boolean }[] {
+  const unchanged: { start: number; end: number; includeStart: boolean; includeEnd: boolean }[] = [];
+  for (const range of ranges) {
+    const segment = codePointSlice(text, range.start, range.end - range.start);
+    let utf16 = 0;
+    let points = 0;
+    let unchangedStart = range.start;
+    let includeStart = true;
+    const advance = (target: number) => {
+      while (utf16 < target) {
+        const code = segment.codePointAt(utf16)!;
+        utf16 += code > 0xffff ? 2 : 1;
+        points++;
+      }
+    };
+    for (const match of segment.matchAll(/\s+/g)) {
+      const index = match.index ?? 0;
+      advance(index);
+      const transformedStart = range.start + points;
+      for (const _point of match[0]) points++;
+      utf16 = index + match[0].length;
+      if (match[0] === " ") continue;
+      if (transformedStart > unchangedStart) {
+        unchanged.push({ start: unchangedStart, end: transformedStart, includeStart, includeEnd: false });
+      }
+      unchangedStart = range.start + points;
+      includeStart = false;
+    }
+    if (unchangedStart < range.end) {
+      unchanged.push({ start: unchangedStart, end: range.end, includeStart, includeEnd: true });
+    }
+  }
+  return unchanged;
+}
+
 
 function expandHeader(e: SessionEntry, requested: boolean): string {
   const role = e.type === "message" ? e.message.role : e.type;
@@ -113,7 +148,7 @@ export default function(pi: ExtensionAPI) {
         if (text === undefined) continue;
         const totalPoints = codePointLength(text);
         let shown = 0;
-        const visible: { start: number; end: number }[] = [];
+        const visible: { start: number; end: number; includeStart: boolean; includeEnd: boolean }[] = [];
         let scanUtf16 = 0;
         let scanPoints = 0;
         const pointOffset = (target: number, roundUp = false) => {
@@ -133,7 +168,8 @@ export default function(pi: ExtensionAPI) {
           const start = pointOffset(i);
           const end = pointOffset(i + m[0].length, true);
           const alreadyVisible = visible.some((range) => start === end
-            ? start >= range.start && start <= range.end
+            ? (start > range.start && start < range.end) ||
+            (start === range.start && range.includeStart) || (start === range.end && range.includeEnd)
             : start >= range.start && end <= range.end);
           if (alreadyVisible) {
             coveredMatches += 1;
@@ -152,7 +188,7 @@ export default function(pi: ExtensionAPI) {
           }
           const snippet = grepSnippet(text, start, end, totalPoints, 500 - codePointLength(prefix));
           lines.push(prefix + snippet.text);
-          visible.push(...snippet.visible);
+          visible.push(...unchangedSourceRanges(text, snippet.visible));
           shown += 1;
         }
       }

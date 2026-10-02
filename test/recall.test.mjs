@@ -83,6 +83,38 @@ test('grep limits per-entry and global snippets while counting all matches', asy
   assert.equal(zeroWidth.details.snippets, 1);
   assert.equal(zeroWidth.details.covered, 2);
 });
+test('grep does not count normalized whitespace as visible source coverage', async () => {
+  for (const [body, pattern, total] of [
+    ['A   B', '\\s', 3],
+    ['A\nB\nC', '\n', 2],
+    ['A\tB\tC', '\\t', 2],
+    ['A   B X A   B', 'A\\s+B', 2],
+  ]) {
+    const h = harness([msg('normalized', body), msg('live', 'tail'), compact('c', 'live')]);
+    const result = await h.run('history_grep', { pattern });
+    assert.equal(result.details.total, total);
+    assert.equal(result.details.snippets, total);
+    assert.equal(result.details.covered, 0);
+  }
+});
+test('grep does not cover zero-width boundaries adjacent to normalized whitespace', async () => {
+  const h = harness([msg('boundaries', 'A\tB'), msg('live', 'tail'), compact('c', 'live')]);
+  const result = await h.run('history_grep', { pattern: '' });
+  assert.equal(result.details.total, 4);
+  assert.equal(result.details.snippets, 3);
+  assert.equal(result.details.covered, 1);
+  assert.equal(result.details.omitted, 0);
+});
+
+test('grep clipped tail coverage excludes normalized whitespace', async () => {
+  const h = harness([msg('clipped-tail', `BEGIN${'x'.repeat(1000)}END\t \tZ`), msg('live', 'tail'), compact('c', 'live')]);
+  const result = await h.run('history_grep', { pattern: 'BEGIN[\\s\\S]*?END|\\s' });
+  assert.equal(result.details.total, 4);
+  assert.equal(result.details.snippets, 3);
+  assert.equal(result.details.covered, 0);
+  assert.equal(result.details.omitted, 1);
+  assert.match(text(result), /snippet clipped/);
+});
 test('grep spends snippet slots on later text beyond already visible context', async () => {
   const h = harness([msg('coverage', `hit near hit near hit${'x'.repeat(400)}DISTANT hit`), msg('live', 'tail'), compact('c', 'live')]);
   const result = await h.run('history_grep', { pattern: 'hit' });
