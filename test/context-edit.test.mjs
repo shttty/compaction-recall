@@ -8,10 +8,14 @@ import { LOCATOR_TYPE } from '../locator.ts';
 const stamp = '2026-10-02T00:00:00.000Z';
 const message = (content, role = 'user') => ({ role, content, timestamp: 1 });
 const msg = (id, content, role = 'user') => ({ type: 'message', id, parentId: null, timestamp: stamp, message: message(content, role) });
-const edit = (id, targetId, content) => ({ type: 'context_edit', id, parentId: null, timestamp: stamp,
-  targetId, replacement: content === null ? null : { content } });
-const comp = (firstKeptEntryId = 'live', id = 'compaction') => ({ type: 'compaction', id, parentId: null,
-  timestamp: stamp, firstKeptEntryId, summary: 'summaryOnlyMarker', tokensBefore: 100 });
+const edit = (id, targetId, content) => ({
+  type: 'context_edit', id, parentId: null, timestamp: stamp,
+  targetId, replacement: content === null ? null : { content }
+});
+const comp = (firstKeptEntryId = 'live', id = 'compaction') => ({
+  type: 'compaction', id, parentId: null,
+  timestamp: stamp, firstKeptEntryId, summary: 'summaryOnlyMarker', tokensBefore: 100
+});
 const rows = text => text?.split('\n').filter(line => line.startsWith('{')).map(JSON.parse) ?? [];
 const text = result => result.content[0].text;
 function freeze(value) {
@@ -95,7 +99,7 @@ test('registered hook and tools honor replacements, omitted neighbours and tool-
   await found(h, 'replacementAnswer', 'target');
   for (const query of ['omittedSecret', 'oldAnswer', 'oldLookup', 'oldArgument', 'intermediateAnswer', 'oldToolSecret', 'replacementToolSecret', 'retainedSecret', 'summaryOnlyMarker']) await absent(h, query);
   const expanded = await h.run('history_expand', { id: 'target', before: 1, after: 2 });
-  assert.deepEqual(expanded.details, { from: 'left', to: 'right' });
+  assert.deepEqual([expanded.details.from, expanded.details.to], ['left', 'right']);
   for (const content of ['leftOriginal', 'replacementAnswer', 'replacementToolSecret', 'rightOriginal']) assert.ok(text(expanded).includes(content));
   assert.doesNotMatch(text(expanded), /omittedSecret|oldAnswer|oldLookup|oldArgument|oldToolSecret|retainedSecret/);
   assert.match(text(await h.run('history_expand', { id: 'result', before: 0, after: 0 })), /replacementToolSecret/);
@@ -169,8 +173,29 @@ test('SDK normalizes edits offline and branching restores originals across all r
   await found(h, 'finalUserMarker', userId);
   await found(h, 'editedAssistantMarker', assistantId);
   await absent(h, 'editedToolMarker');
-  assert.match(text(await h.run('history_expand', { id: toolId, before: 0, after: 0 })), /editedToolMarker/);
+  const longReplacement = `editedAssistantMarker:${'😀x'.repeat(9000)}:replacementTail`;
+  manager.appendContextEdit(assistantId, { content: longReplacement });
+  const pages = [];
+  let page = await h.run('history_expand', { id: assistantId, before: 0, after: 0 });
+  while (true) {
+    const output = text(page);
+    const body = output.replace(/\n\[page offset=.*\]$/, '').slice(output.indexOf('\n') + 1);
+    const { offset, returned, total, nextOffset, hasMore } = page.details;
+    assert.equal(total, [...longReplacement].length);
+    assert.equal(nextOffset, offset + returned);
+    assert.match(output, new RegExp(`\\[page offset=${offset} returned=${returned} total=${total} nextOffset=${nextOffset} hasMore=${hasMore}\\]$`));
+    assert.doesNotMatch(body, /originalAssistantMarker/);
+    pages.push(body);
+    if (!hasMore) break;
+    page = await h.run('history_expand', { id: assistantId, before: 0, after: 0, offset: nextOffset });
+  }
+  assert.ok(pages.length > 1);
+  assert.equal(pages.join(''), longReplacement);
   manager.appendContextEdit(assistantId, null);
+  const toolWithNeighbours = text(await h.run('history_expand', { id: toolId, before: 1, after: 0 }));
+  assert.match(toolWithNeighbours, /editedToolMarker/);
+  assert.doesNotMatch(toolWithNeighbours, /originalAssistantMarker|editedAssistantMarker/);
+  assert.match(text(await h.run('history_expand', { id: toolId, before: 0, after: 0 })), /editedToolMarker/);
   await absent(h, 'editedAssistantMarker');
   assert.equal(text(await h.run('history_expand', { id: assistantId })), `No compacted entry with id ${assistantId}.`);
   manager.appendContextEdit(assistantId, { content: 'restoredAssistantMarker' });
