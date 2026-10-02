@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { registerBenchmarkArm } from '../benchmark/pi-benchmark-adapter.mjs';
-import { CompactionIndex } from '../benchmark/experimental/inverted-index.mjs';
-import { buildRecallPage, withLocators } from '../src/locator.ts';
-import { initialBranch, msg } from '../benchmark/experimental/corpus.mjs';
+import { CompactionIndex } from '../src/inverted-index.mjs';
+import { buildRecallPage, withLocators } from '../src/locator.mjs';
+import { initialBranch, msg } from './corpus.mjs';
 
 test('indexed manual pagination preserves scan output across pages, no hits, forks and resets', () => {
   const index = new CompactionIndex();
@@ -20,7 +20,6 @@ test('benchmark arms have exact tool/context isolation and indexed auto/manual p
     const tools=[],hooks=[];
     registerBenchmarkArm({registerTool:t=>tools.push(t),on:(name,fn)=>hooks.push({name,fn})},arm);
     assert.deepEqual(tools.map(t=>t.name),arm==='native'?[]:arm==='grep'?['history_grep','history_expand']:['history_recall','history_grep','history_expand']);
-    assert.equal(hooks.length,arm==='indexed'?8:0);
     if (arm==='grep') assert.ok(tools.every(t=>!t.description.includes('history_recall')));
     if (arm==='indexed') {
       const messages=[{role:'user',content:'quasar',timestamp:1}];

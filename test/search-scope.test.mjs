@@ -1,12 +1,14 @@
-import test from 'node:test';
+import test, { afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import register from '../src/index.ts';
-import { buildLocator, buildRecallPage } from '../src/locator.ts';
-import { searchableEntryText, entryText } from '../src/history.ts';
-import { CompactionIndex } from '../benchmark/experimental/inverted-index.mjs';
+import { buildLocator, buildRecallPage } from '../src/locator.mjs';
+import { searchableEntryText, entryText } from '../src/history.mjs';
+import { CompactionIndex } from '../src/inverted-index.mjs';
 const msg=(id,content,role='assistant')=>({type:'message',id,parentId:null,timestamp:'2026-09-30T00:00:00.000Z',message:{role,content,timestamp:0}});
 const branch=old=>[...old,msg('live','tail','user'),{type:'compaction',id:'c',timestamp:'2026-09-30T00:00:00.000Z',firstKeptEntryId:'live'}];
-const tools=b=>{const t=new Map();register({registerTool:x=>t.set(x.name,x),on(){}});return(name,params)=>t.get(name).execute('scope',params,undefined,undefined,{sessionManager:{getBranch:()=>b}});};
+const shutdowns = [];
+afterEach(async () => { for (const shutdown of shutdowns.splice(0)) await shutdown(); });
+const tools=b=>{const t=new Map(),hooks=new Map();register({registerTool:x=>t.set(x.name,x),on:(name,fn)=>hooks.set(name,fn)});shutdowns.push(()=>hooks.get('session_shutdown')());return(name,params)=>t.get(name).execute('scope',params,undefined,undefined,{sessionManager:{getBranch:()=>b}});};
 const rows=text=>text?.split('\n').filter(line=>line.startsWith('{')).map(JSON.parse)??[];
 
 test('name, command/path and Chinese input-only terms are searchable through all entrypoints',async()=>{

@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import register from '../src/index.ts';
-import { entryText } from '../src/history.ts';
-import { buildLocator, queryTerms, withLocators, LOCATOR_TYPE, LOCATOR_CHARS, QUERY_TERMS, QUERY_CHARS } from '../src/locator.ts';
+import { entryText } from '../src/history.mjs';
+import { buildLocator, queryTerms, withLocators, LOCATOR_TYPE, LOCATOR_CHARS, QUERY_TERMS, QUERY_CHARS } from '../src/locator.mjs';
 const stamp = '2026-09-30T00:00:00.000Z';
 const msg = (id, text, role = 'user') => ({ type: 'message', id, timestamp: stamp, parentId: null,
   message: { role, content: [{ type: 'text', text }], timestamp: 1 } });
@@ -82,11 +82,11 @@ test('untrusted snippets and metadata cannot inject delimiters or new locator ro
   assert.ok(result.includes('\\u003c'));
 });
 
-test('context hook derives actual latest user and leaves call/result pairs intact without mutation', async () => {
-  let handler;
-  const registrations = [];
-  register({ registerTool() {}, on(event, fn) { registrations.push(event); handler = fn; } });
-  assert.deepEqual(registrations, ['context']);
+test('context hook derives actual latest user and leaves call/result pairs intact without mutation', async t => {
+  const hooks = {};
+  register({ registerTool() {}, on(event, fn) { hooks[event] = fn; } });
+  t.after(() => hooks.session_shutdown());
+  const handler = hooks.context;
   const assistant = { role: 'assistant', content: [{ type: 'toolCall', id: 'call', name: 'test', arguments: {} }], timestamp: 2 };
   const result = { role: 'toolResult', toolCallId: 'call', content: [{ type: 'text', text: 'nebula' }], timestamp: 3 };
   const other = { ...hint('unrelated'), customType: 'another-extension' };

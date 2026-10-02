@@ -4,8 +4,8 @@ import { createHash } from 'node:crypto';
 import { performance } from 'node:perf_hooks';
 import register from '../src/index.ts';
 import { buildBlindCorpus } from './blind-harness-core.mjs';
-import { compactedEntries, searchableEntryText } from '../src/history.ts';
-import { queryTerms, collectLocatorCandidates, rankLocatorCandidates, dedupeLocatorCandidates, formatRankedLocators, locatorWindow, locatorRow } from '../src/locator.ts';
+import { compactedEntries, searchableEntryText } from '../src/history.mjs';
+import { queryTerms, collectLocatorCandidates, rankLocatorCandidates, dedupeLocatorCandidates, formatRankedLocators, locatorWindow, locatorRow } from '../src/locator.mjs';
 import { parseArgs } from 'node:util';
 const { values: args } = parseArgs({ options: { data: { type: 'string' }, candidates: { type: 'string' }, results: { type: 'string' }, help: { type: 'boolean' } } });
 if (args.help) { console.log('Usage: node benchmark/prepare-rerank.mjs --data QUESTIONS_JSON --candidates NEW_PRIVATE_JSON --results NEW_RETRIEVAL_JSON'); process.exit(0); }

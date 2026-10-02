@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict';
-import test from 'node:test';
+import test, { afterEach } from 'node:test';
 import { SessionManager } from '@earendil-works/pi-coding-agent';
 import register from '../src/index.ts';
-import * as history from '../src/history.ts';
-import { LOCATOR_TYPE } from '../src/locator.ts';
+import * as history from '../src/history.mjs';
+import { LOCATOR_TYPE } from '../src/locator.mjs';
 
+const shutdowns = [];
+afterEach(async () => { for (const shutdown of shutdowns.splice(0)) await shutdown(); });
 const stamp = '2026-10-02T00:00:00.000Z';
 const message = (content, role = 'user') => ({ role, content, timestamp: 1 });
 const msg = (id, content, role = 'user') => ({ type: 'message', id, parentId: null, timestamp: stamp, message: message(content, role) });
@@ -28,6 +30,7 @@ function freeze(value) {
 function host(sessionManager) {
   const tools = new Map(), hooks = new Map();
   register({ registerTool: tool => tools.set(tool.name, tool), on: (name, hook) => hooks.set(name, hook) });
+  shutdowns.push(() => hooks.get('session_shutdown')());
   const ctx = { sessionManager };
   return {
     run: (name, params) => tools.get(name).execute('context-edit', params, undefined, undefined, ctx),

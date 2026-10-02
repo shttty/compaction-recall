@@ -1,5 +1,5 @@
 // Forward-only event measurements. No prompts, text, arguments, headers or credentials logged.
-import { benchmarkTiming as timer, flushTiming } from './experimental/stage-timing.mjs';
+import { recallTiming as timer, flushTiming } from '../src/timing.mjs';
 export function registerStageEvents(pi, timing = timer, {heartbeat=false}={}) {
   if (!timing) return;
   let request=null,sequence=0,interval=null,lastTick=timing.clock(),windowStart=lastTick,lags=[];

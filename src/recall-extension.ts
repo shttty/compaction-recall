@@ -1,9 +1,12 @@
-// pi-recall tool registration; retained as the historical lme-bench entry point.
+// Production registration; src/index.ts is the public package entry.
 import { Type } from "typebox";
-import type { ExtensionAPI, SessionEntry } from "@earendil-works/pi-coding-agent";
-import { MAX_HITS, SNIPPET, MAX_EXPAND_CHARS, entryText, searchableEntryText, compactedEntries, toRegExp } from "./history.ts";
-
-import { buildRecallPage, withLocators } from "./locator.ts";
+import type { ExtensionAPI, ExtensionContext, SessionEntry } from "@earendil-works/pi-coding-agent";
+import { MAX_HITS, SNIPPET, MAX_EXPAND_CHARS, entryText, searchableEntryText, compactedEntries, toRegExp } from "./history.mjs";
+import { withLocators, locatorText } from "./locator.mjs";
+import { BackgroundIndex } from "./background-index.mjs";
+import { PreindexCadence } from "./preindex-cadence.mjs";
+import { loadPreindexConfig } from "./preindex-config.mjs";
+import { recallTiming, flushTiming, measured } from "./timing.mjs";
 
 function codePointLength(text: string): number {
   let length = 0;
@@ -96,8 +99,63 @@ function expandHeader(e: SessionEntry, requested: boolean): string {
 }
 
 export default function(pi: ExtensionAPI) {
-  pi.on("context", (event, ctx) => ({
-    messages: withLocators(event.messages, ctx.sessionManager.getBranch()),
+  const index = new BackgroundIndex({ timer: recallTiming });
+  let cadence = new PreindexCadence();
+  let scheduled: NodeJS.Immediate | undefined;
+  const cancelScheduled = () => {
+    clearImmediate(scheduled);
+    scheduled = undefined;
+  };
+  const branch = (ctx: ExtensionContext) => measured(recallTiming, "branch_copy", () => ctx.sessionManager.getBranch());
+  const observe = async <T>(stage: string, work: () => T | Promise<T>): Promise<T> => {
+    try { return recallTiming ? await recallTiming.runAsync(stage, work) : await work(); }
+    finally { flushTiming(); }
+  };
+  const prewarm = (event: { type?: string }, ctx: ExtensionContext) => {
+    if (scheduled) return;
+    recallTiming?.mark("preindex_scheduled", {
+      trigger: event.type ?? "lifecycle", userCounter: cadence.completed, toolCounter: cadence.toolRounds,
+      execution: "synchronous_main_thread",
+    });
+    cadence.scheduled();
+    scheduled = setImmediate(() => {
+      scheduled = undefined;
+      void index.prepare(branch(ctx), { preindexLive: true }).catch(() => { }).finally(flushTiming);
+    });
+  };
+  pi.on("session_start", (event, ctx) => {
+    cancelScheduled();
+    const warn = (message: string) => {
+      if (ctx.hasUI) ctx.ui.notify(message, "warning");
+      else process.stderr.write(message + "\n");
+    };
+    const config = loadPreindexConfig(ctx.cwd ?? ctx.sessionManager.getCwd?.() ?? process.cwd(), { warn });
+    cadence = new PreindexCadence(config.userCycles, config.toolRounds);
+    index.reset();
+    prewarm(event, ctx);
+  });
+  pi.on("session_compact", prewarm);
+  pi.on("session_tree", (event, ctx) => {
+    cancelScheduled();
+    index.reset();
+    cadence.reset();
+    prewarm(event, ctx);
+  });
+  pi.on("message_end", event => { if (event.message.role === "user") cadence.userMessage(); });
+  pi.on("turn_end", (event, ctx) => { if (cadence.toolBatch(event)) prewarm(event, ctx); });
+  pi.on("agent_end", (event, ctx) => { if (cadence.end(event.messages)) prewarm(event, ctx); });
+  pi.on("session_shutdown", async () => {
+    cancelScheduled();
+    cadence.reset();
+    await index.dispose();
+    flushTiming();
+  });
+  pi.on("context", (event, ctx) => observe("auto_context_total", async () => {
+    const entries = branch(ctx);
+    const user = event.messages.findLast(message => message.role === "user");
+    const query = user ? measured(recallTiming, "query_text_extraction", () => locatorText(user)) : "";
+    const content = user ? await index.query(query, entries) : undefined;
+    return { messages: withLocators(event.messages, entries, () => content) };
   }));
   pi.registerTool({
     name: "history_recall",
@@ -119,8 +177,10 @@ export default function(pi: ExtensionAPI) {
       offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Result offset (default 0); use nextOffset from the previous page" })),
     }),
     async execute(_id, params, _signal, _onUpdate, ctx) {
-      const page = buildRecallPage(params.query, ctx.sessionManager.getBranch(), params);
-      return { content: [{ type: "text", text: page.text }], details: page.details };
+      return observe("tool_history_recall_total", async () => {
+        const page = await index.query(params.query, branch(ctx), { mode: "manual", options: params });
+        return { content: [{ type: "text" as const, text: page.text }], details: page.details };
+      });
     },
   });
 
@@ -140,147 +200,153 @@ export default function(pi: ExtensionAPI) {
       offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Matching-entry offset (default 0); use nextOffset to continue" })),
     }),
     async execute(_id, params, _signal, _onUpdate, ctx) {
-      const branchEntries = compactedEntries(ctx.sessionManager.getBranch());
-      const rx = toRegExp(params.pattern);
-      const matching: { entry: SessionEntry; text: string; count: number }[] = [];
-      let total = 0;
-      for (const entry of branchEntries) {
-        const source = searchableEntryText(entry);
-        if (source === undefined) continue;
-        let count = 0;
-        for (const _match of source.matchAll(rx)) count++;
-        if (count) {
-          matching.push({ entry, text: source, count });
-          total += count;
-        }
-      }
-
-      const limit = params.limit ?? 30;
-      const offset = Math.min(params.offset ?? 0, matching.length);
-      const requested = matching.slice(offset, offset + limit);
-      const rendered: { prefix: string; text: string; matches: { occurrence: number; start: number; end: number }[]; visible: { start: number; end: number; includeStart: boolean; includeEnd: boolean }[]; displayed: { occurrence: number; start: number; end: number }[]; shown: number }[] = [];
-      let metadataSkipped = false;
-      for (const item of requested) {
-        const { entry, text: source } = item;
-        const role = entry.type === "message" ? entry.message.role : entry.type;
-        const prefix = `[${entry.id}] ${entry.timestamp.slice(0, 10)} ${role}: `;
-        if (codePointLength(prefix) > 140) {
-          rendered.push({ prefix: "", text: "", matches: [], visible: [], displayed: [], shown: 0 });
-          continue;
-        }
-        const matches: { occurrence: number; start: number; end: number }[] = [];
-        let occurrence = 0;
-        let scanUtf16 = 0;
-        let scanPoints = 0;
-        const pointOffset = (target: number, roundUp = false) => {
-          while (scanUtf16 < target) {
-            const code = source.charCodeAt(scanUtf16);
-            const paired = code >= 0xd800 && code <= 0xdbff && scanUtf16 + 1 < source.length &&
-              source.charCodeAt(scanUtf16 + 1) >= 0xdc00 && source.charCodeAt(scanUtf16 + 1) <= 0xdfff;
-            if (paired && scanUtf16 + 1 >= target) return scanPoints + Number(roundUp);
-            scanUtf16 += paired ? 2 : 1;
-            scanPoints++;
+      return observe("tool_history_grep_total", () => {
+        const branchEntries = measured(recallTiming, "branch_selection_projection", () => compactedEntries(branch(ctx)));
+        const rx = toRegExp(params.pattern);
+        const matching: { entry: SessionEntry; text: string; count: number }[] = [];
+        let total = 0;
+        measured(recallTiming, "grep_scan", () => {
+          for (const entry of branchEntries) {
+            const source = measured(recallTiming, "text_extraction", () => searchableEntryText(entry));
+            if (source === undefined) continue;
+            let count = 0;
+            for (const _match of source.matchAll(rx)) count++;
+            if (count) {
+              matching.push({ entry, text: source, count });
+              total += count;
+            }
           }
-          return scanPoints;
-        };
-        for (const match of source.matchAll(toRegExp(params.pattern))) {
-          const at = match.index ?? 0;
-          matches.push({ occurrence: occurrence++, start: pointOffset(at), end: pointOffset(at + match[0].length, true) });
-        }
-        rendered.push({ prefix, text: source, matches, visible: [], displayed: [], shown: 0 });
-      }
+        });
+        return measured(recallTiming, "grep_pagination_render", () => {
 
-      const lines: string[] = [];
-      let consumed = 0;
-      let snippets = 0;
-      let outputBlocked = false;
-      const status = (next: number | null, more: boolean) => `[page offset=${offset} returned=${consumed} total=${total} totalEntries=${matching.length} limit=${limit} nextOffset=${next ?? "null"} hasMore=${more}]`;
-      let covered = total;
-      let omitted = total;
-      const headFor = (next: number | null, more: boolean) => total === 0
-        ? `No matches in compacted history. ${status(next, more)}`
-        : `${total} matches in ${matching.length} entries; ${consumed} entries consumed, ${snippets} representative snippets shown. Matches covered by this page's snippets: ${covered}; raw matches not shown anywhere in this response: ${omitted}. ${metadataSkipped ? "Entries with oversized metadata were skipped. " : ""}Use nextOffset to continue; history_expand reads full text. ${status(next, more)}`;
-      const append = (line: string, onAppend: () => void): boolean => {
-        const moreIfAppended = offset + consumed < matching.length;
-        const proposed = [headFor(moreIfAppended ? offset + consumed : null, moreIfAppended), ...lines, line].join("\n");
-        if (codePointLength(proposed) > MAX_EXPAND_CHARS) return false;
-        lines.push(line);
-        onAppend();
-        return true;
-      };
-      for (let i = 0; i < rendered.length; i++) {
-        if (snippets >= MAX_HITS) break;
-        const item = rendered[i];
-        if (!item.prefix) {
-          metadataSkipped = true;
-          consumed++;
-          continue;
-        }
-        const match = item.matches.find((candidate) => !item.visible.some((range) => candidate.start === candidate.end
-          ? (candidate.start > range.start && candidate.start < range.end) ||
-          (candidate.start === range.start && range.includeStart) || (candidate.start === range.end && range.includeEnd)
-          : candidate.start >= range.start && candidate.end <= range.end));
-        if (!match) {
-          consumed++;
-          continue;
-        }
-        const snippet = grepSnippet(item.text, match.start, match.end, codePointLength(item.text), 500 - codePointLength(item.prefix));
-        if (!append(item.prefix + snippet.text, () => {
-          item.visible.push(...unchangedSourceRanges(item.text, snippet.visible));
-          item.displayed.push(match);
-          item.shown++;
-          snippets++;
-        })) {
-          outputBlocked = true;
-          break;
-        }
-        consumed++;
-      }
-      if (!outputBlocked) {
-        for (const item of rendered.slice(0, consumed)) {
-          if (!item.prefix) continue;
-          for (const match of item.matches) {
-            if (item.displayed.some((shown) => shown.occurrence === match.occurrence)) continue;
-            if (item.shown >= 3 || snippets >= MAX_HITS) break;
-            const covered = item.visible.some((range) => match.start === match.end
-              ? (match.start > range.start && match.start < range.end) ||
-              (match.start === range.start && range.includeStart) || (match.start === range.end && range.includeEnd)
-              : match.start >= range.start && match.end <= range.end);
-            if (covered) continue;
+          const limit = params.limit ?? 30;
+          const offset = Math.min(params.offset ?? 0, matching.length);
+          const requested = matching.slice(offset, offset + limit);
+          const rendered: { prefix: string; text: string; matches: { occurrence: number; start: number; end: number }[]; visible: { start: number; end: number; includeStart: boolean; includeEnd: boolean }[]; displayed: { occurrence: number; start: number; end: number }[]; shown: number }[] = [];
+          let metadataSkipped = false;
+          for (const item of requested) {
+            const { entry, text: source } = item;
+            const role = entry.type === "message" ? entry.message.role : entry.type;
+            const prefix = `[${entry.id}] ${entry.timestamp.slice(0, 10)} ${role}: `;
+            if (codePointLength(prefix) > 140) {
+              rendered.push({ prefix: "", text: "", matches: [], visible: [], displayed: [], shown: 0 });
+              continue;
+            }
+            const matches: { occurrence: number; start: number; end: number }[] = [];
+            let occurrence = 0;
+            let scanUtf16 = 0;
+            let scanPoints = 0;
+            const pointOffset = (target: number, roundUp = false) => {
+              while (scanUtf16 < target) {
+                const code = source.charCodeAt(scanUtf16);
+                const paired = code >= 0xd800 && code <= 0xdbff && scanUtf16 + 1 < source.length &&
+                  source.charCodeAt(scanUtf16 + 1) >= 0xdc00 && source.charCodeAt(scanUtf16 + 1) <= 0xdfff;
+                if (paired && scanUtf16 + 1 >= target) return scanPoints + Number(roundUp);
+                scanUtf16 += paired ? 2 : 1;
+                scanPoints++;
+              }
+              return scanPoints;
+            };
+            for (const match of source.matchAll(toRegExp(params.pattern))) {
+              const at = match.index ?? 0;
+              matches.push({ occurrence: occurrence++, start: pointOffset(at), end: pointOffset(at + match[0].length, true) });
+            }
+            rendered.push({ prefix, text: source, matches, visible: [], displayed: [], shown: 0 });
+          }
+
+          const lines: string[] = [];
+          let consumed = 0;
+          let snippets = 0;
+          let outputBlocked = false;
+          const status = (next: number | null, more: boolean) => `[page offset=${offset} returned=${consumed} total=${total} totalEntries=${matching.length} limit=${limit} nextOffset=${next ?? "null"} hasMore=${more}]`;
+          let covered = total;
+          let omitted = total;
+          const headFor = (next: number | null, more: boolean) => total === 0
+            ? `No matches in compacted history. ${status(next, more)}`
+            : `${total} matches in ${matching.length} entries; ${consumed} entries consumed, ${snippets} representative snippets shown. Matches covered by this page's snippets: ${covered}; raw matches not shown anywhere in this response: ${omitted}. ${metadataSkipped ? "Entries with oversized metadata were skipped. " : ""}Use nextOffset to continue; history_expand reads full text. ${status(next, more)}`;
+          const append = (line: string, onAppend: () => void): boolean => {
+            const moreIfAppended = offset + consumed < matching.length;
+            const proposed = [headFor(moreIfAppended ? offset + consumed : null, moreIfAppended), ...lines, line].join("\n");
+            if (codePointLength(proposed) > MAX_EXPAND_CHARS) return false;
+            lines.push(line);
+            onAppend();
+            return true;
+          };
+          for (let i = 0; i < rendered.length; i++) {
+            if (snippets >= MAX_HITS) break;
+            const item = rendered[i];
+            if (!item.prefix) {
+              metadataSkipped = true;
+              consumed++;
+              continue;
+            }
+            const match = item.matches.find((candidate) => !item.visible.some((range) => candidate.start === candidate.end
+              ? (candidate.start > range.start && candidate.start < range.end) ||
+              (candidate.start === range.start && range.includeStart) || (candidate.start === range.end && range.includeEnd)
+              : candidate.start >= range.start && candidate.end <= range.end));
+            if (!match) {
+              consumed++;
+              continue;
+            }
             const snippet = grepSnippet(item.text, match.start, match.end, codePointLength(item.text), 500 - codePointLength(item.prefix));
             if (!append(item.prefix + snippet.text, () => {
               item.visible.push(...unchangedSourceRanges(item.text, snippet.visible));
               item.displayed.push(match);
               item.shown++;
               snippets++;
-            })) break;
+            })) {
+              outputBlocked = true;
+              break;
+            }
+            consumed++;
           }
-        }
-      }
-      let pageCovered = 0;
-      for (let i = 0; i < consumed; i++) {
-        const item = rendered[i];
-        if (!item.prefix) continue;
-        for (const match of item.matches) {
-          const representative = item.displayed.some((shown) => shown.occurrence === match.occurrence);
-          const visible = item.visible.some((range) => match.start === match.end
-            ? (match.start > range.start && match.start < range.end) ||
-            (match.start === range.start && range.includeStart) || (match.start === range.end && range.includeEnd)
-            : match.start >= range.start && match.end <= range.end);
-          if (!representative && visible) pageCovered++;
-        }
-      }
-      covered = pageCovered;
-      omitted = total - snippets - covered;
-      const nextOffset = offset + consumed < matching.length ? offset + consumed : null;
-      const hasMore = nextOffset !== null;
-      const head = headFor(nextOffset, hasMore);
-      return {
-        content: [{ type: "text", text: [head, ...lines].join("\n") }], details: {
-          total, totalEntries: matching.length, offset, limit, returned: consumed, nextOffset, hasMore,
-          snippets, covered, omitted, metadataSkipped,
-        }
-      };
+          if (!outputBlocked) {
+            for (const item of rendered.slice(0, consumed)) {
+              if (!item.prefix) continue;
+              for (const match of item.matches) {
+                if (item.displayed.some((shown) => shown.occurrence === match.occurrence)) continue;
+                if (item.shown >= 3 || snippets >= MAX_HITS) break;
+                const covered = item.visible.some((range) => match.start === match.end
+                  ? (match.start > range.start && match.start < range.end) ||
+                  (match.start === range.start && range.includeStart) || (match.start === range.end && range.includeEnd)
+                  : match.start >= range.start && match.end <= range.end);
+                if (covered) continue;
+                const snippet = grepSnippet(item.text, match.start, match.end, codePointLength(item.text), 500 - codePointLength(item.prefix));
+                if (!append(item.prefix + snippet.text, () => {
+                  item.visible.push(...unchangedSourceRanges(item.text, snippet.visible));
+                  item.displayed.push(match);
+                  item.shown++;
+                  snippets++;
+                })) break;
+              }
+            }
+          }
+          let pageCovered = 0;
+          for (let i = 0; i < consumed; i++) {
+            const item = rendered[i];
+            if (!item.prefix) continue;
+            for (const match of item.matches) {
+              const representative = item.displayed.some((shown) => shown.occurrence === match.occurrence);
+              const visible = item.visible.some((range) => match.start === match.end
+                ? (match.start > range.start && match.start < range.end) ||
+                (match.start === range.start && range.includeStart) || (match.start === range.end && range.includeEnd)
+                : match.start >= range.start && match.end <= range.end);
+              if (!representative && visible) pageCovered++;
+            }
+          }
+          covered = pageCovered;
+          omitted = total - snippets - covered;
+          const nextOffset = offset + consumed < matching.length ? offset + consumed : null;
+          const hasMore = nextOffset !== null;
+          const head = headFor(nextOffset, hasMore);
+          return {
+            content: [{ type: "text" as const, text: [head, ...lines].join("\n") }], details: {
+              total, totalEntries: matching.length, offset, limit, returned: consumed, nextOffset, hasMore,
+              snippets, covered, omitted, metadataSkipped,
+            }
+          };
+        });
+      });
     },
   });
 
@@ -298,45 +364,47 @@ export default function(pi: ExtensionAPI) {
       offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Unicode codepoint offset within the requested entry (default 0); use nextOffset to continue" })),
     }),
     async execute(_id, params, _signal, _onUpdate, ctx) {
-      const entries = compactedEntries(ctx.sessionManager.getBranch());
-      const at = entries.findIndex((e) => e.id === params.id);
-      if (at < 0) return { content: [{ type: "text", text: `No compacted entry with id ${params.id}.` }], details: {} };
+      return observe("tool_history_expand_total", () => measured(recallTiming, "expand", () => {
+        const entries = measured(recallTiming, "branch_selection_projection", () => compactedEntries(branch(ctx)));
+        const at = entries.findIndex((e) => e.id === params.id);
+        if (at < 0) return { content: [{ type: "text" as const, text: `No compacted entry with id ${params.id}.` }], details: {} };
 
-      const target = entries[at];
-      const targetText = entryText(target);
-      const total = codePointLength(targetText);
-      const offset = Math.min(params.offset ?? 0, total);
-      const header = expandHeader(target, true);
-      const statusReserve = codePointLength(`\n[page offset=${Number.MAX_SAFE_INTEGER} returned=${Number.MAX_SAFE_INTEGER} total=${Number.MAX_SAFE_INTEGER} nextOffset=${Number.MAX_SAFE_INTEGER} hasMore=true]`);
-      const available = Math.max(0, MAX_EXPAND_CHARS - codePointLength(header) - statusReserve);
-      const pageText = codePointSlice(targetText, offset, available);
-      const returned = codePointLength(pageText);
-      const nextOffset = offset + returned;
-      const hasMore = nextOffset < total;
-      let out = header + pageText;
-      let from = at;
-      let to = at;
+        const target = entries[at];
+        const targetText = measured(recallTiming, "text_extraction", () => entryText(target));
+        const total = codePointLength(targetText);
+        const offset = Math.min(params.offset ?? 0, total);
+        const header = expandHeader(target, true);
+        const statusReserve = codePointLength(`\n[page offset=${Number.MAX_SAFE_INTEGER} returned=${Number.MAX_SAFE_INTEGER} total=${Number.MAX_SAFE_INTEGER} nextOffset=${Number.MAX_SAFE_INTEGER} hasMore=true]`);
+        const available = Math.max(0, MAX_EXPAND_CHARS - codePointLength(header) - statusReserve);
+        const pageText = codePointSlice(targetText, offset, available);
+        const returned = codePointLength(pageText);
+        const nextOffset = offset + returned;
+        const hasMore = nextOffset < total;
+        let out = header + pageText;
+        let from = at;
+        let to = at;
 
-      if (!hasMore && offset === 0) {
-        const neighbors = [
-          ...entries.slice(Math.max(0, at - (params.before ?? 2)), at).reverse(),
-          ...entries.slice(at + 1, Math.min(entries.length, at + (params.after ?? 2) + 1)),
-        ];
-        for (const neighbor of neighbors) {
-          const section = `\n${expandHeader(neighbor, false)}${entryText(neighbor)}`;
-          if (codePointLength(out) + codePointLength(section) + statusReserve > MAX_EXPAND_CHARS) break;
-          out += section;
-          from = Math.min(from, entries.indexOf(neighbor));
-          to = Math.max(to, entries.indexOf(neighbor));
+        if (!hasMore && offset === 0) {
+          const neighbors = [
+            ...entries.slice(Math.max(0, at - (params.before ?? 2)), at).reverse(),
+            ...entries.slice(at + 1, Math.min(entries.length, at + (params.after ?? 2) + 1)),
+          ];
+          for (const neighbor of neighbors) {
+            const section = `\n${expandHeader(neighbor, false)}${entryText(neighbor)}`;
+            if (codePointLength(out) + codePointLength(section) + statusReserve > MAX_EXPAND_CHARS) break;
+            out += section;
+            from = Math.min(from, entries.indexOf(neighbor));
+            to = Math.max(to, entries.indexOf(neighbor));
+          }
         }
-      }
-      const pageInfo = `\n[page offset=${offset} returned=${returned} total=${total} nextOffset=${nextOffset} hasMore=${hasMore}]`;
-      out += pageInfo;
+        const pageInfo = `\n[page offset=${offset} returned=${returned} total=${total} nextOffset=${nextOffset} hasMore=${hasMore}]`;
+        out += pageInfo;
 
-      return {
-        content: [{ type: "text", text: out }],
-        details: { from: entries[from].id, to: entries[to].id, offset, total, returned, nextOffset, hasMore },
-      };
+        return {
+          content: [{ type: "text" as const, text: out }],
+          details: { from: entries[from].id, to: entries[to].id, offset, total, returned, nextOffset, hasMore },
+        };
+      }));
     },
   });
 }

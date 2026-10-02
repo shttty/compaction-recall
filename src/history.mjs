@@ -1,27 +1,37 @@
+// @ts-check
 // Pure current-branch history helpers. No storage, hooks or model calls.
-import type { ContextEditEntry, SessionEntry } from "@earendil-works/pi-coding-agent";
+/** @typedef {import("@earendil-works/pi-coding-agent").ContextEditEntry} ContextEditEntry */
+/** @typedef {import("@earendil-works/pi-coding-agent").SessionEntry} SessionEntry */
 
 export const MAX_HITS = 30;
 export const SNIPPET = 160;
 export const MAX_EXPAND_CHARS = 16000;
 
-type ReadableMessage = { role?: unknown; content?: unknown };
+/** @typedef {{ role?: unknown; content?: unknown }} ReadableMessage */
 
-/** Canonical JSON for tool inputs; no size truncation or invocation of custom toJSON methods. */
-function argumentJSON(value: unknown): string {
-  const ancestors = new Set<object>();
-  const stable = (input: unknown): unknown => {
+/**
+ * Canonical JSON for tool inputs; no size truncation or invocation of custom toJSON methods.
+ * @param {unknown} value
+ * @returns {string}
+ */
+function argumentJSON(value) {
+  /** @type {Set<object>} */
+  const ancestors = new Set();
+  /** @param {unknown} input @returns {unknown} */
+  const stable = (input) => {
     if (input === null || typeof input === "string" || typeof input === "boolean") return input;
     if (typeof input === "number") return Number.isFinite(input) ? input : String(input);
     if (typeof input === "bigint") return String(input);
     if (typeof input !== "object") return `[Unsupported ${typeof input}]`;
     if (ancestors.has(input)) return "[Circular]";
     ancestors.add(input);
-    let result: unknown;
+    /** @type {unknown} */
+    let result;
     if (Array.isArray(input)) result = input.map(stable);
     else {
-      const record: Record<string, unknown> = Object.create(null);
-      for (const key of Object.keys(input).sort()) record[key] = stable((input as Record<string, unknown>)[key]);
+      /** @type {Record<string, unknown>} */
+      const record = Object.create(null);
+      for (const key of Object.keys(input).sort()) record[key] = stable(/** @type {Record<string, unknown>} */ (input)[key]);
       result = record;
     }
     ancestors.delete(input);
@@ -31,12 +41,17 @@ function argumentJSON(value: unknown): string {
   catch { return "[Unserializable tool arguments]"; }
 }
 
-/** Readable expansion: text and assistant tool inputs; toolResult text remains readable here. */
-export function messageText(m: ReadableMessage | null | undefined): string {
+/**
+ * Readable expansion: text and assistant tool inputs; toolResult text remains readable here.
+ * @param {ReadableMessage | null | undefined} m
+ * @returns {string}
+ */
+export function messageText(m) {
   if (!m) return "";
   if (typeof m.content === "string") return m.content;
   if (!Array.isArray(m.content)) return "";
-  const parts: string[] = [];
+  /** @type {string[]} */
+  const parts = [];
   for (const b of m.content) {
     if (!b || typeof b !== "object") continue;
     if (b.type === "text" && typeof b.text === "string") parts.push(b.text);
@@ -48,27 +63,40 @@ export function messageText(m: ReadableMessage | null | undefined): string {
   return parts.join("\n");
 }
 
-/** Undefined marks an excluded record, distinct from an eligible empty-text message. */
-export function searchableMessageText(m: ReadableMessage | null | undefined): string | undefined {
+/**
+ * Undefined marks an excluded record, distinct from an eligible empty-text message.
+ * @param {ReadableMessage | null | undefined} m
+ * @returns {string | undefined}
+ */
+export function searchableMessageText(m) {
   if (!m || (m.role !== "user" && m.role !== "assistant")) return undefined;
   return messageText(m);
 }
 
-export function searchableEntryText(e: SessionEntry): string | undefined {
+/** @param {SessionEntry} e @returns {string | undefined} */
+export function searchableEntryText(e) {
   return e.type === "message" ? searchableMessageText(e.message) : undefined;
 }
 
-export function entryText(e: SessionEntry): string {
+/** @param {SessionEntry} e @returns {string} */
+export function entryText(e) {
   return e.type === "message" ? messageText(e.message) : "";
 }
 
-/** Apply the latest branch-local edits, including edits after the requested raw-entry boundary. */
-export function branchMessageEntries(branch: SessionEntry[], end = branch.length): SessionEntry[] {
-  const edits = new Map<string, ContextEditEntry["replacement"]>();
+/**
+ * Apply the latest branch-local edits, including edits after the requested raw-entry boundary.
+ * @param {SessionEntry[]} branch
+ * @param {number} [end]
+ * @returns {SessionEntry[]}
+ */
+export function branchMessageEntries(branch, end = branch.length) {
+  /** @type {Map<string, ContextEditEntry["replacement"]>} */
+  const edits = new Map();
   for (const entry of branch) {
     if (entry.type === "context_edit") edits.set(entry.targetId, entry.replacement);
   }
-  const entries: SessionEntry[] = [];
+  /** @type {SessionEntry[]} */
+  const entries = [];
   for (let i = 0; i < end; i++) {
     const entry = branch[i];
     if (entry.type !== "message") continue;
@@ -82,15 +110,19 @@ export function branchMessageEntries(branch: SessionEntry[], end = branch.length
     }
     // Match Pi 1.0 projectContextEntry, without its compaction-aware history exclusion.
     const content = message.role !== "user" && typeof replacement.content === "string"
-      ? [{ type: "text" as const, text: replacement.content }]
+      ? [{ type: /** @type {const} */ ("text"), text: replacement.content }]
       : replacement.content;
-    entries.push({ ...entry, message: { ...message, content } as typeof message });
+    entries.push({ ...entry, message: /** @type {typeof message} */ ({ ...message, content }) });
   }
   return entries;
 }
 
-/** Message entries that the latest compaction moved out of the live context (oldest first). */
-export function compactedEntries(branch: SessionEntry[]): SessionEntry[] {
+/**
+ * Message entries that the latest compaction moved out of the live context (oldest first).
+ * @param {SessionEntry[]} branch
+ * @returns {SessionEntry[]}
+ */
+export function compactedEntries(branch) {
   let latest = -1;
   for (let i = branch.length - 1; i >= 0; i--) if (branch[i].type === "compaction") { latest = i; break; }
   if (latest < 0) return [];
@@ -100,7 +132,8 @@ export function compactedEntries(branch: SessionEntry[]): SessionEntry[] {
   return branchMessageEntries(branch, kept < 0 ? latest : kept);
 }
 
-export function toRegExp(pattern: string): RegExp {
+/** @param {string} pattern @returns {RegExp} */
+export function toRegExp(pattern) {
   try {
     return new RegExp(pattern, "gi");
   } catch {

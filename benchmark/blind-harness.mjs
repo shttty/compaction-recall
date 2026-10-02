@@ -28,12 +28,14 @@ if (action === 'answer') {
   // Raw corpus and gold annotations stay inside the adapter; only whitelisted message fields survive.
   const source = JSON.parse(readFileSync(args.data, 'utf8'));
   const harness = createBlindHarness(scenario === 'single' ? [source] : source);
-  const start = performance.now();
-  const parameters = action === 'tool' ? JSON.parse(raw ?? '{}') : undefined;
-  const result = action === 'start' ? await harness.start(id) : await harness.execute(name, parameters);
-  appendFileSync(log, JSON.stringify({
-    at: new Date().toISOString(), scenario, action, tool: name, parameters,
-    durationMs: performance.now() - start, result
-  }) + '\n');
-  output(result);
+  try {
+    const start = performance.now();
+    const parameters = action === 'tool' ? JSON.parse(raw ?? '{}') : undefined;
+    const result = action === 'start' ? await harness.start(id) : await harness.execute(name, parameters);
+    appendFileSync(log, JSON.stringify({
+      at: new Date().toISOString(), scenario, action, tool: name, parameters,
+      durationMs: performance.now() - start, result
+    }) + '\n');
+    output(result);
+  } finally { await harness.dispose(); }
 }

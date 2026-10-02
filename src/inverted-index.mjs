@@ -1,7 +1,6 @@
-import { measured } from '../../src/timing.ts';
-// Experimental only; not registered by the production extension.
-import { compactedEntries } from '../../src/history.ts';
-import { lex, locatorText, queryTerms, renderLocators, recallPageFromCandidates } from '../../src/locator.ts';
+import { measured } from './timing.mjs';
+import { compactedEntries } from './history.mjs';
+import { lex, locatorText, queryTerms, renderLocators, recallPageFromCandidates } from './locator.mjs';
 
 export class CompactionIndex {
   constructor(timer) { this.timer = timer; }
@@ -47,12 +46,12 @@ export class CompactionIndex {
     if (!prefix || !this.builds) {
       this.documents.clear(); this.postings.clear(); this.seen.clear();
       this.builds++;
-      this.timer?.mark?.("index_maintenance", {kind:this.builds===1?"initial_build":"branch_rebuild",trigger:"lazy_context_or_tool_lookup",execution:"synchronous_main_thread",entries:next.length});
+      this.timer?.mark('index_maintenance', { kind: this.builds === 1 ? 'initial_build' : 'branch_rebuild', entries: next.length });
       measured(this.timer, "index_build_tokenize_postings", () => {
         for (let i = next.length - 1; i >= 0; i--) this.add(next[i], i);
       });
     } else if (additions.length) {
-      this.timer?.mark?.("index_maintenance", {kind:"incremental_update",trigger:"lazy_context_or_tool_lookup",execution:"synchronous_main_thread",entries:additions.length});
+      this.timer?.mark('index_maintenance', { kind: 'incremental_update', entries: additions.length });
       measured(this.timer, "index_update_tokenize_postings", () => {
         for (let i = this.entries.length; i < next.length; i++) this.add(next[i], i);
       });

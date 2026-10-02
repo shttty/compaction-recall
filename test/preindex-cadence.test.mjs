@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import { PreindexCadence } from '../benchmark/experimental/preindex-cadence.mjs';
+import { PreindexCadence } from '../src/preindex-cadence.mjs';
 test('5/10 conversational cycles ignore tool/model turns, aborts and repeated completions',()=>{
  for(const every of [5,10]){
   const cadence=new PreindexCadence(every);

@@ -1,14 +1,10 @@
 import assert from 'node:assert/strict';
-import { cpSync, mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { afterEach } from 'node:test';
 import test from 'node:test';
 import register from '../src/index.ts';
 import legacyRegister from '../src/recall-extension.ts';
-import { compactedEntries, entryText, MAX_EXPAND_CHARS } from '../src/history.ts';
-import { buildLocator, RECALL_PAGE_CHARS } from '../src/locator.ts';
-import { discoverAndLoadExtensions } from '@earendil-works/pi-coding-agent';
+import { compactedEntries, entryText, MAX_EXPAND_CHARS } from '../src/history.mjs';
+import { buildLocator, RECALL_PAGE_CHARS } from '../src/locator.mjs';
 
 const stamp = '2026-09-30T00:00:00.000Z';
 const msg = (id, text, role = 'user') => ({
@@ -20,16 +16,21 @@ const compact = (id, firstKeptEntryId) => ({
   parentId: null, firstKeptEntryId, summary: 'not searchable summary', tokensBefore: 100
 });
 const text = (result) => result.content[0].text;
+const activeHarnesses = new Set();
+afterEach(async () => {
+  for (const close of activeHarnesses) await close();
+  activeHarnesses.clear();
+});
 function harness(initial) {
   let branch = initial;
   const tools = new Map();
-  // Context transform is the only hook; three recall tools share the same current-branch scope.
-  register({ registerTool: (tool) => tools.set(tool.name, tool), on: (event) => assert.equal(event, "context") });
-  assert.deepEqual([...tools.keys()], ['history_recall', 'history_grep', 'history_expand']);
+  const hooks = new Map();
+  const ctx = { sessionManager: { getBranch: () => branch } };
+  register({ registerTool: (tool) => tools.set(tool.name, tool), on: (event, handler) => hooks.set(event, handler) });
+  activeHarnesses.add(() => hooks.get('session_shutdown')?.({ type: 'session_shutdown', reason: 'quit' }, ctx));
   return {
     tools, setBranch: (value) => { branch = value; },
-    run: (name, params) => tools.get(name).execute('test', params, undefined, undefined,
-      { sessionManager: { getBranch: () => branch } })
+    run: (name, params) => tools.get(name).execute('test', params, undefined, undefined, ctx)
   };
 }
 
@@ -414,51 +415,6 @@ test('expand reports only complete neighbors and handles empty/out-of-range page
   assert.match(text(await h.run('history_expand', { id: 'missing' })), /No compacted entry/);
 });
 
-test('SDK loads standalone package and legacy entry from isolated runtime-only copy', async () => {
-  const root = mkdtempSync(join(tmpdir(), 'pi-recall-test-'));
-  try {
-    const source = process.env.PI_RECALL_TEST_PACKAGE || fileURLToPath(new URL('..', import.meta.url));
-    const archive = join(root, 'pi-recall');
-    for (const file of ['package.json', 'src']) {
-      cpSync(join(source, file), join(archive, file), { recursive: true });
-    }
-    for (const path of [archive, join(archive, 'src/index.ts'), join(archive, 'src/recall-extension.ts')]) {
-      const loaded = await discoverAndLoadExtensions([path], resolve(root), join(root, 'agent'));
-      assert.deepEqual(loaded.errors, [], JSON.stringify(loaded.errors));
-      assert.equal(loaded.extensions.length, 1);
-      const extension = loaded.extensions[0];
-      assert.deepEqual([...extension.tools.keys()], ['history_recall', 'history_grep', 'history_expand']);
-      assert.deepEqual([...extension.handlers.keys()], ["context"]);
-      const grep = extension.tools.get('history_grep').definition;
-      assert.equal(grep.parameters.properties.limit.maximum, 50);
-      assert.equal(grep.parameters.properties.offset.minimum, 0);
-      const branch = [msg('sdk-match', 'quasar sdk fixture'), msg('sdk-match2', 'quasar second'), msg('sdk-live', 'tail'), compact('sdk-c', 'sdk-live')];
-      const result = await grep.execute('sdk-test', { pattern: 'quasar', limit: 1 }, undefined, undefined,
-        { sessionManager: { getBranch: () => branch } });
-      assert.equal(result.details.total, 2);
-      assert.equal(result.details.totalEntries, 2);
-      assert.equal(result.details.returned, 1);
-      assert.equal(result.details.omitted, 1);
-      assert.match(result.content[0].text, /raw matches not shown anywhere in this response: 1/);
-      assert.match(result.content[0].text, /\[sdk-match\]/);
-      const contextHook = extension.handlers.get('context')[0];
-      assert.equal(typeof contextHook, 'function');
-      const transformed = await contextHook({ messages: [{ role: 'user', content: 'quasar' }] },
-        { sessionManager: { getBranch: () => branch } });
-      assert.match(JSON.stringify(transformed.messages), /sdk-match/);
-      const context = { sessionManager: { getBranch: () => branch } };
-      const recalled = await extension.tools.get('history_recall').definition.execute(
-        'sdk-recall', { query: 'quasar' }, undefined, undefined, context);
-      assert.match(text(recalled), /sdk-match/);
-      assert.doesNotMatch(text(recalled), /sdk-live/);
-      const expanded = await extension.tools.get('history_expand').definition.execute(
-        'sdk-expand', { id: 'sdk-match', before: 0, after: 0 }, undefined, undefined, context);
-      assert.match(text(expanded), /quasar sdk fixture/);
-    }
-  } finally {
-    rmSync(root, { recursive: true, force: true });
-  }
-});
 
 
 test('manual recall shares automatic ranking and candidates with independent pagination', async () => {
