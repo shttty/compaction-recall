@@ -1,3 +1,4 @@
+import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import { afterEach } from 'node:test';
 import test from 'node:test';

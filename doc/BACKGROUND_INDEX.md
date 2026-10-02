@@ -6,7 +6,7 @@ The production entry `src/index.ts` → `src/recall-extension.ts` now uses the s
 
 One persistent Node worker per extension instance/session, rather than a process per turn. The installed SDK **1.0.0** types and dispatch implementation were checked, replacing the prototype's Pi 0.99.1 assumptions:
 
-- `session_start`: reasons `startup`, `reload`, `new`, `resume`, `fork`; read project configuration, clear stale callbacks/state, defer and coalesce prewarm
+- `session_start`: reasons `startup`, `reload`, `new`, `resume`, `fork`; clear stale callbacks/state, reset cadence using the configuration captured at extension load, defer and coalesce prewarm. No configuration reread
 - `message_end` for a user message + `agent_end`: count one completed conversational cycle. In SDK 1.0.0 `message_end` runs **before** `appendMessage`, so it only sets the pending-user flag; no branch extraction here. `agent_end` has `messages`, not an independent error field. The last assistant's aborted/error stop reason prevents a user completion. Multiple user messages consumed in one completion count as one cycle
 - Pre-tokenize when **10 completed user cycles OR 10 completed tool rounds** are reached. Configure independently with `PI_RECALL_PREINDEX_TURNS` (default10) and `PI_RECALL_PREINDEX_TOOL_ROUNDS` (default10); each accepts integers1–100. The tool condition fires from `turn_end` during a long task, without waiting for `agent_end`.
 - `session_compact`: flush outstanding source additions and update which entries are eligible for search
@@ -79,21 +79,14 @@ All auto/manual/update output hashes match across both arms and all repetitions.
 These are index-preparation triggers, not a claim of equivalence to Hermes memory nudges or end-of-turn skill review. Compaction remains an independent eligibility/flush trigger, so reaching a tool threshold is not required for correctness. The cadence and production migration are validated offline; prior latency artifacts were not rerun or relabeled.
 
 
-## Project configuration
+## Agent configuration
 
-This is an extension-owned file, **not** an added Pi-core settings field: `<Pi session cwd>/.pi/pi-recall.json`. Use the session working directory, not necessarily the plugin installation directory. For the existing benchmark snapshots, the stored cwd is `lme-bench/runs/cwd`; normal project use points to that project's `.pi` directory. No settings file was written for the user.
+The optional extension-owned file is `<getAgentDir()>/extensions/pi-recall.json`, in the agent directory's `extensions` subdirectory, not a Pi-core settings field. `src/recall-config.mjs` imports the public `getAgentDir` export from `@earendil-works/pi-coding-agent` and uses `join(getAgentDir(), "extensions", "pi-recall.json")`; the default file is `~/.pi/agent/extensions/pi-recall.json`, with the agent directory overridden by `PI_CODING_AGENT_DIR`. Process cwd, session cwd and project files do not select recall configuration. A missing file is normal and silent; no user settings file is created.
 
-```json
-{
-  "preindex": {
-    "userCycles": 10,
-    "toolRounds": 10
-  }
-}
-```
+The complete example, including `mode` and `preindex`, is in [PLUGIN.md](PLUGIN.md#lite--full-模式). The old experimental example and empty experimental directory have been removed. `PI_RECALL_MODE` and both `PI_RECALL_PREINDEX_*` variables can configure everything without a file. Mode accepts only lite/full, default full; an invalid mode warns and falls back to full (an invalid environment mode does not recover the file's lite). Cadence fields accept independent integers 1–100. Valid environment overrides win over valid file values, then 10 defaults; invalid cadence overrides warn and retain file/default values. Unreadable/malformed/oversized files warn and are ignored; unknown fields warn and are ignored. File contents and bad values never appear in warnings.
 
-Copy/adapt [pi-recall.config.example.json](../benchmark/experimental/pi-recall.config.example.json). Fields are independent integers1–100. Precedence per field: valid `PI_RECALL_PREINDEX_TURNS` / `PI_RECALL_PREINDEX_TOOL_ROUNDS` environment override → valid file field →10 default. Invalid environment values warn and fall back to file/default. Invalid fields warn and use defaults; unreadable/malformed/oversized files warn and are ignored. Missing file is normal and silent; unknown fields are ignored with a warning. File contents and bad values are never dumped into warnings.
+Mode and cadence are read **once together at extension registration**. File or environment changes require extension reload. `session_start` and `session_tree` reset counters with already-loaded thresholds; neither rereads the file. No background watcher or per-tool filesystem read.
 
-Read once per `session_start` (including startup/resume/reload), using the documented extension context cwd. File edits take effect at the next such lifecycle event, not mid-tool. No background watcher or per-tool filesystem read.
+For embedded SDK use, `getAgentDir()` consults process environment `PI_CODING_AGENT_DIR`, not an SDK `agentDir` option. Setting only that option does not redirect the extension's file lookup. Set `PI_CODING_AGENT_DIR` before loading extensions, or control mode/cadence directly with the three recall environment variables.
 
 Either OR trigger schedules a batch and resets **both counters together**. Further user/tool activity while that callback is queued or its worker is running belongs to the next batch; coalescing does not reset it again or lose newer source additions. The current in-progress user cycle stays pending and can complete normally after a tool-triggered batch. Session reset/fork clears all cadence state.

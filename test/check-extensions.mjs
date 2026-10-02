@@ -1,3 +1,4 @@
+import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile, stat } from 'node:fs/promises';

@@ -1,3 +1,4 @@
+import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import test, { afterEach } from 'node:test';
 import { SessionManager } from '@earendil-works/pi-coding-agent';

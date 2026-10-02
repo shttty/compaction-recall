@@ -5,7 +5,7 @@ import { MAX_HITS, SNIPPET, MAX_EXPAND_CHARS, entryText, searchableEntryText, co
 import { withLocators, locatorText } from "./locator.mjs";
 import { BackgroundIndex } from "./background-index.mjs";
 import { PreindexCadence } from "./preindex-cadence.mjs";
-import { loadPreindexConfig } from "./preindex-config.mjs";
+import { loadRecallConfig } from "./recall-config.mjs";
 import { recallTiming, flushTiming, measured } from "./timing.mjs";
 
 function codePointLength(text: string): number {
@@ -99,96 +99,97 @@ function expandHeader(e: SessionEntry, requested: boolean): string {
 }
 
 export default function(pi: ExtensionAPI) {
-  const index = new BackgroundIndex({ timer: recallTiming });
-  let cadence = new PreindexCadence();
-  let scheduled: NodeJS.Immediate | undefined;
-  const cancelScheduled = () => {
-    clearImmediate(scheduled);
-    scheduled = undefined;
-  };
   const branch = (ctx: ExtensionContext) => measured(recallTiming, "branch_copy", () => ctx.sessionManager.getBranch());
   const observe = async <T>(stage: string, work: () => T | Promise<T>): Promise<T> => {
     try { return recallTiming ? await recallTiming.runAsync(stage, work) : await work(); }
     finally { flushTiming(); }
   };
-  const prewarm = (event: { type?: string }, ctx: ExtensionContext) => {
-    if (scheduled) return;
-    recallTiming?.mark("preindex_scheduled", {
-      trigger: event.type ?? "lifecycle", userCounter: cadence.completed, toolCounter: cadence.toolRounds,
-      execution: "synchronous_main_thread",
-    });
-    cadence.scheduled();
-    scheduled = setImmediate(() => {
+  // Mode and cadence share one agent-directory snapshot until the extension reloads.
+  const { mode, userCycles, toolRounds } = loadRecallConfig({ warn: message => { process.stderr.write(message + "\n"); } });
+  if (mode === "full") {
+    const index = new BackgroundIndex({ timer: recallTiming });
+    const cadence = new PreindexCadence(userCycles, toolRounds);
+    let scheduled: NodeJS.Immediate | undefined;
+    const cancelScheduled = () => {
+      clearImmediate(scheduled);
       scheduled = undefined;
-      void index.prepare(branch(ctx), { preindexLive: true }).catch(() => { }).finally(flushTiming);
-    });
-  };
-  pi.on("session_start", (event, ctx) => {
-    cancelScheduled();
-    const warn = (message: string) => {
-      if (ctx.hasUI) ctx.ui.notify(message, "warning");
-      else process.stderr.write(message + "\n");
     };
-    const config = loadPreindexConfig(ctx.cwd ?? ctx.sessionManager.getCwd?.() ?? process.cwd(), { warn });
-    cadence = new PreindexCadence(config.userCycles, config.toolRounds);
-    index.reset();
-    prewarm(event, ctx);
-  });
-  pi.on("session_compact", prewarm);
-  pi.on("session_tree", (event, ctx) => {
-    cancelScheduled();
-    index.reset();
-    cadence.reset();
-    prewarm(event, ctx);
-  });
-  pi.on("message_end", event => { if (event.message.role === "user") cadence.userMessage(); });
-  pi.on("turn_end", (event, ctx) => { if (cadence.toolBatch(event)) prewarm(event, ctx); });
-  pi.on("agent_end", (event, ctx) => { if (cadence.end(event.messages)) prewarm(event, ctx); });
-  pi.on("session_shutdown", async () => {
-    cancelScheduled();
-    cadence.reset();
-    await index.dispose();
-    flushTiming();
-  });
-  pi.on("context", (event, ctx) => observe("auto_context_total", async () => {
-    const entries = branch(ctx);
-    const user = event.messages.findLast(message => message.role === "user");
-    const query = user ? measured(recallTiming, "query_text_extraction", () => locatorText(user)) : "";
-    const content = user ? await index.query(query, entries) : undefined;
-    return { messages: withLocators(event.messages, entries, () => content) };
-  }));
-  pi.registerTool({
-    name: "history_recall",
-    label: "History recall",
-    description:
-      "Primary keyword lookup of compacted conversation history on the current branch. " +
-      "Honors the latest branch-local context edits: omitted entries are unavailable and replacements hide original content. " +
-      "Use automatic locator hints, then this tool with focused or rewritten keywords to find related entry ids. " +
-      "Uses the same lexical ranking as automatic hints, not semantic search: supply alternative wording or synonyms yourself. " +
-      "Searches user/assistant text plus assistant tool-call names and arguments; excludes toolResult bodies, thinking and images. Paginated results: limit defaults to 50 (maximum 50), offset defaults to 0. " +
-      "Returns total, returned, nextOffset and hasMore; use nextOffset (not offset + limit) with the same query and unchanged branch for another page. " +
-      "Pages target 16000 Unicode codepoints; an oversized metadata row is returned alone and flagged rather than lost. " +
-      "Each snippet contains up to 120 Unicode codepoints around the most informative matched term, plus optional ellipses. " +
-      "Verify exact details with history_expand. If evidence remains insufficient, use history_grep as a supplementary " +
-      "text-search fallback over the same text and tool-input scope. No hit does not prove the information was never mentioned.",
-    parameters: Type.Object({
-      query: Type.String({ description: "Focused keywords or revised wording; first 4000 Unicode codepoints and 24 distinct terms are used" }),
-      limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 50, description: "Maximum results on this page (default 50)" })),
-      offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Result offset (default 0); use nextOffset from the previous page" })),
-    }),
-    async execute(_id, params, _signal, _onUpdate, ctx) {
-      return observe("tool_history_recall_total", async () => {
-        const page = await index.query(params.query, branch(ctx), { mode: "manual", options: params });
-        return { content: [{ type: "text" as const, text: page.text }], details: page.details };
+    const prewarm = (event: { type?: string }, ctx: ExtensionContext) => {
+      if (scheduled) return;
+      recallTiming?.mark("preindex_scheduled", {
+        trigger: event.type ?? "lifecycle", userCounter: cadence.completed, toolCounter: cadence.toolRounds,
+        execution: "synchronous_main_thread",
       });
-    },
-  });
+      cadence.scheduled();
+      scheduled = setImmediate(() => {
+        scheduled = undefined;
+        void index.prepare(branch(ctx), { preindexLive: true }).catch(() => { }).finally(flushTiming);
+      });
+    };
+    pi.on("session_start", (event, ctx) => {
+      cancelScheduled();
+      cadence.reset();
+      index.reset();
+      prewarm(event, ctx);
+    });
+    pi.on("session_compact", prewarm);
+    pi.on("session_tree", (event, ctx) => {
+      cancelScheduled();
+      index.reset();
+      cadence.reset();
+      prewarm(event, ctx);
+    });
+    pi.on("message_end", event => { if (event.message.role === "user") cadence.userMessage(); });
+    pi.on("turn_end", (event, ctx) => { if (cadence.toolBatch(event)) prewarm(event, ctx); });
+    pi.on("agent_end", (event, ctx) => { if (cadence.end(event.messages)) prewarm(event, ctx); });
+    pi.on("session_shutdown", async () => {
+      cancelScheduled();
+      cadence.reset();
+      await index.dispose();
+      flushTiming();
+    });
+    pi.on("context", (event, ctx) => observe("auto_context_total", async () => {
+      const entries = branch(ctx);
+      const user = event.messages.findLast(message => message.role === "user");
+      const query = user ? measured(recallTiming, "query_text_extraction", () => locatorText(user)) : "";
+      const content = user ? await index.query(query, entries) : undefined;
+      return { messages: withLocators(event.messages, entries, () => content) };
+    }));
+    pi.registerTool({
+      name: "history_recall",
+      label: "History recall",
+      description:
+        "Primary keyword lookup of compacted conversation history on the current branch. " +
+        "Honors the latest branch-local context edits: omitted entries are unavailable and replacements hide original content. " +
+        "Use automatic locator hints, then this tool with focused or rewritten keywords to find related entry ids. " +
+        "Uses the same lexical ranking as automatic hints, not semantic search: supply alternative wording or synonyms yourself. " +
+        "Searches user/assistant text plus assistant tool-call names and arguments; excludes toolResult bodies, thinking and images. Paginated results: limit defaults to 50 (maximum 50), offset defaults to 0. " +
+        "Returns total, returned, nextOffset and hasMore; use nextOffset (not offset + limit) with the same query and unchanged branch for another page. " +
+        "Pages target 16000 Unicode codepoints; an oversized metadata row is returned alone and flagged rather than lost. " +
+        "Each snippet contains up to 120 Unicode codepoints around the most informative matched term, plus optional ellipses. " +
+        "Verify exact details with history_expand. If evidence remains insufficient, use history_grep as a supplementary " +
+        "text-search fallback over the same text and tool-input scope. No hit does not prove the information was never mentioned.",
+      parameters: Type.Object({
+        query: Type.String({ description: "Focused keywords or revised wording; first 4000 Unicode codepoints and 24 distinct terms are used" }),
+        limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 50, description: "Maximum results on this page (default 50)" })),
+        offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Result offset (default 0); use nextOffset from the previous page" })),
+      }),
+      async execute(_id, params, _signal, _onUpdate, ctx) {
+        return observe("tool_history_recall_total", async () => {
+          const page = await index.query(params.query, branch(ctx), { mode: "manual", options: params });
+          return { content: [{ type: "text" as const, text: page.text }], details: page.details };
+        });
+      },
+    });
+  }
 
   pi.registerTool({
     name: "history_grep",
     label: "History grep",
     description:
-      "Supplementary text-search fallback when automatic locators, history_recall and expanded entries leave insufficient evidence. " +
+      (mode === "lite"
+        ? "Search compacted conversation history when you need earlier evidence; use history_expand to verify matching entry ids. "
+        : "Supplementary text-search fallback when automatic locators, history_recall and expanded entries leave insufficient evidence. ") +
       "Search branch-effective user/assistant text and assistant tool-call names/arguments on the current compacted branch, honoring context edits; exclude toolResult bodies, thinking and images. No matches do not prove absence. " +
       "`pattern` is a case-insensitive JavaScript regular expression (not SQL LIKE); invalid patterns fall back to literal search. " +
       "Pages matching entries in branch order: limit defaults to 30 (maximum 50), offset defaults to 0. Use nextOffset with the same pattern and unchanged branch; returned counts entries consumed, including explicitly skipped oversized metadata. total counts raw regex matches, totalEntries matching entries; covered counts other matches visible in this page's snippets, omitted counts raw matches not shown anywhere in this response. " +
@@ -354,11 +355,13 @@ export default function(pi: ExtensionAPI) {
     name: "history_expand",
     label: "History expand",
     description:
-      "Read branch-effective text (honoring context edits) of a compacted history entry by id (from automatic locators, history_recall or history_grep). The requested entry is shown first; output is bounded to 16000 Unicode codepoints. " +
+      (mode === "lite"
+        ? "Read branch-effective text (honoring context edits) of a compacted history entry by id from history_grep. The requested entry is shown first; output is bounded to 16000 Unicode codepoints. "
+        : "Read branch-effective text (honoring context edits) of a compacted history entry by id (from automatic locators, history_recall or history_grep). The requested entry is shown first; output is bounded to 16000 Unicode codepoints. ") +
       "Use offset (default 0), in Unicode codepoints of the requested entry, to continue a long entry; when hasMore is true, pass nextOffset with the same id and before/after values. Neighbor entries (before/after default 2, maximum 20) are included only when the full target is shown and each full neighbor fits. " +
       "Includes tool-call names/arguments and readable toolResult text; excludes thinking and images. Only the current compacted branch is readable.",
     parameters: Type.Object({
-      id: Type.String({ description: "Entry id from automatic locators, history_recall or history_grep" }),
+      id: Type.String({ description: mode === "lite" ? "Entry id from history_grep" : "Entry id from automatic locators, history_recall or history_grep" }),
       before: Type.Optional(Type.Integer({ minimum: 0, maximum: 20, description: "Entries before (default 2)" })),
       after: Type.Optional(Type.Integer({ minimum: 0, maximum: 20, description: "Entries after (default 2)" })),
       offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Unicode codepoint offset within the requested entry (default 0); use nextOffset to continue" })),

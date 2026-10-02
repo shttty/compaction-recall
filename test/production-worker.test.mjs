@@ -1,6 +1,7 @@
+import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -93,6 +94,8 @@ for (const timingEnabled of [false, true]) {
   test(`SDK isolated package and both entries query and exit with empty stderr (timing ${timingEnabled ? 'on' : 'off'})`, () => {
     const root = mkdtempSync(join(tmpdir(), 'pi-recall-worker-'));
     try {
+      const agentDir = join(root, 'env-agent');
+      mkdirSync(agentDir);
       const source = process.env.PI_RECALL_TEST_PACKAGE || fileURLToPath(new URL('..', import.meta.url));
       for (const [layout, archive] of [join(root, 'pi-recall'), join(root, 'node_modules', 'pi-context-recall')].entries()) {
         for (const file of ['package.json', 'src']) cpSync(join(source, file), join(archive, file), { recursive: true });
@@ -130,9 +133,10 @@ for (const timingEnabled of [false, true]) {
       `;
           const scriptPath = join(root, `host-${layout}-${index}.mjs`);
           writeFileSync(scriptPath, script);
-          const env = { ...process.env, PI_RECALL_TIMING_FILE: timingEnabled ? timingFile : '' };
+          const env = { ...process.env, PI_CODING_AGENT_DIR: agentDir, PI_RECALL_TIMING_FILE: timingEnabled ? timingFile : '' };
           delete env.NODE_NO_WARNINGS;
           delete env.NODE_OPTIONS;
+          delete env.PI_RECALL_MODE;
           delete env.PI_RECALL_PREINDEX_TURNS;
           delete env.PI_RECALL_PREINDEX_TOOL_ROUNDS;
           const child = spawnSync(process.execPath, [scriptPath], {

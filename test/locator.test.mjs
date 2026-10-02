@@ -1,13 +1,18 @@
+import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import register from '../src/index.ts';
 import { entryText } from '../src/history.mjs';
 import { buildLocator, queryTerms, withLocators, LOCATOR_TYPE, LOCATOR_CHARS, QUERY_TERMS, QUERY_CHARS } from '../src/locator.mjs';
 const stamp = '2026-09-30T00:00:00.000Z';
-const msg = (id, text, role = 'user') => ({ type: 'message', id, timestamp: stamp, parentId: null,
-  message: { role, content: [{ type: 'text', text }], timestamp: 1 } });
-const comp = (firstKeptEntryId = 'live', id = 'compact') => ({ type: 'compaction', id, timestamp: stamp,
-  parentId: null, firstKeptEntryId, summary: 'quasar secret summary', tokensBefore: 100 });
+const msg = (id, text, role = 'user') => ({
+  type: 'message', id, timestamp: stamp, parentId: null,
+  message: { role, content: [{ type: 'text', text }], timestamp: 1 }
+});
+const comp = (firstKeptEntryId = 'live', id = 'compact') => ({
+  type: 'compaction', id, timestamp: stamp,
+  parentId: null, firstKeptEntryId, summary: 'quasar secret summary', tokensBefore: 100
+});
 const branch = (...old) => [...old, msg('live', 'live quasar'), comp()];
 const rows = value => value ? value.trim().split('\n').slice(1).map(JSON.parse) : [];
 const ids = value => rows(value).map(x => x.id);
@@ -84,7 +89,7 @@ test('untrusted snippets and metadata cannot inject delimiters or new locator ro
 
 test('context hook derives actual latest user and leaves call/result pairs intact without mutation', async t => {
   const hooks = {};
-  register({ registerTool() {}, on(event, fn) { hooks[event] = fn; } });
+  register({ registerTool() { }, on(event, fn) { hooks[event] = fn; } });
   t.after(() => hooks.session_shutdown());
   const handler = hooks.context;
   const assistant = { role: 'assistant', content: [{ type: 'toolCall', id: 'call', name: 'test', arguments: {} }], timestamp: 2 };

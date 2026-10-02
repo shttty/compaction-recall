@@ -1,3 +1,4 @@
+import './isolated-agent-dir.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createBlindHarness, buildBlindCorpus } from '../benchmark/blind-harness-core.mjs';
