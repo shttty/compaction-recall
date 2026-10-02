@@ -2,51 +2,73 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-面向 Pi 原生压缩历史的词面回查扩展。
-**自动定位索引 → `history_recall` → `history_expand` → 证据不足时用 `history_grep`。**
-只读取当前分支，不接管压缩，不增加数据库、后台任务或模型调用。
+Pi 压缩长对话时，摘要留下大意，细节就丢了：一个名字、一个数字、你三小时前说过的原话。
+**pi-context-recall** 让模型回到被压缩移出上下文的原始消息里，把这些细节重新找回来。
 
-## 安装与试用
+它建立在 Pi 原生压缩之上，不替换压缩，也不增加数据库、磁盘文件或额外的模型调用。
 
-需要 **Node.js 24+** 和 Pi；已验证 Pi SDK **1.0.0**。Pi SDK 与 TypeBox 由宿主提供。
+## 安装
 
-作为 Pi package 安装（会更新 Pi settings）：
-
-```sh
-pi install npm:pi-context-recall
-```
-
-仅在本次调用中试用，不将包永久写入 settings（Pi 仍可能下载或缓存包）：
+需要 **Node.js 24+** 和 Pi（已验证 Pi SDK **1.0.0**）。
 
 ```sh
-pi -e npm:pi-context-recall
+pi install git:github.com/shttty/pi-context-recall
 ```
 
-在源码 checkout 根目录试用本地入口：
+从源码 checkout 临时试用一次，不改 settings：
 
 ```sh
 pi -e ./src/index.ts
 ```
 
-只加载一份扩展。package 入口是 `src/index.ts`，无需根目录兼容入口。
-以上是使用方法，不表示 0.1.0 已经发布。
+扩展只加载一份。
 
-## 工作流程
+## 模式
 
-1. 原生压缩后，`context` hook 根据实际请求中最后一条用户文字，生成简短、按相关性排序的定位提示。
-2. 主模型可调用 `history_recall`，以聚焦关键词或改写后的措辞定位 entry ID。
-3. `history_expand` 按 ID 阅读当前分支编辑生效后的正文，核实精确细节；自动提示已有有用 ID 时可以直接展开。
-4. 证据仍不足时，`history_grep` 对相同可搜索历史提供正则后备检索。
+| | `full`（默认） | `lite` |
+| --- | --- | --- |
+| 工具 | `history_recall`、`history_grep`、`history_expand` | `history_grep`、`history_expand` |
+| 自动提示 | 有 | 无 |
+| 后台索引 | 每个 session 一个 worker 线程 | 无 |
 
-扩展不强制调用工具，也不自行判断证据是否充足。片段是线索，不是已经核实的答案。
-自动提示最多选择五个候选，连同元数据不超过 **1,500 个 Unicode 码点**。
-提示仅在本次请求中插入最后一条用户消息之后，不写入 session，也不跨请求累积。
-虽然 UI 隐藏提示，它仍会作为正常模型请求的一部分发送给当前配置的模型服务。
-历史文字会被标记为不可信数据并转义，但这不能消除提示注入风险。
+`lite` 只给模型检索工具，什么时候去查由模型自己决定。它不发送隐藏提示，但工具返回的内容仍会和其他工具输出一样发给模型服务。不声称它更快；在归档评测里，等效配置在多数对照中低于 `full`（见[评测](#评测)）。
 
-### 工具示例
+### 配置
 
-以下是供模型调用的工具，不是 shell 命令。请将 `ENTRY_ID` 换成工具实际返回的 ID。
+配置可选。文件位置是 `~/.pi/agent/extensions/pi-recall.json`（设置了 `PI_CODING_AGENT_DIR` 时在该目录下）：
+
+```json
+{
+  "mode": "full",
+  "preindex": {
+    "userCycles": 10,
+    "toolRounds": 10
+  }
+}
+```
+
+环境变量优先于文件，所以也可以完全不写文件：
+
+| 变量 | 覆盖 | 取值 |
+| --- | --- | --- |
+| `PI_RECALL_MODE` | `mode` | `full` 或 `lite` |
+| `PI_RECALL_PREINDEX_TURNS` | `preindex.userCycles` | 1–100 的整数，默认 10 |
+| `PI_RECALL_PREINDEX_TOOL_ROUNDS` | `preindex.toolRounds` | 1–100 的整数，默认 10 |
+
+`preindex` 只在 `full` 下有用：每完成 N 轮用户对话或 N 轮工具调用（先到先算），提前把还没压缩的消息分好词，压缩时直接可用。
+配置在扩展加载时读一次，改完要重启 Pi。不读取项目里的 `.pi/` 目录。完整说明（包括 SDK 嵌入场景）见 [doc/PLUGIN.md](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md)。
+
+## 工作方式
+
+`full` 模式下，压缩之后每次请求最多经过三步：
+
+1. **自动提示。** 模型回答前，扩展用你最新一条消息去匹配已压缩的历史，附上最多五个可能相关的条目 ID（不超过 1,500 字）。提示只对本次请求有效，不写入 session。
+2. **`history_recall`。** 模型用自己的关键词再查一次，拿到排好序的条目 ID 和短片段。
+3. **`history_expand`。** 模型按 ID 读完整正文和前后相邻的消息，确认具体细节。
+
+还不够时，**`history_grep`** 可以在同一段历史上做正则搜索。`lite` 模式下，模型从 `history_grep` 开始查，再用 `history_expand` 核实。
+
+扩展不强制调用工具，也不替模型判断证据够不够。片段只是线索，不是答案。
 
 ```js
 history_recall({ query: "bicycle repair", limit: 10 })
@@ -54,42 +76,51 @@ history_expand({ id: "ENTRY_ID", before: 1, after: 1 })
 history_grep({ pattern: "bicycle|repair", limit: 10 })
 ```
 
-当 `hasMore` 为 true 时，将返回的 `nextOffset` 作为下一次 `offset`，保持查询词、pattern 或 ID 及邻居设置不变。
-不要自行计算 `offset + limit`：输出预算可能使一页不足 limit 条。分支、编辑或压缩边界改变后，从 offset 0 重新查询。
-
-| 工具 | 检索与输出约定 |
+| 工具 | 返回 |
 | --- | --- |
-| `history_recall` | 返回按相关性排序并去重的 ID、条目日期、角色与片段；默认及上限均为 50 条。`total` 是去重后的命中数。每页目标预算为 16,000 码点；单条元数据过长时单独返回并标记 `budgetExceeded: true`，不丢失 ID。 |
-| `history_expand` | 请求条目优先；前后邻居默认各 2 条，各可设为 0–20。每次回复最多 16,000 码点。`offset`、`total`、`returned`、`nextOffset`、`hasMore` 描述请求条目的正文，不是邻居数量。只有目标本页完整后，才尝试放入完整邻居。 |
-| `history_grep` | 不区分大小写的 JavaScript `gi` 正则，非法正则回退为字面量。按分支顺序对匹配 entry 分页，默认 30、最大 50 条。每次最多 30 行片段、每 entry 最多 3 行，完整输出最多 16,000 码点；匹配内容可能被裁切。 |
+| `history_recall` | 按相关性排序并去重的条目 ID，附日期、角色和片段。每页默认及上限 50 条。仅 `full`。 |
+| `history_expand` | 先给请求的条目，再给前后各 2 条邻居（可设 0–20）。每次最多 16,000 字。 |
+| `history_grep` | 不区分大小写的 JavaScript 正则，非法正则按字面量处理。每页默认 30、最多 50 个匹配条目。 |
 
-工具可见正文与结构化 `details` 都提供分页信息。预算单位是 Unicode 码点，**不是 token**。
-grep 的 `total` 是原始正则匹配数，`totalEntries` 是匹配 entry 数，`returned` 是实际消费的 entry 数，包含明确跳过的超长元数据条目。
-`covered` 是本次片段中完整可见的其他原始匹配数；`omitted` 是本次回复未展示的全部原始匹配数，包含其他页，而不是跨调用追踪的“尚未读过”数量。
-grep 不是 SQL LIKE，也没有正则执行超时；请避免高回溯表达式。
+结果太长会分页。`hasMore` 为 true 时，带上返回的 `nextOffset` 和同样的查询再调一次，不要自己算 offset。预算按 Unicode 字符计，不是 token。完整工具约定见 [doc/PLUGIN.md](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md)。
 
-## 范围与限制
+## 限制
 
-- **只查当前分支已压缩的历史。** 以最新 compaction 的原始 `firstKeptEntryId` 为界；尚未压缩则无历史可查。边界 ID 缺失时，使用最新 compaction 之前的消息。
-- 不跨 session、`parentSession` 或被放弃的分支，不搜索当前保留上下文或 compaction 摘要。
-- 自动定位、recall 和 grep 搜索用户／助手文字及助手 tool-call 名称与输入参数，**不搜索 `toolResult` 正文**、thinking、图片或自定义消息。
-- Expand 可按 ID 阅读尚可用的 `toolResult` 文字，仍排除 thinking 和图片；无法恢复 Pi 已删除或省略的内容。
-- 所有路径都遵守归一化后的分支内 `context_edit`：同一目标最后一次编辑生效，`replacement: null` 隐藏条目，替换内容遮蔽原文。支持字符串及合法文本块；助手／工具结果字符串按 Pi 1.0 归一化为文本块。展开及邻居使用同一视图，“原文”不表示绕过编辑读取旧内容。
-- 这是**词面检索，不是语义检索**。查询最多取前 4,000 码点和 24 个不同关键词，支持英文标识符拆词及中文重叠双字词组。同义词、代词、单字中文、拼写变体及纯图片证据可能漏检；无命中不证明历史中没有信息。
-- 不增加数据库、embedding、持久索引、生产缓存、后台 worker、compaction hook 或额外模型调用。每次请求在本地扫描分支编辑及已压缩文字；大会话会增加本地处理成本。
+- **只查当前分支被压缩掉的部分。** 也就是最近一次压缩移出上下文的内容；不查当前上下文、其他 session、被放弃的分支或压缩摘要本身。还没压缩过就没有可查的东西。
+- **关键词匹配，不是语义检索。** 同义词、代词、拼写变体和单个汉字可能查不到。查不到不代表没说过。
+- **搜索用户和助手的文字，以及工具调用参数。** 不搜工具结果、thinking 和图片；不过 `history_expand` 可以按 ID 读出工具结果的文字。
+- **遵守上下文编辑。** 改过的消息按改后内容读，隐藏的仍然隐藏；Pi 已删除的内容找不回来。
+- **隐私。** `full` 的提示在界面上隐藏，但会随正常请求发给你的模型服务。旧消息会标记为不可信并转义，能降低提示注入风险，但不能消除。
+- **开销。** `full` 在当前 session 的 worker 线程里维护一份内存索引，不写磁盘，也不跨 session 保留。分词和检索不占主线程，但主线程仍要提取文字再交给 worker，索引会额外占用内存，随分支变长而增长。启动或压缩后的第一次查询可能要等索引就绪。worker 出错时退回主线程扫描，结果相同。`lite` 不建索引，`history_grep` 和 `history_expand` 在调用时扫描已压缩的历史。
 
-## 验证
+## 评测
 
-以下是**已观察到的离线检查**，不是在线推理，也不能证明回答准确率提高：
+题目来自 **[LongMemEval](https://github.com/xiaowu0162/LongMemEval)**（Di Wu 等，2024；MIT），用的是原始 **LongMemEval_M** 历史。选 M 是因为每条历史都超过一百万 token，约为这些评测所用 372k 上下文窗口的三倍，每道题都必须先经过真实的 Pi 压缩，正是这个扩展要处理的场景。
 
-| 验证面 | 已观察结果 | 边界 |
-| --- | --- | --- |
-| TypeScript + Node | `npm run check`：类型检查及 **99 项 Node 测试通过** | 含 5 项 SDK 检查：descriptor、网络防护下的 native RPC、只读认证；隔离加载 package 及两个 `src/` 入口。 |
-| Python runner | **15 项 Python 测试通过** | 两套显式合成配置覆盖 CLI → run → answer → RPC、三组、零调用续跑、配置变更拒绝，并在网络防护下真实启动三组 SDK `get_state`；没有真实模型调用。 |
-| 清洁副本复验 | 锁定依赖 `npm ci --ignore-scripts` 后，**99 项 Node + 15 项 Python 测试通过** | 临时目录只复制拟提交源码；不复制原 `node_modules`、Git 历史、外部 helper、profile 或数据。 |
-| npm 产物 | Dry-run 及实际 tarball 均为 **11 个白名单文件**，无捆绑依赖；现有 SDK 加载用例通过 | 隔离解析 package manifest 及两个 `src/` 入口，实际执行 context hook 和三个工具；排除原始 benchmark 证据、测试及个人配置。这是本地打包验证，不是已发布声明。 |
+每条历史分四段喂给 Pi，触发三次原生压缩，然后再提问。用了两组各 8 题：
 
-从 checkout 重复开发检查（还需要 Python 3 和 Git）：
+- **DEV8：** 证据只在被压缩的段里（单会话和时间推理题）。
+- **HARD8：** 证据分散在至少两个被压缩的段里，8 题中 7 道是跨会话题。按难度挑选，不是随机抽样。
+
+每道题从同一份压缩快照作答三次：只有 Pi、不给工具，加 `lite` 的工具组合，加 `full`。每格是 8 题里答对的数量。
+
+| 集合 | 答题模型 | 只有 Pi | + `lite` | + `full` |
+| --- | --- | --- | --- | --- |
+| DEV8 | gpt-6-luna / high | 0 | 3 | 8 |
+| HARD8 | gpt-6-luna / high | 0 | 1 | 3 |
+| HARD8 | gpt-6.1-sol / high | 1 | 6 | 6 |
+
+所有行用的是同一个插件版本（`8149e1f`），那时还没有 `lite`/`full` 开关，索引也还没搬进 worker。`lite` 列来自一个评测包装器：只注册 `history_grep` 和 `history_expand`，关闭自动提示（两个工具的描述仍是 `full` 版文字）；`full` 列用的是当时的同步扫描实现。离线测试会检查现在的 worker 返回的提示和 recall 分页与扫描版逐字节一致，但这些分数没有用当前代码重新测过。
+
+HARD8 上 Luna 和 Sol 用同一份压缩快照作答，只换了答题模型；DEV8 没有跑 Sol。压缩用 gpt-6-luna / high；评分用 gpt-6-luna 和 LongMemEval 官方评分提示词。
+
+**分数很大程度取决于答题模型。** 插件和快照都相同，HARD8 上 Sol 答对 6 题，Luna 答对 3 题。扩展只负责把压缩掉的历史重新够得着；找对条目、拼起证据、答对问题，仍要靠模型自己。Sol 只用 `lite` 的工具组合也答对 6 题，而且它的输出上限更小（8,192 对 128,000 token），模型、配置和服务商的影响没有拆开。不要把这个差距当成扩展本身的效果。
+
+这些是开发期间归档的单轮结果，题目少且经过挑选，不是针对当前版本的评测。`full` 在每一轮都不低于只有 Pi 的情况，但每组只有 8 题，不能证明通用准确率或因果效果。
+
+题目 ID、选题规则、评分设置、其他插件版本的早期轮次、被排除的轮次和审计 hash 见 [doc/BENCHMARK_RESULTS.md](doc/BENCHMARK_RESULTS.md)。仓库不包含 LongMemEval 数据本身。
+
+## 开发
 
 ```sh
 npm ci --ignore-scripts
@@ -97,38 +128,10 @@ npm run check
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'
 ```
 
-安装依赖需要网络或 npm 缓存。测试使用隔离的合成 fixture，不依赖个人 profile 或凭据。
-真实评测需要另行授权并显式提供外部配置；下方历史模型标识只是证据，不是运行默认值。
+测试离线运行，使用合成 fixture。真实跑评测需要显式的外部配置，见[评测说明](https://github.com/shttty/pi-context-recall/blob/main/doc/EVALUATION.md)。
 
-## 历史基准观测
+## 许可
 
-以下是已归档的单轮 **LongMemEval_M** 结果，**不是 0.1.0 的新跑分**。
-DEV8／HARD8 各有 8 条历史；每格均为 8 题中的正确数，顺序固定为 **native / grep / production**。
-“Production”是历史实验组名称，不表示该 commit 就是本次发布版本。
-Native 基线不加载工具／扩展；grep 使用固定版本的 grep/expand wrapper 并关闭 context hook；production 加载公开入口，包含自动定位及 recall/grep/expand。
+MIT，Copyright (c) 2026 shttty。见 [LICENSE](LICENSE)。
 
-| 集合／轮次 | 答题模型／effort | 候选 commit | Native / grep / production |
-| --- | --- | --- | --- |
-| DEV8 capacity-base | `clp/gpt-6-luna` / high | A | 0 / 5 / 7 |
-| DEV8 capacity-paging | `clp/gpt-6-luna` / high | B | 0 / 6 / 8 |
-| DEV8 coverage | `clp/gpt-6-luna` / high | C | 0 / 4 / 7 |
-| DEV8 grep-pages | `clp/gpt-6-luna` / high | D | 0 / 3 / 8 |
-| HARD8 base | `clp/gpt-6-luna` / high | A | 1 / 1 / 3 |
-| HARD8 paging | `clp/gpt-6-luna` / high | B | 0 / 1 / 2 |
-| HARD8 grep-pages | `clp/gpt-6-luna` / high | D | 0 / 1 / 3 |
-| HARD8 sol-high-d4259198 | `clp/gpt-6.1-sol` / high | D | 1 / 6 / 6 |
-
-历史 base A：`f5715d1901b6bedf19811030f18f3733eefb7bc4`；paging B：`7d1980b8b7512ec8568c3ddaaecdccb8e0ad4014`；coverage C：`5acf40efa9cb33146d3e9526fc411a769511cee8`；grep-pages D：`8149e1f6caece71de148c92a88790e5d35212d9e`。
-八组均使用 SDK 1.0.0，以 `clp/gpt-6-luna` / high 压缩。这些小样本、单轮观测不能建立因果关系或证明通用准确率；不同候选是不同答题轮次，HARD8 paging 还低于 base。
-
-冻结 manifest 记录 judge 为 `clp/gpt-6-luna`、**请求 xhigh**。历史评分调用外部 helper，而不是 Pi SDK；保留证据不能确定 provider 实际生效的 judge effort，因此不声称 SDK 将其降为 high。
-另一次未计分的 SDK 1.0.0 准备检查请求 Sol **xhigh**，但本地回环 mock 捕获到序列化后的 **high**，真实调用为零。这次降档不是 xhigh 跑分；表中正式 Sol 轮次明确使用 high。下方聚合说明记录了该证据的 hash。
-
-完整组别身份、runner commit、judge 配置、失败和排除的 pilot 见随包提供的[基准结果与来源](doc/BENCHMARK_RESULTS.md)。
-[源码评测索引](https://github.com/shttty/pi-context-recall/blob/main/doc/BENCHMARK.md)及原始证据位于 **私有** GitHub 仓库，需要访问权限，并非公开可访问的证据链接。
-
-## 许可与来源
-
-**MIT — Copyright (c) 2026 shttty.** 见 [LICENSE](LICENSE)。
-独立提取自 `pi-lossless-context` 的 recall 实验；第三方设计来源与许可文本保留在 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
-仅源码仓库提供的详细[插件说明](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md)和[评测协议](https://github.com/shttty/pi-context-recall/blob/main/doc/EVALUATION.md)需要仓库访问权限。
+LongMemEval 的来源说明和 MIT 声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md#longmemeval-evaluation-material)。

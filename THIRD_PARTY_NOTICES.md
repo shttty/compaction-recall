@@ -1,24 +1,42 @@
 # Third-party notices
 
-This repository was extracted from the recall spike in pi-lossless-context. The
-following upstream design attribution and license notice are retained for
-provenance. The broader DAG, indexing and compaction implementation described
-below is not included in pi-recall. This notice does not assign a license to
-pi-recall itself.
+## Project origin
 
-## hermes-lcm
+`pi-context-recall` was extracted from
+`pi-lossless-context/prototype/recall-spike`, based on
+`62012df340d0774698ece6705062777b82d2f0e3` and the then-uncommitted recall
+changes; the initial standalone extraction is `3f73d6a`. This provenance does
+not make the broader project's DAG, SQLite storage or compaction implementation
+part of this standalone plugin, nor does it assert an absence of historical
+design influence.
 
-pi-lossless-context ports the design of [hermes-lcm](https://github.com/stephenschoettler/hermes-lcm) by Stephen
-Schoettler to the Pi coding agent (reference version `8d1b1e6d3d63f5fc7b209e8d7ec1dc9b814f2e54`, v1.0.0-rc.1). The code
-here is a new TypeScript implementation, but the core design comes from hermes-lcm: keeping the raw conversation
-recoverable next to a searchable index, the hierarchical summary DAG (leaf summaries that are never rewritten,
-condensed level by level, with source lineage), the detailed → bullets → deterministic-truncation summary fallback,
-and the `lcm_grep` / `lcm_expand` recall tools.
+The project's own [MIT LICENSE](LICENSE), Copyright (c) 2026 shttty, is separate
+from the evaluation-material notice below.
 
-```
+## LongMemEval evaluation material
+
+- Dataset: [xiaowu0162/longmemeval](https://huggingface.co/datasets/xiaowu0162/longmemeval).
+- Upstream project: [LongMemEval](https://github.com/xiaowu0162/LongMemEval).
+- Upstream license: [MIT, Copyright (c) 2024 Di Wu](https://github.com/xiaowu0162/LongMemEval/blob/main/LICENSE).
+
+The archived model evaluations use the **ORIGINAL LongMemEval_M**, not the
+cleaned release, LongMemEval_S, or oracle-only histories. Upstream now recommends
+a cleaned release; that does not change the source of these frozen historical
+evaluations. The dataset publisher labels the original dataset MIT.
+
+This repository retains selected evaluation excerpts and outputs, not the full
+external dataset. Synthetic offline Node/Python unit-test fixtures are a separate
+test category: this attribution identifies the archived evaluation source, not
+all unit tests. The package runtime has no LongMemEval dependency and does not
+automatically download data. Raw evaluation material is excluded from the npm
+package; its clean historical aggregate identifies the evaluation source.
+
+For retained upstream evaluation material, the copyright and license notice is:
+
+```text
 MIT License
 
-Copyright (c) 2026 Stephen Schoettler
+Copyright (c) 2024 Di Wu
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

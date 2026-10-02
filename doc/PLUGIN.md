@@ -125,7 +125,7 @@ npm run check
 
 提取自 `pi-lossless-context` 的工作区版本，基于提交 `62012df340d0774698ece6705062777b82d2f0e3`，包含当时尚未提交的 recall 整理。没有复制原仓库 Git 历史、会话、日志、凭据或数据库。
 
-本项目现采用 [MIT LICENSE](../LICENSE)，Copyright (c) 2026 shttty。[THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) 保留上游 hermes-lcm 的设计来源及其 MIT 声明；第三方声明与本项目 LICENSE 分别保留，不将第三方声明当作本项目授权的替代。
+本项目采用 [MIT LICENSE](../LICENSE)，Copyright (c) 2026 shttty；上文的 recall-spike 提取来源仍予保留。[LongMemEval 评测来源与许可](../THIRD_PARTY_NOTICES.md#longmemeval-evaluation-material) 单独记录评测材料的 Copyright (c) 2024 Di Wu 及 MIT 文本，不替代本项目 LICENSE。已归档模型评测使用 ORIGINAL LongMemEval_M（原始 M），不是 cleaned、S 或 oracle-only 历史；仓内只保留选定评测摘录和输出，不包含完整外部数据集。合成离线 Node/Python 单元测试 fixture 属于另一类测试，并非全部源自 LongMemEval；包运行时不依赖该数据集，也不自动下载数据。
 
 ## 当前限制
 

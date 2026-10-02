@@ -2,51 +2,73 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-A lexical recall extension for Pi's native compacted conversation history.
-**Automatic locator → `history_recall` → `history_expand` → `history_grep` when evidence is still missing.**
-It reads the current branch, without taking over compaction or adding a database, background work, or model calls.
+When Pi compacts a long conversation, the summary keeps the gist and drops the details: a name, a number, the exact thing you said three hours ago.
+**pi-context-recall** lets the model look those details up again in the original messages that compaction moved out of context.
 
-## Install or try
+It sits on top of Pi's native compaction. It does not replace it, and adds no database, files on disk or extra model call.
 
-Requires **Node.js 24+** and Pi; verified against Pi SDK **1.0.0**. The host supplies the Pi SDK and TypeBox.
+## Install
 
-Install as a Pi package (updates Pi settings):
-
-```sh
-pi install npm:pi-context-recall
-```
-
-Try for one invocation without permanently writing the package into settings (Pi may download/cache it):
+Requires **Node.js 24+** and Pi (verified against Pi SDK **1.0.0**).
 
 ```sh
-pi -e npm:pi-context-recall
+pi install git:github.com/shttty/pi-context-recall
 ```
 
-From a source checkout, try the local entry instead:
+To try it once from a source checkout without changing your settings:
 
 ```sh
 pi -e ./src/index.ts
 ```
 
-Load only one copy. The package entry is `src/index.ts`; no root-level extension shim is required.
-These are usage instructions, not a claim that version 0.1.0 has been published.
+Load only one copy of the extension.
+
+## Modes
+
+| | `full` (default) | `lite` |
+| --- | --- | --- |
+| Tools | `history_recall`, `history_grep`, `history_expand` | `history_grep`, `history_expand` |
+| Automatic hint | Yes | No |
+| Background indexing | One worker thread per session | None |
+
+`lite` only gives the model the search tools; it decides on its own when to look. It sends no hidden hint, though tool results still reach your model provider like any other tool output. It is not claimed to be faster, and in the archived runs the equivalent setup scored below `full` in most comparisons (see [Evaluation](#evaluation)).
+
+### Configuration
+
+Configuration is optional. The file lives at `~/.pi/agent/extensions/pi-recall.json` (or under `$PI_CODING_AGENT_DIR` if you set it):
+
+```json
+{
+  "mode": "full",
+  "preindex": {
+    "userCycles": 10,
+    "toolRounds": 10
+  }
+}
+```
+
+Environment variables override the file, so you can also skip the file entirely:
+
+| Variable | Overrides | Values |
+| --- | --- | --- |
+| `PI_RECALL_MODE` | `mode` | `full` or `lite` |
+| `PI_RECALL_PREINDEX_TURNS` | `preindex.userCycles` | integer 1–100, default 10 |
+| `PI_RECALL_PREINDEX_TOOL_ROUNDS` | `preindex.toolRounds` | integer 1–100, default 10 |
+
+`preindex` only matters in `full`: messages not yet compacted are tokenized ahead of time every N completed user turns or N tool rounds, whichever comes first, so they are ready when compaction happens.
+Settings are read once when the extension loads; restart Pi after changing them. Project `.pi/` directories are not read. Details, including SDK embedding, are in [doc/PLUGIN.md](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md).
 
 ## How it works
 
-1. After native compaction, the `context` hook uses the latest actual user text to produce a small, relevance-ranked locator hint.
-2. The model can call `history_recall` with focused or rewritten keywords to find entry IDs.
-3. `history_expand` reads the branch-effective text for an ID to verify exact details. Useful automatic IDs can be expanded directly.
-4. If evidence remains insufficient, `history_grep` supplies a regex fallback over the same searchable history.
+In `full`, each request after a compaction can go through three steps:
 
-The extension neither forces tool calls nor decides that evidence is sufficient. Snippets are leads, not verified answers.
-Automatic hints include at most five candidates and fit within **1,500 Unicode code points**, including metadata.
-They are inserted after the latest user message for that request only: not persisted to the session or accumulated across requests.
-Although hidden in the UI, hints are sent to the configured model service as part of its ordinary request.
-Historical text is marked as untrusted data and escaped; this does not eliminate prompt-injection risk.
+1. **Automatic hint.** Before the model answers, the extension matches your latest message against the compacted history and attaches up to five likely entry IDs (at most 1,500 characters). The hint applies to that request only and is never saved to the session.
+2. **`history_recall`.** The model searches again with its own keywords and gets ranked entry IDs with short snippets.
+3. **`history_expand`.** The model reads an entry's full text, plus neighboring messages, to confirm the exact detail.
 
-### Tool examples
+If that is still not enough, **`history_grep`** offers a regex search over the same history. In `lite`, the model starts from `history_grep` and confirms with `history_expand`.
 
-These are model-facing tool calls, not shell commands. Use an actual returned ID in place of `ENTRY_ID`.
+The extension never forces a tool call and never decides whether the evidence is sufficient; the model does. Snippets are leads, not answers.
 
 ```js
 history_recall({ query: "bicycle repair", limit: 10 })
@@ -54,42 +76,51 @@ history_expand({ id: "ENTRY_ID", before: 1, after: 1 })
 history_grep({ pattern: "bicycle|repair", limit: 10 })
 ```
 
-When `hasMore` is true, pass the returned `nextOffset` as `offset`, keeping the query/pattern or ID and neighbor settings unchanged.
-Do not calculate `offset + limit`: output budgets can shorten pages. Restart at offset 0 after branch, edit, or compaction-boundary changes.
-
-| Tool | Search / output contract |
+| Tool | Returns |
 | --- | --- |
-| `history_recall` | Ranked, deduplicated IDs, entry dates, roles and snippets; default/max 50 results. `total` counts deduplicated hits. Pages target 16,000 code points; an oversized metadata row is returned alone with `budgetExceeded: true` rather than losing its ID. |
-| `history_expand` | Requested entry first; neighbors default to 2 before/after, each configurable from 0–20. Up to 16,000 code points per response. `offset`, `total`, `returned`, `nextOffset`, `hasMore` describe the requested entry's text, not neighbor count. Whole neighbors fit only after the target page is complete. |
-| `history_grep` | Case-insensitive JavaScript `gi` regex, invalid regex falls back to a literal. Branch-order pagination over matching entries: default 30, max 50. At most 30 snippet lines, 3 per entry, and 16,000 code points per response; snippets may clip matches. |
+| `history_recall` | Ranked, deduplicated entry IDs with date, role and snippet. Default and max 50 per page. `full` only. |
+| `history_expand` | The requested entry first, then 2 neighbors on each side by default (0–20). Up to 16,000 characters per call. |
+| `history_grep` | Case-insensitive JavaScript regex; invalid patterns fall back to literal text. Default 30, max 50 matching entries per page. |
 
-Pagination is visible in both tool text and structured `details`. Budgets count Unicode code points, **not tokens**.
-For grep, `total` counts raw regex matches, `totalEntries` counts matching entries, and `returned` counts entries consumed, including explicitly skipped oversized metadata.
-`covered` counts other raw matches fully visible in this response's snippets; `omitted` counts all raw matches not shown in this response, including other pages—not unread matches tracked across calls.
-Grep is not SQL LIKE and has no regex execution timeout; avoid high-backtracking expressions.
+Long results are paged. When `hasMore` is true, call again with the returned `nextOffset` and the same query; don't compute offsets yourself. Budgets count Unicode characters, not tokens. The full tool contract is in [doc/PLUGIN.md](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md).
 
-## Scope and limits
+## Limits
 
-- **Current branch, compacted history only.** The latest compaction's original `firstKeptEntryId` bounds the hidden segment. No compaction means no history to recall. If the boundary ID is absent, messages before the latest compaction are used.
-- No cross-session, `parentSession`, abandoned-branch, current retained-context, or compaction-summary search.
-- Automatic lookup, recall and grep search user/assistant text and assistant tool-call names and input arguments. They **do not search `toolResult` bodies**, thinking, images or custom messages.
-- Expand can read an available `toolResult`'s text by ID, but still excludes thinking and images. It cannot recover content Pi has deleted or omitted.
-- All paths honor normalized branch-local `context_edit` messages: the latest edit wins, `replacement: null` hides an entry, and replacements hide original content. String/text-block replacements are supported, with assistant/tool-result strings normalized to Pi 1.0 text blocks. Expansion and its neighbors use this same view; “original text” never means bypassing edits.
-- This is **lexical, not semantic retrieval**. Queries use up to 4,000 code points and 24 distinct terms, with English identifier splitting and overlapping Chinese bigrams. Synonyms, pronouns, single Chinese characters, spelling variants and image-only evidence may be missed. No hit does not prove absence.
-- No database, embeddings, persistent index, production cache, background worker, compaction hook or additional model call. Each request scans branch edits and compacted text locally; large histories cost more local processing.
+- **Current branch, compacted part only.** It searches what the latest compaction moved out of context: not the live context, other sessions, abandoned branches or the compaction summary. Before the first compaction there is nothing to search.
+- **Keyword matching, not semantic search.** Synonyms, pronouns, spelling variants and single Chinese characters can be missed. No hit does not mean it was never said.
+- **Searches user and assistant text plus tool-call arguments.** Tool results, thinking and images are not searched, though `history_expand` can show a tool result's text by ID.
+- **Respects context edits.** Edited messages read as edited, hidden ones stay hidden, and content Pi has deleted cannot be recovered.
+- **Privacy.** In `full`, hints are hidden in the UI but are sent to your model provider with the normal request. Old messages are marked untrusted and escaped; this reduces prompt-injection risk but does not remove it.
+- **Cost.** `full` keeps an in-memory index in a worker thread for the current session; nothing is written to disk and nothing carries over between sessions. Tokenizing and searching run off the main thread, but the main thread still extracts text and hands it over, and the index takes extra memory that grows with the branch. The first lookup after startup or a compaction can wait for the index. If the worker fails, the extension falls back to scanning on the main thread with the same results. `lite` keeps no index; `history_grep` and `history_expand` scan the compacted history when called.
 
-## Verification
+## Evaluation
 
-The following are **observed offline checks**, not live inference or evidence of better answer accuracy:
+The questions come from **[LongMemEval](https://github.com/xiaowu0162/LongMemEval)** (Di Wu et al., 2024; MIT), using the original **LongMemEval_M** histories. We picked M because each history runs to over a million tokens, about three times the 372k context window used in these runs, so every question has to get through real Pi compaction first. That is exactly the situation this extension is for.
 
-| Surface | Observed result | Boundary |
-| --- | --- | --- |
-| TypeScript + Node | `npm run check`: typecheck and **99 Node tests passed** | Includes 5 SDK checks: descriptors, guarded native RPC, read-only auth; package and both `src/` entries load in isolation. |
-| Python runner | **15 Python tests passed** | Two explicit synthetic configurations reach CLI → run → answer → RPC; covers three arms, zero-call resume, changed-config rejection and guarded real SDK `get_state` startup for all arms. No live model calls. |
-| Clean-copy reproduction | Locked `npm ci --ignore-scripts` installation, then **99 Node + 15 Python tests passed** | Source-only temporary copy; no original `node_modules`, Git history, external helper, profile or dataset copied. |
-| npm artifact | Dry-run and actual tarball: **11 allowlisted files**, no bundled dependencies; existing SDK loading case passed | Package manifest and both `src/` entries resolve in isolation; context hook and all three tools execute. Raw benchmark evidence, tests and personal configuration are excluded. This is local packaging verification, not npm publication. |
+Each history was fed to Pi in four segments, producing three native compactions, and then the question was asked. Two eight-question sets were used:
 
-To repeat development checks from a checkout (Python 3 and Git are also required):
+- **DEV8:** the evidence sits only in the compacted segments (single-session and temporal-reasoning questions).
+- **HARD8:** the evidence is spread across at least two compacted segments; seven of the eight are multi-session questions. Picked for difficulty, not sampled at random.
+
+Each question was answered three times from the same compacted snapshot: Pi alone with no tools, with the `lite` tool set, and with `full`. Each cell is correct answers out of 8.
+
+| Set | Answer model | Pi alone | + `lite` | + `full` |
+| --- | --- | --- | --- | --- |
+| DEV8 | gpt-6-luna / high | 0 | 3 | 8 |
+| HARD8 | gpt-6-luna / high | 0 | 1 | 3 |
+| HARD8 | gpt-6.1-sol / high | 1 | 6 | 6 |
+
+All rows used the same plugin build (`8149e1f`), from before the `lite`/`full` switch existed and before indexing moved into a worker. The `lite` column came from an evaluation wrapper that registered only `history_grep` and `history_expand` with the hint disabled (their descriptions were still the `full` wording); the `full` column used the synchronous scan of that build. Offline tests check that the current worker returns byte-identical hints and recall pages, but these numbers were not re-measured with the current code.
+
+On HARD8, Luna and Sol answered from the same compacted snapshots, so only the answer model differs; Sol was not run on DEV8. Compression used gpt-6-luna / high; grading used gpt-6-luna with LongMemEval's official judge prompt.
+
+**Scores depend heavily on the answer model.** With the same plugin and snapshots, Sol got 6 of 8 HARD8 questions and Luna got 3. The extension only brings compacted history back within reach; finding the right entries, combining evidence and answering correctly is still up to the model. With the `lite` tool set, Sol also reached 6, and its output limit was smaller (8,192 vs 128,000 tokens), so model, configuration and provider effects are not separated. Do not read the gap as an effect of the extension.
+
+These are archived single runs on small, hand-picked sets, recorded during development rather than against the current release. `full` never scored below Pi alone, but eight questions per set cannot establish general accuracy or a causal effect.
+
+Question IDs, selection rules, judge settings, earlier runs with other plugin builds, excluded runs and audit hashes are in [doc/BENCHMARK_RESULTS.md](doc/BENCHMARK_RESULTS.md). The LongMemEval data itself is not included.
+
+## Development
 
 ```sh
 npm ci --ignore-scripts
@@ -97,38 +128,10 @@ npm run check
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'
 ```
 
-Dependency installation needs network access or an npm cache. Tests use isolated synthetic fixtures, not your personal profile or credentials.
-Benchmarking requires separate authorization and an explicit external configuration; historical model IDs below are evidence, not runtime defaults.
+Tests run offline on synthetic fixtures. Real benchmark runs need an explicit external configuration; see the [evaluation guide](https://github.com/shttty/pi-context-recall/blob/main/doc/EVALUATION.md).
 
-## Historical benchmark observations
+## License
 
-These are archived single-run **LongMemEval_M** results, **not a fresh benchmark of 0.1.0**.
-Each DEV8/HARD8 set has 8 histories; every cell is correct answers out of 8, in **native / grep / production** order.
-“Production” names the historical experimental arm, not a claim that its commit equals this release.
-The native baseline has no tools/extensions; grep uses a pinned grep/expand wrapper with the context hook suppressed; production loads the public entry with automatic locators and recall/grep/expand.
+MIT, Copyright (c) 2026 shttty. See [LICENSE](LICENSE).
 
-| Set / run | Answer model / effort | Candidate commit | Native / grep / production |
-| --- | --- | --- | --- |
-| DEV8 capacity-base | `clp/gpt-6-luna` / high | A | 0 / 5 / 7 |
-| DEV8 capacity-paging | `clp/gpt-6-luna` / high | B | 0 / 6 / 8 |
-| DEV8 coverage | `clp/gpt-6-luna` / high | C | 0 / 4 / 7 |
-| DEV8 grep-pages | `clp/gpt-6-luna` / high | D | 0 / 3 / 8 |
-| HARD8 base | `clp/gpt-6-luna` / high | A | 1 / 1 / 3 |
-| HARD8 paging | `clp/gpt-6-luna` / high | B | 0 / 1 / 2 |
-| HARD8 grep-pages | `clp/gpt-6-luna` / high | D | 0 / 1 / 3 |
-| HARD8 sol-high-d4259198 | `clp/gpt-6.1-sol` / high | D | 1 / 6 / 6 |
-
-Historical base A: `f5715d1901b6bedf19811030f18f3733eefb7bc4`; paging B: `7d1980b8b7512ec8568c3ddaaecdccb8e0ad4014`; coverage C: `5acf40efa9cb33146d3e9526fc411a769511cee8`; grep-pages D: `8149e1f6caece71de148c92a88790e5d35212d9e`.
-All eight groups used SDK 1.0.0 and `clp/gpt-6-luna` / high compression. These small, single-round observations do not establish causality or general accuracy; candidates were answered in separate rounds, and HARD8 paging regressed relative to base.
-
-Frozen manifests record judge `clp/gpt-6-luna` with **requested xhigh**. Historical grading calls the external helper, not Pi SDK; the retained evidence does not establish provider-effective judge effort, so no SDK clamp to high is asserted.
-A separate, unscored SDK 1.0.0 preparation probe requested Sol **xhigh** but a loopback mock captured serialized **high**, with zero live calls. That clamp is not a scored xhigh run; the formal Sol row explicitly used high. The linked aggregate identifies the proof by hash.
-
-See the packaged [benchmark results and provenance](doc/BENCHMARK_RESULTS.md) for arm identities, runner commits, judging configuration, failures and excluded pilots.
-The [source benchmark index](https://github.com/shttty/pi-context-recall/blob/main/doc/BENCHMARK.md) and raw evidence are in the **private** GitHub repository and require access; they are not publicly accessible evidence links.
-
-## License and source
-
-**MIT — Copyright (c) 2026 shttty.** See [LICENSE](LICENSE).
-Extracted from the recall experiments in `pi-lossless-context`; third-party design attribution and license text are preserved in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-Detailed source-only [plugin documentation](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md) and [evaluation protocol](https://github.com/shttty/pi-context-recall/blob/main/doc/EVALUATION.md) require repository access.
+LongMemEval attribution and its MIT notice are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md#longmemeval-evaluation-material).
