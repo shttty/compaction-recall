@@ -30,6 +30,11 @@ SYSTEM = "You are a helpful assistant."
 MODEL = "gpt-6-luna"
 EFFORT = "high"
 SEGMENTS = 4
+
+CONTEXT_WINDOW_TOKENS = 372000
+COMPACTION_RESERVE_TOKENS = 16384
+PREFLIGHT_OVERHEAD_TOKENS = 5000
+PREFLIGHT_CEILING_TOKENS = CONTEXT_WINDOW_TOKENS - COMPACTION_RESERVE_TOKENS
 STOP = set("what when where which have does did they their about from with that this then there were your could would tell remind previous chat conversation mentioned remember please much many name date time person someone something you user had has was were for the and are can did how why who whom whose is it to in on of or a an as at be by we our my me i he she them his her its not now old new latest first last".split())
 CANDIDATE_REPO = ROOT.parent / "pi-context-recall"
 ALLOWED_PLUGIN_REFS = ("f5715d1901b6bedf19811030f18f3733eefb7bc4", "7d1980b8b7512ec8568c3ddaaecdccb8e0ad4014")
@@ -364,8 +369,9 @@ def fingerprint(q, q_digest):
     config = {"provider": "clp", "provider_api": "openai-responses",
               "endpoint_sha256": hashlib.sha256(b.API.encode()).hexdigest(),
               "model": MODEL, "effort": EFFORT, "system": SYSTEM, "pi_flags": PI_FLAGS,
-              "segments": SEGMENTS, "compactions": SEGMENTS - 1, "context_window": 372000,
-              "max_tokens": 128000, "preflight_reserve": 5000, "preflight_ceiling": 340000,
+              "segments": SEGMENTS, "compactions": SEGMENTS - 1, "context_window": CONTEXT_WINDOW_TOKENS,
+              "max_tokens": 128000, "compaction_reserve_tokens": COMPACTION_RESERVE_TOKENS,
+              "preflight_overhead_tokens": PREFLIGHT_OVERHEAD_TOKENS, "preflight_ceiling": PREFLIGHT_CEILING_TOKENS,
               "question_sha256": q_digest, "sdk": sdk, "code": code}
     return hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest(), config
 
@@ -379,9 +385,11 @@ def preflight(session):
     result = subprocess.run(["node", str(ROOT / "prototype/pi-context-estimate.mjs"), str(session)],
                             capture_output=True, text=True, check=True)
     data = json.loads(result.stdout)
-    estimate = data["estimatedTokens"] + 5000
-    if estimate > 340000:
-        raise ValueError(f"Conservative context estimate {estimate} exceeds 340000 safety ceiling")
+    estimate = data["estimatedTokens"] + PREFLIGHT_OVERHEAD_TOKENS
+    if estimate > PREFLIGHT_CEILING_TOKENS:
+        raise ValueError(f"Conservative context estimate {estimate} (including {PREFLIGHT_OVERHEAD_TOKENS} overhead) "
+                         f"exceeds {PREFLIGHT_CEILING_TOKENS} safety ceiling (context window {CONTEXT_WINDOW_TOKENS} "
+                         f"minus SDK compaction reserve {COMPACTION_RESERVE_TOKENS})")
     return estimate
 
 
@@ -389,9 +397,9 @@ def agent_env(folder):
     folder.mkdir(parents=True, exist_ok=True)
     folder.chmod(0o700)
     write_json(folder / "models.json", {"providers": {"clp": {"baseUrl": b.API, "api": "openai-responses", "apiKey": b.KEY,
-        "models": [{"id": MODEL, "name": MODEL, "reasoning": True, "input": ["text", "image"], "contextWindow": 372000,
+        "models": [{"id": MODEL, "name": MODEL, "reasoning": True, "input": ["text", "image"], "contextWindow": CONTEXT_WINDOW_TOKENS,
                     "maxTokens": 128000, "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0}}]}}})
-    write_json(folder / "settings.json", {"compaction": {"enabled": False}})
+    write_json(folder / "settings.json", {"compaction": {"enabled": False, "reserveTokens": COMPACTION_RESERVE_TOKENS}})
     env = child_env()
     env.update({"PI_CODING_AGENT_DIR": str(folder), "PI_TELEMETRY": "0"})
     return env

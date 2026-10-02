@@ -127,6 +127,82 @@ class EvaluationRunnerTest(unittest.TestCase):
                     unchanged, _ = e.fingerprint(question, digest)
             self.assertEqual(baseline, unchanged, name)
 
+    def test_preflight_boundaries_and_previously_blocked_estimates(self):
+        def estimator_result(tokens):
+            return subprocess.CompletedProcess([], 0, json.dumps({"estimatedTokens": tokens}), "")
+
+        with tempfile.TemporaryDirectory() as td:
+            session = Path(td) / "build.jsonl"
+            session.write_text("{}\n")
+            maximum_input = e.PREFLIGHT_CEILING_TOKENS - e.PREFLIGHT_OVERHEAD_TOKENS
+            for raw, expected in ((maximum_input - 1, e.PREFLIGHT_CEILING_TOKENS - 1),
+                                  (maximum_input, e.PREFLIGHT_CEILING_TOKENS)):
+                with patch.object(e.subprocess, "run", return_value=estimator_result(raw)):
+                    self.assertEqual(e.preflight(session), expected)
+            for previously_blocked_total in (343768, 341237):
+                raw = previously_blocked_total - e.PREFLIGHT_OVERHEAD_TOKENS
+                with patch.object(e.subprocess, "run", return_value=estimator_result(raw)):
+                    self.assertEqual(e.preflight(session), previously_blocked_total)
+            changed_overhead = e.PREFLIGHT_OVERHEAD_TOKENS + 1
+            raw = e.PREFLIGHT_CEILING_TOKENS - changed_overhead
+            with patch.object(e, "PREFLIGHT_OVERHEAD_TOKENS", changed_overhead), \
+                 patch.object(e.subprocess, "run", return_value=estimator_result(raw)):
+                self.assertEqual(e.preflight(session), e.PREFLIGHT_CEILING_TOKENS)
+            changed_ceiling = e.PREFLIGHT_CEILING_TOKENS + 1
+            raw = changed_ceiling - e.PREFLIGHT_OVERHEAD_TOKENS
+            with patch.object(e, "PREFLIGHT_CEILING_TOKENS", changed_ceiling), \
+                 patch.object(e.subprocess, "run", return_value=estimator_result(raw)):
+                self.assertEqual(e.preflight(session), changed_ceiling)
+
+    def test_over_capacity_fails_before_compaction_process_or_provider(self):
+        raw = e.PREFLIGHT_CEILING_TOKENS - e.PREFLIGHT_OVERHEAD_TOKENS + 1
+        result = subprocess.CompletedProcess([], 0, json.dumps({"estimatedTokens": raw}), "")
+        with tempfile.TemporaryDirectory() as td:
+            session = Path(td) / "build.jsonl"
+            session.write_text("{}\n")
+            with patch.object(e.subprocess, "run", return_value=result), \
+                 patch.object(e.subprocess, "Popen", side_effect=AssertionError("compaction process launched")) as launch, \
+                 patch.object(e.b, "chat", side_effect=AssertionError("provider call launched")) as provider:
+                with self.assertRaisesRegex(ValueError, "exceeds .* safety ceiling"):
+                    e.compact(session, {}, Path(td))
+            launch.assert_not_called()
+            provider.assert_not_called()
+
+    def test_capacity_constants_affect_fingerprint_and_sdk_settings(self):
+        question = {"question_id": "fixture", "history": "same"}
+        digest = e.object_sha(question)
+        baseline, _ = e.fingerprint(question, digest)
+        self.assertEqual(e.PREFLIGHT_CEILING_TOKENS, e.CONTEXT_WINDOW_TOKENS - e.COMPACTION_RESERVE_TOKENS)
+        for name in ("CONTEXT_WINDOW_TOKENS", "COMPACTION_RESERVE_TOKENS",
+                     "PREFLIGHT_OVERHEAD_TOKENS", "PREFLIGHT_CEILING_TOKENS"):
+            value = getattr(e, name)
+            with patch.object(e, name, value + 1):
+                changed, _ = e.fingerprint(question, digest)
+            self.assertNotEqual(baseline, changed, name)
+
+        with tempfile.TemporaryDirectory() as td, \
+             patch.object(e.b, "API", "https://unit.invalid"), patch.object(e.b, "KEY", "unit-key"):
+            e.agent_env(Path(td) / "pi")
+            model = json.loads((Path(td) / "pi/models.json").read_text())["providers"]["clp"]["models"][0]
+            settings = json.loads((Path(td) / "pi/settings.json").read_text())["compaction"]
+        self.assertEqual(model["contextWindow"], e.CONTEXT_WINDOW_TOKENS)
+        self.assertEqual(model["maxTokens"], 128000)
+        self.assertEqual(settings["enabled"], False)
+        self.assertEqual(settings["reserveTokens"], e.COMPACTION_RESERVE_TOKENS)
+
+        updated_context = e.CONTEXT_WINDOW_TOKENS + 100
+        updated_reserve = e.COMPACTION_RESERVE_TOKENS + 10
+        with tempfile.TemporaryDirectory() as td, \
+             patch.object(e.b, "API", "https://unit.invalid"), patch.object(e.b, "KEY", "unit-key"), \
+             patch.object(e, "CONTEXT_WINDOW_TOKENS", updated_context), \
+             patch.object(e, "COMPACTION_RESERVE_TOKENS", updated_reserve), \
+             patch.object(e, "PREFLIGHT_CEILING_TOKENS", updated_context - updated_reserve):
+            e.agent_env(Path(td) / "pi")
+            model = json.loads((Path(td) / "pi/models.json").read_text())["providers"]["clp"]["models"][0]
+            settings = json.loads((Path(td) / "pi/settings.json").read_text())["compaction"]
+        self.assertEqual(model["contextWindow"], updated_context)
+        self.assertEqual(settings["reserveTokens"], updated_reserve)
+
     def test_run_recovers_durable_outputs_and_rejects_changed_inputs(self):
         with tempfile.TemporaryDirectory() as td:
             home = Path(td) / "evaluation"
