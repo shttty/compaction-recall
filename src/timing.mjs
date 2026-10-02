@@ -145,5 +145,5 @@ export class StageTiming {
   }
 }
 
-export const recallTiming = process.env.PI_RECALL_TIMING_FILE ? new StageTiming() : undefined;
-export function flushTiming() { recallTiming?.flush(process.env.PI_RECALL_TIMING_FILE); }
+export const recallTiming = process.env.COMPACTION_RECALL_TIMING_FILE ? new StageTiming() : undefined;
+export function flushTiming() { recallTiming?.flush(process.env.COMPACTION_RECALL_TIMING_FILE); }

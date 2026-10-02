@@ -1,9 +1,9 @@
-# pi-context-recall
+# compaction-recall
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
 When Pi compacts a long conversation, the summary keeps the gist and drops the details: a name, a number, the exact thing you said three hours ago.
-**pi-context-recall** lets the model look those details up again in the original messages that compaction moved out of context.
+**compaction-recall** lets the model look those details up again in the original messages that compaction moved out of context.
 
 It sits on top of Pi's native compaction. It does not replace it, and adds no database, files on disk or extra model call.
 
@@ -35,7 +35,7 @@ Load only one copy of the extension.
 
 ### Configuration
 
-Configuration is optional. The file lives at `~/.pi/agent/extensions/pi-recall.json` (or under `$PI_CODING_AGENT_DIR` if you set it):
+Configuration is optional. The file lives at `~/.pi/agent/extensions/compaction-recall.json` (or under `$PI_CODING_AGENT_DIR` if you set it):
 
 ```json
 {
@@ -51,9 +51,9 @@ Environment variables override the file, so you can also skip the file entirely:
 
 | Variable | Overrides | Values |
 | --- | --- | --- |
-| `PI_RECALL_MODE` | `mode` | `full` or `lite` |
-| `PI_RECALL_PREINDEX_TURNS` | `preindex.userCycles` | integer 1–100, default 10 |
-| `PI_RECALL_PREINDEX_TOOL_ROUNDS` | `preindex.toolRounds` | integer 1–100, default 10 |
+| `COMPACTION_RECALL_MODE` | `mode` | `full` or `lite` |
+| `COMPACTION_RECALL_PREINDEX_TURNS` | `preindex.userCycles` | integer 1–100, default 10 |
+| `COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS` | `preindex.toolRounds` | integer 1–100, default 10 |
 
 `preindex` only matters in `full`: messages not yet compacted are tokenized ahead of time every N completed user turns or N tool rounds, whichever comes first, so they are ready when compaction happens.
 Settings are read once when the extension loads; restart Pi after changing them. Project `.pi/` directories are not read. Details, including SDK embedding, are in [doc/PLUGIN.md](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md).

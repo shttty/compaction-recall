@@ -1,9 +1,9 @@
 # Optional production stage timing
 
-`src/timing.mjs` contains the shared JavaScript `StageTiming`, `measured` helper and production `recallTiming` observer, with JSDoc types checked by TypeScript. Main thread and worker import this single implementation directly; no runtime TypeScript loader is needed. **Only `PI_RECALL_TIMING_FILE` enables production timing.** Without it there are no measurement clock reads, log writes or timing events on either thread; worker batching uses fixed entry/character limits, not a scheduling clock. The benchmark event observer is also disabled without a supplied timer.
+`src/timing.mjs` contains the shared JavaScript `StageTiming`, `measured` helper and production `recallTiming` observer, with JSDoc types checked by TypeScript. Main thread and worker import this single implementation directly; no runtime TypeScript loader is needed. **Only `COMPACTION_RECALL_TIMING_FILE` enables production timing.** Without it there are no measurement clock reads, log writes or timing events on either thread; worker batching uses fixed entry/character limits, not a scheduling clock. The benchmark event observer is also disabled without a supplied timer.
 
 ```sh
-PI_RECALL_TIMING_FILE=/absolute/private/directory/recall.jsonl pi -e ./src/index.ts
+COMPACTION_RECALL_TIMING_FILE=/absolute/private/directory/recall.jsonl pi -e ./src/index.ts
 ```
 
 The parent directory must already exist. Logs are append-only JSONL, created with mode **0600**; existing files are chmodded to 0600 before writing. Logging failures are swallowed and never change tool output or its original error. The in-memory event buffer is bounded to 10,000 events and reports dropped measurements when flushed. Missing, failed or truncated logs are not complete traces.

@@ -9,7 +9,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const bridge = fileURLToPath(new URL('../benchmark/sdk-rpc.mjs', import.meta.url));
 function sdkDirectory() {
-  if (process.env.PI_RECALL_TEST_SDK_PATH) return path.resolve(process.env.PI_RECALL_TEST_SDK_PATH);
+  if (process.env.COMPACTION_RECALL_TEST_SDK_PATH) return path.resolve(process.env.COMPACTION_RECALL_TEST_SDK_PATH);
   let current = path.dirname(fileURLToPath(import.meta.resolve('@earendil-works/pi-coding-agent')));
   while (!existsSync(path.join(current, 'package.json'))) {
     const parent = path.dirname(current);

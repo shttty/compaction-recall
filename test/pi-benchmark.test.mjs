@@ -87,11 +87,11 @@ test('registration snapshots cadence while session_start and session_tree only r
  const { mkdtempSync, mkdirSync, writeFileSync, rmSync } = await import('node:fs');
  const { tmpdir } = await import('node:os'); const { join } = await import('node:path');
  const dir = mkdtempSync(join(tmpdir(), 'pi-cadence-load-'));
- const keys = ['PI_CODING_AGENT_DIR', 'PI_RECALL_PREINDEX_TURNS', 'PI_RECALL_PREINDEX_TOOL_ROUNDS'];
+ const keys = ['PI_CODING_AGENT_DIR', 'COMPACTION_RECALL_PREINDEX_TURNS', 'COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS'];
  const previous = keys.map(key => process.env[key]);
  process.env.PI_CODING_AGENT_DIR = dir;
  mkdirSync(join(dir, 'extensions'));
- const config = join(dir, 'extensions', 'pi-recall.json');
+ const config = join(dir, 'extensions', 'compaction-recall.json');
  writeFileSync(config, JSON.stringify({ preindex: { userCycles: 2, toolRounds: 3 } }));
  const stderr = [];
  t.mock.method(process.stderr, 'write', chunk => { stderr.push(String(chunk)); return true; });
@@ -119,8 +119,8 @@ test('registration snapshots cadence while session_start and session_tree only r
  try {
   const active = register();
   await assertOriginalCadence(active);
-  process.env.PI_RECALL_PREINDEX_TURNS = '1';
-  process.env.PI_RECALL_PREINDEX_TOOL_ROUNDS = '1';
+  process.env.COMPACTION_RECALL_PREINDEX_TURNS = '1';
+  process.env.COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS = '1';
   for (const contents of [JSON.stringify({ preindex: { userCycles: 1, toolRounds: 1 } }), '{MALFORMED', null]) {
    if (contents === null) rmSync(config); else writeFileSync(config, contents);
    for (const lifecycle of ['session_start', 'session_tree']) {
@@ -135,7 +135,7 @@ test('registration snapshots cadence while session_start and session_tree only r
   assert.deepEqual(stderr, []);
   assert.deepEqual(warnings, []);
   writeFileSync(config, JSON.stringify({ preindex: { userCycles: 1, toolRounds: 4 } }));
-  delete process.env.PI_RECALL_PREINDEX_TURNS;
+  delete process.env.COMPACTION_RECALL_PREINDEX_TURNS;
   const fresh = register();
   fresh.finish(); await tick(); assert.equal(fresh.reads(), 1, 'new registration uses changed file cadence');
   fresh.tool(); await tick(); assert.equal(fresh.reads(), 2, 'new registration uses changed environment cadence');

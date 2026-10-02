@@ -9,24 +9,24 @@ import test from 'node:test';
 import register from '../src/index.ts';
 
 function fixture(config, envMode, work) {
-  const cwd = mkdtempSync(join(tmpdir(), 'pi-recall-mode-'));
+  const cwd = mkdtempSync(join(tmpdir(), 'compaction-recall-mode-'));
   const agentDir = join(cwd, 'agent');
-  const previousCwd = process.cwd(), previousMode = process.env.PI_RECALL_MODE;
+  const previousCwd = process.cwd(), previousMode = process.env.COMPACTION_RECALL_MODE;
   const previousAgentDir = process.env.PI_CODING_AGENT_DIR;
   try {
     mkdirSync(join(cwd, '.pi'));
     mkdirSync(join(agentDir, 'extensions'), { recursive: true });
-    writeFileSync(join(cwd, '.pi/pi-recall.json'), JSON.stringify({ mode: config?.mode === 'lite' ? 'full' : 'lite' }));
-    if (config !== undefined) writeFileSync(join(agentDir, 'extensions', 'pi-recall.json'), JSON.stringify(config));
+    writeFileSync(join(cwd, '.pi/compaction-recall.json'), JSON.stringify({ mode: config?.mode === 'lite' ? 'full' : 'lite' }));
+    if (config !== undefined) writeFileSync(join(agentDir, 'extensions', 'compaction-recall.json'), JSON.stringify(config));
     process.env.PI_CODING_AGENT_DIR = agentDir;
     process.chdir(cwd);
-    if (envMode === undefined) delete process.env.PI_RECALL_MODE;
-    else process.env.PI_RECALL_MODE = envMode;
+    if (envMode === undefined) delete process.env.COMPACTION_RECALL_MODE;
+    else process.env.COMPACTION_RECALL_MODE = envMode;
     return work();
   } finally {
     process.chdir(previousCwd);
-    if (previousMode === undefined) delete process.env.PI_RECALL_MODE;
-    else process.env.PI_RECALL_MODE = previousMode;
+    if (previousMode === undefined) delete process.env.COMPACTION_RECALL_MODE;
+    else process.env.COMPACTION_RECALL_MODE = previousMode;
     if (previousAgentDir === undefined) delete process.env.PI_CODING_AGENT_DIR;
     else process.env.PI_CODING_AGENT_DIR = previousAgentDir;
     rmSync(cwd, { recursive: true, force: true });
@@ -90,7 +90,7 @@ test('lite grep and expand preserve full output and branch edits without changin
 });
 
 test('SDK lite performs no worker startup, context injection or maintenance and times only grep/expand', () => {
-  const cwd = mkdtempSync(join(tmpdir(), 'pi-recall-lite-sdk-'));
+  const cwd = mkdtempSync(join(tmpdir(), 'compaction-recall-lite-sdk-'));
   try {
     const agentDir = join(cwd, 'env-agent');
     const loaderDir = join(cwd, 'sdk-agent');
@@ -99,10 +99,10 @@ test('SDK lite performs no worker startup, context injection or maintenance and 
     mkdirSync(join(loaderDir, 'extensions'), { recursive: true });
     for (const project of [cwd, sessionCwd]) {
       mkdirSync(join(project, '.pi'), { recursive: true });
-      writeFileSync(join(project, '.pi/pi-recall.json'), JSON.stringify({ mode: 'full' }));
+      writeFileSync(join(project, '.pi/compaction-recall.json'), JSON.stringify({ mode: 'full' }));
     }
-    writeFileSync(join(loaderDir, 'extensions', 'pi-recall.json'), JSON.stringify({ mode: 'full' }));
-    writeFileSync(join(agentDir, 'extensions', 'pi-recall.json'), JSON.stringify({ mode: 'lite', preindex: { userCycles: 1, toolRounds: 1 } }));
+    writeFileSync(join(loaderDir, 'extensions', 'compaction-recall.json'), JSON.stringify({ mode: 'full' }));
+    writeFileSync(join(agentDir, 'extensions', 'compaction-recall.json'), JSON.stringify({ mode: 'lite', preindex: { userCycles: 1, toolRounds: 1 } }));
     const timingFile = join(cwd, 'timing.jsonl');
     const scriptPath = join(cwd, 'host.mjs');
     writeFileSync(scriptPath, `
@@ -142,8 +142,8 @@ test('SDK lite performs no worker startup, context injection or maintenance and 
       for (const handler of extension.handlers.get('session_shutdown') ?? []) await handler({ type: 'session_shutdown', reason: 'quit' }, ctx);
       assert.equal(workerStarts, 0);
     `);
-    const env = { ...process.env, PI_CODING_AGENT_DIR: agentDir, PI_RECALL_TIMING_FILE: timingFile };
-    for (const key of ['PI_RECALL_MODE', 'PI_RECALL_PREINDEX_TURNS', 'PI_RECALL_PREINDEX_TOOL_ROUNDS', 'NODE_OPTIONS', 'NODE_NO_WARNINGS']) delete env[key];
+    const env = { ...process.env, PI_CODING_AGENT_DIR: agentDir, COMPACTION_RECALL_TIMING_FILE: timingFile };
+    for (const key of ['COMPACTION_RECALL_MODE', 'COMPACTION_RECALL_PREINDEX_TURNS', 'COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS', 'NODE_OPTIONS', 'NODE_NO_WARNINGS']) delete env[key];
     const child = spawnSync(process.execPath, [scriptPath], { cwd, env, encoding: 'utf8', timeout: 30_000 });
     assert.ifError(child.error);
     assert.equal(child.status, 0, child.stderr);
@@ -158,15 +158,15 @@ test('SDK lite performs no worker startup, context injection or maintenance and 
 });
 
 test('SDK agentDir cannot redirect recall config, while fresh loads honor file changes and mode overrides', () => {
-  const cwd = mkdtempSync(join(tmpdir(), 'pi-recall-sdk-config-'));
+  const cwd = mkdtempSync(join(tmpdir(), 'compaction-recall-sdk-config-'));
   try {
     const agentDir = join(cwd, 'env-agent');
     const loaderDir = join(cwd, 'sdk-agent');
     mkdirSync(join(agentDir, 'extensions'), { recursive: true });
     mkdirSync(join(loaderDir, 'extensions'), { recursive: true });
     mkdirSync(join(cwd, '.pi'));
-    writeFileSync(join(loaderDir, 'extensions', 'pi-recall.json'), JSON.stringify({ mode: 'lite' }));
-    writeFileSync(join(cwd, '.pi/pi-recall.json'), JSON.stringify({ mode: 'lite' }));
+    writeFileSync(join(loaderDir, 'extensions', 'compaction-recall.json'), JSON.stringify({ mode: 'lite' }));
+    writeFileSync(join(cwd, '.pi/compaction-recall.json'), JSON.stringify({ mode: 'lite' }));
     const scriptPath = join(cwd, 'reload.mjs');
     writeFileSync(scriptPath, `
       import assert from 'node:assert/strict';
@@ -183,19 +183,19 @@ test('SDK agentDir cannot redirect recall config, while fresh loads honor file c
         return extension;
       }
       const first = await load('full');
-      writeFileSync(${JSON.stringify(join(agentDir, 'extensions', 'pi-recall.json'))}, JSON.stringify({ mode: 'lite' }));
+      writeFileSync(${JSON.stringify(join(agentDir, 'extensions', 'compaction-recall.json'))}, JSON.stringify({ mode: 'lite' }));
       await load('lite');
       assert.ok(first.tools.has('history_recall'));
-      process.env.PI_RECALL_MODE = 'full';
+      process.env.COMPACTION_RECALL_MODE = 'full';
       await load('full');
-      writeFileSync(${JSON.stringify(join(agentDir, 'extensions', 'pi-recall.json'))}, JSON.stringify({ mode: 'full' }));
-      process.env.PI_RECALL_MODE = 'lite';
+      writeFileSync(${JSON.stringify(join(agentDir, 'extensions', 'compaction-recall.json'))}, JSON.stringify({ mode: 'full' }));
+      process.env.COMPACTION_RECALL_MODE = 'lite';
       await load('lite');
-      delete process.env.PI_RECALL_MODE;
+      delete process.env.COMPACTION_RECALL_MODE;
       await load('full');
     `);
     const env = { ...process.env, PI_CODING_AGENT_DIR: agentDir };
-    for (const key of ['PI_RECALL_MODE', 'PI_RECALL_PREINDEX_TURNS', 'PI_RECALL_PREINDEX_TOOL_ROUNDS', 'PI_RECALL_TIMING_FILE', 'NODE_OPTIONS', 'NODE_NO_WARNINGS']) delete env[key];
+    for (const key of ['COMPACTION_RECALL_MODE', 'COMPACTION_RECALL_PREINDEX_TURNS', 'COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS', 'COMPACTION_RECALL_TIMING_FILE', 'NODE_OPTIONS', 'NODE_NO_WARNINGS']) delete env[key];
     const child = spawnSync(process.execPath, [scriptPath], { cwd, env, encoding: 'utf8', timeout: 30_000 });
     assert.ifError(child.error);
     assert.equal(child.status, 0, child.stderr);

@@ -1,11 +1,11 @@
 ---
 name: recall-tool-validation
-description: Validate pi-recall logic and recall/expand/grep tool use with offline fixtures or a fresh blind native solver on existing real benchmark histories. Use for project-level retrieval workflow checks, not claims about model accuracy or actual Pi runtime evaluation.
+description: Validate compaction-recall logic and recall/expand/grep tool use with offline fixtures or a fresh blind native solver on existing real benchmark histories. Use for project-level retrieval workflow checks, not claims about model accuracy or actual Pi runtime evaluation.
 ---
 
 # Recall tool validation
 
-Work from the pi-recall repository root. Preserve its current branch and uncommitted work. Do not install into a profile, switch production retrieval, download data, call external model APIs, or run a larger paid benchmark merely because this skill was invoked.
+Work from the compaction-recall repository root. Preserve its current branch and uncommitted work. Do not install into a profile, switch production retrieval, download data, call external model APIs, or run a larger paid benchmark merely because this skill was invoked.
 
 ## Choose the requested stage
 

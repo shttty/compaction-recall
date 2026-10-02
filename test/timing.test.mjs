@@ -49,7 +49,7 @@ test('disabled timing reads no clock, writes nothing and registers no observer',
     import fs from 'node:fs';
     import { performance } from 'node:perf_hooks';
     import { syncBuiltinESMExports } from 'node:module';
-    delete process.env.PI_RECALL_TIMING_FILE;
+    delete process.env.COMPACTION_RECALL_TIMING_FILE;
     let clocks = 0, writes = 0;
     performance.now = () => { clocks++; throw Error('clock used'); };
     const originalOpen = fs.openSync;
@@ -65,7 +65,7 @@ test('disabled timing reads no clock, writes nothing and registers no observer',
     assert.equal(measured(recallTiming, 'disabled', () => 42), 42);
     flushTiming(); registerStageEvents({ on() { throw Error('observer registered'); } });
     assert.equal(clocks, 0); assert.equal(writes, 0);
-  `], { env: { ...process.env, PI_RECALL_TIMING_FILE: '' } });
+  `], { env: { ...process.env, COMPACTION_RECALL_TIMING_FILE: '' } });
 });
 
 test('timing fields reject private values, arbitrary keys and structural overrides', () => {
@@ -88,7 +88,7 @@ test('transferred worker spans retain parent identity and align independent orig
 });
 
 test('existing logs become private; logging failure preserves results and original exceptions', () => {
- const directory = mkdtempSync(join(tmpdir(), 'pi-recall-timing-test-'));
+ const directory = mkdtempSync(join(tmpdir(), 'compaction-recall-timing-test-'));
  try {
   const path = join(directory, 'events.jsonl'), timer = new StageTiming(() => 1);
   writeFileSync(path, '', { mode: 0o666 });
@@ -105,7 +105,7 @@ test('existing logs become private; logging failure preserves results and origin
 });
 
 test('event buffer stays bounded and reports dropped measurements', () => {
- const directory = mkdtempSync(join(tmpdir(), 'pi-recall-timing-bound-'));
+ const directory = mkdtempSync(join(tmpdir(), 'compaction-recall-timing-bound-'));
  try {
   const timer = new StageTiming(() => 1), path = join(directory, 'events.jsonl');
   for (let i = 0; i < 10005; i++) timer.mark('bounded', { count: i });

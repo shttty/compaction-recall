@@ -2,7 +2,7 @@
 
 ## Project origin
 
-`pi-context-recall` was extracted from
+`compaction-recall` was extracted from
 `pi-lossless-context/prototype/recall-spike`, based on
 `62012df340d0774698ece6705062777b82d2f0e3` and the then-uncommitted recall
 changes; the initial standalone extraction is `3f73d6a`. This provenance does

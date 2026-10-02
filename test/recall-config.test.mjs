@@ -8,13 +8,13 @@ import { getAgentDir } from '@earendil-works/pi-coding-agent';
 import { loadRecallConfig } from '../src/recall-config.mjs';
 
 const fixture = work => {
-  const dir = mkdtempSync(join(tmpdir(), 'pi-recall-config-'));
+  const dir = mkdtempSync(join(tmpdir(), 'compaction-recall-config-'));
   const previous = process.env.PI_CODING_AGENT_DIR;
   process.env.PI_CODING_AGENT_DIR = dir;
   try {
     work(dir, content => {
       mkdirSync(join(dir, 'extensions'), { recursive: true });
-      writeFileSync(join(dir, 'extensions', 'pi-recall.json'), content);
+      writeFileSync(join(dir, 'extensions', 'compaction-recall.json'), content);
     });
   }
   finally {
@@ -30,9 +30,9 @@ test('mode and independent preindex fields use environment over file over defaul
   const warnings = [];
   assert.deepEqual(loadRecallConfig({ env: {}, warn: message => warnings.push(message) }), { mode: 'lite', userCycles: 5, toolRounds: 20 });
   assert.deepEqual(warnings, []);
-  assert.deepEqual(loadRecallConfig({ env: { PI_RECALL_MODE: 'full', PI_RECALL_PREINDEX_TURNS: '30' } }), { mode: 'full', userCycles: 30, toolRounds: 20 });
+  assert.deepEqual(loadRecallConfig({ env: { COMPACTION_RECALL_MODE: 'full', COMPACTION_RECALL_PREINDEX_TURNS: '30' } }), { mode: 'full', userCycles: 30, toolRounds: 20 });
   write(JSON.stringify({ mode: 'full' }));
-  assert.equal(loadRecallConfig({ env: { PI_RECALL_MODE: 'lite' } }).mode, 'lite');
+  assert.equal(loadRecallConfig({ env: { COMPACTION_RECALL_MODE: 'lite' } }).mode, 'lite');
 }));
 
 test('malformed, oversized, unknown and invalid preindex values warn without exposing contents', () => fixture((dir, write) => {
@@ -44,13 +44,13 @@ test('malformed, oversized, unknown and invalid preindex values warn without exp
   assert.ok(!warnings.join().includes('SENSITIVE_CONTENT'));
   write(JSON.stringify({ preindex: { userCycles: '5', toolRounds: 101 }, unknown: 'SENSITIVE_CONTENT' }));
   warnings = [];
-  assert.deepEqual(load({ PI_RECALL_PREINDEX_TURNS: '5e1', PI_RECALL_PREINDEX_TOOL_ROUNDS: '0' }), { mode: 'full', userCycles: 10, toolRounds: 10 });
+  assert.deepEqual(load({ COMPACTION_RECALL_PREINDEX_TURNS: '5e1', COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS: '0' }), { mode: 'full', userCycles: 10, toolRounds: 10 });
   assert.equal(warnings.length, 5);
   write(JSON.stringify({ mode: 'lite', preindex: { userCycles: 6, toolRounds: 7 } }));
-  assert.deepEqual(load({ PI_RECALL_PREINDEX_TURNS: '' }), { mode: 'lite', userCycles: 6, toolRounds: 7 });
+  assert.deepEqual(load({ COMPACTION_RECALL_PREINDEX_TURNS: '' }), { mode: 'lite', userCycles: 6, toolRounds: 7 });
   write(' '.repeat(65537));
   assert.deepEqual(load({}), { mode: 'full', userCycles: 10, toolRounds: 10 });
-  assert.equal(load({ PI_RECALL_MODE: 'lite' }).mode, 'lite');
+  assert.equal(load({ COMPACTION_RECALL_MODE: 'lite' }).mode, 'lite');
 }));
 
 test('invalid file modes warn and use full without affecting preindex fields', () => fixture((dir, write) => {
@@ -58,7 +58,7 @@ test('invalid file modes warn and use full without affecting preindex fields', (
     const warnings = [];
     write(JSON.stringify({ mode, preindex: { userCycles: 4 } }));
     assert.deepEqual(loadRecallConfig({ env: {}, warn: message => warnings.push(message) }), { mode: 'full', userCycles: 4, toolRounds: 10 });
-    assert.deepEqual(warnings, ['pi-recall: invalid mode; expected lite or full, using full']);
+    assert.deepEqual(warnings, ['compaction-recall: invalid mode; expected lite or full, using full']);
   }
 }));
 
@@ -66,12 +66,12 @@ test('invalid environment mode overrides valid lite file with full, not the file
   write(JSON.stringify({ mode: 'lite', preindex: { toolRounds: 7 } }));
   for (const mode of ['', 'LITE', 'lite ', 'fast', 'SECRET_ENV']) {
     const warnings = [];
-    assert.deepEqual(loadRecallConfig({ env: { PI_RECALL_MODE: mode }, warn: message => warnings.push(message) }), { mode: 'full', userCycles: 10, toolRounds: 7 });
-    assert.deepEqual(warnings, ['pi-recall: invalid PI_RECALL_MODE; expected lite or full, using full']);
+    assert.deepEqual(loadRecallConfig({ env: { COMPACTION_RECALL_MODE: mode }, warn: message => warnings.push(message) }), { mode: 'full', userCycles: 10, toolRounds: 7 });
+    assert.deepEqual(warnings, ['compaction-recall: invalid COMPACTION_RECALL_MODE; expected lite or full, using full']);
   }
   write(JSON.stringify({ mode: 'SECRET_FILE' }));
   const warnings = [];
-  assert.equal(loadRecallConfig({ env: { PI_RECALL_MODE: 'lite' }, warn: message => warnings.push(message) }).mode, 'lite');
+  assert.equal(loadRecallConfig({ env: { COMPACTION_RECALL_MODE: 'lite' }, warn: message => warnings.push(message) }).mode, 'lite');
   assert.equal(warnings.length, 1);
   assert.doesNotMatch(warnings.join(), /SECRET_FILE/);
 }));
@@ -89,7 +89,7 @@ test('mode shares the existing file limit and unknown-field validation', () => f
   warnings.length = 0;
   write(JSON.stringify({ mode: 'lite', unknown: 'SECRET', preindex: { unexpected: 'SECRET' } }));
   assert.equal(load().mode, 'lite');
-  assert.deepEqual(warnings, ['pi-recall: unknown config fields ignored']);
+  assert.deepEqual(warnings, ['compaction-recall: unknown config fields ignored']);
 }));
 
 test('missing agent config is silent and all environment controls remain available', () => fixture(() => {
@@ -98,7 +98,7 @@ test('missing agent config is silent and all environment controls remain availab
   assert.deepEqual(loadRecallConfig({ env: {}, warn }), { mode: 'full', userCycles: 10, toolRounds: 10 });
   assert.deepEqual(loadRecallConfig({
     env: {
-      PI_RECALL_MODE: 'lite', PI_RECALL_PREINDEX_TURNS: '3', PI_RECALL_PREINDEX_TOOL_ROUNDS: '8',
+      COMPACTION_RECALL_MODE: 'lite', COMPACTION_RECALL_PREINDEX_TURNS: '3', COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS: '8',
     }, warn
   }), { mode: 'lite', userCycles: 3, toolRounds: 8 });
   assert.deepEqual(warnings, []);
@@ -108,8 +108,8 @@ test('SDK agent path uses process environment, never project config or parser ov
   const cwd = process.cwd();
   const project = join(dir, 'project');
   mkdirSync(join(project, '.pi'), { recursive: true });
-  writeFileSync(join(project, '.pi', 'pi-recall.json'), JSON.stringify({ mode: 'lite', preindex: { userCycles: 1 } }));
-  writeFileSync(join(dir, 'pi-recall.json'), JSON.stringify({ mode: 'lite', preindex: { userCycles: 1 } }));
+  writeFileSync(join(project, '.pi', 'compaction-recall.json'), JSON.stringify({ mode: 'lite', preindex: { userCycles: 1 } }));
+  writeFileSync(join(dir, 'compaction-recall.json'), JSON.stringify({ mode: 'lite', preindex: { userCycles: 1 } }));
   const warnings = [];
   const warn = message => warnings.push(message);
   try {

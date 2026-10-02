@@ -15,7 +15,7 @@ pi -e ./src/index.ts
 也可以将整个目录作为本地 Pi package 安装；这会修改用户的 Pi settings，需要你自己决定执行：
 
 ```sh
-pi install /absolute/path/to/pi-recall
+pi install /absolute/path/to/compaction-recall
 ```
 
 `package.json` 的 `pi.extensions` 指向 `src/index.ts`，也支持 `pi -e ./src/recall-extension.ts`。两个入口只选一个；根目录不保留 shim。宿主提供 Pi SDK 和 `typebox`，开发/测试使用锁定依赖（Pi SDK 1.0.0）。
@@ -30,7 +30,7 @@ pi install /absolute/path/to/pi-recall
 | 查找时机 | 模型自己决定何时搜索，再展开核实 | 自动提示辅助定位，也可主动 recall / grep / expand |
 | 可选计时 | 仅 grep/expand 调用链及其分支读取、文本提取、渲染阶段 | 自动提示、检索、worker 维护和三个工具阶段 |
 
-配置文件**可选**，位置为 `<agent-dir>/extensions/pi-recall.json`，放在 agent 目录的 `extensions` 子目录。`src/recall-config.mjs` 从 SDK 主入口 `@earendil-works/pi-coding-agent` 导入公开的 `getAgentDir()`，使用 `join(getAgentDir(), "extensions", "pi-recall.json")` 定位；默认路径为 `~/.pi/agent/extensions/pi-recall.json`，agent 目录可由 `PI_CODING_AGENT_DIR` 改变，不自行拼接默认目录，也不读取项目级配置。mode 和预分词参数共用一个文件及 `loadRecallConfig` 加载函数。完整示例：
+配置文件**可选**，位置为 `<agent-dir>/extensions/compaction-recall.json`，放在 agent 目录的 `extensions` 子目录。`src/recall-config.mjs` 从 SDK 主入口 `@earendil-works/pi-coding-agent` 导入公开的 `getAgentDir()`，使用 `join(getAgentDir(), "extensions", "compaction-recall.json")` 定位；默认路径为 `~/.pi/agent/extensions/compaction-recall.json`，agent 目录可由 `PI_CODING_AGENT_DIR` 改变，不自行拼接默认目录，也不读取项目级配置。mode 和预分词参数共用一个文件及 `loadRecallConfig` 加载函数。完整示例：
 
 ```json
 {
@@ -42,17 +42,17 @@ pi install /absolute/path/to/pi-recall
 }
 ```
 
-文件不存在时不警告、不创建文件，静默采用环境变量 / 默认值。`PI_RECALL_MODE=lite` / `PI_RECALL_MODE=full` 覆盖文件中的 `mode`；未配置时为 full。值区分大小写，只接受这两个字符串。非法文件值警告并回退 full；非法环境变量也警告并**直接回退 full**，不会重新使用文件里的 lite。预分词字段独立接受 1–100 的整数：有效 `PI_RECALL_PREINDEX_TURNS` / `PI_RECALL_PREINDEX_TOOL_ROUNDS` 优先于文件字段，再回退到 10；非法环境值警告后保留有效文件值 / 默认值。文件大小上限为 65,536 字节；不可读、畸形、超限文件忽略并警告，未知字段忽略并警告，不打印非法值或文件内容。加载阶段的 warning 写入 stderr。
+文件不存在时不警告、不创建文件，静默采用环境变量 / 默认值。`COMPACTION_RECALL_MODE=lite` / `COMPACTION_RECALL_MODE=full` 覆盖文件中的 `mode`；未配置时为 full。值区分大小写，只接受这两个字符串。非法文件值警告并回退 full；非法环境变量也警告并**直接回退 full**，不会重新使用文件里的 lite。预分词字段独立接受 1–100 的整数：有效 `COMPACTION_RECALL_PREINDEX_TURNS` / `COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS` 优先于文件字段，再回退到 10；非法环境值警告后保留有效文件值 / 默认值。文件大小上限为 65,536 字节；不可读、畸形、超限文件忽略并警告，未知字段忽略并警告，不打印非法值或文件内容。加载阶段的 warning 写入 stderr。
 
 三个环境变量可以完整控制配置，无需配置文件。例如：
 
 ```sh
-PI_RECALL_MODE=lite PI_RECALL_PREINDEX_TURNS=10 PI_RECALL_PREINDEX_TOOL_ROUNDS=10 pi -e ./src/index.ts
+COMPACTION_RECALL_MODE=lite COMPACTION_RECALL_PREINDEX_TURNS=10 COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS=10 pi -e ./src/index.ts
 ```
 
 mode 和预分词参数在**扩展加载时一起读取一次**，来源和生效时点一致。修改文件或环境变量后需重新加载扩展 / 重启 Pi。`session_start`、`session_tree` 只用已加载参数重置 cadence 计数器，不重新读取文件；无文件监听或每次工具调用的配置读取。lite 不使用预分词参数安排工作。检索方式是独立议题，本次没有加入嵌入模型配置或组合模式值。
 
-**SDK 嵌入场景：** `getAgentDir()` 的目录覆盖只读取进程环境变量 `PI_CODING_AGENT_DIR`，不读取 `createAgentSession` 或资源加载器的 `agentDir` 选项。如果只通过 SDK `agentDir` 指定目录而未设置环境变量，扩展不会自动跟随该选项；应在加载扩展前设置 `PI_CODING_AGENT_DIR`，或直接用三个 `PI_RECALL_*` 环境变量控制配置。`process.cwd()`、`ctx.cwd` 与 SDK `agentDir` 可以不同，不会改变本扩展的配置来源。
+**SDK 嵌入场景：** `getAgentDir()` 的目录覆盖只读取进程环境变量 `PI_CODING_AGENT_DIR`，不读取 `createAgentSession` 或资源加载器的 `agentDir` 选项。如果只通过 SDK `agentDir` 指定目录而未设置环境变量，扩展不会自动跟随该选项；应在加载扩展前设置 `PI_CODING_AGENT_DIR`，或直接用三个 `COMPACTION_RECALL_*` 环境变量控制配置。`process.cwd()`、`ctx.cwd` 与 SDK `agentDir` 可以不同，不会改变本扩展的配置来源。
 
 lite 不额外注入隐藏历史提示，也不因此向模型服务商多发这类内容；但模型调用 grep/expand 后，工具返回的历史内容仍会随后续模型请求发送。它不是“历史绝不会发送给服务商”的隐私隔离开关。代价是模型要自行决定何时搜，以及搜索和核实的步骤；**不声称 lite 更快**。
 
@@ -93,7 +93,7 @@ full 建议流程：自动短索引 → `history_recall` 用当前问题或改�
 - 配置来自上述可选 agent 文件和三个环境变量，在扩展加载时统一固定；计数器阈值不随 cwd、文件或环境变量的后续变化而改变。调度一次时两个计数器一起清零，排队后的新活动保留给下一批。
 - worker 启动失败、请求失败或中途退出时，同一实例使用共享同步扫描回退，不自动重启循环。下一次显式生命周期 reset 可以创建新 worker。同步扫描保持输出一致，但可能阻塞主线程。
 - Pi 1.0.0 用 jiti 加载 `.ts` 扩展。worker URL 按原始源码文件定位 `src/index-worker.mjs`，不依赖 cwd 或编译缓存路径。worker 的整个依赖链都是原生 `.mjs`；历史投影、词法 / 渲染和计时分别在 `history.mjs`、`locator.mjs`、`timing.mjs`，主线程扫描与 worker 共用唯一实现。安装在 `node_modules` 下也不需要 TypeScript 加载 hook、宿主 jiti 别名或 warning 抑制。正常启动、查询与 shutdown 不向 stderr 输出。
-- 仅设置 `PI_RECALL_TIMING_FILE=/absolute/private/path.jsonl` 才启用阶段日志；默认不读计时时钟、不写日志、不产生计时事件。日志不含正文、查询、片段、工具参数或凭据，文件权限 0600；日志失败不改变工具结果。阶段和父子 span 说明见 [TIMING.md](TIMING.md)，生命周期细节见 [BACKGROUND_INDEX.md](BACKGROUND_INDEX.md)。
+- 仅设置 `COMPACTION_RECALL_TIMING_FILE=/absolute/private/path.jsonl` 才启用阶段日志；默认不读计时时钟、不写日志、不产生计时事件。日志不含正文、查询、片段、工具参数或凭据，文件权限 0600；日志失败不改变工具结果。阶段和父子 span 说明见 [TIMING.md](TIMING.md)，生命周期细节见 [BACKGROUND_INDEX.md](BACKGROUND_INDEX.md)。
 
 
 ## 文件

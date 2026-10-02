@@ -1,9 +1,9 @@
-# pi-context-recall
+# compaction-recall
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
 Pi 压缩长对话时，摘要留下大意，细节就丢了：一个名字、一个数字、你三小时前说过的原话。
-**pi-context-recall** 让模型回到被压缩移出上下文的原始消息里，把这些细节重新找回来。
+**compaction-recall** 让模型回到被压缩移出上下文的原始消息里，把这些细节重新找回来。
 
 它建立在 Pi 原生压缩之上，不替换压缩，也不增加数据库、磁盘文件或额外的模型调用。
 
@@ -35,7 +35,7 @@ pi -e ./src/index.ts
 
 ### 配置
 
-配置可选。文件位置是 `~/.pi/agent/extensions/pi-recall.json`（设置了 `PI_CODING_AGENT_DIR` 时在该目录下）：
+配置可选。文件位置是 `~/.pi/agent/extensions/compaction-recall.json`（设置了 `PI_CODING_AGENT_DIR` 时在该目录下）：
 
 ```json
 {
@@ -51,9 +51,9 @@ pi -e ./src/index.ts
 
 | 变量 | 覆盖 | 取值 |
 | --- | --- | --- |
-| `PI_RECALL_MODE` | `mode` | `full` 或 `lite` |
-| `PI_RECALL_PREINDEX_TURNS` | `preindex.userCycles` | 1–100 的整数，默认 10 |
-| `PI_RECALL_PREINDEX_TOOL_ROUNDS` | `preindex.toolRounds` | 1–100 的整数，默认 10 |
+| `COMPACTION_RECALL_MODE` | `mode` | `full` 或 `lite` |
+| `COMPACTION_RECALL_PREINDEX_TURNS` | `preindex.userCycles` | 1–100 的整数，默认 10 |
+| `COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS` | `preindex.toolRounds` | 1–100 的整数，默认 10 |
 
 `preindex` 只在 `full` 下有用：每完成 N 轮用户对话或 N 轮工具调用（先到先算），提前把还没压缩的消息分好词，压缩时直接可用。
 配置在扩展加载时读一次，改完要重启 Pi。不读取项目里的 `.pi/` 目录。完整说明（包括 SDK 嵌入场景）见 [doc/PLUGIN.md](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md)。

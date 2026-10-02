@@ -6,7 +6,7 @@ import { measured } from "./timing.mjs";
 /** @typedef {import("@earendil-works/pi-coding-agent").SessionEntry} SessionEntry */
 import { compactedEntries, searchableMessageText } from "./history.mjs";
 
-export const LOCATOR_TYPE = "pi-recall:compacted-locators:v1";
+export const LOCATOR_TYPE = "compaction-recall:compacted-locators:v1";
 export const QUERY_CHARS = 4000;
 export const QUERY_TERMS = 24;
 export const MAX_LOCATORS = 5;
