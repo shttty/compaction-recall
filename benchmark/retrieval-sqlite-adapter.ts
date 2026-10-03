@@ -13,8 +13,8 @@ const descriptions = {
   history_recall: `搜当前分支压缩后历史。
 范围：user/assistant 正文、assistant 工具调用名+参数。不含工具结果、思考、图片。
 关键词匹配，非语义。同义词、别称、译名自己写进 query。
-query = FTS5 MATCH，原样执行。
-空格=AND，要 OR 就写 OR。
+query = FTS5 MATCH 语法。
+空格=OR。
 索引：中文=相邻双字+分词所得≥3字词；英文整词。中文拆双字，OR 连。
 零命中→换说法。没命中≠没说过。
 命中 id→history_expand 读原文。正则/字面子串→history_grep。`,

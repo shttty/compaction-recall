@@ -22,9 +22,10 @@ Demo 输出一份 JSON：运行版本、a–m 原文及分词、查询提取文�
 - `tokenize(text): string[]`：保留全部词项和词频，不删除停用词。建索引直接使用；自动 search 查询端另行过滤英文停用词，再按首次出现顺序去重。显式 searchRaw 不调用 tokenize。
 - `weightedLength(text): number`：按 Unicode 码点，Han 权重 2，其余权重 1，空格、标点、换行及 emoji 均计入。
 - `extractText(content): string`：字符串原样返回；数组只提取字符串类型的 `text` 块，按原顺序以换行连接；图片和其他块忽略。
+- `implicitOr(query): string`：无状态纯函数，把 FTS5 操作数之间的隐式 AND 连接改为 OR；显式操作符及其分组保留。相同原始 query 得到相同 MATCH 字符串，供执行及事后复算使用，详见 v4 规则。
 - `createIndex([{id, text}])`：输入使用唯一字符串 id 和字符串 text；返回 `search(query, {automatic=false, limit=20}={})`、`searchRaw(query, {limit}={})` 与 `close()`。search 的 query 可为字符串或消息 content 块数组；searchRaw 的 query 为原生 FTS5 MATCH 字符串；结束后调用 close。
 - `search` 返回 `{skipped, total, results: [{id, score}], queryTerms}`。limit 为非负安全整数；`limit: 0` 仍返回真实 total。空查询、全英文停用词、单 Han 字无词项时正常返回空，不执行无效 MATCH。
-- `searchRaw(query, {limit}={})` 返回 `{total, results:[{id,score}]}`。query 原样作为 `MATCH ?` 绑定参数，不分词、去停用词、拆双字、转义、截断或应用 210 门槛。默认完整排名；可选非负安全整数 limit 只取排名前缀，total 不变。同分按 id 排序，分页由调用方处理。FTS5 错误原样抛出，不改写消息；不把空串或错误转成零命中。
+- `searchRaw(query, {limit}={})` 返回 `{total, results:[{id,score}]}`。v4 将 `implicitOr(query)` 的结果作为 `MATCH ?` 绑定参数；不做文档分词、去停用词、拆双字、转义、截断或应用 210 门槛。默认完整排名；可选非负安全整数 limit 只取排名前缀，total 不变。同分按 id 排序，分页由调用方处理。实际 MATCH 的 FTS5 错误原样抛出，不改写消息；不把空串或错误转成零命中。
 
 ```js
 import { createIndex } from './index.mjs';
@@ -59,7 +60,7 @@ CREATE VIRTUAL TABLE terms USING fts5(
 
 `temp_store=MEMORY`；不生成数据库、WAL、SHM 文件。构建为一次事务，close 释放连接。没有持久化、增量更新或服务。
 
-自动 search 将每个选出的 MATCH 词项双引号包裹、内部双引号转义，再用 OR 连接并绑定参数；显式 searchRaw 直接绑定调用方的完整表达式，支持 FTS5 原生操作符、短语和前缀语义。无命中比例门槛、fuzzy、trigram tokenizer 或 LIKE 补救。SQLite `bm25(terms)` 原始分数为负，**越小越优先**；JavaScript 按该分数排序，同分按字符串 id 的确定性顺序排序。取出全部候选再应用 limit，total 不是返回数量；此原型不优化海量候选的内存/排序开销。
+自动 search 将每个选出的 MATCH 词项双引号包裹、内部双引号转义，再用 OR 连接并绑定参数；显式 searchRaw 在 v4 只改写原生隐式连接，再绑定完整表达式，支持 FTS5 原生显式操作符、短语和前缀语义。无命中比例门槛、fuzzy、trigram tokenizer 或 LIKE 补救。SQLite `bm25(terms)` 原始分数为负，**越小越优先**；JavaScript 按该分数排序，同分按字符串 id 的确定性顺序排序。取出全部候选再应用 limit，total 不是返回数量；此原型不优化海量候选的内存/排序开销。
 
 ## 实际验证
 
@@ -128,6 +129,34 @@ S1 显式入口实测（文档 a=`网关重启，中华人民共和国 Gateway`�
 
 本次 SQLite 专项 **19/19**、`npm run check` **158/158** 通过。新只读包为 `adapter-package-v3/`；离线实际 SDK 自动提示、翻页、原生错误和 trace 链路通过，记录在 `sdk-smoke-prompt-v3/`。真实运行须先满足包源文件与当前 HEAD 逐文件一致的前置条件；旧 `group2-formal/` 保留为 v2 对照。
 
+## S1 v4：显式查询的隐式 OR
+
+只改变 searchRaw；search / searchAuto 的选词、查询端停用词、210 门槛、索引和第 1 组均不变。适配层描述与冻结 v4 ① 一致：「query = FTS5 MATCH 语法。」和「空格=OR。」；现有 SDK 加载后的描述逐字节契约测试继续使用文档作为依据。
+
+依据 [SQLite FTS5 原生语法](https://www.sqlite.org/fts5.html#fts5_boolean_operators)：隐式连接发生在相邻短语或 NEAR 组之间（包括列过滤、前缀和初始词约束），且原本比显式 NOT/AND/OR 结合更紧。implicitOr 保留这些隐式组的边界，用括号维持显式操作符的作用范围；只插入 OR 和必要的分组括号，不重写原有字符或空白。
+
+| 原始 query | 实际 MATCH |
+| --- | --- |
+| `alpha beta gamma` | `(alpha OR beta OR gamma)` |
+| `网关 Gateway 重启` | `(网关 OR Gateway OR 重启)` |
+| `alpha OR beta` | `alpha OR beta` |
+| `alpha AND beta gamma` | `alpha AND (beta OR gamma)` |
+| `alpha NOT beta gamma` | `alpha NOT (beta OR gamma)` |
+| `"alpha beta" gamma` | `("alpha beta" OR gamma)` |
+| `alpha + beta gamma` | `(alpha + beta OR gamma)` |
+| `(alpha beta) AND gamma` | `((alpha OR beta)) AND gamma` |
+| `NEAR(alpha beta, 0) gamma` | `(NEAR(alpha beta, 0) OR gamma)` |
+| `tokens:^alp* beta` | `(tokens:^alp* OR beta)` |
+| `tokens:(alpha beta)` | `tokens:((alpha OR beta))` |
+
+NEAR 内部的短语分隔、双引号内空格与 `""` 转义、`+` 拼接、列名/列集合/负列过滤、`*` 和 `^` 保留。普通括号表达式前后原本不支持隐式连接，例如 `(alpha OR beta) gamma` 仍报语法错误，不帮调用方修复。按实测 native lexer，分隔空白为普通空格、tab、CR、LF；NBSP 属于原生 bareword 的非 ASCII 字符，不把它当分隔符，FF/VT 的原生错误不吞掉。
+
+空串和全空白仍由 SQLite 报错。不配对引号不改写，保持原始 `unterminated string`。其他非法输入的实际诊断取自执行的改写式：回归包含非法短语拼接 `alpha beta + ^gamma` → `(alpha OR beta) + ^gamma`，原式已非法，改写后可能报不同的位置；直接比较执行改写式的 SQLite 原生错误，确保不改写其消息。不会故意把合法原式改坏来制造语法错误。
+
+v4 离线验收：SQLite 专项 **25/25**、`npm run check` 类型检查及 **164/164**、Python unittest **16/16** 全部通过。实际 Node/SQLite 引擎 smoke 中 `alpha beta` 改成 `(alpha OR beta)` 命中 5 条，显式 `alpha AND beta` 仍命中 2 条；上述非法拼接原式报 `fts5: syntax error near "^"`，实际改写式原样报 `fts5: syntax error near "+"`。另与冻结 v3 包对照 10 个合成自动查询（含中英、停用词、非法 MATCH 外观及 210/211 边界），完整 id/score 排名逐字相同。日志为运行根目录 `acceptance-prompt-v4-*`，smoke 为 `implicit-or-smoke-v4.json`；本阶段未打包或调用真实模型。
+
+trace 两侧仍保存模型/工具收到的原始 query；实际 MATCH 可用本次只读包内 `prototype/soft-match-sqlite/index.mjs` 导出的 implicitOr 逐次复算，不把改写式写回工具参数。这是 v4 对 S0/v2/v3「原样 MATCH」规则的明确覆盖，其余接口及生产渲染不变。代码和离线验证完成后先交 Hermes 复验提交；提交后才打 v4 包、核对 HEAD 并运行授权的 32 个真实会话。
+
 ## S1 评测适配层
 
 `benchmark/retrieval-sqlite-engine.mjs` 导出 S0 `createEngine(documents)`：searchAuto 用现有 search 且保留完整排名；searchRaw 用显式入口；dispose 关闭内存数据库。适配层入口为 `benchmark/retrieval-sqlite-adapter.ts`，只用于评测，不注册生产入口。
@@ -149,4 +178,4 @@ node benchmark/retrieval-sqlite-package.mjs --output /home/rinne/.hermes/task-ru
 - 这是词面召回，不理解语义或短语约束。OR 会保留仅命中少量词的候选；上述“重启断连”查询中的 b、“修改youer…”中的 b 均非相关事实证据。双字还可能跨词边界形成偶然命中，例如“搜索引擎”中的“索引”。
 - 自动查询不补救错字、英文前缀/内部子串及单 Han 字；不能由 gatway 推出 gateway，也不能由 compaction/moto 推出完整标识符/单词。显式入口可由调用方使用原生 FTS5 前缀语法，但不会自动补写。无结果不代表历史没有相关语义。
 - 同时索引双字与词语会影响 BM25 的词频和文档长度；分数不是概率，不应与另一引擎直接比较。ICU 升级可能改变多字词和排名。
-- 仅 16 题机械评测和 v1 一个题目的中英真实单次试跑；v2 只做离线评测及直接引擎探测。未运行大规模性能矩阵或正式第 2 组其余题目，不给波动范围或跨引擎结论。FTS5 空格连接词项默认 AND，必须每个词项都存在；v2 修复索引删除停用词的问题，不放宽原生语义。片段窗口不保证展示最相关证据，应 expand 核实。
+- 已完成 16 题机械评测及 v2/v3 各 32 个正式会话，均是单次运行，不给波动范围或跨引擎结论。v4 在显式查询端只替换隐式连接，显式 AND 仍要求全部操作数匹配，NEAR 和短语不放宽。片段窗口不保证展示最相关证据，应 expand 核实；OR 可能返回更多弱相关候选。

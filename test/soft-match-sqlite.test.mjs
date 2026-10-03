@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { createIndex, extractText, tokenize, weightedLength } from '../prototype/soft-match-sqlite/index.mjs';
+import { createIndex, extractText, implicitOr, tokenize, weightedLength } from '../prototype/soft-match-sqlite/index.mjs';
 import { documents } from '../prototype/soft-match-sqlite/demo.mjs';
 
 const ids = result => result.results.map(hit => hit.id);
@@ -199,7 +199,7 @@ test('raw FTS5 executes Chinese bigram OR and dictionary terms without automatic
   assert.deepEqual(ids(index.searchRaw('网关 OR 重启')).sort(), ['gateway', 'restart']);
   assert.deepEqual(ids(index.searchRaw('共和国')), ['country']);
   assert.deepEqual(ids(index.searchRaw('中华人民')), []);
-  assert.deepEqual(ids(index.searchRaw('网关 重启')), []);
+  assert.deepEqual(ids(index.searchRaw('网关 重启')).sort(), ['gateway', 'restart']);
 });
 
 test('raw FTS5 preserves case semantics, operators, full ranking, ties and optional prefix limit', t => {
@@ -223,7 +223,7 @@ test('raw malformed quotes and empty query expose unchanged native FTS5 errors',
   db.exec("CREATE VIRTUAL TABLE terms USING fts5(tokens, tokenize=\"ascii tokenchars '_'\")");
   const native = db.prepare('SELECT rowid, bm25(terms) AS score FROM terms WHERE terms MATCH ?');
   const index = open(t);
-  for (const query of ['"gateway', '']) {
+  for (const query of ['"gateway', 'gateway "unterminated', '', ' \t\r\n']) {
     let expected;
     try { native.all(query); } catch (error) { expected = error; }
     assert.ok(expected);
@@ -247,12 +247,12 @@ test('raw calls do not change existing automatic search results or query handlin
   assert.deepEqual(queries.map(query => index.search(query, { automatic: true })), before);
 });
 
-test('raw native AND queries match indexed stopwords without dropping required terms', t => {
+test('raw explicit AND queries match indexed stopwords without dropping required terms', t => {
   const index = open(t, [
     { id: 'with-where', text: 'Sophia met at a coffee shop where the city lights shine' },
     { id: 'without-where', text: 'Sophia met at a coffee shop under the city lights' },
   ]);
-  assert.deepEqual(ids(index.searchRaw('Sophia coffee shop city where met')), ['with-where']);
+  assert.deepEqual(ids(index.searchRaw('Sophia AND coffee AND shop AND city AND where AND met')), ['with-where']);
   assert.deepEqual(ids(index.searchRaw('WHERE')), ['with-where']);
   assert.deepEqual(ids(index.searchRaw('"where the city"')), ['with-where']);
 });
@@ -265,7 +265,7 @@ test('raw lookup retains history, find and every word in both automatic stopword
     { id: 'no-stopwords', text: 'needle' },
   ]);
   for (const word of new Set(words)) {
-    assert.deepEqual(ids(index.searchRaw(`needle ${word}`)), ['all-words'], word);
+    assert.deepEqual(ids(index.searchRaw(`needle AND ${word}`)), ['all-words'], word);
   }
 });
 
@@ -302,4 +302,124 @@ test('SDK-loaded SQLite recall description matches the frozen document bytes', a
   });
   const actual = extension.tools.get('history_recall').definition.description;
   assert.deepEqual(Buffer.from(actual, 'utf8'), Buffer.from(expected, 'utf8'));
+});
+
+test('implicitOr preserves tokens and whitespace while replacing native implicit connectors deterministically', () => {
+  for (const [query, expected] of [
+    ['alpha beta gamma', '(alpha OR beta OR gamma)'],
+    [' 网关\tGateway \n重启 ', ' (网关\tOR Gateway \nOR 重启) '],
+    ['alpha OR beta', 'alpha OR beta'],
+    ['alpha AND beta gamma', 'alpha AND (beta OR gamma)'],
+    ['alpha beta NOT gamma delta', '(alpha OR beta) NOT (gamma OR delta)'],
+    ['alpha "beta gamma"', '(alpha OR "beta gamma")'],
+    ['"alpha""beta gamma" delta', '("alpha""beta gamma" OR delta)'],
+    ['alpha + "beta gamma" delta', '(alpha + "beta gamma" OR delta)'],
+    ['(alpha beta) AND gamma', '((alpha OR beta)) AND gamma'],
+    ['alpha AND (beta gamma)', 'alpha AND ((beta OR gamma))'],
+    ['NEAR(alpha beta, 3) gamma', '(NEAR(alpha beta, 3) OR gamma)'],
+    ['alpha NEAR ("beta gamma" delta, 2)', '(alpha OR NEAR ("beta gamma" delta, 2))'],
+    ['NEAR alpha', '(NEAR OR alpha)'],
+    ['tokens:alpha beta', '(tokens:alpha OR beta)'],
+    ['- {tokens other} : alpha beta', '(- {tokens other} : alpha OR beta)'],
+    ['{tokens other}: (alpha beta)', '{tokens other}: ((alpha OR beta))'],
+    ['tokens:^alp* beta', '(tokens:^alp* OR beta)'],
+    ['^"alpha beta" gamma', '(^"alpha beta" OR gamma)'],
+    ['alpha"beta"', '(alpha OR "beta")'],
+    ['alpha\u00a0beta', 'alpha\u00a0beta'],
+    ['alpha\fbeta', 'alpha\fbeta'],
+    ['alpha "beta', 'alpha "beta'],
+    ['', ''], [' \t\r\n', ' \t\r\n'],
+  ]) {
+    assert.equal(implicitOr(query), expected, query);
+    assert.equal(implicitOr(expected), expected, query);
+  }
+});
+
+const booleanDocuments = [
+  { id: 'a', text: 'alpha' }, { id: 'b', text: 'beta' }, { id: 'c', text: 'gamma' },
+  { id: 'ab', text: 'alpha beta' }, { id: 'bc', text: 'beta gamma' },
+  { id: 'abc', text: 'alpha beta gamma' },
+];
+
+test('raw implicit OR retains explicit AND/NOT precedence and parentheses', t => {
+  const index = open(t, booleanDocuments);
+  for (const [query, expected] of [
+    ['alpha beta', ['a', 'ab', 'abc', 'b', 'bc']],
+    ['alpha AND beta', ['ab', 'abc']],
+    ['alpha NOT beta gamma', ['a']],
+    ['alpha beta AND gamma', ['abc', 'bc']],
+    ['alpha beta NOT gamma', ['a', 'ab', 'b']],
+    ['alpha OR beta gamma', ['a', 'ab', 'abc', 'b', 'bc', 'c']],
+    ['(alpha beta) AND gamma', ['abc', 'bc']],
+    ['alpha AND (beta gamma)', ['ab', 'abc']],
+  ]) assert.deepEqual(ids(index.searchRaw(query)).sort(), expected, query);
+  assert.throws(() => index.searchRaw('(alpha OR beta) gamma'), /syntax error/);
+  assert.throws(() => index.searchRaw('alpha (beta gamma)'), /syntax error/);
+});
+
+test('raw phrases, phrase concatenation, NEAR, prefix and initial-token constraints remain native', t => {
+  const index = open(t, booleanDocuments);
+  for (const [query, expected] of [
+    ['"alpha beta"', ['ab', 'abc']],
+    ['"alpha beta" gamma', ['ab', 'abc', 'bc', 'c']],
+    ['alpha + beta gamma', ['ab', 'abc', 'bc', 'c']],
+    ['NEAR(alpha beta, 0)', ['ab', 'abc']],
+    ['NEAR(alpha beta, 0) gamma', ['ab', 'abc', 'bc', 'c']],
+    ['alp* gam*', ['a', 'ab', 'abc', 'bc', 'c']],
+    ['^beta alpha', ['a', 'ab', 'abc', 'b', 'bc']],
+    ['^beta AND alpha', []],
+  ]) assert.deepEqual(ids(index.searchRaw(query)).sort(), expected, query);
+});
+
+test('column filters retain per-operand versus grouped scope, column sets and exclusions', async t => {
+  const { DatabaseSync } = await import('node:sqlite');
+  const db = new DatabaseSync(':memory:');
+  t.after(() => db.close());
+  db.exec(`CREATE VIRTUAL TABLE terms USING fts5(title, body);
+    INSERT INTO terms(rowid,title,body) VALUES (1,'alpha','noise'),(2,'noise','beta'),
+      (3,'beta','noise'),(4,'noise','alpha');`);
+  const native = db.prepare('SELECT rowid FROM terms WHERE terms MATCH ? ORDER BY rowid');
+  for (const [query, expected] of [
+    ['title:alpha beta', [1, 2, 3]],
+    ['title:(alpha beta)', [1, 3]],
+    ['{title body}:alpha beta', [1, 2, 3, 4]],
+    ['- {body}:alpha beta', [1, 2, 3]],
+    ['- {body}:(alpha beta)', [1, 3]],
+    ['title:(body:alpha beta)', [3]],
+    ['title:^alpha beta', [1, 2, 3]],
+  ]) assert.deepEqual(native.all(implicitOr(query)).map(row => row.rowid), expected, query);
+});
+
+test('errors from rewritten malformed expressions propagate the executed SQLite message unchanged', async t => {
+  const { DatabaseSync } = await import('node:sqlite');
+  const db = new DatabaseSync(':memory:');
+  t.after(() => db.close());
+  db.exec('CREATE VIRTUAL TABLE terms USING fts5(tokens)');
+  const native = db.prepare('SELECT rowid FROM terms WHERE terms MATCH ?');
+  const index = open(t, booleanDocuments);
+  const query = 'alpha beta + ^gamma';
+  const expression = implicitOr(query);
+  assert.equal(expression, '(alpha OR beta) + ^gamma');
+  let originalError, executedError;
+  try { native.all(query); } catch (error) { originalError = error; }
+  try { native.all(expression); } catch (error) { executedError = error; }
+  assert.notEqual(executedError.message, originalError.message);
+  assert.throws(() => index.searchRaw(query), error => {
+    assert.equal(error.message, executedError.message);
+    assert.equal(error.code, executedError.code);
+    assert.equal(error.errcode, executedError.errcode);
+    return true;
+  });
+});
+
+test('automatic query selection and its 210 gate remain separate from raw implicit OR', t => {
+  const index = open(t, booleanDocuments);
+  const automatic = index.search('alpha AND beta', { automatic: true });
+  assert.deepEqual(automatic.queryTerms, ['alpha', 'beta']);
+  assert.deepEqual(ids(automatic).sort(), ['a', 'ab', 'abc', 'b', 'bc']);
+  assert.deepEqual(automatic, index.search('alpha beta', { automatic: true }));
+  assert.deepEqual(ids(index.searchRaw('alpha AND beta')).sort(), ['ab', 'abc']);
+  const long = 'alpha beta' + ' '.repeat(211);
+  assert.equal(index.search(long, { automatic: true }).skipped, true);
+  assert.deepEqual(ids(index.searchRaw(long)).sort(), ['a', 'ab', 'abc', 'b', 'bc']);
 });
