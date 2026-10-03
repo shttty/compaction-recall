@@ -1,0 +1,84 @@
+{
+  "metadata": "metadata.json",
+  "runCount": 3,
+  "rows": [
+    {
+      "targetTokens": 50000,
+      "actualTokens": 49993,
+      "sessions": 21,
+      "messageEntries": 218,
+      "charactersUtf16": 199651,
+      "charactersCodePoints": 199642,
+      "compactedTokens": 29615,
+      "retainedTokens": 20378,
+      "compactedEntries": 134,
+      "retainedEntries": 84,
+      "liveBatchTokens": 4851,
+      "liveBatchEntries": 20,
+      "querySha256": "c053b4b871008fa79e72ca6d196b3745f9abd599c459dec1df945e7bd7bcd090",
+      "grepPattern": "checking",
+      "memory": {
+        "baselineRssMiB": 140.16015625,
+        "fullRssMiB": 165.20703125,
+        "liteRssMiB": 143.05078125,
+        "fullExtraRssMiB": 25.046875,
+        "liteExtraRssMiB": 2.890625,
+        "mainHeapMiB": {
+          "baseline": 32.477752685546875,
+          "lite": 33.450843811035156,
+          "full": 33.65190124511719
+        },
+        "fullWorkerHeapMiB": 10.244361877441406
+      },
+      "backgroundWallMs": 102.08844799999997,
+      "backgroundMaxDelayMs": 0.8097539999999981,
+      "contextAddedP50Ms": 0.9501920000000155,
+      "contextAddedP95Ms": 1.3843249999999898,
+      "searchReplyP50Ms": 1.3898430000000417,
+      "searchReplyP95Ms": 1.5045229999999492,
+      "coldRequestMs": 61.57396199999994,
+      "liveBatchWallMs": 3.966430999999943,
+      "liveBatchMaxDelayMs": 0.4356840000000375,
+      "foreground": {
+        "baseline": {
+          "context": {
+            "p50Ms": 0.17530199999998786,
+            "p95Ms": 0.21085199999993165
+          }
+        },
+        "lite": {
+          "context": {
+            "p50Ms": 0.16845699999998942,
+            "p95Ms": 0.19855900000004567
+          },
+          "history_grep": {
+            "p50Ms": 0.25575900000001184,
+            "p95Ms": 0.3950230000000374
+          },
+          "history_expand": {
+            "p50Ms": 0.07284400000003188,
+            "p95Ms": 0.14918199999999615
+          }
+        },
+        "full": {
+          "context": {
+            "p50Ms": 1.1254940000000033,
+            "p95Ms": 1.5951769999999215
+          },
+          "history_recall": {
+            "p50Ms": 1.3898430000000417,
+            "p95Ms": 1.5045229999999492
+          },
+          "history_grep": {
+            "p50Ms": 0.24702899999999772,
+            "p95Ms": 0.38259100000004764
+          },
+          "history_expand": {
+            "p50Ms": 0.07249500000000353,
+            "p95Ms": 0.15162599999996473
+          }
+        }
+      }
+    }
+  ]
+}

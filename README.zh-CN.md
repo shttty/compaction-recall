@@ -42,6 +42,32 @@ COMPACTION_RECALL_MODE=lite pi
 
 这是开发期间归档的单轮结果，题目少，用的是还没有 `lite`/`full` 开关的旧版本，没有用当前代码重测。分数主要取决于答题模型：插件和快照都一样，HARD8 上 Sol 答对 6 题，Luna 只答对 3 题。完整记录见 [doc/BENCHMARK_RESULTS.md](doc/BENCHMARK_RESULTS.md)。
 
+## 性能
+
+离线测量，不调用模型：把一条 LongMemEval_M 历史截成几种长度，除最后约 2 万 token 外全部压缩。Node.js 24.18，Ryzen 7 5800H；每格取 3 个全新进程的中位数。
+
+**内存**（相对同一 session 不加载插件时，多出来的进程 RSS）：
+
+| 历史长度 | `full` | `lite` |
+| --- | --- | --- |
+| 5 万 token | 23 MiB | 2 MiB |
+| 20 万 token | 44 MiB | 2 MiB |
+| 50 万 token | 66 MiB | 2 MiB |
+| 100 万 token | 125 MiB | 3 MiB |
+
+`full` 的内存随被压缩的历史增长，大约每 10 万 token 增加 11 MiB。`lite` 不建索引，几乎不增加内存。
+
+**时间**（`full`，单位毫秒）：
+
+| 历史长度 | 建索引（后台） | 主线程最长停顿 | 每次请求多花 | `history_recall` 返回 | 重建期间的首次请求 |
+| --- | --- | --- | --- | --- | --- |
+| 5 万 token | 101 | 0.6 | 1 | 1 | 62 |
+| 20 万 token | 197 | 0.7 | 4 | 8 | 159 |
+| 50 万 token | 375 | 1.0 | 10 | 18 | 325 |
+| 100 万 token | 665 | 1.0 | 19 | 36 | 606 |
+
+索引由 worker 线程建，主线程几乎不停顿。"每次请求多花"是索引就绪后，每次调用模型前查自动提示的时间。如果请求赶上索引正在重建，就要等它建完，即最后一列。`lite` 没有任何后台工作，在 100 万 token 上跑一次 `history_grep` 大约 8 ms。完整方法和原始数据见 [doc/PERFORMANCE.md](doc/PERFORMANCE.md)。
+
 ## 限制
 
 - 只能查当前分支里被压缩掉的内容，查不到其他 session，也查不到压缩摘要本身。

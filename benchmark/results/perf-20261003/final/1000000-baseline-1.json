@@ -1,0 +1,81 @@
+{
+  "repetition": 1,
+  "arm": "baseline",
+  "command": [
+    "/home/rinne/.nvm/versions/node/v24.18.0/bin/node",
+    "--expose-gc",
+    "/home/rinne/workspace/pi-context-recall-background-index/benchmark/benchmark-scaling.mjs",
+    "--arm",
+    "baseline",
+    "--fixture",
+    "/tmp/compaction-recall-scaling-0r5o5R/1000000.json"
+  ],
+  "pid": 3897456,
+  "stats": {
+    "targetTokens": 1000000,
+    "actualTokens": 995303,
+    "sessions": 414,
+    "messageEntries": 3975,
+    "charactersUtf16": 3975270,
+    "charactersCodePoints": 3975154,
+    "compactedTokens": 974964,
+    "retainedTokens": 20339,
+    "compactedEntries": 3888,
+    "retainedEntries": 87,
+    "liveBatchTokens": 7931,
+    "liveBatchEntries": 20,
+    "querySha256": "c053b4b871008fa79e72ca6d196b3745f9abd599c459dec1df945e7bd7bcd090",
+    "grepPattern": "checking"
+  },
+  "memory": {
+    "mainAtMs": 682.177379,
+    "mainGc": true,
+    "rssBytes": 147976192,
+    "mainHeapUsedBytes": 39924096,
+    "mainExternalBytes": 4125750,
+    "worker": null,
+    "workerSamplingNote": "No worker in this arm."
+  },
+  "background": {
+    "wallMs": 0.35199499999998807,
+    "maxEventLoopDelayMs": 0.09849100000008093,
+    "heartbeatSamples": 2,
+    "value": null
+  },
+  "liveBatch": null,
+  "coldRequest": null,
+  "warm": {
+    "context": {
+      "samplesMs": [
+        0.28746300000000247,
+        0.2011410000000069,
+        0.21943899999996574,
+        0.2114769999999453,
+        0.18724199999996927,
+        0.19883600000002843,
+        0.18046800000001895,
+        0.20882200000005469,
+        0.1994640000000345,
+        0.1726449999999886,
+        0.1648930000000064,
+        0.16719799999998486,
+        0.17061999999998534,
+        0.17934999999999945,
+        0.17055100000004586,
+        0.17767400000002453,
+        0.16775700000005145,
+        0.16489400000000387,
+        0.16992200000004232,
+        0.1780229999999392
+      ],
+      "p50Ms": 0.1780229999999392,
+      "p95Ms": 0.21943899999996574,
+      "resultCount": 89
+    }
+  },
+  "locatorCount": 0,
+  "workerQueryReplies": 0,
+  "peakRssKiB": 154980,
+  "shutdown": "completed",
+  "timingFileEnabled": false
+}

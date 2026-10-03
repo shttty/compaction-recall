@@ -1,0 +1,319 @@
+{
+  "metadata": "metadata.json",
+  "runCount": 36,
+  "rows": [
+    {
+      "targetTokens": 50000,
+      "actualTokens": 49993,
+      "sessions": 21,
+      "messageEntries": 218,
+      "charactersUtf16": 199651,
+      "charactersCodePoints": 199642,
+      "compactedTokens": 29615,
+      "retainedTokens": 20378,
+      "compactedEntries": 134,
+      "retainedEntries": 84,
+      "liveBatchTokens": 4851,
+      "liveBatchEntries": 20,
+      "querySha256": "c053b4b871008fa79e72ca6d196b3745f9abd599c459dec1df945e7bd7bcd090",
+      "grepPattern": "checking",
+      "memory": {
+        "baselineRssMiB": 141.0703125,
+        "fullRssMiB": 164.3828125,
+        "liteRssMiB": 141.49609375,
+        "fullExtraRssMiB": 23.3125,
+        "liteExtraRssMiB": 0.42578125,
+        "mainHeapMiB": {
+          "baseline": 32.47752380371094,
+          "lite": 33.448020935058594,
+          "full": 33.64978790283203
+        },
+        "fullWorkerHeapMiB": 10.298057556152344
+      },
+      "backgroundWallMs": 100.747702,
+      "backgroundMaxDelayMs": 0.7067369999999755,
+      "contextAddedP50Ms": 0.9886040000000094,
+      "contextAddedP95Ms": 1.40534799999989,
+      "searchReplyP50Ms": 1.4370560000000978,
+      "searchReplyP95Ms": 1.5220529999999144,
+      "coldRequestMs": 61.92554300000006,
+      "liveBatchWallMs": 3.889675000000011,
+      "liveBatchMaxDelayMs": 0.17545499999994263,
+      "foreground": {
+        "baseline": {
+          "context": {
+            "p50Ms": 0.17697800000007646,
+            "p95Ms": 0.20694000000003143
+          }
+        },
+        "lite": {
+          "context": {
+            "p50Ms": 0.17830500000002303,
+            "p95Ms": 0.22021000000006552
+          },
+          "history_grep": {
+            "p50Ms": 0.247169000000099,
+            "p95Ms": 0.4045210000000452
+          },
+          "history_expand": {
+            "p50Ms": 0.07668599999999515,
+            "p95Ms": 0.16810800000007475
+          }
+        },
+        "full": {
+          "context": {
+            "p50Ms": 1.1655820000000858,
+            "p95Ms": 1.6122879999999213
+          },
+          "history_recall": {
+            "p50Ms": 1.4370560000000978,
+            "p95Ms": 1.5220529999999144
+          },
+          "history_grep": {
+            "p50Ms": 0.24109199999998054,
+            "p95Ms": 0.40445199999999204
+          },
+          "history_expand": {
+            "p50Ms": 0.07284500000002936,
+            "p95Ms": 0.14904100000001108
+          }
+        }
+      }
+    },
+    {
+      "targetTokens": 200000,
+      "actualTokens": 198673,
+      "sessions": 80,
+      "messageEntries": 822,
+      "charactersUtf16": 793456,
+      "charactersCodePoints": 793447,
+      "compactedTokens": 177678,
+      "retainedTokens": 20995,
+      "compactedEntries": 738,
+      "retainedEntries": 84,
+      "liveBatchTokens": 6728,
+      "liveBatchEntries": 20,
+      "querySha256": "c053b4b871008fa79e72ca6d196b3745f9abd599c459dec1df945e7bd7bcd090",
+      "grepPattern": "checking",
+      "memory": {
+        "baselineRssMiB": 140.9609375,
+        "fullRssMiB": 185.20703125,
+        "liteRssMiB": 142.0390625,
+        "fullExtraRssMiB": 44.24609375,
+        "liteExtraRssMiB": 1.078125,
+        "mainHeapMiB": {
+          "baseline": 33.39936065673828,
+          "lite": 34.373329162597656,
+          "full": 34.59373474121094
+        },
+        "fullWorkerHeapMiB": 16.84686279296875
+      },
+      "backgroundWallMs": 195.782777,
+      "backgroundMaxDelayMs": 0.8129269999999451,
+      "contextAddedP50Ms": 3.7198909999999614,
+      "contextAddedP95Ms": 5.724511000000007,
+      "searchReplyP50Ms": 7.789541000000099,
+      "searchReplyP95Ms": 8.05437500000005,
+      "coldRequestMs": 151.28635800000006,
+      "liveBatchWallMs": 5.560386000000108,
+      "liveBatchMaxDelayMs": 0.5197399999999561,
+      "foreground": {
+        "baseline": {
+          "context": {
+            "p50Ms": 0.17299400000001697,
+            "p95Ms": 0.2704909999999927
+          }
+        },
+        "lite": {
+          "context": {
+            "p50Ms": 0.17236500000001342,
+            "p95Ms": 0.2283109999999624
+          },
+          "history_grep": {
+            "p50Ms": 1.4021089999999958,
+            "p95Ms": 1.9098780000000488
+          },
+          "history_expand": {
+            "p50Ms": 0.17704400000002352,
+            "p95Ms": 0.2627430000000004
+          }
+        },
+        "full": {
+          "context": {
+            "p50Ms": 3.8928849999999784,
+            "p95Ms": 5.9950019999999995
+          },
+          "history_recall": {
+            "p50Ms": 7.789541000000099,
+            "p95Ms": 8.05437500000005
+          },
+          "history_grep": {
+            "p50Ms": 1.3961719999999787,
+            "p95Ms": 1.7450940000001083
+          },
+          "history_expand": {
+            "p50Ms": 0.16768600000000333,
+            "p95Ms": 0.31651499999998123
+          }
+        }
+      }
+    },
+    {
+      "targetTokens": 500000,
+      "actualTokens": 499581,
+      "sessions": 210,
+      "messageEntries": 2022,
+      "charactersUtf16": 1995304,
+      "charactersCodePoints": 1995240,
+      "compactedTokens": 495320,
+      "retainedTokens": 4261,
+      "compactedEntries": 1996,
+      "retainedEntries": 26,
+      "liveBatchTokens": 6489,
+      "liveBatchEntries": 20,
+      "querySha256": "c053b4b871008fa79e72ca6d196b3745f9abd599c459dec1df945e7bd7bcd090",
+      "grepPattern": "checking",
+      "memory": {
+        "baselineRssMiB": 141.0546875,
+        "fullRssMiB": 207.66796875,
+        "liteRssMiB": 142.6796875,
+        "fullExtraRssMiB": 66.61328125,
+        "liteExtraRssMiB": 1.625,
+        "mainHeapMiB": {
+          "baseline": 35.05432891845703,
+          "lite": 36.18357849121094,
+          "full": 36.442230224609375
+        },
+        "fullWorkerHeapMiB": 36.836326599121094
+      },
+      "backgroundWallMs": 371.47976600000004,
+      "backgroundMaxDelayMs": 0.8372329999999693,
+      "contextAddedP50Ms": 9.708049999999957,
+      "contextAddedP95Ms": 16.088710000000106,
+      "searchReplyP50Ms": 19.046295999999984,
+      "searchReplyP95Ms": 19.502981999999975,
+      "coldRequestMs": 336.42235800000003,
+      "liveBatchWallMs": 6.013859000000139,
+      "liveBatchMaxDelayMs": 0.12710100000003877,
+      "foreground": {
+        "baseline": {
+          "context": {
+            "p50Ms": 0.060969999999997526,
+            "p95Ms": 0.09393499999998767
+          }
+        },
+        "lite": {
+          "context": {
+            "p50Ms": 0.06138999999996031,
+            "p95Ms": 0.08750999999995202
+          },
+          "history_grep": {
+            "p50Ms": 3.7761840000000575,
+            "p95Ms": 4.102545000000077
+          },
+          "history_expand": {
+            "p50Ms": 0.18828899999994064,
+            "p95Ms": 0.2349420000000464
+          }
+        },
+        "full": {
+          "context": {
+            "p50Ms": 9.769019999999955,
+            "p95Ms": 16.182645000000093
+          },
+          "history_recall": {
+            "p50Ms": 19.046295999999984,
+            "p95Ms": 19.502981999999975
+          },
+          "history_grep": {
+            "p50Ms": 3.8186459999999443,
+            "p95Ms": 4.465505000000121
+          },
+          "history_expand": {
+            "p50Ms": 0.18786999999997533,
+            "p95Ms": 0.23941100000001825
+          }
+        }
+      }
+    },
+    {
+      "targetTokens": 1000000,
+      "actualTokens": 995303,
+      "sessions": 414,
+      "messageEntries": 3975,
+      "charactersUtf16": 3975270,
+      "charactersCodePoints": 3975154,
+      "compactedTokens": 973457,
+      "retainedTokens": 21846,
+      "compactedEntries": 3883,
+      "retainedEntries": 92,
+      "liveBatchTokens": 7931,
+      "liveBatchEntries": 20,
+      "querySha256": "c053b4b871008fa79e72ca6d196b3745f9abd599c459dec1df945e7bd7bcd090",
+      "grepPattern": "checking",
+      "memory": {
+        "baselineRssMiB": 140.44921875,
+        "fullRssMiB": 266.2578125,
+        "liteRssMiB": 144.78125,
+        "fullExtraRssMiB": 125.80859375,
+        "liteExtraRssMiB": 4.33203125,
+        "mainHeapMiB": {
+          "baseline": 38.07378387451172,
+          "lite": 39.127525329589844,
+          "full": 39.41846466064453
+        },
+        "fullWorkerHeapMiB": 83.24111938476562
+      },
+      "backgroundWallMs": 663.7595450000001,
+      "backgroundMaxDelayMs": 0.9914429999998902,
+      "contextAddedP50Ms": 18.957818999999972,
+      "contextAddedP95Ms": 29.703697000000034,
+      "searchReplyP50Ms": 35.701421999999866,
+      "searchReplyP95Ms": 36.40499099999988,
+      "coldRequestMs": 604.840792,
+      "liveBatchWallMs": 7.958769000000302,
+      "liveBatchMaxDelayMs": 0.35883200000034776,
+      "foreground": {
+        "baseline": {
+          "context": {
+            "p50Ms": 0.18486600000005637,
+            "p95Ms": 0.21636399999999867
+          }
+        },
+        "lite": {
+          "context": {
+            "p50Ms": 0.18703199999993103,
+            "p95Ms": 0.2230690000000095
+          },
+          "history_grep": {
+            "p50Ms": 7.978183999999942,
+            "p95Ms": 9.24648000000002
+          },
+          "history_expand": {
+            "p50Ms": 0.4012319999999363,
+            "p95Ms": 0.6118700000000672
+          }
+        },
+        "full": {
+          "context": {
+            "p50Ms": 19.14268500000003,
+            "p95Ms": 29.920061000000032
+          },
+          "history_recall": {
+            "p50Ms": 35.701421999999866,
+            "p95Ms": 36.40499099999988
+          },
+          "history_grep": {
+            "p50Ms": 7.795134999999846,
+            "p95Ms": 8.960697000000437
+          },
+          "history_expand": {
+            "p50Ms": 0.3988570000001346,
+            "p95Ms": 0.44907199999988734
+          }
+        }
+      }
+    }
+  ],
+  "endpointFullExtraRssMiBPer100kCompactedTokens": 10.859454627999177
+}

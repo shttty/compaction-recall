@@ -42,6 +42,32 @@ Each cell is correct answers out of 8, and all three columns use the same compac
 
 These are archived single runs from development on small sets, using an older build from before the `lite`/`full` switch existed; they were not re-measured with the current code. Scores depend mostly on the answer model: with the same plugin and snapshots, Sol got 6 of the HARD8 questions and Luna got 3. Full records are in [doc/BENCHMARK_RESULTS.md](doc/BENCHMARK_RESULTS.md).
 
+## Performance
+
+Measured offline with no model calls: one LongMemEval_M history cut to several lengths, with everything except the last ~20k tokens compacted. Node.js 24.18 on a Ryzen 7 5800H; median of 3 fresh processes.
+
+**Memory** (extra process RSS over the same session without the extension):
+
+| History | `full` | `lite` |
+| --- | --- | --- |
+| 50k tokens | 23 MiB | 2 MiB |
+| 200k tokens | 44 MiB | 2 MiB |
+| 500k tokens | 66 MiB | 2 MiB |
+| 1M tokens | 125 MiB | 3 MiB |
+
+In `full`, memory grows with the compacted history, roughly 11 MiB per 100k tokens. `lite` keeps no index, so it adds almost nothing.
+
+**Time** (`full`, milliseconds):
+
+| History | Index build (background) | Longest main-thread pause | Added to each request | `history_recall` reply | First request during a rebuild |
+| --- | --- | --- | --- | --- | --- |
+| 50k tokens | 101 | 0.6 | 1 | 1 | 62 |
+| 200k tokens | 197 | 0.7 | 4 | 8 | 159 |
+| 500k tokens | 375 | 1.0 | 10 | 18 | 325 |
+| 1M tokens | 665 | 1.0 | 19 | 36 | 606 |
+
+The index is built in a worker thread, so the main thread barely pauses. "Added to each request" is the automatic hint lookup before every model call once the index is ready. If a request arrives while the index is still being rebuilt, it waits for it; that is the last column. In `lite`, nothing runs in the background, and a `history_grep` over 1M tokens takes about 8 ms. Full method and raw numbers are in [doc/PERFORMANCE.md](doc/PERFORMANCE.md).
+
 ## Limits
 
 - It only searches what was compacted out of the current branch: not other sessions, and not the compaction summary itself.

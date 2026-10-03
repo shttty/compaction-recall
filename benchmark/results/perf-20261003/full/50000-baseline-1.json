@@ -1,0 +1,81 @@
+{
+  "repetition": 1,
+  "arm": "baseline",
+  "command": [
+    "/home/rinne/.nvm/versions/node/v24.18.0/bin/node",
+    "--expose-gc",
+    "/home/rinne/workspace/pi-context-recall-background-index/benchmark/benchmark-scaling.mjs",
+    "--arm",
+    "baseline",
+    "--fixture",
+    "/tmp/compaction-recall-scaling-ULgDW7/50000.json"
+  ],
+  "pid": 3893454,
+  "stats": {
+    "targetTokens": 50000,
+    "actualTokens": 49993,
+    "sessions": 21,
+    "messageEntries": 218,
+    "charactersUtf16": 199651,
+    "charactersCodePoints": 199642,
+    "compactedTokens": 29615,
+    "retainedTokens": 20378,
+    "compactedEntries": 134,
+    "retainedEntries": 84,
+    "liveBatchTokens": 4851,
+    "liveBatchEntries": 20,
+    "querySha256": "c053b4b871008fa79e72ca6d196b3745f9abd599c459dec1df945e7bd7bcd090",
+    "grepPattern": "checking"
+  },
+  "memory": {
+    "mainAtMs": 646.856458,
+    "mainGc": true,
+    "rssBytes": 147927040,
+    "mainHeapUsedBytes": 34055152,
+    "mainExternalBytes": 4977350,
+    "worker": null,
+    "workerSamplingNote": "No worker in this arm."
+  },
+  "background": {
+    "wallMs": 0.3205720000000838,
+    "maxEventLoopDelayMs": 0.10226000000000113,
+    "heartbeatSamples": 2,
+    "value": null
+  },
+  "liveBatch": null,
+  "coldRequest": null,
+  "warm": {
+    "context": {
+      "samplesMs": [
+        0.2919369999999617,
+        0.22726399999999103,
+        0.2276129999999057,
+        0.19904800000006162,
+        0.18214599999998882,
+        0.20987300000001596,
+        0.19876799999997274,
+        0.1789329999999154,
+        0.1803300000000263,
+        0.16601300000002084,
+        0.16510500000003958,
+        0.16196200000001681,
+        0.18033100000002378,
+        0.1594479999999976,
+        0.16342900000006466,
+        0.1533710000001065,
+        0.15993700000001354,
+        0.16056600000001708,
+        0.17739700000004177,
+        0.16238099999998212
+      ],
+      "p50Ms": 0.17739700000004177,
+      "p95Ms": 0.2276129999999057,
+      "resultCount": 86
+    }
+  },
+  "locatorCount": 0,
+  "workerQueryReplies": 0,
+  "peakRssKiB": 144460,
+  "shutdown": "completed",
+  "timingFileEnabled": false
+}

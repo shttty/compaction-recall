@@ -1,0 +1,196 @@
+{
+  "repetition": 2,
+  "arm": "full",
+  "command": [
+    "/home/rinne/.nvm/versions/node/v24.18.0/bin/node",
+    "--expose-gc",
+    "/home/rinne/workspace/pi-context-recall-background-index/benchmark/benchmark-scaling.mjs",
+    "--arm",
+    "full",
+    "--fixture",
+    "/tmp/compaction-recall-scaling-ULgDW7/200000.json"
+  ],
+  "pid": 3893821,
+  "stats": {
+    "targetTokens": 200000,
+    "actualTokens": 198673,
+    "sessions": 80,
+    "messageEntries": 822,
+    "charactersUtf16": 793456,
+    "charactersCodePoints": 793447,
+    "compactedTokens": 177678,
+    "retainedTokens": 20995,
+    "compactedEntries": 738,
+    "retainedEntries": 84,
+    "liveBatchTokens": 6728,
+    "liveBatchEntries": 20,
+    "querySha256": "c053b4b871008fa79e72ca6d196b3745f9abd599c459dec1df945e7bd7bcd090",
+    "grepPattern": "checking"
+  },
+  "memory": {
+    "mainAtMs": 887.888809,
+    "mainGc": true,
+    "rssBytes": 192454656,
+    "mainHeapUsedBytes": 36279424,
+    "mainExternalBytes": 4230053,
+    "worker": {
+      "requestAtMs": 888.020457,
+      "receivedAtMs": 888.246669,
+      "explicitWorkerGc": false,
+      "heap": {
+        "total_heap_size": 50221056,
+        "total_heap_size_executable": 524288,
+        "total_physical_size": 40185856,
+        "total_available_size": 4478584648,
+        "used_heap_size": 17671128,
+        "heap_size_limit": 4496293888,
+        "malloced_memory": 278592,
+        "peak_malloced_memory": 1805920,
+        "does_zap_garbage": false,
+        "number_of_native_contexts": 1,
+        "number_of_detached_contexts": 0,
+        "total_global_handles_size": 8192,
+        "used_global_handles_size": 3232,
+        "external_memory": 3607957
+      }
+    },
+    "workerSamplingNote": "Quiescent after same query, separately timestamped; no explicit worker GC; do not sum heaps."
+  },
+  "background": {
+    "wallMs": 195.782777,
+    "maxEventLoopDelayMs": 0.7059329999999591,
+    "heartbeatSamples": 41,
+    "value": {
+      "atMs": 860.873068,
+      "documents": 738
+    }
+  },
+  "liveBatch": {
+    "wallMs": 5.560386000000108,
+    "maxEventLoopDelayMs": 0.8430289999998877,
+    "heartbeatSamples": 3,
+    "value": {
+      "atMs": 1191.111577,
+      "documents": 738
+    }
+  },
+  "coldRequest": {
+    "wallMs": 150.817861,
+    "scenario": "First request immediately after session_tree invalidates the index"
+  },
+  "warm": {
+    "context": {
+      "samplesMs": [
+        4.723492999999962,
+        5.817048,
+        6.1289540000000216,
+        3.8995899999999892,
+        3.9473600000000033,
+        4.9508220000000165,
+        3.7511089999999285,
+        3.8247900000000072,
+        4.099052999999913,
+        3.7045270000000983,
+        3.6874159999999847,
+        3.9295509999999467,
+        3.8367339999999786,
+        3.628260999999952,
+        3.853215000000091,
+        3.653124000000048,
+        3.57483400000001,
+        3.8451840000000175,
+        3.566173000000049,
+        3.5881029999999328
+      ],
+      "p50Ms": 3.8367339999999786,
+      "p95Ms": 5.817048,
+      "resultCount": 87
+    },
+    "history_recall": {
+      "samplesMs": [
+        8.034121000000027,
+        7.994801000000052,
+        7.56521500000008,
+        7.60621100000003,
+        8.05437500000005,
+        7.8215979999999945,
+        7.844225999999935,
+        7.7433770000000095,
+        7.574433999999883,
+        8.273881999999958,
+        7.879215999999815,
+        7.7373009999998885,
+        7.43649900000014,
+        7.470302000000174,
+        7.88389600000005,
+        7.672978000000057,
+        7.783813999999893,
+        7.500054000000091,
+        7.574992000000066,
+        7.670812999999953
+      ],
+      "p50Ms": 7.7373009999998885,
+      "p95Ms": 8.05437500000005,
+      "resultCount": 190
+    },
+    "history_grep": {
+      "samplesMs": [
+        1.8620060000000649,
+        1.5179739999998674,
+        1.4486920000001646,
+        1.3097799999998188,
+        1.2930189999999584,
+        1.3344340000001012,
+        1.1756870000001527,
+        1.407626000000164,
+        1.4484129999998459,
+        1.3961719999999787,
+        1.3993149999998877,
+        1.3803190000000995,
+        1.410141000000067,
+        1.3967310000000452,
+        1.3808070000000043,
+        1.3968710000001465,
+        1.366211999999905,
+        1.3782239999998183,
+        1.3873029999999744,
+        1.4319309999998495
+      ],
+      "p50Ms": 1.3961719999999787,
+      "p95Ms": 1.5179739999998674,
+      "resultCount": 6
+    },
+    "history_expand": {
+      "samplesMs": [
+        0.23990099999991799,
+        0.18081600000004983,
+        0.1688040000001365,
+        0.18933700000002318,
+        0.22013600000013867,
+        0.21287199999983386,
+        0.17990800000006857,
+        0.172226000000137,
+        0.20770500000003267,
+        0.16028300000016316,
+        0.16768600000000333,
+        0.18521599999985483,
+        0.145966000000044,
+        0.1426139999998668,
+        0.15350899999998546,
+        0.13695700000016586,
+        0.14079799999990428,
+        0.13192800000001625,
+        0.13709600000015598,
+        0.13241599999992104
+      ],
+      "p50Ms": 0.16768600000000333,
+      "p95Ms": 0.22013600000013867,
+      "resultCount": 936
+    }
+  },
+  "locatorCount": 1,
+  "workerQueryReplies": 43,
+  "peakRssKiB": 212276,
+  "shutdown": "completed",
+  "timingFileEnabled": false
+}
