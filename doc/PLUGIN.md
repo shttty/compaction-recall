@@ -86,7 +86,7 @@ full 建议流程：自动短索引 → `history_recall` 用当前问题或改�
 
 离线测试只验证注册、边界、排序和上下文转换等机制，不证明检索质量或主模型回答准确率提升。已有真实 DEV8 / HARD8 三组对比、失败记录和父级审计见 [benchmark/README.md](BENCHMARK.md)；均为小样本、单轮描述性结果。本次归置没有重跑评测或进行在线模型调用。
 
-这是词面提示，不是语义检索：同义词、单字中文、代词指代、拼写变体、无文字图片以及查询前 4,000 字之外的内容可能漏检；常见词和汉字交界双字也可能误匹配。没有提示不能证明历史没有该信息，提示也不强制模型执行回查。主线程仍要复制 / 校验当前分支、在变化时投影编辑和提取可搜索文本，并提交结构化克隆批次；分词、倒排维护、查询、去重排序和 recall 渲染在 worker 中执行。大对象参数提取、冷启动等待和内存副本仍有成本，不承诺实时性。
+这是词面提示，不是语义检索：同义词、单字中文、代词指代、拼写变体、无文字图片以及查询前 4,000 字之外的内容可能漏检；常见词和汉字交界双字也可能误匹配。没有提示不能证明历史没有该信息，提示也不强制模型执行回查。主线程仍要复制 / 校验当前分支、在变化时投影编辑和提取可搜索文本，并提交结构化克隆批次；分词、倒排维护、查询和去重排序在 worker 中执行，已排名结果在主线程复用统一渲染器输出自动提示 / recall 页。大对象参数提取、冷启动等待和内存副本仍有成本，不承诺实时性。
 
 ## 后台预分词与生命周期（仅 full）、可选计时
 
@@ -96,6 +96,8 @@ full 建议流程：自动短索引 → `history_recall` 用当前问题或改�
 - 配置来自上述可选 agent 文件和三个环境变量，在扩展加载时统一固定；计数器阈值不随 cwd、文件或环境变量的后续变化而改变。调度一次时两个计数器一起清零，排队后的新活动保留给下一批。
 - worker 启动失败、请求失败或中途退出时，同一实例使用共享同步扫描回退，不自动重启循环。下一次显式生命周期 reset 可以创建新 worker。同步扫描保持输出一致，但可能阻塞主线程。
 - Pi 1.0.0 用 jiti 加载 `.ts` 扩展。worker URL 按原始源码文件定位 `src/index-worker.mjs`，不依赖 cwd 或编译缓存路径。worker 的整个依赖链都是原生 `.mjs`；历史投影、词法 / 渲染和计时分别在 `history.mjs`、`locator.mjs`、`timing.mjs`，主线程扫描与 worker 共用唯一实现。安装在 `node_modules` 下也不需要 TypeScript 加载 hook、宿主 jiti 别名或 warning 抑制。正常启动、查询与 shutdown 不向 stderr 输出。
+- `BackgroundIndex` 允许评测适配层显式提供引擎模块 file URL，继续复用同一分批 / 大条目传输、就绪等待、分支代次及 shutdown。默认引擎为 `src/default-worker-engine.mjs`，生产入口不选择原型；`src/` 不导入 `prototype/` 或 `benchmark/`。自定义引擎错误不悄悄回退生产词面扫描。接口见 [RETRIEVAL_CONTRACT.md](../benchmark/RETRIEVAL_CONTRACT.md#shared-worker-engine-seam-s2-0)。
+- 设置 timing 文件时，每次成功 worker commit 后追加 `index_memory` 数字 mark：进程 RSS、主线程 heapUsed、`Worker.getHeapStatistics()` 的 worker used_heap_size、已索引条目数。无 timing 文件时不调用内存采样 API；不要求内容 trace 开启。三者不可相加，worker 堆不是纯索引，SQLite 等原生内存可能只体现在 RSS；详见 [TIMING.md](TIMING.md#commit-memory-samples)。
 - 仅设置 `COMPACTION_RECALL_TIMING_FILE=/absolute/private/path.jsonl` 才启用阶段日志；默认不读计时时钟、不写日志、不产生计时事件。日志不含正文、查询、片段、工具参数或凭据，文件权限 0600；日志失败不改变工具结果。阶段和父子 span 说明见 [TIMING.md](TIMING.md)，生命周期细节见 [BACKGROUND_INDEX.md](BACKGROUND_INDEX.md)。
 
 

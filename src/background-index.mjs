@@ -2,16 +2,17 @@ import { Worker } from 'node:worker_threads';
 import { pathToFileURL } from 'node:url';
 import { setImmediate as yieldImmediate } from 'node:timers/promises';
 import { branchMessageEntries, compactedEntries } from './history.mjs';
-import { locatorText, buildLocator, buildRecallPage } from './locator.mjs';
+import { locatorText, buildLocator, buildRecallPage, formatLocatorRows, recallPageFromRows } from './locator.mjs';
 import { measured } from './timing.mjs';
 
 // jiti transforms import.meta.url; its CommonJS filename remains the original source.
 const sourceURL = typeof __filename === 'string' ? pathToFileURL(__filename) : import.meta.url;
 const cancelled = () => Object.assign(new Error('Index generation cancelled'), { name: 'AbortError' });
 export class BackgroundIndex {
- /** @param {{timer?: import('./timing.mjs').StageTiming, workerFactory?: () => Worker, yieldFn?: () => Promise<unknown>}} options */
- constructor({ timer, workerFactory = () => new Worker(new URL('./index-worker.mjs', sourceURL)), yieldFn = yieldImmediate } = {}) {
-  Object.assign(this, { timer, workerFactory, yieldFn });
+ /** @param {{timer?: import('./timing.mjs').StageTiming, engineModule?: string | URL, workerFactory?: (options: {engineModule?: string}) => Worker, yieldFn?: () => Promise<unknown>}} options */
+ constructor({ timer, engineModule, workerFactory = options => new Worker(new URL('./index-worker.mjs', sourceURL), { workerData: options }), yieldFn = yieldImmediate } = {}) {
+  if (engineModule !== undefined && new URL(engineModule).protocol !== 'file:') throw new TypeError('engineModule must be an explicit file URL');
+  Object.assign(this, { timer, engineModule: engineModule === undefined ? undefined : String(engineModule), workerFactory, yieldFn });
   this.generation = 0;
   this.nextRequest = 0;
   this.pending = new Map();
@@ -23,6 +24,7 @@ export class BackgroundIndex {
   this.worker = null;
   this.preparation = null;
   this.termination = Promise.resolve();
+  this.failure = null;
  }
  branch = null;
  fullEntries = [];
@@ -54,10 +56,14 @@ export class BackgroundIndex {
   this.ready = false;
   this.serveWhilePreparing = false;
   this.failed = false;
+  this.failure = null;
   this.preparation = null;
   return stopped;
  }
  async dispose() {
+  if (this.engineModule && this.worker && !this.failed) {
+   try { await this.rpc('dispose', {}, this.generation); } catch { /* Termination still awaited. */ }
+  }
   this.disposed = true;
   this.generation++;
   await this.stopWorker();
@@ -70,7 +76,7 @@ export class BackgroundIndex {
  }
  startWorker() {
   if (this.worker) return;
-  const worker = this.workerFactory();
+  const worker = this.workerFactory({ engineModule: this.engineModule });
   this.worker = worker;
   worker.on('online', () => { if (this.worker === worker) this.event('worker_online'); });
   worker.on('message', message => {
@@ -80,7 +86,7 @@ export class BackgroundIndex {
    this.pending.delete(message.requestId);
    if (message.stages) this.timer?.merge(message.stages, message.timingOrigin);
    if (message.generation !== this.generation) pending.reject(cancelled());
-   else if (message.error) pending.reject(new Error(message.error));
+   else if (message.error !== undefined) pending.reject(Object.assign(new Error(message.error), { name: message.errorName ?? 'Error', engineError: message.engineError === true }));
    else pending.resolve(message.result);
   });
   const fail = () => {
@@ -148,8 +154,10 @@ export class BackgroundIndex {
   this.preparation = (this.timer ? this.timer.runAsync('background_prepare', build) : build()).catch(error => {
    if (generation !== this.generation || this.disposed) throw cancelled();
    this.failed = true;
+   this.failure = error;
    void this.stopWorker();
    this.event('fallback_required');
+   if (this.engineModule) throw error;
   });
   return this.preparation;
  }
@@ -189,10 +197,35 @@ export class BackgroundIndex {
   if (generation !== this.generation || this.disposed) throw cancelled();
   this.ready = true;
   this.event('background_index_ready', { kind: append ? 'incremental_update' : 'build_or_rebuild', documents: result.documents, workerHeapBytes: result.heapUsed });
+  if (this.timer && process.env.COMPACTION_RECALL_TIMING_FILE) {
+   const worker = this.worker;
+   try {
+    const { rss, heapUsed } = process.memoryUsage();
+    const heap = await worker.getHeapStatistics();
+    if (generation !== this.generation || this.disposed || worker !== this.worker) throw cancelled();
+    this.event('index_memory', { processRssBytes: rss, mainHeapUsedBytes: heapUsed, workerHeapBytes: heap.used_heap_size, entries: result.documents });
+   } catch (error) {
+    if (generation !== this.generation || this.disposed) throw cancelled();
+    // Optional diagnostics cannot invalidate a completed index.
+   }
+  }
  }
  scan(query, branch, mode, options) {
   return measured(this.timer, 'synchronous_scan_fallback', () => mode === 'manual' ? buildRecallPage(query, branch, options, this.timer) : buildLocator(query, branch, this.timer));
  }
+ /** @param {unknown} query @param {import('@earendil-works/pi-coding-agent').SessionEntry[]} branch
+  * @param {{mode?: 'auto' | 'manual', options?: {limit?: number, offset?: number}}} [settings] */
+ queryRanked(query, branch, settings = {}) {
+  if (!this.engineModule) throw new TypeError('queryRanked requires an explicit engineModule');
+  return this.query(query, branch, { ...settings, ranked: true });
+ }
+ /**
+  * @overload
+  * @param {unknown} query
+  * @param {import('@earendil-works/pi-coding-agent').SessionEntry[]} branch
+  * @param {{mode?: 'auto' | 'manual', options?: {limit?: number, offset?: number}, ranked: true}} settings
+  * @returns {Promise<{total: number, results: {id: string, date: string, role: string, snippet: string, score?: number}[]}>}
+  */
  /**
   * @overload
   * @param {string} query
@@ -207,19 +240,31 @@ export class BackgroundIndex {
   * @param {{mode?: 'auto', options?: {limit?: number, offset?: number}}} [settings]
   * @returns {Promise<string | undefined>}
   */
- async query(query, branch, { mode = 'auto', options = {} } = {}) {
+ async query(query, branch, { mode = 'auto', options = {}, ranked = false } = {}) {
   this.activeQueries++;
   try {
    const preparation = this.prepare(branch), generation = this.generation;
    const wait = async () => { if (!this.serveWhilePreparing) await preparation; };
    if (this.timer) await this.timer.runAsync('critical_path_index_wait', wait); else await wait();
    if (generation !== this.generation || this.disposed) throw cancelled();
-   if (this.failed) return this.scan(query, branch, mode, options);
-   try { return await this.rpc('query', { query, mode, options }, generation); }
+   if (this.failed) {
+    if (this.engineModule) throw this.failure ?? new Error('Index worker unavailable');
+    return this.scan(query, branch, mode, options);
+   }
+   try {
+    const result = await this.rpc('query', { query, mode, options }, generation);
+    if (ranked) return result;
+    const rows = this.engineModule ? result.results.map(({ id, date, role, snippet }) => ({ id, date, role, snippet })) : result.results;
+    return mode === 'manual' ? recallPageFromRows(rows, options, this.timer)
+     : measured(this.timer, 'auto_render_budget', () => formatLocatorRows(rows));
+   }
    catch (error) {
     if (generation !== this.generation || this.disposed) throw cancelled();
+    if (this.engineModule && error.engineError) throw error;
+    this.failure = error;
     this.failed = true;
     await this.stopWorker();
+    if (this.engineModule) throw error;
     return this.scan(query, branch, mode, options);
    }
   } finally {
