@@ -6,6 +6,7 @@
 - v3（19:58）：从 `~/.hermes/task-runs/recall-soft-match-20261003/eval-plan.md` 移入本仓库 `doc/`（凛音指定）；定下计分口径、query 由主模型自己决定、保留「中文拆双字」、grep/expand 描述、trace 一档进配置文件。
 - v3.1（20:00）：提示词文件移入 `doc/SOFT_MATCH_PROMPTS.md`；benchmark 主模型定为 gpt-6-luna high；去掉"运行产物不进仓库"。
 - v3.2（20:01）：第 2 组每题跑一次（同以往模型 benchmark）。待决项清空。
+- v3.3（22:48）：`dev8/982b5123`（Airbnb 几个月前订）移入 super hard 组，从此不计入汇总，以后也不再测（凛音定）。理由：第二跳"两个月前去 SF 参加婚礼"跟问句没有共同词，只有模型自己想到拿 wedding 去搜才找得到，测的是模型追查能力，不是检索引擎。数据和 gold 文件不删；已经跑出来的这题结果留在原地，汇总时剔除。
 
 只是计划，尚未派给 OMP，也没开始跑。
 
@@ -21,6 +22,7 @@
 ## 数据
 
 - 16 题：`/home/rinne/workspace/pi-context-recall-dev/benchmark/data/{dev8,hard8}/<id>/`，每题有 `corpus.json`（英文）、`corpus-zh.json`（中文）和 `question-zh.json`（中英问句，已审核冻结）。
+- 计分题集（v3.3 起）：15 题，dev8 7 道 + hard8 8 道。super hard 组：`dev8/982b5123`，单独记录，不计分、不再跑。gold.json 不改；runner 跑新的轮次时用 `--question` 显式列出这 15 题。
 - Gold：`~/.hermes/task-runs/recall-soft-match-20261003/zh-retrieval/gold.json`，16 题共 50 条（47 user、3 assistant）。来源 `longmemeval_m.json`，sha256 `fb5413e3…daff2d9`。
 - 中文、英文各跑一遍，英文用来对照翻译带来的影响。中英 corpus 的 gold 位置必须先校验一致，对不上就报错，不出分。
 
