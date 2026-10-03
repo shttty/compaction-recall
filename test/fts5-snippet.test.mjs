@@ -36,11 +36,27 @@ for (const [name, text, terms, start, expected] of sqliteCases) {
   });
 }
 
+test('real SQLite variable-length words demonstrate the declared token/codepoint difference', () => {
+  const text = 'alpha bicycle extraordinarilylongidentifier gamma delta theta omega';
+  const db = new DatabaseSync(':memory:');
+  try {
+    db.exec('CREATE VIRTUAL TABLE docs USING fts5(body, tokenize="ascii")');
+    db.prepare('INSERT INTO docs(body) VALUES (?)').run(text);
+    const row = db.prepare("SELECT snippet(docs,0,'','','…',3) AS excerpt FROM docs WHERE docs MATCH ?").get('gamma');
+    assert.equal(row.excerpt, '…extraordinarilylongidentifier gamma delta…');
+    const start = text.indexOf('gamma');
+    const selected = selectFts5Window(text, [{ term: 'gamma', start, end: start + 5 }], 14);
+    assert.equal(selected.end - selected.start, 14);
+    assert.ok(selected.snippet.includes('gamma'));
+    assert.notEqual(selected.snippet, row.excerpt);
+  } finally { db.close(); }
+});
+
 test('Chinese sentence bonus keeps the answer start without requiring spaces', () => {
-  const text = '甲甲甲甲。网关重启完成。乙乙乙乙乙乙';
+  const text = '甲甲甲甲甲甲甲甲。网关重启完成。乙乙乙乙乙乙';
   assert.deepEqual(selectFts5Window(text, [
-    { term: '网关', start: 5, end: 7 }, { term: '重启', start: 7, end: 9 },
-  ], 8), { start: 5, end: 13, score: 2100, snippet: '…网关重启完成。乙…' });
+    { term: '网关', start: 9, end: 11 }, { term: '重启', start: 11, end: 13 },
+  ], 8), { start: 9, end: 17, score: 2100, snippet: '…网关重启完成。乙…' });
 });
 
 test('overlapping caller bigrams retain distinct query identity', () => {

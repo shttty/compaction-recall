@@ -6,8 +6,9 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { createHash } from 'node:crypto';
 import { compactedEntries, searchableEntryText } from '../src/history.mjs';
-import { selectFts5Window } from './fts5-snippet.mjs';
+import { fts5Snippet, selectFts5Window } from './fts5-snippet.mjs';
 import { prototypeSpans, queryTerms, literalHits, prototypeWindow, productionWindow, visibleTerms, answerPositions } from './snippet-compare-core.mjs';
+import { lex, locatorWindow } from '../src/locator.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const load = filename => JSON.parse(readFileSync(filename, 'utf8'));
@@ -30,12 +31,19 @@ for (const key of ['run', 'output', 'sqlite-tokenizer', 'minisearch-tokenizer', 
 const repeats = Number(values.repeats);
 if (!Number.isSafeInteger(repeats) || repeats < 1) throw new Error('repeats must be a positive integer');
 const tokenizers = {};
+const nativeSnippets = Object.fromEntries(['sqlite', 'minisearch'].map(name => {
+  // Execute only the trusted, read-only snippet function; never adapter registration.
+  const source = functionText(readFileSync(values[`${name}-adapter`], 'utf8'), 'snippet')
+    .replace('function snippet(text: string, query: string)', 'function snippet(text, query)');
+  return [name, new Function('lex', `return (${source});`)(lex)];
+}));
 for (const name of ['sqlite', 'minisearch']) tokenizers[name] = (await import(pathToFileURL(path.resolve(values[`${name}-tokenizer`])).href)).tokenize;
 const methods = ['prototype', 'production', 'fts5'];
 const rows = [], references = [], inputHashes = {}, skipped = [];
 const corpusCache = new Map();
 const timing = Object.fromEntries(methods.map(method => [method, { ns: 0n, count: 0 }]));
 const contextStats = { noExactHits: 0, rawMiniQueries: 0, rawSqliteQueries: 0, prefixSqliteQueries: 0, miniJsonQueries: 0, callsWithErrors: 0 };
+for (const filename of [fileURLToPath(import.meta.url), path.join(root, 'fts5-snippet.mjs'), path.join(root, 'snippet-compare-core.mjs'), path.join(root, '../src/locator.mjs'), ...['sqlite', 'minisearch'].flatMap(name => [values[`${name}-adapter`], values[`${name}-tokenizer`]])]) inputHashes[path.resolve(filename)] = hash(filename);
 function corpus(metadata) {
   const key = `${metadata.key}/${metadata.language}`;
   const raw = readFileSync(metadata.snapshot, 'utf8');
@@ -114,11 +122,23 @@ for (const specification of values.run) {
           fts5: () => selectFts5Window(text, hits),
         };
         const windows = {};
-        // Warm-up outside timed interval. All methods see identical original text and query.
-        for (const method of methods) { windows[method] = tasks[method](); tasks[method](); }
+        const first = new Map();
+        const points = Array.from(text);
+        for (const hit of hits) if (!first.has(hit.term)) first.set(hit.term, points.slice(0, hit.start).join('').length);
+        const candidate = { id, date: '', role: 'user', text, offset: first.values().next().value ?? 0, matches: new Set(first.keys()), offsets: first, recency: 0 };
+        const timedTasks = {
+          prototype: () => nativeSnippets[prototype](text, exposure.query),
+          production: () => locatorWindow(candidate, data.frequency),
+          fts5: () => fts5Snippet(text, hits),
+        };
+        for (const method of methods) {
+          windows[method] = tasks[method]();
+          if (timedTasks[method]() !== windows[method].snippet) throw new Error(`Snippet replay mismatch: ${method}/${id}`);
+          timedTasks[method]();
+        }
         for (const method of methods) {
           const begin = process.hrtime.bigint();
-          for (let repeat = 0; repeat < repeats; repeat++) tasks[method]();
+          for (let repeat = 0; repeat < repeats; repeat++) timedTasks[method]();
           timing[method].ns += process.hrtime.bigint() - begin;
           timing[method].count += repeats;
         }
@@ -176,13 +196,13 @@ for (const row of [...rows].sort((a, b) => b.spread - a.spread || `${a.run}/${a.
   if (examples.length === 5) break;
 }
 const report = {
-  source: 'read-only saved group2 records; no model or index rerun', repeats, complexity,
+  source: 'read-only saved group2 records; no model or index rerun', command: process.argv, runtime: process.version, repeats, complexity,
   pooled: summarize(rows), grouped, contextStats, referenceGoldEntries: references.length,
   referenceGoldEntriesWithPositions: references.filter(reference => reference.positions.length).length,
   examples, inputHashes, skipped,
   method: {
     exposures: 'one row per auto top5 or returned recall id; repeated calls/runs retained',
-    timing: '2 warmups + repeated isolated snippet calls; common hit extraction and corpus DF build excluded',
+    timing: '2 warmups + repeated native string-returning snippet calls; actual adapter function isolated (SQLite signature types removed only), verbatim locatorWindow with prebuilt candidate, fts5Snippet; hit extraction, candidate/window bookkeeping and DF build excluded',
     gold: 'all English gold entries; every maximal contiguous reference-answer ngram >=2 words (complete one-word answers), case/punctuation-insensitive; all positions retained; fixed extra two months ago for 982b5123; only observed returned gold rows enter rate',
     fuzzy: 'MiniSearch expanded terms are absent in saved id/score ranks; only exact indexed-token hits retained, prefix/fuzzy gains not reconstructed',
     sqlite: 'Native MATCH operators excluded; quoted phrase words treated as distinct terms, boolean/NEAR constraints not reconstructed for display scoring; prefix exact-only',

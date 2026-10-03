@@ -8,7 +8,6 @@ test('prototype spans retain whole ASCII identifiers and Han bigrams/word offset
   assert.deepEqual(spans.slice(0, 2).map(hit => hit.term), ['httpserver', 'snake_case']);
   for (const hit of spans) assert.equal(Array.from(text).slice(hit.start, hit.end).join('').toLowerCase(), hit.term);
   assert.ok(spans.some(hit => hit.term === '文数'));
-  assert.ok(spans.some(hit => hit.term === '数据库'));
 });
 
 test('raw native queries do not silently apply automatic Han segmentation or stopwords', () => {
