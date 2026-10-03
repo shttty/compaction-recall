@@ -10,6 +10,6 @@
 - Run `npm ci --ignore-scripts` to install locked development dependencies and `npm run check` for type checking, offline behavior tests and isolated SDK loading.
 - Keep all offline tests in test/. Run `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'`; these tests use explicit synthetic helper/config/profile fixtures, never personal configuration or sibling worktrees.
 - benchmark/evaluate.py requires an explicit external --config for real operations. No embedded provider/model defaults, personal profile copying or implicit .env loading. Keep frozen benchmark results and provenance byte-for-byte; path/config changes must not relabel or resume historical runs.
-- doc/ holds current usage and historical method notes. README.md is the root index. Do not put task progress or controller artifacts in the repository.
+- doc/ holds current usage and historical method notes. README.md is the root index.
 - Do not run benchmarks, live model calls, install into a user's Pi profile, publish, or change remote repositories without authorization.
 - The project is MIT licensed; preserve LICENSE and THIRD_PARTY_NOTICES.md. Keep npm files limited to production src, bilingual README, licenses and the clean aggregate results doc; never package raw benchmarks, tests, sessions, profiles or controller artifacts.
