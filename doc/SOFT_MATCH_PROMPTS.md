@@ -1,6 +1,6 @@
-# 评测用工具提示词（冻结 v2）
+# 评测用工具提示词（冻结 v3）
 
-v1 冻结：2026-10-03 19:30 CST。v2（19:55）：「中文拆双字」定为保留；新增 history_grep / history_expand 描述（凛音已审）。改动须凛音确认，并升版本号。
+v1 冻结：2026-10-03 19:30 CST。v2（19:55）：「中文拆双字」定为保留；新增 history_grep / history_expand 描述（凛音已审）。v3（22:36）：① 加「空格=AND，要 OR 就写 OR。」（凛音定；v2 正式第 2 组 SQLite 显式查询零命中 56–71%），②③④ 不变。改动须凛音确认，并升版本号。
 位置：20:00 从 `~/.hermes/task-runs/recall-soft-match-20261003/history-recall-prompts.md` 移入本仓库 `doc/`，内容未改。计划见 `doc/SOFT_MATCH_EVAL_PLAN.md`。
 用途：第 2 组评测，模型自写 query 调用 `history_recall`（autocut=false，`autocut` 不进 schema）。
 `history_recall` 两份各属一个原型，不要求互相兼容；`history_grep` / `history_expand` 不走索引，两个原型共用一份。
@@ -15,6 +15,7 @@ v1 冻结：2026-10-03 19:30 CST。v2（19:55）：「中文拆双字」定为�
 范围：user/assistant 正文、assistant 工具调用名+参数。不含工具结果、思考、图片。
 关键词匹配，非语义。同义词、别称、译名自己写进 query。
 query = FTS5 MATCH，原样执行。
+空格=AND，要 OR 就写 OR。
 索引：中文=相邻双字+分词所得≥3字词；英文整词。中文拆双字，OR 连。
 零命中→换说法。没命中≠没说过。
 命中 id→history_expand 读原文。正则/字面子串→history_grep。
