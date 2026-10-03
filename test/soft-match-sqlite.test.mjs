@@ -18,11 +18,10 @@ test('Han spans merge bigrams and dictionary words in position/short-span order,
   assert.deepEqual(tokenize('我们 可以 是否'), ['我们', '可以', '是否']);
 });
 
-test('ASCII identifiers stay whole and lowercase next to Han; English stopwords alone are removed', () => {
+test('ASCII identifiers stay whole and lowercase next to Han', () => {
   assert.deepEqual(tokenize('修改youer服务端配置').filter(term => /^[a-z0-9_]+$/.test(term)), ['youer']);
-  assert.deepEqual(tokenize('CompactionResult foo_BAR foo_BAR vm kvm 42 x _ THE please'),
+  assert.deepEqual(tokenize('CompactionResult foo_BAR foo_BAR vm kvm 42 x _'),
     ['compactionresult', 'foo_bar', 'foo_bar', 'vm', 'kvm', '42', 'x', '_']);
-  assert.deepEqual(tokenize('a an and are as at be been but by can could did do does for from had has have how i if in is it its me my of on or our please so than that the their them then there these they this to us was we were what when where which who why will with would you your tell help about find show recall remember previous earlier history'), []);
 });
 
 test('shared synthetic examples use exact OR candidates, including natural questions with missing terms', t => {
@@ -243,4 +242,41 @@ test('raw calls do not change existing automatic search results or query handlin
   index.searchRaw('网关 OR gateway');
   assert.throws(() => index.searchRaw('"'));
   assert.deepEqual(queries.map(query => index.search(query, { automatic: true })), before);
+});
+
+test('raw native AND queries match indexed stopwords without dropping required terms', t => {
+  const index = open(t, [
+    { id: 'with-where', text: 'Sophia met at a coffee shop where the city lights shine' },
+    { id: 'without-where', text: 'Sophia met at a coffee shop under the city lights' },
+  ]);
+  assert.deepEqual(ids(index.searchRaw('Sophia coffee shop city where met')), ['with-where']);
+  assert.deepEqual(ids(index.searchRaw('WHERE')), ['with-where']);
+  assert.deepEqual(ids(index.searchRaw('"where the city"')), ['with-where']);
+});
+
+test('raw lookup retains history, find and every word in both automatic stopword groups', t => {
+  const words = ('a an and are as at be been but by can could did do does for from had has have how i if in is it its me my of on or our please so than that the their them then there these they this to us was we were what when where which who why will with would you your ' +
+    'please tell help about find show recall remember previous earlier history').split(/\s+/);
+  const index = open(t, [
+    { id: 'all-words', text: 'needle ' + words.join(' ') },
+    { id: 'no-stopwords', text: 'needle' },
+  ]);
+  for (const word of new Set(words)) {
+    assert.deepEqual(ids(index.searchRaw(`needle ${word}`)), ['all-words'], word);
+  }
+});
+
+test('automatic queries still filter stopwords while documents retain them', t => {
+  const words = 'where history find please tell help about show recall remember previous earlier';
+  const index = open(t, [
+    { id: 'gateway', text: 'gateway ' + words },
+    { id: 'stopwords-only', text: words },
+  ]);
+  const automatic = index.search(words + ' GATEWAY gateway', { automatic: true });
+  assert.deepEqual(automatic, index.search('gateway', { automatic: true }));
+  assert.deepEqual(automatic.queryTerms, ['gateway']);
+  assert.deepEqual(ids(automatic), ['gateway']);
+  assert.deepEqual(index.search(words, { automatic: true }),
+    { skipped: false, total: 0, results: [], queryTerms: [] });
+  assert.deepEqual(ids(index.searchRaw('history')).sort(), ['gateway', 'stopwords-only']);
 });

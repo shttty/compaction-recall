@@ -13,8 +13,7 @@ export function tokenize(text) {
   const tokens = [];
   for (const [run] of text.matchAll(/\p{Script=Han}+|[A-Za-z0-9_]+/gu)) {
     if (!PURE_HAN.test(run)) {
-      const term = run.toLowerCase();
-      if (!STOPWORDS.has(term)) tokens.push(term);
+      tokens.push(run.toLowerCase());
       continue;
     }
 
@@ -86,7 +85,7 @@ export function createIndex(documents) {
       if (!Number.isSafeInteger(limit) || limit < 0) {
         throw new RangeError('limit must be a non-negative safe integer');
       }
-      const queryTerms = [...new Set(tokenize(text))];
+      const queryTerms = [...new Set(tokenize(text).filter(term => !STOPWORDS.has(term)))];
       if (queryTerms.length === 0) {
         return { skipped: false, total: 0, results: [], queryTerms };
       }
