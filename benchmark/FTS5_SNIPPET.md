@@ -1,0 +1,61 @@
+# Codepoint FTS5 snippet experiment
+
+This benchmark-only module is not a production locator replacement. It imports no production tokenizer, index, document frequencies, models, or third-party packages.
+
+## Public interface
+
+```js
+import { fts5Snippet, selectFts5Window } from './fts5-snippet.mjs';
+const hits = [{ term: '网关', start: 5, end: 7 }];
+const snippet = fts5Snippet(text, hits); // default budget: 120 codepoints
+const window = selectFts5Window(text, hits, 120);
+// { start, end, score, snippet }
+```
+
+`text` is a string. Each hit supplies a query identity `term`, an inclusive `start`, and an exclusive `end`, all measured in Unicode codepoints (`Array.from(text)`), not UTF-16 offsets, bytes, or tokens. A repeated identity earns repeat credit; distinct identities earn distinct-term credit. Caller-provided instances are neither tokenized nor deduplicated. Positions are stably sorted without mutating the caller's array. Invalid/empty/out-of-document hit ranges and nonpositive/noninteger budgets throw `RangeError`. The caller owns term matching, normalization, query identity, and stopword decisions.
+
+Returned offsets refer to original text, excluding ellipses. The literal `…` appears only where original text was cut. Ellipses are outside the content budget. No highlighting, word-boundary expansion, trimming, or surrogate splitting is performed. Empty/no-hit input returns the prefix (empty for empty text), score zero. A short document is returned whole.
+
+## Upstream source and provenance
+
+The implementation was read from the requested [SQLite master source](https://raw.githubusercontent.com/sqlite/sqlite/master/ext/fts5/fts5_aux.c), including the complete `fts5SentenceFinderCb`, `fts5SnippetScore`, and `fts5SnippetFunction` and their output/highlight path. `master` is mutable. On 2026-10-03 it was byte-identical to this [immutable revision](https://raw.githubusercontent.com/sqlite/sqlite/95699469b7fff74ceb7492b7dc8370b923f5ccff/ext/fts5/fts5_aux.c):
+
+- Git revision: `95699469b7fff74ceb7492b7dc8370b923f5ccff`.
+- Last file-changing commit date: 2026-09-23T11:06:11Z.
+- Fossil origin: `55c634d96d390ca52c38c58c66be680c1883d799427ddf23a2501d12e7be07d3`.
+- Raw file: 27,519 bytes, 831 lines.
+- SHA-256: `47f2a523e2bac297874cd56f55db8f2768604c058ec0cfb4197179e4a1b4aae6`.
+- Source inspection transcript artifact: `artifact://22` (session-local, not a repository dependency).
+
+SQLite's source header disclaims copyright and supplies its customary blessing. This is a small algorithm adaptation, not an embedded SQLite copy.
+
+## Preserved scoring
+
+For each hit, score the forward half-open interval `[hit.start, hit.start + budget)`. Inclusion tests the hit **start**, not whether its whole extent fits. The first occurrence of a query identity earns 1000; every subsequent instance of that identity earns 1. No DF, IDF, BM25, rarity boost, or normalized density enters this score.
+
+For hit candidates, preserve upstream's adjusted offset:
+
+```text
+first = first included instance's start
+last  = last included instance's end (not maximum overlapping end)
+iAdj  = first - trunc((budget - (last - first)) / 2)
+if iAdj + budget > documentLength: iAdj = documentLength - budget
+if iAdj < 0: iAdj = 0
+```
+
+`trunc` is C-style integer division toward zero. The score is **not recomputed** after adjustment, even if a very long supplied instance causes the adjusted window to exclude its own start. Sentence candidates are not centered or shifted to fill the end of the document. Strict `>` replaces the winner, so the first equal-scoring candidate wins.
+
+## Intentional modifications
+
+1. **Codepoints, not tokens.** SQLite scores phrase-instance token positions and clamps requested token count to 0–64. Here positions and default budget 120 are codepoints, with no 64-token clamp and no tokenizer. Query identities act as SQLite phrase identities. This is not byte-for-byte `snippet()` equivalence on arbitrary English, and Chinese hits may be overlapping bigrams.
+2. **Every sentence is a candidate.** Original SQLite only tries the nearest preceding sentence start for each hit, only when the document exceeds the budget, and only when that start is strictly before the hit. It adds 120 at document start or 100 at another sentence start. This port first preserves that hit-then-preceding-sentence traversal and strict tie order, then enumerates every sentence start in document order (including a hit exactly at a sentence start). Sentence bonuses still apply only to longer-than-budget documents and windows containing at least one hit. Thus an empty sentence never wins by bonus alone and no-hit fallback retains score zero. Enumerating remaining sentences can intentionally choose a different winner than SQLite. Bonuses are not applied to centered hit candidates simply because their adjusted offset happens to be a sentence start.
+3. **Multilingual deterministic boundaries.** Upstream recognizes the first token and tokens preceded by ASCII whitespace after `.` or `:`; it does not recognize Chinese punctuation and depends on tokenization. Here the first boundary is codepoint zero. ASCII `. : ! ?` require following whitespace (after optional closing quotes/brackets); Chinese `。！？：` do not. CR/LF create boundaries independently, including CRLF as one effective boundary. Closing characters `" ' ” ’ 」 』 ） ) ]` immediately following punctuation are skipped, then JavaScript Unicode whitespace is skipped. This includes quoted Chinese sentence endings without NLP, abbreviation handling, or language models. Leading opening quotes are retained as content. ASCII punctuation without following whitespace is not a sentence boundary.
+4. **Rendering.** SQLite uses tokenizer byte spans and highlight callbacks to retain whole tokens and trailing punctuation. This port slices the chosen codepoint interval literally, which may cut an English word or whitespace. It emits only cut ellipses, no markup.
+
+The direct scoring implementation is intentionally straightforward: each candidate scans caller instances. Its cost is quadratic in hit count plus sentence-count × hit-count, appropriate to this bounded-snippet benchmark; it does not introduce an index or production optimization.
+
+## Verification fixtures
+
+`test/fts5-snippet.test.mjs` contains six real in-memory `node:sqlite` FTS5 `tokenize="ascii"` comparisons with single-term or explicit OR queries. Three-letter words let selected three-token windows correspond to eleven-codepoint windows in these fixtures. Each test asserts SQLite's exact snippet, the port's exact window start, and the port's exact snippet—not merely term coverage. Cases cover the opening match, first-sentence preference, interior centering, end clamp, distinct-term dominance, and repeated-term density. Equal-width fixtures are an explicit controlled mapping, not evidence that token/codepoint budgets generally agree.
+
+Additional deterministic fixtures cover Chinese answer/sentence selection, overlapping bigram identities, surrogate pairs, all adapted punctuation, quotes and newlines, no hits, empty/short input, first sentence bonus, strict ties, half-open bounds, stable input ordering, overlapping extent behavior, and C-style negative adjustment without score recomputation. SQLite's import warning is not suppressed. Run through the parent task's final verification; this implementation slice does not execute tests mid-flight.
