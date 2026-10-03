@@ -1,0 +1,56 @@
+{
+  "observedMemAvailableBytes": 21361999872,
+  "userEarlierApproxAvailableGiB": 6,
+  "basis": "Current /proc/meminfo MemAvailable snapshot; services unchanged. Conservative extrapolation, not measured 1M RSS.",
+  "safetyFloorBytes": 1610612736.0,
+  "perVariant": {
+    "base": {
+      "smokePeakRssBytes": 227287040,
+      "sdkStartupPeakRssBytes": 192057344,
+      "scale": 33.72908796546142,
+      "projectedPeakRssBytes": 1677389238.2255805
+    },
+    "A": {
+      "smokePeakRssBytes": 228032512,
+      "sdkStartupPeakRssBytes": 195026944,
+      "scale": 33.72908796546142,
+      "projectedPeakRssBytes": 1586586577.027523
+    },
+    "B1": {
+      "smokePeakRssBytes": 228339712,
+      "sdkStartupPeakRssBytes": 190398464,
+      "scale": 33.72908796546142,
+      "projectedPeakRssBytes": 1790053078.1392338
+    },
+    "B2": {
+      "smokePeakRssBytes": 231710720,
+      "sdkStartupPeakRssBytes": 195125248,
+      "scale": 33.72908796546142,
+      "projectedPeakRssBytes": 1737618502.182407
+    },
+    "B3": {
+      "smokePeakRssBytes": 213565440,
+      "sdkStartupPeakRssBytes": 190099456,
+      "scale": 33.72908796546142,
+      "projectedPeakRssBytes": 1179457254.1651378
+    }
+  },
+  "projection": "SDK-startup peak + 1.25 * (50k peak - SDK-startup peak) * (1000000 / smoke compacted tokens); scales worker startup too, deliberately conservative",
+  "driverBudgetBytesPerLane": 407218176.0,
+  "driverBasis": "1.5 times maximum observed smoke driver RSS",
+  "additionalReserveBytes": 536870912,
+  "projectedFiveJobBytes": 10544066441.739882,
+  "projectedFiveJobRemainingBytes": 10817933430.260118,
+  "selectedParallelism": 5,
+  "reason": "Five-way projection retains at least 1.5 GiB using current available-memory snapshot",
+  "masks": [
+    "2,3",
+    "4,5",
+    "6,7",
+    "8,9",
+    "10,11"
+  ],
+  "cpu01": "unassigned",
+  "residentServices": "not changed",
+  "smokeDirectory": "smoke"
+}
