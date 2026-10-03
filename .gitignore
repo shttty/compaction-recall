@@ -34,3 +34,6 @@ __pycache__/
 auth.json
 models.json
 settings.json
+
+# npm cache used by prototype dependency installs
+.npm-cache/
