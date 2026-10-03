@@ -275,12 +275,32 @@ export function buildRecallPage(query, branch,
  */
 export function recallPageFromCandidates(found,
   options = {}, timer) {
+  // Validate pagination before ranking, as the original production path does.
+  validateRecallPageOptions(options);
+  const ranked = found ? rankLocatorCandidates(found.candidates, found.frequency, found.documents, timer) : [];
+  return measured(timer, "manual_snippets_pagination_render", () =>
+    recallPageFromRows(found ? ranked.map(candidate => locatorRow(candidate, found.frequency)) : [], options));
+}
+
+/** @param {{ limit?: number; offset?: number }} options */
+function validateRecallPageOptions(options) {
   const limit = options.limit ?? RECALL_DEFAULT_LIMIT, offset = options.offset ?? 0;
   if (!Number.isInteger(limit) || limit < 1 || limit > RECALL_MAX_LIMIT) throw new RangeError("limit must be an integer from 1 to 50");
   if (!Number.isSafeInteger(offset) || offset < 0) throw new RangeError("offset must be a nonnegative safe integer");
-  const ranked = found ? rankLocatorCandidates(found.candidates, found.frequency, found.documents, timer) : [];
+}
+
+/**
+ * Render already-ranked rows without filtering, deduplication or re-ranking.
+ * @param {ReturnType<typeof locatorRow>[]} rows
+ * @param {{ limit?: number; offset?: number }} [options]
+ * @param {StageTimer} [timer]
+ * @returns {{ text: string; details: RecallPageDetails }}
+ */
+export function recallPageFromRows(rows, options = {}, timer) {
+  validateRecallPageOptions(options);
+  const limit = options.limit ?? RECALL_DEFAULT_LIMIT, offset = options.offset ?? 0;
   return measured(timer, "manual_snippets_pagination_render", () => {
-    const lines = found ? ranked.map(candidate => safeJSON(locatorRow(candidate, found.frequency))) : [];
+    const lines = rows.map(row => safeJSON(row));
     const total = lines.length;
     /** @param {string[]} selected @param {boolean} [budgetExceeded] */
     const page = (selected, budgetExceeded = false) => {

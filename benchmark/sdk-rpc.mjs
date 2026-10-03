@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Native Pi sessions; this bridge selects resources, not provider transports or RPC semantics.
-import { readFileSync, statSync, realpathSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
+import { readFileSync, statSync, realpathSync, mkdirSync, mkdtempSync, rmSync, copyFileSync, chmodSync } from 'node:fs';
 import path from 'node:path';
 import { findPackageJSON } from 'node:module';
 import { pathToFileURL, fileURLToPath } from 'node:url';
@@ -9,6 +9,7 @@ import { parseArgs } from 'node:util';
 const HELP = `Usage: node benchmark/sdk-rpc.mjs --config PATH --phase compression|answer|judge --describe
        node benchmark/sdk-rpc.mjs --config PATH --phase PHASE --session PATH
          [--arm native|grep|production] [--plugin-dir PATH --wrapper PATH]
+         [--recall-config PATH --timing-file PATH --retrieval-input PATH] (answer only)
 
 Uses the explicitly configured Pi SDK and read-only phase profile. No default model,
 provider, effort, personal configuration, or model-catalog network access.
@@ -62,6 +63,8 @@ async function main() {
    help: { type: 'boolean' }, config: { type: 'string' }, phase: { type: 'string' },
    describe: { type: 'boolean' }, session: { type: 'string' }, arm: { type: 'string' },
    'plugin-dir': { type: 'string' }, wrapper: { type: 'string' },
+   'recall-config': { type: 'string' }, 'timing-file': { type: 'string' },
+   'retrieval-input': { type: 'string' },
   }, strict: true, allowPositionals: false
  });
  if (values.help) { process.stdout.write(HELP); return; }
@@ -98,6 +101,11 @@ async function main() {
  const arm = values.arm ?? 'native';
  if (!['native', 'grep', 'production'].includes(arm)) throw new Error('Unknown --arm');
  if (values.phase !== 'answer' && (arm !== 'native' || values['plugin-dir'] || values.wrapper)) throw new Error('Compression and judge cannot load extensions');
+ if (values.phase !== 'answer' && (values['recall-config'] || values['timing-file'] || values['retrieval-input'])) throw new Error('Recall config, timing file and retrieval input are answer-only');
+ const recallConfig = values['recall-config'] ? realpathSync(values['recall-config']) : undefined;
+ if (recallConfig && !statSync(recallConfig).isFile()) throw new Error('Recall config must be a file');
+ const timingFile = values['timing-file'] ? containedTarget(values['timing-file'], output) : undefined;
+ const retrievalInput = values['retrieval-input'] ? immutableFile(values['retrieval-input']) : undefined;
  if (!values.describe && values.phase === 'answer' && !values.arm) throw new Error('Answer requires explicit --arm');
  if (arm === 'native' && (values['plugin-dir'] || values.wrapper)) throw new Error('Native arm cannot load extensions');
  if (arm === 'production' && values.wrapper) throw new Error('Production arm cannot load a grep wrapper');
@@ -121,6 +129,8 @@ async function main() {
  const home = values.describe ? path.join(output, '.sdk-describe-home') : mkdtempSync(path.join(output, '.sdk-runtime-'));
  if (!values.describe) process.on('exit', () => rmSync(home, { recursive: true, force: true }));
  isolatedEnvironment(home);
+ if (timingFile) process.env.COMPACTION_RECALL_TIMING_FILE = timingFile;
+ if (retrievalInput) process.env.PI_RETRIEVAL_INPUT_FILE = retrievalInput;
  if (recallExtension) process.env.PI_RECALL_EXTENSION = recallExtension;
  const load = relative => import(pathToFileURL(path.join(sdkPath, relative)).href);
  const sdk = await load('dist/index.js');
@@ -150,6 +160,12 @@ async function main() {
  const cwd = path.join(home, 'cwd');
  const agentDir = path.join(home, 'agent');
  mkdirSync(cwd); mkdirSync(agentDir);
+ if (recallConfig) {
+  const extensionsDir = path.join(agentDir, 'extensions');
+  mkdirSync(extensionsDir, { mode: 0o700 });
+  const target = path.join(extensionsDir, 'compaction-recall.json');
+  copyFileSync(recallConfig, target); chmodSync(target, 0o600);
+ }
  process.chdir(cwd);
  const settingsManager = sdk.SettingsManager.inMemory({
   compaction: { enabled: false, reserveTokens: protocol.reserve_tokens },

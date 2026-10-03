@@ -595,7 +595,7 @@ def answer_outcome(outcome, text, terminal=None):
     return "answered"
 
 
-def answer(q, snapshot, run_dir, arm, plugin_dir, wrapper_path):
+def answer(q, snapshot, run_dir, arm, plugin_dir, wrapper_path, *, recall_config=None, timing_file=None, retrieval_input=None, collect_memory=False):
     result_dir = run_dir / arm / q["question_id"]
     result_dir.mkdir(parents=True, exist_ok=True)
     result_dir.chmod(0o700)
@@ -607,10 +607,17 @@ def answer(q, snapshot, run_dir, arm, plugin_dir, wrapper_path):
         cmd += ["--plugin-dir", str(plugin_dir)]
     if arm == "grep":
         cmd += ["--wrapper", str(wrapper_path)]
+    if recall_config is not None:
+        cmd += ["--recall-config", str(recall_config)]
+    if timing_file is not None:
+        cmd += ["--timing-file", str(timing_file)]
+    if retrieval_input is not None:
+        cmd += ["--retrieval-input", str(retrieval_input)]
     snapshot_rows = len(b.jsonl_lines(snapshot))
     start = time.monotonic()
     try:
-        observed = rpc.run_rpc(cmd, env, run_dir, prompt=b.ASK.format(q.get("question_date", ""), q["question"]), timeout=900)
+        options = {"collect_memory": True} if collect_memory else {}
+        observed = rpc.run_rpc(cmd, env, run_dir, prompt=b.ASK.format(q.get("question_date", ""), q["question"]), timeout=900, **options)
         rows = [json.loads(row) for row in b.jsonl_lines(session)]
         new_rows = rows[snapshot_rows:]
         assistants = [row["message"] for row in new_rows if row.get("message", {}).get("role") == "assistant"]
@@ -626,6 +633,8 @@ def answer(q, snapshot, run_dir, arm, plugin_dir, wrapper_path):
                   "tool_calls": called, "timing": observed["timing"], "answerWallMs": (time.monotonic() - start) * 1000,
                   "tokens": totals if usage else None, "modelCalls": observed["timing"].get("modelTurns"),
                   "rc": observed["rc"], "error": safe_error(observed.get("stderr", "")) if observed.get("rc") else None}
+        if collect_memory:
+            result["memory"] = observed.get("memory")
     except Exception as exc:
         result = {"question_id": q["question_id"], "arm": arm, "outcome": "model-error", "answer": "",
                   "tool_calls": [], "timing": {}, "answerWallMs": (time.monotonic() - start) * 1000,

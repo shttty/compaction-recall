@@ -43,7 +43,25 @@ Durations use monotonic `performance.now()` in Node. Spans are **inclusive**, ca
 
 Do not add parent spans to their children, background preparation to foreground readiness waiting, or overlapping RPC/query operations. Background work is not free and cannot be subtracted from user-visible latency. Timing/logging overhead remains part of outer wall time. A slow cold build, main-thread extraction, fallback scan and additional worker memory remain real costs.
 
-Metadata is allowlisted: numeric counts/durations and fixed operation/kind/trigger/thread labels. Events do not record body text, queries, snippets, tool parameters, credentials, URLs, headers or exception messages. Worker result payloads still carry the requested retrieval output, but those payloads are not timing events.
+With `trace` disabled (the default), metadata is allowlisted: numeric counts/durations and fixed operation/kind/trigger/thread labels. Timing events do not record body text, queries, snippets, tool parameters, credentials, URLs, headers or exception messages. Worker result payloads still carry the requested retrieval output, but those payloads are not timing events.
+
+### Opt-in content trace
+
+Set `"trace": true` in `<agentDir>/extensions/compaction-recall.json` to append one `history_recall_trace` JSONL event per executed `history_recall` call to the same `COMPACTION_RECALL_TIMING_FILE`. This is file-only, defaults to false, and accepts only booleans; invalid values warn and use false. True without a timing destination warns once at extension load and does not record. Lite adds no trace hooks. Tool descriptions and returned output do not change.
+
+**Trace contains sensitive content:** the assistant's text blocks and parsed tool arguments, execute parameters/query, ranked returned IDs, pagination and original error messages. It does not capture thinking blocks or the verbatim wire JSON. Query text and parameters can contain secrets; protect and retain the file accordingly. Both timing and trace writers create/chmod the shared file to 0600. Missing or failed writes remain output-neutral and do not establish complete coverage.
+
+`src/recall-trace.mjs` is directly importable JavaScript using only Node filesystem APIs; production and evaluation harnesses share `createRecallTrace({ enabled, path, warn })`. Disabled/missing-path calls return `undefined`. An enabled collector exposes:
+
+- `messageEnd(sessionId, message)`: snapshot assistant `history_recall` ToolCall arguments, matched by name/id, and all same-message text blocks.
+- `toolCall(sessionId, event)`: capture an explicit nested `parentToolCallId`; never substitute mutable `event.input` for model arguments.
+- `begin(sessionId, toolCallId, params)`: snapshot execute input, return a token and increment a 1-based per-session call index. If input serialization fails, drop that diagnostic event and return `undefined`; completion/error methods accept this token without changing tool behavior.
+- `complete(token, { ids, total, offset, returned, nextOffset })` / `fail(token, error)`: snapshot the page or preserve the original error message.
+- `flush()`: emit queued calls once at `agent_end` / `session_shutdown`, then discard correlation state. Execute may precede `message_end`; flushing on tool completion would incorrectly mark model data missing. Session call counters survive flushes.
+
+Each event has `{ type: "history_recall_trace", sessionId, callIndex, toolCallId, parentToolCallId, model, execute, query_identical, result, error }`. `model` is `{ arguments, textBlocks: string[] }` or null; `execute` is `{ params, query }`; `result` is the page object above or null; `error` is the original message or null. `ids` follow returned ranking, not corpus order. `query_identical` is null only when model output is missing. Otherwise strings use exact equality; Query JSON uses equality of the unmodified `JSON.stringify` snapshots (including property order), without normalization or query mutation. Nested calls carry the explicit parent or the parent inferred from SDK `<parent>/<n>` IDs and always have null model data. Unknown fields in arguments/params are preserved. Unserializable diagnostic inputs, model arguments or results drop their event rather than replacing the tool's original result/error. Harnesses supply prototype/language/question association outside this schema.
+
+SDK 1.0.0 evidence: `dist/core/extensions/types.d.ts` defines `MessageEndEvent.message: AgentMessage`, mutable `ToolCallEvent.input` (`ToolCallEventResult` explicitly instructs in-place mutation), and nested `parentToolCallId` / `<parent>/<n>` IDs; `dist/core/session-manager.d.ts` exposes `getSessionId()`. The bundled `@earendil-works/pi-ai/dist/types.d.ts` defines assistant content as `(TextContent | ThinkingContent | ToolCall)[]`, `TextContent.text: string`, and `ToolCall.arguments: JsonObject`. These are separate observations, not an assumption that tool input still equals model output.
 
 ## Benchmark-only experience events
 

@@ -1,7 +1,7 @@
 """Parent-side monotonic RPC observation; never logs message content or provider payloads."""
-import json,subprocess,time,threading,queue
+import json,subprocess,time,threading,queue,pathlib
 
-def run_rpc(command,env,cwd,prompt=None,timeout=900,settle_only=False):
+def run_rpc(command,env,cwd,prompt=None,timeout=900,settle_only=False,collect_memory=False):
  start=time.monotonic();p=subprocess.Popen(command,cwd=cwd,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
  events=queue.Queue();stderr=[]
  def read():
@@ -16,8 +16,15 @@ def run_rpc(command,env,cwd,prompt=None,timeout=900,settle_only=False):
  p.stdin.write('{"id":"ready","type":"get_state"}\n');p.stdin.flush()
  metrics={'startupToRpcReadyMs':None,'firstVisibleTextFromSpawnMs':None,'firstThinkingFromSpawnMs':None,'firstToolDeltaFromSpawnMs':None,'promptToCompleteMs':None,'providerTTFTMs':None,'modelTurns':0,'toolBatches':0,'toolCalls':0,'userMessages':0}
  prompt_start=None;outcome='incomplete';settle_deadline=None
+ peak_rss=None
  try:
   while time.monotonic()-start<timeout:
+   if collect_memory:
+    try:
+     for line in pathlib.Path(f'/proc/{p.pid}/status').read_text().splitlines():
+      if line.startswith('VmHWM:'):
+       peak_rss=max(peak_rss or 0,int(line.split()[1]));break
+    except (OSError,ValueError):pass
    if settle_deadline and time.monotonic()>=settle_deadline:outcome='offline-ready';break
    try:at,e=events.get(timeout=.1)
    except queue.Empty:continue
@@ -47,4 +54,6 @@ def run_rpc(command,env,cwd,prompt=None,timeout=900,settle_only=False):
   for t in threads:t.join(timeout=1)
   p.stdout.close();p.stderr.close()
  metrics['processWallMs']=(time.monotonic()-start)*1000
- return {'rc':p.returncode,'outcome':outcome,'timing':metrics,'stderr':''.join(stderr)[-2000:]}
+ result={'rc':p.returncode,'outcome':outcome,'timing':metrics,'stderr':''.join(stderr)[-2000:]}
+ if collect_memory:result['memory']={'peakObservedRssKiB':peak_rss,'method':'sampled /proc VmHWM; process incl. worker threads'}
+ return result

@@ -35,6 +35,7 @@ pi install /absolute/path/to/compaction-recall
 ```json
 {
   "mode": "full",
+  "trace": false,
   "preindex": {
     "userCycles": 10,
     "toolRounds": 10
@@ -44,7 +45,7 @@ pi install /absolute/path/to/compaction-recall
 
 文件不存在时不警告、不创建文件，静默采用环境变量 / 默认值。`COMPACTION_RECALL_MODE=lite` / `COMPACTION_RECALL_MODE=full` 覆盖文件中的 `mode`；未配置时为 full。值区分大小写，只接受这两个字符串。非法文件值警告并回退 full；非法环境变量也警告并**直接回退 full**，不会重新使用文件里的 lite。预分词字段独立接受 1–100 的整数：有效 `COMPACTION_RECALL_PREINDEX_TURNS` / `COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS` 优先于文件字段，再回退到 10；非法环境值警告后保留有效文件值 / 默认值。文件大小上限为 65,536 字节；不可读、畸形、超限文件忽略并警告，未知字段忽略并警告，不打印非法值或文件内容。加载阶段的 warning 写入 stderr。
 
-三个环境变量可以完整控制配置，无需配置文件。例如：
+三个环境变量可以控制 mode 和预分词参数，无需配置文件；trace 只能在文件中开启。例如：
 
 ```sh
 COMPACTION_RECALL_MODE=lite COMPACTION_RECALL_PREINDEX_TURNS=10 COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS=10 pi -e ./src/index.ts
@@ -52,7 +53,9 @@ COMPACTION_RECALL_MODE=lite COMPACTION_RECALL_PREINDEX_TURNS=10 COMPACTION_RECAL
 
 mode 和预分词参数在**扩展加载时一起读取一次**，来源和生效时点一致。修改文件或环境变量后需重新加载扩展 / 重启 Pi。`session_start`、`session_tree` 只用已加载参数重置 cadence 计数器，不重新读取文件；无文件监听或每次工具调用的配置读取。lite 不使用预分词参数安排工作。检索方式是独立议题，本次没有加入嵌入模型配置或组合模式值。
 
-**SDK 嵌入场景：** `getAgentDir()` 的目录覆盖只读取进程环境变量 `PI_CODING_AGENT_DIR`，不读取 `createAgentSession` 或资源加载器的 `agentDir` 选项。如果只通过 SDK `agentDir` 指定目录而未设置环境变量，扩展不会自动跟随该选项；应在加载扩展前设置 `PI_CODING_AGENT_DIR`，或直接用三个 `COMPACTION_RECALL_*` 环境变量控制配置。`process.cwd()`、`ctx.cwd` 与 SDK `agentDir` 可以不同，不会改变本扩展的配置来源。
+`trace` 同样仅在扩展加载时读取，默认 false，只接受布尔值；非法值警告并回退 false，无 trace 环境变量。设为 true 时，每次 full 模式的 `history_recall` execute 在同一 `COMPACTION_RECALL_TIMING_FILE` 追加一条详细事件；未设置该文件时加载阶段仅警告一次、不记录。lite 不增加任何 hook。为等待 message_end 与 execute 的关联，事件延迟到 agent_end / shutdown 写入。关闭时 timing 仍只包含数值及固定标签；开启后会记录 assistant 正文、解析后的模型参数、插件收到的 query/params、返回 id 排序与分页、错误原文，不记录思考或逐字原始 JSON。文件权限 0600，可能含敏感内容，详见 [TIMING.md](TIMING.md#opt-in-content-trace)。
+
+**SDK 嵌入场景：** `getAgentDir()` 的目录覆盖只读取进程环境变量 `PI_CODING_AGENT_DIR`，不读取 `createAgentSession` 或资源加载器的 `agentDir` 选项。如果只通过 SDK `agentDir` 指定目录而未设置环境变量，扩展不会自动跟随该选项；应在加载扩展前设置 `PI_CODING_AGENT_DIR`，或直接用三个 `COMPACTION_RECALL_*` 环境变量控制 mode / 预分词参数（trace 仍需文件）。`process.cwd()`、`ctx.cwd` 与 SDK `agentDir` 可以不同，不会改变本扩展的配置来源。
 
 lite 不额外注入隐藏历史提示，也不因此向模型服务商多发这类内容；但模型调用 grep/expand 后，工具返回的历史内容仍会随后续模型请求发送。它不是“历史绝不会发送给服务商”的隐私隔离开关。代价是模型要自行决定何时搜，以及搜索和核实的步骤；**不声称 lite 更快**。
 

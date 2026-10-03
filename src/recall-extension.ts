@@ -7,6 +7,7 @@ import { BackgroundIndex } from "./background-index.mjs";
 import { PreindexCadence } from "./preindex-cadence.mjs";
 import { loadRecallConfig } from "./recall-config.mjs";
 import { recallTiming, flushTiming, measured } from "./timing.mjs";
+import { createRecallTrace } from "./recall-trace.mjs";
 
 function codePointLength(text: string): number {
   let length = 0;
@@ -105,8 +106,16 @@ export default function(pi: ExtensionAPI) {
     finally { flushTiming(); }
   };
   // Mode and cadence share one agent-directory snapshot until the extension reloads.
-  const { mode, userCycles, toolRounds } = loadRecallConfig({ warn: message => { process.stderr.write(message + "\n"); } });
+  const warn = (message: string) => { process.stderr.write(message + "\n"); };
+  const { mode, trace, userCycles, toolRounds } = loadRecallConfig({ warn });
+  const recallTrace = createRecallTrace({ enabled: trace, warn });
   if (mode === "full") {
+    if (recallTrace) {
+      pi.on("message_end", (event, ctx) => { recallTrace.messageEnd(ctx.sessionManager.getSessionId(), event.message); });
+      pi.on("tool_call", (event, ctx) => { recallTrace.toolCall(ctx.sessionManager.getSessionId(), event); });
+      pi.on("agent_end", () => { recallTrace.flush(); });
+      pi.on("session_shutdown", () => { recallTrace.flush(); });
+    }
     const index = new BackgroundIndex({ timer: recallTiming });
     const cadence = new PreindexCadence(userCycles, toolRounds);
     let scheduled: NodeJS.Immediate | undefined;
@@ -175,10 +184,21 @@ export default function(pi: ExtensionAPI) {
         offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Result offset (default 0); use nextOffset from the previous page" })),
       }),
       async execute(_id, params, _signal, _onUpdate, ctx) {
-        return observe("tool_history_recall_total", async () => {
-          const page = await index.query(params.query, branch(ctx), { mode: "manual", options: params });
-          return { content: [{ type: "text" as const, text: page.text }], details: page.details };
-        });
+        const token = recallTrace?.begin(ctx.sessionManager.getSessionId(), _id, params);
+        try {
+          return await observe("tool_history_recall_total", async () => {
+            const page = await index.query(params.query, branch(ctx), { mode: "manual", options: params });
+            if (recallTrace) {
+              const ids = page.text.split("\n").filter((line: string) => line.startsWith("{")).map((line: string) => JSON.parse(line).id);
+              const { total, offset, returned, nextOffset } = page.details;
+              recallTrace.complete(token, { ids, total, offset, returned, nextOffset });
+            }
+            return { content: [{ type: "text" as const, text: page.text }], details: page.details };
+          });
+        } catch (error) {
+          if (recallTrace) recallTrace.fail(token, error);
+          throw error;
+        }
       },
     });
   }
