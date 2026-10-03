@@ -1,5 +1,8 @@
+import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { createIndex, extractText, tokenize, weightedLength } from '../prototype/soft-match-sqlite/index.mjs';
 import { documents } from '../prototype/soft-match-sqlite/demo.mjs';
 
@@ -279,4 +282,24 @@ test('automatic queries still filter stopwords while documents retain them', t =
   assert.deepEqual(index.search(words, { automatic: true }),
     { skipped: false, total: 0, results: [], queryTerms: [] });
   assert.deepEqual(ids(index.searchRaw('history')).sort(), ['gateway', 'stopwords-only']);
+});
+
+test('SDK-loaded SQLite recall description matches the frozen document bytes', async t => {
+  const { discoverAndLoadExtensions } = await import('@earendil-works/pi-coding-agent');
+  const document = readFileSync(new URL('../doc/SOFT_MATCH_PROMPTS.md', import.meta.url), 'utf8');
+  const section = document.slice(document.indexOf('## ① '), document.indexOf('## ② '));
+  const expected = section.match(/\n```\n([\s\S]*?)\n```/)[1];
+  const loaded = await discoverAndLoadExtensions(
+    [fileURLToPath(new URL('../benchmark/retrieval-sqlite-adapter.ts', import.meta.url))],
+    process.cwd(), process.env.PI_CODING_AGENT_DIR,
+  );
+  assert.deepEqual(loaded.errors, []);
+  const extension = loaded.extensions[0];
+  t.after(async () => {
+    for (const handler of extension.handlers.get('session_shutdown') ?? []) {
+      await handler({ type: 'session_shutdown', reason: 'quit' }, {});
+    }
+  });
+  const actual = extension.tools.get('history_recall').definition.description;
+  assert.deepEqual(Buffer.from(actual, 'utf8'), Buffer.from(expected, 'utf8'));
 });

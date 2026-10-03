@@ -14,6 +14,7 @@ const descriptions = {
 范围：user/assistant 正文、assistant 工具调用名+参数。不含工具结果、思考、图片。
 关键词匹配，非语义。同义词、别称、译名自己写进 query。
 query = FTS5 MATCH，原样执行。
+空格=AND，要 OR 就写 OR。
 索引：中文=相邻双字+分词所得≥3字词；英文整词。中文拆双字，OR 连。
 零命中→换说法。没命中≠没说过。
 命中 id→history_expand 读原文。正则/字面子串→history_grep。`,
@@ -88,7 +89,7 @@ export default function sqliteAdapter(pi: ExtensionAPI) {
     process.env.COMPACTION_RECALL_MODE = "lite";
     registerProduction(new Proxy(pi, {
       get(target, property, receiver) {
-        if (property === "on") return () => () => {};
+        if (property === "on") return () => () => { };
         if (property === "registerTool") return (tool: Parameters<ExtensionAPI["registerTool"]>[0]) => {
           if (tool.name !== "history_grep" && tool.name !== "history_expand") return;
           const name = tool.name;
@@ -111,7 +112,7 @@ export default function sqliteAdapter(pi: ExtensionAPI) {
   // still being searched. Compare projected text, not branch identity/last entry id.
   function serial<T>(work: () => Promise<T>): Promise<T> {
     const result = queue.then(work);
-    queue = result.catch(() => {});
+    queue = result.catch(() => { });
     return result;
   }
   async function prepare(branch: SessionEntry[]) {
@@ -131,14 +132,16 @@ export default function sqliteAdapter(pi: ExtensionAPI) {
       engine = replacement;
       indexed = documents;
     }
-    return { engine, rows(ranking: Ranked[], query: string) {
-      return ranking.map(({ id }) => {
-        const source = sources.get(id);
-        if (!source) throw new Error(`SQLite returned an unknown entry id: ${id}`);
-        const { entry, text } = source;
-        return { id, date: entry.timestamp.slice(0, 10), role: entry.type === "message" ? entry.message.role : entry.type, snippet: snippet(text, query) };
-      });
-    } };
+    return {
+      engine, rows(ranking: Ranked[], query: string) {
+        return ranking.map(({ id }) => {
+          const source = sources.get(id);
+          if (!source) throw new Error(`SQLite returned an unknown entry id: ${id}`);
+          const { entry, text } = source;
+          return { id, date: entry.timestamp.slice(0, 10), role: entry.type === "message" ? entry.message.role : entry.type, snippet: snippet(text, query) };
+        });
+      }
+    };
   }
 
   pi.on("context", (event, ctx) => serial(async () => {

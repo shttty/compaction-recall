@@ -122,6 +122,12 @@ S1 显式入口实测（文档 a=`网关重启，中华人民共和国 Gateway`�
 
 直接加载 v2 包中的引擎，输入只含 dev8/3d86fd0a 英文 documents；gold 仅用于结果核验。原样调用 `searchRaw('Sophia coffee shop city where met')`，原生隐式 AND 返回 total=1：`3d86fd0a:0000051f`，BM25=-37.56001277756897，唯一 gold 排名=1。未拆词、补 OR 或调用模型；v1 索引删除 where 导致旧试跑零命中，此探测证明保留停用词修复了该查询。详见 raw-probe-v2.json。
 
+## S1 提示词 v3
+
+`history_recall` 的评测描述与 `doc/SOFT_MATCH_PROMPTS.md` ① 冻结 v3 一致，新增「空格=AND，要 OR 就写 OR。」；参数说明、查询及排序行为不变。SQLite 专项测试通过真实 SDK 加载适配层，比较注册工具描述与文档代码块正文的 UTF-8 字节，防止两边分叉，不扫描适配层源字符串。
+
+本次 SQLite 专项 **19/19**、`npm run check` **158/158** 通过。新只读包为 `adapter-package-v3/`；离线实际 SDK 自动提示、翻页、原生错误和 trace 链路通过，记录在 `sdk-smoke-prompt-v3/`。真实运行须先满足包源文件与当前 HEAD 逐文件一致的前置条件；旧 `group2-formal/` 保留为 v2 对照。
+
 ## S1 评测适配层
 
 `benchmark/retrieval-sqlite-engine.mjs` 导出 S0 `createEngine(documents)`：searchAuto 用现有 search 且保留完整排名；searchRaw 用显式入口；dispose 关闭内存数据库。适配层入口为 `benchmark/retrieval-sqlite-adapter.ts`，只用于评测，不注册生产入口。
