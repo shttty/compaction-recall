@@ -188,3 +188,59 @@ test('content extraction excludes images, joins text blocks, and counts attachme
   assert.equal(index.search(attachment, { automatic: true }).skipped, true);
   assert.deepEqual(ids(index.search(attachment)).sort(), ['i', 'j']);
 });
+
+test('raw FTS5 executes Chinese bigram OR and dictionary terms without automatic query selection', t => {
+  const index = open(t, [
+    { id: 'gateway', text: '网关' }, { id: 'restart', text: '重启' },
+    { id: 'country', text: '中华人民共和国' },
+  ]);
+  assert.deepEqual(ids(index.searchRaw('网关 OR 重启')).sort(), ['gateway', 'restart']);
+  assert.deepEqual(ids(index.searchRaw('共和国')), ['country']);
+  assert.deepEqual(ids(index.searchRaw('中华人民')), []);
+  assert.deepEqual(ids(index.searchRaw('网关 重启')), []);
+});
+
+test('raw FTS5 preserves case semantics, operators, full ranking, ties and optional prefix limit', t => {
+  const docs = Array.from({ length: 25 }, (_, i) => ({ id: String(i).padStart(2, '0'), text: 'Gateway' }));
+  const index = open(t, docs.reverse());
+  const full = index.searchRaw('GATEWAY');
+  assert.deepEqual(full, index.searchRaw('gateway'));
+  assert.equal(full.total, 25);
+  assert.deepEqual(ids(full), docs.map(d => d.id).sort());
+  assert.deepEqual(index.searchRaw('gateway', { limit: 1 }), { total: 25, results: full.results.slice(0, 1) });
+  assert.deepEqual(index.searchRaw('gateway', { limit: 0 }), { total: 25, results: [] });
+  assert.deepEqual(index.searchRaw(' '.repeat(211) + 'gateway'), full);
+  assert.deepEqual(index.searchRaw('gateway NOT gateway'), { total: 0, results: [] });
+  assert.throws(() => index.searchRaw('gateway', { limit: -1 }), RangeError);
+});
+
+test('raw malformed quotes and empty query expose unchanged native FTS5 errors', async t => {
+  const { DatabaseSync } = await import('node:sqlite');
+  const db = new DatabaseSync(':memory:');
+  t.after(() => db.close());
+  db.exec("CREATE VIRTUAL TABLE terms USING fts5(tokens, tokenize=\"ascii tokenchars '_'\")");
+  const native = db.prepare('SELECT rowid, bm25(terms) AS score FROM terms WHERE terms MATCH ?');
+  const index = open(t);
+  for (const query of ['"gateway', '']) {
+    let expected;
+    try { native.all(query); } catch (error) { expected = error; }
+    assert.ok(expected);
+    assert.throws(() => index.searchRaw(query), error => {
+      assert.equal(error.message, expected.message);
+      assert.equal(error.code, expected.code);
+      assert.equal(error.errcode, expected.errcode);
+      return true;
+    });
+  }
+});
+
+test('raw calls do not change existing automatic search results or query handling', t => {
+  const index = open(t);
+  const queries = ['网关重启后为什么断连？', 'gateway nonexistentword', 'vm NOT kvm', '', 'gateway' + ' '.repeat(204)];
+  const before = queries.map(query => index.search(query, { automatic: true }));
+  const legacy = index.search('gateway');
+  assert.deepEqual(index.searchRaw('gateway'), { total: legacy.total, results: legacy.results });
+  index.searchRaw('网关 OR gateway');
+  assert.throws(() => index.searchRaw('"'));
+  assert.deepEqual(queries.map(query => index.search(query, { automatic: true })), before);
+});

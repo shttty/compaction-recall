@@ -1,6 +1,6 @@
 # SQLite FTS5 soft-match 原型
 
-独立、可丢弃的匹配行为实验；不接生产插件、hook、worker 或用户 profile。只查合成文本，不调用模型。本方案是 **OR 精确词项 + SQLite 原生 BM25**，不是 MiniSearch 宽松匹配的等价替换，不作性能胜负结论。
+独立、可丢弃的匹配行为实验；生产 `src/` 不变。S1 在 `benchmark/` 接入独立评测适配层，不安装用户 profile。本方案是 **SQLite 原生 MATCH + BM25**，自动路径仍为 OR 精确词项，不是 MiniSearch 宽松匹配的等价替换，不作性能胜负结论。
 
 ## 运行与版本
 
@@ -22,8 +22,20 @@ Demo 输出一份 JSON：运行版本、a–m 原文及分词、查询提取文�
 - `tokenize(text): string[]`：文档保留词频；查询使用同一函数后按首次出现顺序去重。
 - `weightedLength(text): number`：按 Unicode 码点，Han 权重 2，其余权重 1，空格、标点、换行及 emoji 均计入。
 - `extractText(content): string`：字符串原样返回；数组只提取字符串类型的 `text` 块，按原顺序以换行连接；图片和其他块忽略。
-- `createIndex([{id, text}])`：输入使用唯一字符串 id 和字符串 text；返回 `search(query, {automatic=false, limit=20}={})` 与 `close()`。query 可为字符串或消息 content 块数组，结束后调用 close。
+- `createIndex([{id, text}])`：输入使用唯一字符串 id 和字符串 text；返回 `search(query, {automatic=false, limit=20}={})`、`searchRaw(query, {limit}={})` 与 `close()`。search 的 query 可为字符串或消息 content 块数组；searchRaw 的 query 为原生 FTS5 MATCH 字符串；结束后调用 close。
 - `search` 返回 `{skipped, total, results: [{id, score}], queryTerms}`。limit 为非负安全整数；`limit: 0` 仍返回真实 total。空查询、全英文停用词、单 Han 字无词项时正常返回空，不执行无效 MATCH。
+- `searchRaw(query, {limit}={})` 返回 `{total, results:[{id,score}]}`。query 原样作为 `MATCH ?` 绑定参数，不分词、去停用词、拆双字、转义、截断或应用 210 门槛。默认完整排名；可选非负安全整数 limit 只取排名前缀，total 不变。同分按 id 排序，分页由调用方处理。FTS5 错误原样抛出，不改写消息；不把空串或错误转成零命中。
+
+```js
+import { createIndex } from './index.mjs';
+const index = createIndex([{ id: 'a', text: '网关重启，中华人民共和国' }]);
+try {
+  console.log(index.searchRaw('网关 OR 重启'));
+  console.log(index.searchRaw('共和国', { limit: 1 }));
+} finally {
+  index.close();
+}
+```
 
 分词规则：
 
@@ -47,11 +59,11 @@ CREATE VIRTUAL TABLE terms USING fts5(
 
 `temp_store=MEMORY`；不生成数据库、WAL、SHM 文件。构建为一次事务，close 释放连接。没有持久化、增量更新或服务。
 
-每个 MATCH 词项双引号包裹、内部双引号转义，再用 OR 连接并绑定参数；无命中比例门槛、强制 AND、fuzzy、前缀、trigram tokenizer 或 LIKE 补救。SQLite `bm25(terms)` 原始分数为负，**越小越优先**；JavaScript 按该分数排序，同分按字符串 id 的确定性顺序排序。取出全部候选再应用 limit，total 不是返回数量；此原型不优化海量候选的内存/排序开销。
+自动 search 将每个选出的 MATCH 词项双引号包裹、内部双引号转义，再用 OR 连接并绑定参数；显式 searchRaw 直接绑定调用方的完整表达式，支持 FTS5 原生操作符、短语和前缀语义。无命中比例门槛、fuzzy、trigram tokenizer 或 LIKE 补救。SQLite `bm25(terms)` 原始分数为负，**越小越优先**；JavaScript 按该分数排序，同分按字符串 id 的确定性顺序排序。取出全部候选再应用 limit，total 不是返回数量；此原型不优化海量候选的内存/排序开销。
 
 ## 实际验证
 
-上述 demo 运行成功；独立测试最终 **11/11 通过，0 失败**。首轮 10/11，唯一失败来自测试猜测“服务端”是 ICU 整词；原生探测为“服务 / 端 / 配置”。删除该猜测断言，改查中英边界的 ASCII 整词不被吞并，没有为过测试修改分词实现。
+S0 合成 demo 曾通过 11/11 测试；S1 在同一宿主运行 demo 的 32 个案例、SQLite 专项 **15/15**、当前本原型 worktree 的 `npm run check` **154/154**、Python unittest **16/16**，全部通过。初次全套检查曾因另一原型缺少 minisearch 依赖失败；Hermes 最终在 90442db 删除本 worktree 的另一原型测试后重跑通过，未修改 SQLite 实现来绕过失败。
 
 a–m 共同样本的实际结果，id 按 demo 排序：
 
@@ -76,9 +88,42 @@ a–m 共同样本的实际结果，id 按 demo 排序：
 
 ASCII / Han / 混合输入均覆盖 210 边界：ASCII、混合 211 跳过，纯 Han 下一个长度 212 跳过；附加覆盖停用词/重复词去重前计数、非 BMP Han、emoji、独立图片排除、附件 text 210/211（包括连接换行），以及超过 210 且命中词在尾部的主动查询。`gateway` 配合 `limit:1` 的 demo 返回 1 条但 total=2。
 
+S1 显式入口实测（文档 a=`网关重启，中华人民共和国 Gateway`，b=`网关 Gateway`）：`网关 OR 重启` → a,b；`共和国` → a；`GATEWAY` → b,a，与小写原生大小写语义一致。未配对引号 `"gateway` 原样报 `unterminated string`；空串原样报 `fts5: syntax error near ""`，均为 `ERR_SQLITE_ERROR`。新增测试还覆盖默认完整 25 条排名、同分 id 顺序、limit=0/1、超过 210 的显式查询，以及 raw 调用前后原有 search 结果不变。
+
+## S1 授权评测结果（2026-10-03）
+
+运行根目录：`/home/rinne/.hermes/task-runs/recall-soft-match-20261003/runs/sqlite/`。完整逐题排名、指标、构建/检索延迟和内存记录在 `group1.json`；32 个中英文案例校验通过。以下每格三项按 K=5/10/20，宏平均，语言分开报告：
+
+| 语言 | MRR | nDCG | Recall | Precision | top5 命中题 / gold 条数 |
+| --- | --- | --- | --- | --- | --- |
+| en | 0.561401 | 0.506250 / 0.512515 / 0.534041 | 0.547917 / 0.568750 / 0.618750 | 0.200000 / 0.112500 / 0.068750 | 12/16；16/50 |
+| zh | 0.514165 | 0.450422 / 0.465655 / 0.503268 | 0.505208 / 0.540625 / 0.630208 | 0.162500 / 0.100000 / 0.071875 | 11/16；13/50 |
+
+构建 / 搜索中位数：en 203.815 / 1.955 ms，zh 1238.929 / 1.552 ms。进程整体 peak RSS 597412 KiB，不是逐题隔离峰值，不与相关性指标合并。
+
+假 provider 的真实 SDK 链路通过，记录在 `sdk-smoke/`：自动提示进入 provider、limit=1 翻页一次、原生 FTS5 错误送达 provider、3 次 recall trace query 一致；MRR=1，Recall@5/10/20=1，错误数=1（有意的语法错误）。
+
+真实试跑仅 dev8/3d86fd0a 中英各一次，gpt-6-luna/high，独立保存在 `trial-3d86fd0a/`，不计入正式第 2 组结果：en 调 recall/grep/expand 各一次，recall 原文 `Sophia coffee shop city where met`，原生隐式 AND 返回零命中，trace 两侧 query 一致；MRR/nDCG=0，Recall@5/10/20=1（自动结果命中）。zh 仅 expand 一次，无 recall，因此使用自动排名：MRR/nDCG/Recall=1。两边实际 provider 请求均包含自动提示、reasoning effort high，会话也记录 thinking_level_change=high。核验摘录在 `trial-3d86fd0a-checks.json`；不记录或读取 profile 内容。未运行其余真实会话或 judge。
+
+## S1 评测适配层
+
+`benchmark/retrieval-sqlite-engine.mjs` 导出 S0 `createEngine(documents)`：searchAuto 用现有 search 且保留完整排名；searchRaw 用显式入口；dispose 关闭内存数据库。适配层入口为 `benchmark/retrieval-sqlite-adapter.ts`，只用于评测，不注册生产入口。
+
+自动提示复用生产 `formatLocatorRows` / `withLocators`，前五条及生产预算；显式查询复用 `recallPageFromRows`，完整排名后按 limit/offset 分页，每页 16000 码点。grep/expand 复用生产执行函数，只替换冻结的描述和参数说明；不启动生产 worker。
+
+片段定位仅影响显示：生产 lex(query) 提供显示定位词，选择原文中最早的不区分大小写字面出现位置，最多取其前 40 码点、窗口共 120 码点，首尾可附省略号；找不到则从正文开头取窗。不解析 FTS 表达式或选择最稀有词；不改 MATCH 输入或排序。每次操作重取当前分支投影；id/text 改变时整库重建，无持久索引。
+
+打包命令（输出目录必须新建且位于本轮授权输出根目录）：
+
+```sh
+node benchmark/retrieval-sqlite-package.mjs --output /home/rinne/.hermes/task-runs/recall-soft-match-20261003/runs/sqlite/adapter-package
+```
+
+包包含源依赖闭包、内置 SQLite 引擎和许可证，每个文件只读，manifest 只有一个 pi.extensions 入口。SDK/typebox 由宿主提供，无额外 npm 引擎依赖。runner 用法以 `benchmark/RETRIEVAL_CONTRACT.md` 为准，外部 config/profile 仅交给 runner，不复制凭据。trace 复用生产 history_recall 事件；另记 trace 开启时实际 provider payload 中本适配层提示的存在性及可识别的 reasoning effort，不记录完整请求或思考。
+
 ## 确定的限制
 
 - 这是词面召回，不理解语义或短语约束。OR 会保留仅命中少量词的候选；上述“重启断连”查询中的 b、“修改youer…”中的 b 均非相关事实证据。双字还可能跨词边界形成偶然命中，例如“搜索引擎”中的“索引”。
-- 错字、英文前缀/内部子串及单 Han 字不补救；不能由 gatway 推出 gateway，也不能由 compaction/moto 推出完整标识符/单词。无结果不代表历史没有相关语义。
+- 自动查询不补救错字、英文前缀/内部子串及单 Han 字；不能由 gatway 推出 gateway，也不能由 compaction/moto 推出完整标识符/单词。显式入口可由调用方使用原生 FTS5 前缀语法，但不会自动补写。无结果不代表历史没有相关语义。
 - 同时索引双字与词语会影响 BM25 的词频和文档长度；分数不是概率，不应与另一引擎直接比较。ICU 升级可能改变多字词和排名。
-- 未运行 MiniSearch、LongMemEval、大规模性能矩阵或模型评测；不对另一原型的假阳性、速度、内存或准确率作未验证陈述。
+- 仅 16 题机械评测和一个题目的中英真实单次试跑；未运行大规模性能矩阵或正式第 2 组其余题目，不给波动范围或跨引擎结论。FTS5 空格连接词项默认 AND，英文试跑的零命中体现了模型 query 写法的影响；未强制工具调用或重写 query。片段窗口不保证展示最相关证据，应 expand 核实。

@@ -102,6 +102,15 @@ export function createIndex(documents) {
         queryTerms,
       };
     },
+    searchRaw(query, { limit } = {}) {
+      if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) {
+        throw new RangeError('limit must be a non-negative safe integer');
+      }
+      const candidates = match.all(query)
+        .map(({ rowid, score }) => ({ id: ids[rowid - 1], score }));
+      candidates.sort((a, b) => a.score - b.score || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+      return { total: candidates.length, results: limit === undefined ? candidates : candidates.slice(0, limit) };
+    },
     close() {
       db.close();
     },
