@@ -1,21 +1,23 @@
 # SQLite FTS5 soft-match 原型
 
-独立、可丢弃的匹配行为实验；生产 `src/` 不变。S1 在 `benchmark/` 接入独立评测适配层，不安装用户 profile。本方案是 **SQLite 原生 MATCH + BM25**，自动路径仍为 OR 精确词项，不是 MiniSearch 宽松匹配的等价替换，不作性能胜负结论。
+独立、可丢弃的匹配行为实验；生产 `src/` 不变。S1 在 `benchmark/` 接入独立评测适配层，不安装用户 profile。默认 `off` 是 **SQLite 原生 MATCH + BM25**，自动路径仍为 OR 精确词项，不是 MiniSearch 宽松匹配的等价替换。S6 候选仅在评测入口显式启用，见文末。
 
 ## 运行与版本
 
-仓库根目录执行，无需安装依赖：
+仓库根目录执行。默认 off 的 demo 只用内置模块；运行 jieba 或 porter-js 候选前先执行 `npm ci --ignore-scripts`：
 
 ```sh
 node prototype/soft-match-sqlite/demo.mjs
 node --test test/soft-match-sqlite.test.mjs
 ```
 
-复现版本固定为本轮实际宿主：**Node v24.18.0 / ICU 78.3 / Unicode 17.0 / SQLite 3.53.1**，FTS5 已实测可用。npm 依赖为零，仅使用 Node 内置模块，因此没有 npm lockfile，也未修改根依赖。词典切分由该版本 ICU 决定；其他版本未经验证，不自动下载或更换宿主。
+本轮实际宿主：**Node v24.18.0 / ICU 78.3 / Unicode 17.0 / SQLite 3.53.1**，FTS5 已实测可用。默认 off 不调用第三方依赖；S6 锁定运行时依赖 `@node-rs/jieba@2.0.3` 和 `@orama/stemmers@3.1.18`，声明在根 package.json dependencies 与 package-lock.json。默认词典切分仍由 ICU 决定，不自动更换宿主。
 
 Demo 输出一份 JSON：运行版本、a–m 原文及分词、查询提取文本与加权长度、去重 queryTerms、skipped、全部候选数 total、命中 id/原始 BM25 分数及原文展开。两条命令在上述宿主均未观察到 SQLite 实验警告，未压制 stderr；其他 Node 版本若发出警告会原样显示。
 
 ## 接口与语义
+
+本节描述默认 off；所有候选默认关闭，不能叠加。
 
 `index.mjs` 导出：
 
@@ -23,7 +25,7 @@ Demo 输出一份 JSON：运行版本、a–m 原文及分词、查询提取文�
 - `weightedLength(text): number`：按 Unicode 码点，Han 权重 2，其余权重 1，空格、标点、换行及 emoji 均计入。
 - `extractText(content): string`：字符串原样返回；数组只提取字符串类型的 `text` 块，按原顺序以换行连接；图片和其他块忽略。
 - `implicitOr(query): string`：无状态纯函数，把 FTS5 操作数之间的隐式 AND 连接改为 OR；显式操作符及其分组保留。相同原始 query 得到相同 MATCH 字符串，供执行及事后复算使用，详见 v4 规则。
-- `createIndex([{id,text,sourcePosition?,date?,role?}], {timer}={})`：同 id 先保留最新（sourcePosition/recency，否则输入顺序），再排除空正文；最新空编辑遮蔽旧文本。返回 search / searchRaw / queryRows / missingTerms / close，size 为去重及空正文过滤后的语料数。queryRows 返回完整内部排名供同步和 worker 共用。
+- `createIndex([{id,text,sourcePosition?,date?,role?}], {arm='off',timer}={})`：同 id 先保留最新（sourcePosition/recency，否则输入顺序），再排除空正文；最新空编辑遮蔽旧文本。返回 search / searchRaw / queryRows / missingTerms / close，size 为去重及空正文过滤后的语料数。queryRows 返回完整内部排名供同步和 worker 共用。
 - `search` 返回 `{skipped, total, results: [{id, score}], queryTerms}`。limit 为非负安全整数；`limit: 0` 仍返回真实 total。空查询、全英文停用词、单 Han 字无词项时正常返回空，不执行无效 MATCH。
 - `searchRaw(query, {limit}={})` 返回 `{total, results:[{id,score}]}`。将 implicitOr(query) 绑定 MATCH，不去停用词、拆中文、截断或设 210 门槛。每个候选先生成片段，按空白折叠、去首尾空白后的片段去重，保留最新代表；然后按 BM25 升序、命中不同实际查询词数降序、原文新旧降序排序。total 和 limit 均在去重后计算。模型展示前另投影四字段，不包含 score。
 
@@ -40,27 +42,27 @@ try {
 
 分词规则：
 
-1. 每个连续 `\p{Script=Han}` 段生成相邻双字；不跨标点、中英边界或其他非 Han 字符。另对每段调用 `Intl.Segmenter('zh', {granularity:'word'})`，只接受 isWordLike、纯 Han、至少两个码点的词。
+1. 每个连续 `\p{Script=Han}` 段生成相邻双字；不跨标点、中英边界或其他非 Han 字符。另对每段调用 `Intl.Segmenter('zh', {granularity:'word'})`，只接受 isWordLike、纯 Han、至少三个码点的词。
 2. 两字词与同位置双字完全重合，只记一次；不同位置的重复仍计频次。按原文位置、短跨度优先排序，所有词共用命名空间。不加单字或滑动 trigram；ICU 确实产出的三字及更长词仍保留，例如本机的“共和国”。
 3. 非汉字分支同主线 `[A-Za-z0-9_$]+`：整词小写且长度 ≥2；驼峰、缩写边界和 `_`/`$` 组件也索引（长度 ≥2、不等于整词）。完整 STOPWORDS 是 `ec16440:src/locator.mjs` 值拷贝，含中文；只过滤自动 query，不过滤索引。长度规则仍会淘汰单字母、单个数字，不能把这归因于停用词。
 4. 自动查询先 extractText，再在分词、停用词过滤和去重前计长：**大于 210 整次跳过，等于 210 允许**；不截断后搜索。主动查询没有此闸，也不截断尾部。独立 image 块不计；已经拼入 text 的附件文字正常计入，块间连接的换行也计入。
 
 ## 内存索引
 
-只有一个 `new DatabaseSync(':memory:')` 和一张主 FTS5 虚表：
+默认 off 只有一个 `new DatabaseSync(':memory:')` 和一张主 FTS5 虚表：
 
 ```sql
 CREATE VIRTUAL TABLE terms USING fts5(
   tokens, content='', columnsize=1, detail=full,
-  tokenize="ascii tokenchars '_'"
+  tokenize="ascii tokenchars '_$'"
 );
 ```
 
-预分词结果以 ASCII 空格连接。FTS5 的 ascii tokenizer 保留非 ASCII Han 词项，显式 tokenchars 保留下划线；已实测 `foo_bar`、`_`、扩展区 Han 和重复词频不会被拆坏。contentless 不存原文或完整预分词文本副本，保留倒排频次、位置及 BM25 所需文档长度元数据；JavaScript 仅保留 rowid → id 映射。原文由 demo 的输入文档持有，展开时按 id 查回。
+预分词结果以 ASCII 空格连接。FTS5 的 ascii tokenizer 保留非 ASCII Han 词项，tokenchars 保留 `_` / `$`。contentless 不存原文或完整预分词文本副本，保留倒排频次、位置及 BM25 所需文档长度元数据；JavaScript 保留 id/date/role/recency 及原文引用，查询时惰性缓存词项跨度，展开仍按 id 查回。
 
 `temp_store=MEMORY`；不生成数据库、WAL、SHM 文件。构建为一次事务，close 释放连接。没有持久化、增量更新或服务。
 
-自动 search 将每个选出的 MATCH 词项双引号包裹、内部双引号转义，再用 OR 连接并绑定参数；显式 searchRaw 在 v4 只改写原生隐式连接，再绑定完整表达式，支持 FTS5 原生显式操作符、短语和前缀语义。无命中比例门槛、fuzzy、trigram tokenizer 或 LIKE 补救。SQLite `bm25(terms)` 原始分数为负，**越小越优先**；JavaScript 按该分数排序，同分按字符串 id 的确定性顺序排序。取出全部候选再应用 limit，total 不是返回数量；此原型不优化海量候选的内存/排序开销。
+自动 search 将每个选出的 MATCH 词项双引号包裹、内部双引号转义，再用 OR 连接并绑定参数；默认 searchRaw 只改写原生隐式连接，再绑定完整表达式，支持原生显式操作符、短语和前缀。没有 fuzzy、trigram tokenizer 或 LIKE 补救。SQLite `bm25(terms)` 原始分数为负，越小越优先；片段去重先保留最新代表，再按 BM25、不同实际查询词命中数、原文新旧排序。取出全部候选再应用 limit，total 不是返回数量。
 
 ## 实际验证
 
@@ -209,3 +211,27 @@ dev8/3d86fd0a 中英各 5035 条真实输入，en 1 自动+6 显式、zh 1 自�
 - 自动查询不补救错字、任意英文前缀/内部子串及单 Han 字；不能由 gatway 推出 gateway 或由 moto 推出 motorcycle。S5 的确切标识符组件可以命中原词，如 compaction 命中 CompactionResult；这不是任意前缀匹配。显式可使用原生 FTS5 前缀语法，不自动补写；无结果不代表历史没有相关语义。
 - 同时索引双字与词语会影响 BM25 的词频和文档长度；分数不是概率，不应与另一引擎直接比较。ICU 升级可能改变多字词和排名。
 - 已完成 16 题机械评测及 v2/v3 各 32 个正式会话，均是单次运行，不给波动范围或跨引擎结论。v4 在显式查询端只替换隐式连接，显式 AND 仍要求全部操作数匹配，NEAR 和短语不放宽。片段窗口不保证展示最相关证据，应 expand 核实；OR 可能返回更多弱相关候选。
+
+## S6：默认关闭的离线候选
+
+评测入口 `retrieval-sqlite-engine.mjs` / `retrieval-sqlite-worker.mjs` 读取单值 `COMPACTION_RECALL_SQLITE_ARM`；允许 `off`、`prefix-all`、`prefix-min4`、`jieba`、`porter`、`porter-js`，默认 off，未知值或组合报错。`createIndex` 只接受显式 `{arm}`，不读取环境；生产 src、工具描述、关键词上限和原始 query trace 均未改。主线 89 个停用词只过滤自动提示，索引和显式查询保留它们。
+
+- **prefix-all**：自动选出的全部词项加原生 `*`；显式 MATCH 仅扩展裸操作数。引号、已有 `*`、`^` / `+` 所属短语及完整 NEAR 组不改；AND/OR/NOT、列名和分组保留。列作用域内独立裸词仍扩展。
+- **prefix-min4**：同上，仅扩展至少 4 字符的 ASCII 字母/数字/下划线裸词；不扩展 Han。
+- **jieba**：`Jieba.withDict(dict)`、`cutForSearch(hanRun,true)`，只替换连续 Han 段的 Intl 长词；双字不变。纯 Han 至少 3 码点的输出按 term/start/end 去重，重叠及重复位置仍保留。每 worker 惰性加载一次；主线程评测入口不加载 native addon 或字典，自动切词也在 worker。同步 createIndex 可在 worker 内使用；主线程同步启用 jieba 会明确拒绝，group1 引擎桥接到 worker 内同步索引。显式 MATCH 本身不切词改写。
+- **porter**：FTS5 的 tokenizer 是表级而非列级，因此用同连接内的 `tokenize='porter ascii'` 辅助表按原生位置生成英语 stems，再存入主表 tokens/stems 双列，执行 `bm25(terms,1.0,0.5)`。Han 不进入 stems。未加引号且未显式指定列的操作数走原词/词干；引号与显式列过滤保留 exact/native 语义。同词别名相同时使用单个跨列短语，其频次为 `1.0*origTF+0.5*stemTF` 后统一饱和；别名不同时为两条原生 OR phrase 的 BM25 相加，不能视为完全消除了重复贡献。命中词计数及片段按原始查询词去重。含引号的 NEAR/+ 单元保持原列完整短语；纯裸单元不做跨列混合短语；stems 排除 Han 会压缩该列位置，双列也改变原生文档长度统计。
+- **porter-js**：复用 porter 的 tokens/stems 双列及完整 query 重写/片段/去重语义；仅改为 JS `@orama/stemmers/english` 预生成词干，列权重 1.0/1.0。不创建 native porter 辅助表。JS helper 按 native ascii 边界拆 `_`/`$`、保持顺序及重复，Han 不进入 stems；依赖仅此 arm 初始化时加载。booked/booking/book、attended/attending、workshops、played→plai、assembled 与 native porter ascii 抽样一致。原 porter 保持 native helper 与 1.0/0.5 权重作对照。
+
+各候选最新离线验收、同步/background worker 完整排名对照及 off 对 S5b 的逐项 id/score 一致性见授权 runs/sqlite/s6-arms.md。auto-stopwords-iso 已移除代码、测试和依赖；此前结果仅保留存档，不代表当前可运行开关。
+
+复现（需要显式指定只读数据/gold 与新的输出；不调用模型）：
+
+```sh
+node benchmark/retrieval-sqlite-arms.mjs --arm prefix-min4 --data "$DATA" --gold "$GOLD" --baseline "$RUNS/group1-s5b.json" --output "$RUNS/group1-s6-prefix-min4.json"
+COMPACTION_RECALL_SQLITE_ARM=off node benchmark/retrieval-sqlite-parity.mjs --data "$DATA" --gold "$GOLD" --output "$RUNS/parity-s6-off"
+node benchmark/retrieval-sqlite-measure.mjs --data "$DATA" --gold "$GOLD" --output "$RUNS/s6-memory" --samples 3
+```
+
+测量每个样本为独立 `node --expose-gc` 进程，统一在 worker 内运行同步索引；字典加载及建索引前后各 GC 两次。输入 documents 在 before 之前已存在，活堆增量不包含输入原文，也不包含查询后惰性 spans 缓存；RSS 不是数据库物理大小或峰值。jieba 字典加载另报，不能把仅 build 的 RSS 增量当总成本。每查询首调用及 3 次 warm 单独记录；汇总为 3 个新进程的中位数。
+
+本轮完整指标、四份语料的内存/构建/五条查询时间、实际命令与 git diff SHA256 位于授权 runs/sqlite/s6-arms.md；raw samples 在 s6-memory/summary.json，逐题匹配及排名证据在 group1-s6-evidence-complete.json。只完成离线候选，没有第 2 组或真实模型调用，也没有提交。

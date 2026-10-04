@@ -1,7 +1,9 @@
 import { createIndex } from '../prototype/soft-match-sqlite/index.mjs';
 import { measured } from '../src/timing.mjs';
+import { validateArm } from '../prototype/soft-match-sqlite/arms.mjs';
 
-export function createWorkerEngine() {
+export function createWorkerEngine({ arm = process.env.COMPACTION_RECALL_SQLITE_ARM ?? 'off' } = {}) {
+  validateArm(arm);
   let index;
   let documents = [];
   return {
@@ -14,7 +16,7 @@ export function createWorkerEngine() {
         entry.id !== documents[i].id || entry.text !== documents[i].text ||
         entry.sourcePosition !== documents[i].sourcePosition || entry.date !== documents[i].date || entry.role !== documents[i].role);
       if (changed) {
-        const replacement = measured(timer, 'postings_activation', () => createIndex(next));
+        const replacement = measured(timer, 'postings_activation', () => createIndex(next, { arm }));
         index?.close(); index = replacement; documents = next;
       }
       timer?.mark('worker_maintenance', { kind: changed ? 'build_or_rebuild' : 'activation', entries: index.size, execution: 'worker_thread' });

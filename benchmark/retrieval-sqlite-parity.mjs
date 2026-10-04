@@ -22,9 +22,12 @@ export async function runParity({ output, dataRoot = '/home/rinne/workspace/pi-c
   }
   const cases = loadEvaluationCases({ dataRoot, goldPath }).filter(item => item.key === 'dev8/3d86fd0a');
   assert.deepEqual(cases.map(item => item.language).sort(), ['en', 'zh']);
-  const report = { question: 'dev8/3d86fd0a', node: process.version, dataRoot, goldPath, cases: [] };
+  const report = {
+    question: 'dev8/3d86fd0a', node: process.version, dataRoot, goldPath,
+    arm: process.env.COMPACTION_RECALL_SQLITE_ARM ?? 'off', cases: []
+  };
   for (const item of cases) {
-    const sync = createEngine(item.documents);
+    const sync = await createEngine(item.documents);
     const worker = new BackgroundIndex({ engineModule: new URL('./retrieval-sqlite-worker.mjs', import.meta.url) });
     const results = [];
     try {
@@ -34,23 +37,27 @@ export async function runParity({ output, dataRoot = '/home/rinne/workspace/pi-c
       const rawQueries = item.language === 'en'
         ? ['coffee shop', 'NEAR(coffee shop, 5)', '"coffee shop"', 'relationship OR friend', 'Sophia', 'tokens:coffee NOT absent']
         : ['咖啡 商店', '关系 OR 朋友', '"咖啡"', 'tokens:城市', '强迫性性行为 OR 网关'];
-      for (const [mode, query] of [['auto', item.question], ...rawQueries.map(query => ['manual', query])]) {
+      const automaticQueries = item.language === 'en' ? [item.question, 'Where coffee shops Sophia?', 'friend relationship']
+        : [item.question, '咖啡商店 Sophia', '关系朋友'];
+      for (const [mode, query] of [...automaticQueries.map(query => ['auto', query]), ...rawQueries.map(query => ['manual', query])]) {
         if (mode === 'manual') assert.ok(countKeywords(query) <= 5, query);
         const before = performance.now();
-        const expected = mode === 'auto' ? sync.searchAuto(query) : sync.searchRaw(query).results;
+        const expected = mode === 'auto' ? await sync.searchAuto(query) : (await sync.searchRaw(query)).results;
         const synchronousMs = performance.now() - before;
         const requested = performance.now();
         const actual = await worker.queryRanked(query, item.branch, { mode, options: { limit: 1, offset: 1 } });
         const workerMs = performance.now() - requested;
         assert.equal(actual.total, expected.length);
         assert.deepEqual(ranks(actual.results), expected, `${item.language} ${mode} ${query}`);
-        results.push({ mode, query, keywordCount: mode === 'manual' ? countKeywords(query) : null,
+        results.push({
+          mode, query, keywordCount: mode === 'manual' ? countKeywords(query) : null,
           total: actual.total, identicalRanksAndScores: true, synchronousMs, workerMs,
-          missingTerms: actual.missingTerms, ranking: ranks(actual.results) });
+          missingTerms: actual.missingTerms, ranking: ranks(actual.results)
+        });
       }
       report.cases.push({ language: item.language, documents: item.documents.length, buildMs, results });
     } finally {
-      sync.dispose();
+      await sync.dispose();
       await worker.dispose();
     }
   }

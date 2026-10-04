@@ -7,7 +7,7 @@ export const STOPWORDS = new Set((
 const PURE_HAN = /^\p{Script=Han}+$/u;
 const segmenter = new Intl.Segmenter('zh', { granularity: 'word' });
 
-export function tokenizeSpans(text) {
+export function tokenizeSpans(text, segmentHan) {
   const spans = [];
   let previousEnd = 0, base = 0;
   for (const match of text.matchAll(/\p{Script=Han}+|[A-Za-z0-9_$]+/gu)) {
@@ -29,14 +29,25 @@ export function tokenizeSpans(text) {
     } else {
       const chars = Array.from(word), pieces = [];
       for (let i = 0; i + 1 < chars.length; i++) pieces.push({ term: chars[i] + chars[i + 1], start: base + i, end: base + i + 2 });
-      let segmentUnits = 0, segmentPoints = 0;
-      for (const { segment, index, isWordLike } of segmenter.segment(word)) {
-        const length = Array.from(segment).length;
-        if (isWordLike && PURE_HAN.test(segment) && length > 2) {
-          segmentPoints += Array.from(word.slice(segmentUnits, index)).length;
-          segmentUnits = index;
-          const start = base + segmentPoints;
-          pieces.push({ term: segment, start, end: start + length });
+      if (segmentHan) {
+        for (const term of new Set(segmentHan(word))) {
+          const length = Array.from(term).length;
+          if (length < 3 || !PURE_HAN.test(term)) continue;
+          for (let index = word.indexOf(term); index !== -1; index = word.indexOf(term, index + 1)) {
+            const start = base + Array.from(word.slice(0, index)).length;
+            pieces.push({ term, start, end: start + length });
+          }
+        }
+      } else {
+        let segmentUnits = 0, segmentPoints = 0;
+        for (const { segment, index, isWordLike } of segmenter.segment(word)) {
+          const length = Array.from(segment).length;
+          if (isWordLike && PURE_HAN.test(segment) && length > 2) {
+            segmentPoints += Array.from(word.slice(segmentUnits, index)).length;
+            segmentUnits = index;
+            const start = base + segmentPoints;
+            pieces.push({ term: segment, start, end: start + length });
+          }
         }
       }
       pieces.sort((a, b) => a.start - b.start || (a.end - a.start) - (b.end - b.start));

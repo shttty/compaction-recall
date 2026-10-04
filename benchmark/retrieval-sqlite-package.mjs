@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdirSync, copyFileSync, writeFileSync, chmodSync, readdirSync } from 'node:fs';
+import { mkdirSync, copyFileSync, writeFileSync, chmodSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
@@ -16,7 +16,9 @@ const files = [
   'benchmark/retrieval-sqlite-worker.mjs', 'benchmark/retrieval-sqlite-page.mjs',
   'benchmark/fts5-snippet.mjs',
   'prototype/soft-match-sqlite/index.mjs', 'prototype/soft-match-sqlite/query.mjs',
-  'prototype/soft-match-sqlite/lexical.mjs',
+  'prototype/soft-match-sqlite/lexical.mjs', 'prototype/soft-match-sqlite/arms.mjs',
+  'prototype/soft-match-sqlite/porter.mjs',
+  'prototype/soft-match-sqlite/porter-js.mjs',
   ...readdirSync(join(root, 'src')).filter(name => /\.(ts|mjs)$/.test(name)).map(name => `src/${name}`),
   'LICENSE', 'THIRD_PARTY_NOTICES.md',
 ];
@@ -30,5 +32,6 @@ writeFileSync(join(output, 'package.json'), JSON.stringify({
   name: 'retrieval-soft-match-sqlite', private: true, type: 'module',
   pi: { extensions: ['./benchmark/retrieval-sqlite-adapter.ts'] },
   peerDependencies: { '@earendil-works/pi-coding-agent': '1.0.0', typebox: '1.3.27' },
+  dependencies: JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).dependencies,
 }, null, 2) + '\n', { flag: 'wx', mode: 0o444 });
 console.log(JSON.stringify({ package: output, entry: './benchmark/retrieval-sqlite-adapter.ts', files: files.length + 1 }));
