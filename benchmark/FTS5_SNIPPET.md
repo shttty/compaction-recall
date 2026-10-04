@@ -16,6 +16,8 @@ const window = selectFts5Window(text, hits, 120);
 
 Returned offsets refer to original text, excluding ellipses. The literal `…` appears only where original text was cut. Ellipses are outside the content budget. No highlighting, word-boundary expansion, trimming, or surrogate splitting is performed. Empty/no-hit input returns the prefix (empty for empty text), score zero. A short document is returned whole.
 
+Both functions accept a fourth argument `{ sentenceBonus: false }` to disable only the sentence-start +100 and first-sentence +120 additions. The default is `{ sentenceBonus: true }`, preserving all prior results. Sentence candidates remain enumerated; distinct/repeated scoring, candidate order/ties, original-score centering, end clamp and ellipses are unchanged.
+
 ## Upstream source and provenance
 
 The implementation was read from the requested [SQLite master source](https://raw.githubusercontent.com/sqlite/sqlite/master/ext/fts5/fts5_aux.c), including the complete `fts5SentenceFinderCb`, `fts5SnippetScore`, and `fts5SnippetFunction` and their output/highlight path. `master` is mutable. On 2026-10-03 it was byte-identical to this [immutable revision](https://raw.githubusercontent.com/sqlite/sqlite/95699469b7fff74ceb7492b7dc8370b923f5ccff/ext/fts5/fts5_aux.c):
@@ -75,4 +77,11 @@ Answer positions are selected mechanically **before comparing windows**: enumera
 The mandatory `982b5123:00000553` example is the largest start-distance exposure for that English id. The other four examples are the largest start-distance exposures with distinct entry ids, without selecting for gold status or FTS5 success. This rule deliberately includes irrelevant retrieved text as well as evidence. Report window-disagreement rates compare start/end ranges, not ellipsis formatting.
 
 The authoritative measured output is `runs/snippet-compare/final/` under the explicitly authorized external task directory. The root-level initial report timed the comparison wrappers too; it is a diagnostic run and is not used for the final timing table. `final/report.json` retains command, runtime, source/input hashes, full coverage distributions and per-run/language summaries; `rows.jsonl`, `answer-position-samples.json` and `comparison.md` retain all paired windows, answer anchors and examples. No archived input report, label or provenance is changed.
+
+## Fixed-sample no-sentence-bonus comparison (S4-0B)
+
+Run the same command with `--baseline /absolute/path/to/snippet-compare/final --no-sentence-bonus --output /absolute/path/to/snippet-compare/no-sentence-bonus`. The runner adds `fts5NoBonus` as a fourth method, remeasures all four native snippet functions, and reports zero-start counts/ratios. It loads the **existing** answer-position inventory instead of deriving new positions, requires exactly the same 3,605 exposures, and checks each query/id/channel/call/rank, original length, hit counts, old three windows and answer spans against prior rows. It also checks saved run input hashes. A mismatch fails before any report is written. Prior output files remain read-only.
+
+`pairwise.productionOnly` and `pairwise.noBonusOnly` count exposed English gold rows containing at least one fixed answer span covered by one method but not the other. `uniqueEntryCount` deduplicates by question/entry id across runs and queries; a single entry can appear in both directions under different queries/spans. `exposureCount` retains each run/channel/call exposure. `exclusiveExposureCount` additionally requires the losing method to cover no other answer span on that exposure. Examples are the first at most three distinct entries in saved input order, not selected for largest gain. These are literal answer-position differences, not question-correctness scores. The required `982b5123:00000553` example reuses the original report's exact exposure.
+
 

@@ -131,3 +131,29 @@ test('invalid budgets and caller ranges fail explicitly', () => {
     assert.throws(() => selectFts5Window('abc', [{ term: 'a', start, end }]), RangeError);
   }
 });
+
+test('sentenceBonus false removes both first and later sentence preferences, retaining centering', () => {
+  const firstText = 'aaa red bbb ccc ddd';
+  const firstHits = [{ term: 'red', start: 4, end: 7 }];
+  assert.equal(selectFts5Window(firstText, firstHits, 11).score, 1120);
+  assert.deepEqual(selectFts5Window(firstText, firstHits, 11, { sentenceBonus: false }),
+    { start: 0, end: 11, score: 1000, snippet: 'aaa red bbb…' });
+  const text = 'xxxxxxxxx。甲甲答案乙乙丙丙丁丁';
+  const hits = [{ term: '答案', start: 12, end: 14 }];
+  assert.equal(selectFts5Window(text, hits, 8).start, 10);
+  const selected = selectFts5Window(text, hits, 8, { sentenceBonus: false });
+  assert.deepEqual(selected, { start: 9, end: 17, score: 1000, snippet: '…。甲甲答案乙乙丙…' });
+  assert.equal(fts5Snippet(text, hits, 8, { sentenceBonus: false }), selected.snippet);
+});
+
+test('no-bonus mode retains distinct/repeated scoring, end clamp, no-hit fallback and default parity', () => {
+  const text = 'x'.repeat(30);
+  const hits = [{ term: 'a', start: 21, end: 22 }, { term: 'b', start: 23, end: 24 }, { term: 'a', start: 27, end: 28 }];
+  const noBonus = selectFts5Window(text, hits, 12, { sentenceBonus: false });
+  assert.equal(noBonus.score, 2001);
+  assert.equal(noBonus.start, 18);
+  assert.equal(noBonus.end, 30);
+  assert.deepEqual(selectFts5Window(text, hits, 12, { sentenceBonus: true }), selectFts5Window(text, hits, 12));
+  assert.deepEqual(selectFts5Window('甲。乙。丙。丁。', [], 2, { sentenceBonus: false }),
+    { start: 0, end: 2, score: 0, snippet: '甲。…' });
+});

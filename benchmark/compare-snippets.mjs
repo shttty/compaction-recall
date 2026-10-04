@@ -25,11 +25,19 @@ const { values } = parseArgs({
     run: { type: 'string', multiple: true }, output: { type: 'string' }, repeats: { type: 'string', default: '20' },
     'sqlite-tokenizer': { type: 'string' }, 'minisearch-tokenizer': { type: 'string' },
     'sqlite-adapter': { type: 'string' }, 'minisearch-adapter': { type: 'string' },
+    baseline: { type: 'string' }, 'no-sentence-bonus': { type: 'boolean' },
   }
 });
 for (const key of ['run', 'output', 'sqlite-tokenizer', 'minisearch-tokenizer', 'sqlite-adapter', 'minisearch-adapter']) if (!values[key]) throw new Error(`--${key} is required`);
 const repeats = Number(values.repeats);
 if (!Number.isSafeInteger(repeats) || repeats < 1) throw new Error('repeats must be a positive integer');
+if (values['no-sentence-bonus'] && !values.baseline) throw new Error('--no-sentence-bonus requires the prior --baseline directory');
+const baseline = values.baseline ? path.resolve(values.baseline) : undefined;
+const frozenRows = baseline ? readFileSync(path.join(baseline, 'rows.jsonl'), 'utf8').split('\n').filter(Boolean).map(JSON.parse) : undefined;
+const frozenReferences = baseline ? load(path.join(baseline, 'answer-position-samples.json')) : undefined;
+const frozenReport = baseline ? load(path.join(baseline, 'report.json')) : undefined;
+const referenceKey = (run, key, id) => JSON.stringify([run, key, id]);
+const referenceById = new Map((frozenReferences ?? []).map(ref => [referenceKey(ref.run, ref.key, ref.id), ref]));
 const tokenizers = {};
 const nativeSnippets = Object.fromEntries(['sqlite', 'minisearch'].map(name => {
   // Execute only the trusted, read-only snippet function; never adapter registration.
@@ -38,7 +46,7 @@ const nativeSnippets = Object.fromEntries(['sqlite', 'minisearch'].map(name => {
   return [name, new Function('lex', `return (${source});`)(lex)];
 }));
 for (const name of ['sqlite', 'minisearch']) tokenizers[name] = (await import(pathToFileURL(path.resolve(values[`${name}-tokenizer`])).href)).tokenize;
-const methods = ['prototype', 'production', 'fts5'];
+const methods = ['prototype', 'production', 'fts5', ...(values['no-sentence-bonus'] ? ['fts5NoBonus'] : [])];
 const rows = [], references = [], inputHashes = {}, skipped = [];
 const corpusCache = new Map();
 const timing = Object.fromEntries(methods.map(method => [method, { ns: 0n, count: 0 }]));
@@ -93,7 +101,8 @@ for (const specification of values.run) {
       for (const id of gold) {
         const text = data.docs.get(id);
         if (text === undefined) throw new Error(`Missing gold document ${id}`);
-        const positions = answerPositions(text, answer, metadata.questionId === '982b5123');
+        const positions = baseline ? referenceById.get(referenceKey(label, metadata.key, id))?.positions : answerPositions(text, answer, metadata.questionId === '982b5123');
+        if (!positions) throw new Error(`Missing frozen answer positions: ${label}/${metadata.key}/${id}`);
         answerById.set(id, positions);
         references.push({ run: label, key: metadata.key, id, answer, positions });
       }
@@ -120,6 +129,7 @@ for (const specification of values.run) {
           prototype: () => prototypeWindow(text, exposure.query, prototype),
           production: () => productionWindow(text, hits, data.frequency),
           fts5: () => selectFts5Window(text, hits),
+          ...(values['no-sentence-bonus'] ? { fts5NoBonus: () => selectFts5Window(text, hits, 120, { sentenceBonus: false }) } : {}),
         };
         const windows = {};
         const first = new Map();
@@ -130,6 +140,7 @@ for (const specification of values.run) {
           prototype: () => nativeSnippets[prototype](text, exposure.query),
           production: () => locatorWindow(candidate, data.frequency),
           fts5: () => fts5Snippet(text, hits),
+          ...(values['no-sentence-bonus'] ? { fts5NoBonus: () => fts5Snippet(text, hits, 120, { sentenceBonus: false }) } : {}),
         };
         for (const method of methods) {
           windows[method] = tasks[method]();
@@ -155,6 +166,25 @@ for (const specification of values.run) {
     }
   }
 }
+if (baseline) {
+  if (rows.length !== 3605 || rows.length !== frozenRows.length) throw new Error('Frozen exposure count changed');
+  for (let i = 0; i < rows.length; i++) {
+    const old = frozenRows[i], row = rows[i];
+    for (const field of ['run', 'prototype', 'key', 'language', 'channel', 'callIndex', 'rank', 'id', 'query', 'textLength', 'hits', 'distinctHitTerms']) {
+      if (JSON.stringify(row[field]) !== JSON.stringify(old[field])) throw new Error(`Frozen input changed at row ${i}: ${field}`);
+    }
+    for (const method of ['prototype', 'production', 'fts5']) {
+      if (JSON.stringify(row.windows[method]) !== JSON.stringify(old.windows[method])) throw new Error(`Prior ${method} window changed at row ${i}`);
+    }
+    const anchors = value => value.answerPositions.map(({ covered, ...position }) => position);
+    if (JSON.stringify(anchors(row)) !== JSON.stringify(anchors(old))) throw new Error(`Frozen answer anchors changed at row ${i}`);
+  }
+  if (JSON.stringify(references) !== JSON.stringify(frozenReferences)) throw new Error('Frozen reference inventory changed');
+  for (const [filename, digest] of Object.entries(inputHashes)) {
+    if (filename.includes('/runs/') && frozenReport.inputHashes[filename] && digest !== frozenReport.inputHashes[filename]) throw new Error(`Frozen run bytes changed: ${filename}`);
+  }
+  for (const filename of ['rows.jsonl', 'answer-position-samples.json', 'report.json']) inputHashes[path.join(baseline, filename)] = hash(path.join(baseline, filename));
+}
 function summarize(selected) {
   const methodStats = {};
   for (const method of methods) {
@@ -167,14 +197,16 @@ function summarize(selected) {
     methodStats[method] = {
       visibleTermsMean: selected.reduce((sum, row) => sum + row.visible[method], 0) / selected.length,
       visibleTermsDistribution: distribution, answerPositionsCovered: covered, answerPositionsTotal: positions,
-      answerPositionHitRate: positions ? covered / positions : null
+      answerPositionHitRate: positions ? covered / positions : null,
+      startAtZeroCount: selected.filter(row => row.windows[method].start === 0).length,
+      startAtZeroRatio: selected.filter(row => row.windows[method].start === 0).length / selected.length
     };
   }
   const differs = (row, a, b) => row.windows[a].start !== row.windows[b].start || row.windows[a].end !== row.windows[b].end;
   return {
     rows: selected.length, methods: methodStats,
-    differentAny: selected.filter(row => differs(row, 'prototype', 'production') || differs(row, 'prototype', 'fts5')).length / selected.length,
-    differentPairs: Object.fromEntries([['prototype', 'production'], ['prototype', 'fts5'], ['production', 'fts5']].map(([a, b]) => [`${a}/${b}`, selected.filter(row => differs(row, a, b)).length / selected.length]))
+    differentAny: selected.filter(row => methods.slice(1).some(method => differs(row, methods[0], method))).length / selected.length,
+    differentPairs: Object.fromEntries(methods.flatMap((a, i) => methods.slice(i + 1).map(b => [a, b])).map(([a, b]) => [`${a}/${b}`, selected.filter(row => differs(row, a, b)).length / selected.length]))
   };
 }
 const source = readFileSync(path.join(root, '../src/locator.mjs'), 'utf8');
@@ -182,11 +214,14 @@ const complexity = {
   prototype: { linesByPrototype: Object.fromEntries(['sqlite', 'minisearch'].map(name => [name, codeLines(functionText(readFileSync(values[`${name}-adapter`], 'utf8'), 'snippet'))])), needsDF: false },
   production: { lines: codeLines(functionText(source, 'snippet')) + codeLines(functionText(source, 'locatorWindow')), needsDF: true },
   fts5: { lines: codeLines(readFileSync(path.join(root, 'fts5-snippet.mjs'), 'utf8')), needsDF: false },
+  ...(values['no-sentence-bonus'] ? { fts5NoBonus: { lines: codeLines(readFileSync(path.join(root, 'fts5-snippet.mjs'), 'utf8')), needsDF: false } } : {}),
 };
 for (const method of methods) complexity[method].meanMicroseconds = Number(timing[method].ns) / timing[method].count / 1000;
 const grouped = [];
 for (const run of new Set(rows.map(row => row.run))) for (const language of ['en', 'zh']) grouped.push({ run, language, ...summarize(rows.filter(row => row.run === run && row.language === language)) });
-const mandatory = rows.filter(row => row.key === 'dev8/982b5123' && row.id.endsWith(':00000553') && row.language === 'en').sort((a, b) => b.spread - a.spread)[0];
+const frozenExample = frozenReport?.examples.find(row => row.key === 'dev8/982b5123' && row.id.endsWith(':00000553') && row.language === 'en');
+const mandatory = frozenExample ? rows.find(row => ['run', 'key', 'language', 'id', 'channel', 'callIndex', 'rank'].every(field => row[field] === frozenExample[field]))
+  : rows.filter(row => row.key === 'dev8/982b5123' && row.id.endsWith(':00000553') && row.language === 'en').sort((a, b) => b.spread - a.spread)[0];
 if (!mandatory) throw new Error('Required 982b5123:00000553 example is missing');
 const examples = [mandatory], seen = new Set([`${mandatory.key}/${mandatory.id}`]);
 for (const row of [...rows].sort((a, b) => b.spread - a.spread || `${a.run}/${a.key}/${a.id}/${a.callIndex}`.localeCompare(`${b.run}/${b.key}/${b.id}/${b.callIndex}`))) {
@@ -195,11 +230,24 @@ for (const row of [...rows].sort((a, b) => b.spread - a.spread || `${a.run}/${a.
   examples.push(row); seen.add(key);
   if (examples.length === 5) break;
 }
+const pairwise = {};
+for (const [name, winner, loser] of [['productionOnly', 'production', 'fts5NoBonus'], ['noBonusOnly', 'fts5NoBonus', 'production']]) {
+  if (!methods.includes('fts5NoBonus')) break;
+  const selected = rows.filter(row => row.language === 'en' && row.answerPositions.some(position => position.covered[winner] && !position.covered[loser]));
+  const ids = new Set(selected.map(row => `${row.key}/${row.id}`));
+  const used = new Set();
+  const examples = selected.filter(row => { const id = `${row.key}/${row.id}`; if (used.has(id)) return false; used.add(id); return true; }).slice(0, 3);
+  pairwise[name] = {
+    exposureCount: selected.length, uniqueEntryCount: ids.size,
+    exclusiveExposureCount: selected.filter(row => !row.answerPositions.some(position => position.covered[loser])).length, examples
+  };
+}
 const report = {
   source: 'read-only saved group2 records; no model or index rerun', command: process.argv, runtime: process.version, repeats, complexity,
   pooled: summarize(rows), grouped, contextStats, referenceGoldEntries: references.length,
   referenceGoldEntriesWithPositions: references.filter(reference => reference.positions.length).length,
   examples, inputHashes, skipped,
+  pairwise, baseline: baseline ? { directory: baseline, rows: rows.length, answerPositionExposures: rows.reduce((count, row) => count + row.answerPositions.length, 0), validatedUnchanged: true } : null,
   method: {
     exposures: 'one row per auto top5 or returned recall id; repeated calls/runs retained',
     timing: '2 warmups + repeated native string-returning snippet calls; actual adapter function isolated (SQLite signature types removed only), verbatim locatorWindow with prebuilt candidate, fts5Snippet; hit extraction, candidate/window bookkeeping and DF build excluded',
@@ -216,11 +264,18 @@ save(path.join(output, 'report.json'), report);
 save(path.join(output, 'answer-position-samples.json'), references);
 writeFileSync(path.join(output, 'rows.jsonl'), rows.map(row => JSON.stringify(row)).join('\n') + '\n', { mode: 0o600, flag: 'wx' });
 let markdown = '# Snippet-only comparison\n\nNo model calls; exposed rows and per-run/language summaries are in report.json.\n\n';
-markdown += '|Method|Cutting LOC|DF|Mean µs|Mean distinct visible terms|Answer positions covered|\n|---|---:|---|---:|---:|---:|\n';
-for (const method of methods) { const c = complexity[method], s = report.pooled.methods[method]; markdown += `|${method}|${c.lines ?? JSON.stringify(c.linesByPrototype)}|${c.needsDF}|${c.meanMicroseconds.toFixed(3)}|${s.visibleTermsMean.toFixed(3)}|${s.answerPositionsCovered}/${s.answerPositionsTotal}|\n`; }
+markdown += '|Method|Cutting LOC|DF|Mean µs|Mean distinct visible terms|Answer positions covered|Start at zero|\n|---|---:|---|---:|---:|---:|---:|\n';
+for (const method of methods) { const c = complexity[method], s = report.pooled.methods[method]; markdown += `|${method}|${c.lines ?? JSON.stringify(c.linesByPrototype)}|${c.needsDF}|${c.meanMicroseconds.toFixed(3)}|${s.visibleTermsMean.toFixed(3)}|${s.answerPositionsCovered}/${s.answerPositionsTotal}|${s.startAtZeroCount}/${report.pooled.rows}|\n`; }
 for (const example of examples) {
   markdown += `\n## ${example.run} ${example.key}/${example.language} ${example.id} ${example.channel} call ${example.callIndex}\n\nQuery: ${JSON.stringify(example.query)}; window start spread ${example.spread} points.\n`;
   for (const method of methods) markdown += `\n${method} [${example.windows[method].start},${example.windows[method].end}):\n\n> ${example.windows[method].snippet.replaceAll('\n', '\n> ')}\n`;
+}
+for (const [direction, stats] of Object.entries(pairwise)) {
+  markdown += `\n## ${direction}: ${stats.uniqueEntryCount} unique entries; ${stats.exposureCount} paired exposures\n`;
+  for (const example of stats.examples) {
+    markdown += `\n${example.run} ${example.key} ${example.id} ${example.channel}/${example.callIndex}; query ${JSON.stringify(example.query)}\n`;
+    for (const method of ['production', 'fts5NoBonus']) markdown += `\n${method} [${example.windows[method].start},${example.windows[method].end}):\n\n> ${example.windows[method].snippet.replaceAll('\n', '\n> ')}\n`;
+  }
 }
 writeFileSync(path.join(output, 'comparison.md'), markdown, { mode: 0o600, flag: 'wx' });
 console.log(JSON.stringify({ output, complexity, pooled: report.pooled, grouped, contextStats, referenceGoldEntriesWithPositions: report.referenceGoldEntriesWithPositions }, null, 2));

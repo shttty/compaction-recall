@@ -19,14 +19,14 @@ function sentenceStarts(chars) {
 }
 
 /** Select a codepoint window from caller-provided {term,start,end} hits. */
-export function selectFts5Window(text, hits, budget = 120) {
+export function selectFts5Window(text, hits, budget = 120, { sentenceBonus = true } = {}) {
   if (!Number.isSafeInteger(budget) || budget < 1) {
     throw new RangeError('budget must be a positive safe integer');
   }
   const chars = Array.from(text);
   for (const hit of hits) {
     if (!Number.isSafeInteger(hit.start) || !Number.isSafeInteger(hit.end)
-        || hit.start < 0 || hit.end <= hit.start || hit.end > chars.length) {
+      || hit.start < 0 || hit.end <= hit.start || hit.end > chars.length) {
       throw new RangeError('hit offsets must be nonempty codepoint ranges within text');
     }
   }
@@ -50,7 +50,7 @@ export function selectFts5Window(text, hits, budget = 120) {
     }
     // Empty sentences do not earn a bonus or move the no-hit prefix fallback.
     if (first < 0) return;
-    score += bonus;
+    if (sentenceBonus) score += bonus;
     if (score <= bestScore) return;
     if (adjust) {
       // C integer division truncates toward zero, including oversized matches.
@@ -78,6 +78,6 @@ export function selectFts5Window(text, hits, budget = 120) {
   return { start: bestStart, end, score: bestScore, snippet };
 }
 
-export function fts5Snippet(text, hits, budget = 120) {
-  return selectFts5Window(text, hits, budget).snippet;
+export function fts5Snippet(text, hits, budget = 120, options = {}) {
+  return selectFts5Window(text, hits, budget, options).snippet;
 }
