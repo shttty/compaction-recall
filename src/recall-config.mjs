@@ -8,7 +8,7 @@ const decimal = value => typeof value === 'string' && /^\d+$/.test(value) ? Numb
 /**
  * Optional agent-wide configuration, read once when the extension loads.
  * @param {{env?: NodeJS.ProcessEnv, warn?: (message: string) => void}} options
- * @returns {{mode: 'lite' | 'full', trace: boolean, userCycles: number, toolRounds: number, recallTimeoutMs: number, autoGate: number, snippetBudget?: number}}
+ * @returns {{mode: 'lite' | 'full', trace: boolean, userCycles: number, toolRounds: number, recallTimeoutMs: number, autoGate: number, snippetBudget: number}}
  */
 export function loadRecallConfig({ env = process.env, warn = () => { } } = {}) {
  const path = join(getAgentDir(), 'extensions', 'compaction-recall.json'); let file = {}, fileMode, fileTrace, fileTimeout, fileGate, fileSnippet;
@@ -36,12 +36,12 @@ export function loadRecallConfig({ env = process.env, warn = () => { } } = {}) {
   else { mode = 'full'; warn('compaction-recall: invalid COMPACTION_RECALL_MODE; expected lite or full, using full'); }
  }
  if (fileTrace !== undefined && typeof fileTrace !== 'boolean') warn('compaction-recall: invalid trace; expected boolean, using false');
- const snippetBudget = positiveInteger(env.COMPACTION_RECALL_SNIPPET_BUDGET === undefined ? fileSnippet : decimal(env.COMPACTION_RECALL_SNIPPET_BUDGET), undefined);
+ const snippetBudget = positiveInteger(env.COMPACTION_RECALL_SNIPPET_BUDGET === undefined ? fileSnippet : decimal(env.COMPACTION_RECALL_SNIPPET_BUDGET), 240);
  const result = {
   mode, trace: fileTrace === true, ...PREINDEX_DEFAULTS,
   recallTimeoutMs: positiveInteger(env.COMPACTION_RECALL_QUERY_TIMEOUT_MS === undefined ? fileTimeout : decimal(env.COMPACTION_RECALL_QUERY_TIMEOUT_MS), 5000),
   autoGate: positiveInteger(env.COMPACTION_RECALL_AUTO_GATE === undefined ? fileGate : decimal(env.COMPACTION_RECALL_AUTO_GATE), 210),
-  ...(snippetBudget === undefined ? {} : { snippetBudget }), // Absent means legacy 120 codepoints, not weighted 120.
+  snippetBudget,
  };
  for (const [field, key] of [['userCycles', 'COMPACTION_RECALL_PREINDEX_TURNS'], ['toolRounds', 'COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS']]) {
   if (file[field] !== undefined) { if (valid(file[field])) result[field] = file[field]; else warn(`compaction-recall: invalid preindex.${field}; expected integer 1–100, using default`); }

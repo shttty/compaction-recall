@@ -294,13 +294,13 @@ function validateRecallPageOptions(options) {
  * @param {ReturnType<typeof locatorRow>[]} rows
  * @param {{ limit?: number; offset?: number }} [options]
  * @param {StageTimer} [timer]
+ * @param {{ total?: number; baseOffset?: number }} [bounds]
  * @returns {{ text: string; details: RecallPageDetails }}
  */
-export function recallPageFromRows(rows, options = {}, timer) {
+export function recallPageFromRows(rows, options = {}, timer, { total = rows.length, baseOffset = 0 } = {}) {
   validateRecallPageOptions(options);
   const limit = options.limit ?? RECALL_DEFAULT_LIMIT, offset = options.offset ?? 0;
   return measured(timer, "manual_snippets_pagination_render", () => {
-    const total = rows.length;
     /** @param {string[]} selected @param {boolean} [budgetExceeded] */
     const page = (selected, budgetExceeded = false) => {
       const returned = selected.length, hasMore = offset + returned < total;
@@ -317,7 +317,7 @@ export function recallPageFromRows(rows, options = {}, timer) {
     };
     /** @type {string[]} */
     const selected = [];
-    for (let at = offset; at < total && selected.length < limit; at++) {
+    for (let at = offset - baseOffset; at < rows.length && selected.length < limit; at++) {
       const proposed = [...selected, safeJSON(rows[at])];
       if (Array.from(page(proposed).text).length > RECALL_PAGE_CHARS) {
         if (selected.length) break; // Next page starts at this same row; never skip it.

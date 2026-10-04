@@ -20,12 +20,12 @@ function missingNote(terms, budget) {
   return Array.from(note).length <= Math.min(512, budget) ? note : '';
 }
 
-export function sqliteRecallPage(rows, options = {}, missingTerms = []) {
+export function sqliteRecallPage(rows, options = {}, missingTerms = [], bounds) {
   const projected = displayRows(rows);
-  if (!missingTerms.length) return recallPageFromRows(projected, options);
+  if (!missingTerms.length) return recallPageFromRows(projected, options, undefined, bounds);
   let limit = options.limit ?? 50;
   for (; ;) {
-    const page = recallPageFromRows(projected, { ...options, limit });
+    const page = recallPageFromRows(projected, { ...options, limit }, undefined, bounds);
     const remaining = 16000 - Array.from(page.text).length - 1;
     const note = missingNote(missingTerms, remaining);
     if (note) {

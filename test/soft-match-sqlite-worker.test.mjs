@@ -1,9 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createIndex, tokenize, tokenizeSpans as prototypeSpans } from '../prototype/soft-match-sqlite/index.mjs';
+import { createIndex, tokenizeSpans as prototypeSpans, weightedLength } from '../prototype/soft-match-sqlite/index.mjs';
 import { queryTerms } from '../prototype/soft-match-sqlite/query.mjs';
 import { createWorkerEngine } from '../benchmark/retrieval-sqlite-worker.mjs';
-import { fts5Snippet } from '../benchmark/fts5-snippet.mjs';
 import { BackgroundIndex } from '../src/background-index.mjs';
 import { initialBranch, msg } from './corpus.mjs';
 
@@ -84,21 +83,14 @@ test('aligned spans retain codepoint positions and whole identifiers', t => {
   t.after(() => worker.dispose());
   worker.commit([entry('a', text, 0)], { eligibleCount: 1 });
   const raw = worker.query('NeedleID foo_BAR', { mode: 'manual' }).results[0];
-  const wantedRaw = new Set(tokenize('NeedleID foo_BAR'));
-  const hits = spans.filter(span => wantedRaw.has(span.term));
-  assert.equal(raw.snippet, fts5Snippet(text, hits, 120, { sentenceBonus: false }));
   assert.ok(raw.snippet.includes('NeedleID foo_BAR'));
+  assert.ok(weightedLength(raw.snippet.replace(/^…|…$/gu, '')) <= 240);
   assert.deepEqual(worker.query('bar', { mode: 'manual' }).results.map(row => row.id), ['a']);
-  assert.equal(worker.query('foo_b*', { mode: 'manual' }).results[0].snippet,
-    fts5Snippet(text, spans.filter(span => span.term.startsWith('foo_b')).map(span => ({ ...span, term: 'foo_b' })), 120, { sentenceBonus: false }));
-  const wantedAuto = new Set(tokenize('NeedleID'));
-  assert.equal(worker.query('where NeedleID', { mode: 'auto' }).results[0].snippet,
-    fts5Snippet(text, spans.filter(span => wantedAuto.has(span.term)), 120, { sentenceBonus: false }));
+  assert.ok(worker.query('foo_b*', { mode: 'manual' }).results[0].snippet.includes('foo_BAR'));
+  assert.ok(worker.query('where NeedleID', { mode: 'auto' }).results[0].snippet.includes('NeedleID'));
   const hanQuery = worker.query('中华人民共和国 OR NeedleID', { mode: 'manual' });
   assert.deepEqual(hanQuery.missingTerms, ['中华人民共和国']);
-  const wanted = new Set(tokenize('中华人民共和国 NeedleID'));
-  assert.equal(hanQuery.results[0].snippet,
-    fts5Snippet(text, spans.filter(span => wanted.has(span.term)), 120, { sentenceBonus: false }));
+  assert.deepEqual(hanQuery.results.map(row => row.id), ['a']);
 });
 
 test('BackgroundIndex transports full SQLite ranks and vocabulary extras, survives malformed MATCH', async () => {

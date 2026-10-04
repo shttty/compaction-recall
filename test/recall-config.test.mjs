@@ -25,12 +25,12 @@ const fixture = work => {
 };
 
 test('mode and independent preindex fields use environment over file over defaults', () => fixture((dir, write) => {
-  assert.deepEqual(loadRecallConfig({ env: {} }), { mode: 'full', trace: false, userCycles: 10, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210 });
+  assert.deepEqual(loadRecallConfig({ env: {} }), { mode: 'full', trace: false, userCycles: 10, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210, snippetBudget: 240 });
   write(JSON.stringify({ mode: 'lite', preindex: { userCycles: 5, toolRounds: 20 } }));
   const warnings = [];
-  assert.deepEqual(loadRecallConfig({ env: {}, warn: message => warnings.push(message) }), { mode: 'lite', trace: false, userCycles: 5, toolRounds: 20, recallTimeoutMs: 5000, autoGate: 210 });
+  assert.deepEqual(loadRecallConfig({ env: {}, warn: message => warnings.push(message) }), { mode: 'lite', trace: false, userCycles: 5, toolRounds: 20, recallTimeoutMs: 5000, autoGate: 210, snippetBudget: 240 });
   assert.deepEqual(warnings, []);
-  assert.deepEqual(loadRecallConfig({ env: { COMPACTION_RECALL_MODE: 'full', COMPACTION_RECALL_PREINDEX_TURNS: '30' } }), { mode: 'full', trace: false, userCycles: 30, toolRounds: 20, recallTimeoutMs: 5000, autoGate: 210 });
+  assert.deepEqual(loadRecallConfig({ env: { COMPACTION_RECALL_MODE: 'full', COMPACTION_RECALL_PREINDEX_TURNS: '30' } }), { mode: 'full', trace: false, userCycles: 30, toolRounds: 20, recallTimeoutMs: 5000, autoGate: 210, snippetBudget: 240 });
   write(JSON.stringify({ mode: 'full' }));
   assert.equal(loadRecallConfig({ env: { COMPACTION_RECALL_MODE: 'lite' } }).mode, 'lite');
 }));
@@ -39,17 +39,17 @@ test('malformed, oversized, unknown and invalid preindex values warn without exp
   let warnings = [];
   const load = env => loadRecallConfig({ env, warn: message => warnings.push(message) });
   write('{SENSITIVE_CONTENT');
-  assert.deepEqual(load({}), { mode: 'full', trace: false, userCycles: 10, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210 });
+  assert.deepEqual(load({}), { mode: 'full', trace: false, userCycles: 10, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210, snippetBudget: 240 });
   assert.equal(warnings.length, 1);
   assert.ok(!warnings.join().includes('SENSITIVE_CONTENT'));
   write(JSON.stringify({ preindex: { userCycles: '5', toolRounds: 101 }, unknown: 'SENSITIVE_CONTENT' }));
   warnings = [];
-  assert.deepEqual(load({ COMPACTION_RECALL_PREINDEX_TURNS: '5e1', COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS: '0' }), { mode: 'full', trace: false, userCycles: 10, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210 });
+  assert.deepEqual(load({ COMPACTION_RECALL_PREINDEX_TURNS: '5e1', COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS: '0' }), { mode: 'full', trace: false, userCycles: 10, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210, snippetBudget: 240 });
   assert.equal(warnings.length, 5);
   write(JSON.stringify({ mode: 'lite', preindex: { userCycles: 6, toolRounds: 7 } }));
-  assert.deepEqual(load({ COMPACTION_RECALL_PREINDEX_TURNS: '' }), { mode: 'lite', trace: false, userCycles: 6, toolRounds: 7, recallTimeoutMs: 5000, autoGate: 210 });
+  assert.deepEqual(load({ COMPACTION_RECALL_PREINDEX_TURNS: '' }), { mode: 'lite', trace: false, userCycles: 6, toolRounds: 7, recallTimeoutMs: 5000, autoGate: 210, snippetBudget: 240 });
   write(' '.repeat(65537));
-  assert.deepEqual(load({}), { mode: 'full', trace: false, userCycles: 10, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210 });
+  assert.deepEqual(load({}), { mode: 'full', trace: false, userCycles: 10, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210, snippetBudget: 240 });
   assert.equal(load({ COMPACTION_RECALL_MODE: 'lite' }).mode, 'lite');
 }));
 
@@ -57,7 +57,7 @@ test('invalid file modes warn and use full without affecting preindex fields', (
   for (const mode of [null, false, 1, {}, [], '', 'LITE', ' lite', 'fast', 'SECRET_MODE']) {
     const warnings = [];
     write(JSON.stringify({ mode, preindex: { userCycles: 4 } }));
-    assert.deepEqual(loadRecallConfig({ env: {}, warn: message => warnings.push(message) }), { mode: 'full', trace: false, userCycles: 4, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210 });
+    assert.deepEqual(loadRecallConfig({ env: {}, warn: message => warnings.push(message) }), { mode: 'full', trace: false, userCycles: 4, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210, snippetBudget: 240 });
     assert.deepEqual(warnings, ['compaction-recall: invalid mode; expected lite or full, using full']);
   }
 }));
@@ -66,7 +66,7 @@ test('invalid environment mode overrides valid lite file with full, not the file
   write(JSON.stringify({ mode: 'lite', preindex: { toolRounds: 7 } }));
   for (const mode of ['', 'LITE', 'lite ', 'fast', 'SECRET_ENV']) {
     const warnings = [];
-    assert.deepEqual(loadRecallConfig({ env: { COMPACTION_RECALL_MODE: mode }, warn: message => warnings.push(message) }), { mode: 'full', trace: false, userCycles: 10, toolRounds: 7, recallTimeoutMs: 5000, autoGate: 210 });
+    assert.deepEqual(loadRecallConfig({ env: { COMPACTION_RECALL_MODE: mode }, warn: message => warnings.push(message) }), { mode: 'full', trace: false, userCycles: 10, toolRounds: 7, recallTimeoutMs: 5000, autoGate: 210, snippetBudget: 240 });
     assert.deepEqual(warnings, ['compaction-recall: invalid COMPACTION_RECALL_MODE; expected lite or full, using full']);
   }
   write(JSON.stringify({ mode: 'SECRET_FILE' }));
@@ -95,12 +95,12 @@ test('mode shares the existing file limit and unknown-field validation', () => f
 test('missing agent config is silent and all environment controls remain available', () => fixture(() => {
   const warnings = [];
   const warn = message => warnings.push(message);
-  assert.deepEqual(loadRecallConfig({ env: {}, warn }), { mode: 'full', trace: false, userCycles: 10, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210 });
+  assert.deepEqual(loadRecallConfig({ env: {}, warn }), { mode: 'full', trace: false, userCycles: 10, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210, snippetBudget: 240 });
   assert.deepEqual(loadRecallConfig({
     env: {
       COMPACTION_RECALL_MODE: 'lite', COMPACTION_RECALL_PREINDEX_TURNS: '3', COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS: '8',
     }, warn
-  }), { mode: 'lite', trace: false, userCycles: 3, toolRounds: 8, recallTimeoutMs: 5000, autoGate: 210 });
+  }), { mode: 'lite', trace: false, userCycles: 3, toolRounds: 8, recallTimeoutMs: 5000, autoGate: 210, snippetBudget: 240 });
   assert.deepEqual(warnings, []);
 }));
 
@@ -115,9 +115,9 @@ test('SDK agent path uses process environment, never project config or parser ov
   try {
     process.chdir(project);
     assert.equal(getAgentDir(), dir);
-    assert.deepEqual(loadRecallConfig({ env: {}, warn }), { mode: 'full', trace: false, userCycles: 10, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210 });
+    assert.deepEqual(loadRecallConfig({ env: {}, warn }), { mode: 'full', trace: false, userCycles: 10, toolRounds: 10, recallTimeoutMs: 5000, autoGate: 210, snippetBudget: 240 });
     write(JSON.stringify({ mode: 'full', preindex: { userCycles: 4, toolRounds: 6 } }));
-    assert.deepEqual(loadRecallConfig({ env: { PI_CODING_AGENT_DIR: project }, warn }), { mode: 'full', trace: false, userCycles: 4, toolRounds: 6, recallTimeoutMs: 5000, autoGate: 210 });
+    assert.deepEqual(loadRecallConfig({ env: { PI_CODING_AGENT_DIR: project }, warn }), { mode: 'full', trace: false, userCycles: 4, toolRounds: 6, recallTimeoutMs: 5000, autoGate: 210, snippetBudget: 240 });
     assert.deepEqual(warnings, []);
   } finally { process.chdir(cwd); }
 }));
@@ -162,19 +162,19 @@ test('SQLite limits use environment over file and invalid values silently use de
   assert.deepEqual(warnings, []);
 }));
 
-test('explicit snippet budgets use weighted units; absent and invalid selections keep the legacy default', () => fixture((dir, write) => {
+test('snippet budget defaults to 240 and selected invalid values override valid lower-precedence values', () => fixture((dir, write) => {
   const warnings = [];
   const load = env => loadRecallConfig({ env, warn: message => warnings.push(message) });
-  assert.equal(load({}).snippetBudget, undefined);
-  write(JSON.stringify({ snippetBudget: 240 }));
   assert.equal(load({}).snippetBudget, 240);
+  write(JSON.stringify({ snippetBudget: 180 }));
+  assert.equal(load({}).snippetBudget, 180);
   assert.equal(load({ COMPACTION_RECALL_SNIPPET_BUDGET: '320' }).snippetBudget, 320);
-  for (const value of ['', '0', '-1', '1.5', '2.4e2', ' 240 ', '9007199254740992']) {
-    assert.equal(load({ COMPACTION_RECALL_SNIPPET_BUDGET: value }).snippetBudget, undefined);
+  for (const value of ['', ' ', '0', '-1', '1.5', '2.4e2', ' 240 ', 'Infinity', 'NaN', '9007199254740992']) {
+    assert.equal(load({ COMPACTION_RECALL_SNIPPET_BUDGET: value }).snippetBudget, 240);
   }
   for (const value of [null, false, '240', 0, -1, 1.5, [], {}, 9007199254740992]) {
     write(JSON.stringify({ snippetBudget: value }));
-    assert.equal(load({}).snippetBudget, undefined);
+    assert.equal(load({}).snippetBudget, 240);
   }
   assert.deepEqual(warnings, []);
 }));

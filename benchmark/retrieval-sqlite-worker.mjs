@@ -14,11 +14,11 @@ export function createWorkerEngine({ arm = process.env.COMPACTION_RECALL_SQLITE_
     commit(entries, { eligibleCount, timer }) {
       const next = entries.filter(entry => entry.sourcePosition < eligibleCount).map(entry => ({
         id: entry.id, text: entry.message.content, sourcePosition: entry.sourcePosition,
-        date: entry.timestamp.slice(0, 10), role: entry.message.role,
+        date: entry.timestamp.slice(0, 10), timestamp: entry.timestamp, role: entry.message.role,
       }));
       const changed = !index || next.length !== documents.length || next.some((entry, i) =>
         entry.id !== documents[i].id || entry.text !== documents[i].text ||
-        entry.sourcePosition !== documents[i].sourcePosition || entry.date !== documents[i].date || entry.role !== documents[i].role);
+        entry.sourcePosition !== documents[i].sourcePosition || entry.timestamp !== documents[i].timestamp || entry.role !== documents[i].role);
       if (changed) {
         const replacement = measured(timer, 'postings_activation', () => createIndex(next, { arm, autoGate, snippetBudget }));
         index?.close(); index = replacement; documents = next;
@@ -31,7 +31,7 @@ export function createWorkerEngine({ arm = process.env.COMPACTION_RECALL_SQLITE_
       const check = mode === 'manual' ? createQueryCheck(options.queryDeadlineAt, options.queryTimeoutMs) : undefined;
       check?.();
       if (mode === 'manual' && options.page) return index.queryPage(query, options, { timer, check });
-      const found = measured(timer, 'candidate_collection', () => index.queryRows(query, { mode, timer, check }));
+      const found = measured(timer, 'candidate_collection', () => index.queryRows(query, { mode, timer, check, ...(mode === 'auto' ? options : {}) }));
       const missingTerms = mode === 'manual' ? index.missingTerms(query, { timer, check }) : [];
       // Materialize full-rank callers here: deadline errors must remain engine
       // errors, not transport failures that would discard a healthy index.

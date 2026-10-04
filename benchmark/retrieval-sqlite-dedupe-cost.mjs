@@ -23,7 +23,7 @@ await mkdir(output); // Refuse to overwrite an earlier evidence run.
 const count = 5000;
 const query = 'aurora';
 const expression = '"aurora"';
-const stages = ['expression_rewrite', 'native_query', 'candidate_materialization', 'snippet_selection', 'snippet_render', 'deduplicate', 'mechanical_rank'];
+const stages = ['expression_rewrite', 'native_count', 'native_query', 'candidate_materialization', 'snippet_hits', 'snippet_selection', 'snippet_render'];
 const padding = 'cobalt granite meadow river forest copper quartz silver '.repeat(80);
 function documents(duplicates) {
   return Array.from({ length: count }, (_, i) => {
@@ -70,7 +70,7 @@ const report = {
     'cold means first query after an in-memory build, not operating-system cold cache',
     'stage durations are inclusive; do not sum nested spans as elapsed time',
     'native-only comparator uses the same tokenizer, FTS5 schema, corpus and MATCH expression',
-    'native-only includes SQLite row materialization but excludes metadata, snippets, deduplication and ranking',
+ 'native-only includes SQLite row materialization but excludes content-hash grouping, metadata and snippets; grouped count/ranking/paging are included in the full query native stages',
     'full queryRows lazily renders snippets; this measurement materializes every returned row inside the timed operation, with no top-k shortcut',
   ],
   scenarios: [],
@@ -83,7 +83,7 @@ for (const duplicates of [false, true]) {
   let native;
   try {
     const scenario = {
-      name: duplicates ? '5000-long-documents-5x-snippet-duplicates' : '5000-distinct-long-documents',
+      name: duplicates ? '5000-long-documents-5x-content-duplicates' : '5000-distinct-long-documents',
       buildMs: build.durationMs, buildStages: summary(timer.events), samples: [], nativeSamples: []
     };
     const allEvents = [...timer.events];

@@ -27,9 +27,9 @@ Demo 输出一份 JSON：运行版本、a–m 原文及分词、查询提取文�
 - `weightedLength(text): number`：按 Unicode 码点，Han 权重 2，其余权重 1，空格、标点、换行及 emoji 均计入。
 - `extractText(content): string`：字符串原样返回；数组只提取字符串类型的 `text` 块，按原顺序以换行连接；图片和其他块忽略。
 - `implicitOr(query): string`：无状态纯函数，把 FTS5 操作数之间的隐式 AND 连接改为 OR；显式操作符及其分组保留。相同原始 query 得到相同 MATCH 字符串，供执行及事后复算使用，详见 v4 规则。
-- `createIndex([{id,text,sourcePosition?,date?,role?}], {arm='off',autoGate=210,snippetBudget,timer}={})`：同 id 先保留最新（sourcePosition/recency，否则输入顺序），再排除空正文；最新空编辑遮蔽旧文本。返回 search / searchRaw / queryRows / queryPage / missingTerms / close，size 为去重及空正文过滤后的语料数。queryRows 保留完整内部排名供同步和 worker 共用；`queryPage(query, options, {timer,check})` 返回 `{total,page:{text,details},ids,missingTerms}`，供实际 SQLite 工具分页。autoGate 为正安全整数，只作用于自动查询。 有效显式 snippetBudget 对自动/手动 snippet 都启用 Han 2 / 其他码点 1 的加权窗口；缺省保持旧 120 码点。
+- `createIndex([{id,text,sourcePosition?,timestamp?,date?,role?}], {arm='off',autoGate=210,snippetBudget=240,timer}={})`：最新同 id 覆盖旧正文，空正文排除；所有 snippetBudget 都是 Han 2 / 其他码点 1 的加权单位，无 legacy 默认分支。SQL 按完整正文规范化空白后的 SHA-256 分组；组内取 BM25 最优，同分按 timestamp、原位置、rowid 倒序，最终按同一分数/时间顺序分页。无 bounds 的 queryRows 保留完整排名；queryPage 的 SQL LIMIT/OFFSET 只取当前页并用 count(DISTINCT content_hash) 返回真实 total。stats() 返回数据库页数、页大小及逻辑字节数，只在主动测量时调用。
 - `search` 返回 `{skipped, total, results: [{id, score}], queryTerms}`。limit 为非负安全整数；`limit: 0` 仍返回真实 total。空查询、全英文停用词、单 Han 字无词项时正常返回空，不执行无效 MATCH。
-- `searchRaw(query, {limit}={})` 返回 `{total, results:[{id,score}]}`。将 implicitOr(query) 绑定 MATCH，不去停用词、拆中文、截断或设自动长度门槛。每个候选先生成片段，按空白折叠、去首尾空白后的片段去重，保留最新代表；然后按 BM25 升序、命中不同实际查询词数降序、原文新旧降序排序。total 和 limit 均在去重后计算。模型展示前另投影四字段，不包含 score。
+- `searchRaw(query, {limit}={})`：沿用完整 MATCH 重写、不截断输入。SQL 按消息内容哈希去重，按 BM25/时间排序，再取 limit；不再按相同查询片段去重或用命中不同词数排序。结果只投影 id/score；工具页投影 id/date/role/snippet。
 
 ```js
 import { createIndex } from './index.mjs';
@@ -64,7 +64,7 @@ CREATE VIRTUAL TABLE terms USING fts5(
 
 `temp_store=MEMORY`；不生成数据库、WAL、SHM 文件。构建为一次事务，close 释放连接。没有持久化、增量更新或服务。
 
-自动 search 将每个选出的 MATCH 词项双引号包裹、内部双引号转义，再用 OR 连接并绑定参数；默认 searchRaw 只改写原生隐式连接，再绑定完整表达式，支持原生显式操作符、短语和前缀。没有 fuzzy、trigram tokenizer 或 LIKE 补救。SQLite `bm25(terms)` 原始分数为负，越小越优先；片段去重先保留最新代表，再按 BM25、不同实际查询词命中数、原文新旧排序。取出全部候选再应用 limit，total 不是返回数量。
+自动 search 将选出的 MATCH 词项双引号包裹、内部双引号转义，再用 OR 连接并绑定参数；searchRaw 只改写原生隐式连接，支持显式操作符、短语和前缀。没有 fuzzy、trigram 或 LIKE 补救。SQL 先按规范化全文哈希分组并取 BM25 最佳代表，同分按时间/原位置/rowid 倒序，再按分数/时间排序并 LIMIT/OFFSET；total 是 distinct 内容组数，不是本页行数。snippet 仅在所选行展示时生成，窗口不参与去重。
 
 ## 实际验证
 
@@ -167,7 +167,7 @@ trace 两侧仍保存模型/工具收到的原始 query；实际 MATCH 可用本
 
 适配层使用 `benchmark/sqlite-background-index.mjs` 的 `SQLiteBackgroundIndex`，继承公共 `BackgroundIndex` 的分批传输、分支代次与生命周期；原生 JavaScript `src/index-worker.mjs` 继续运行在现有 Worker 线程，引擎仍为 `benchmark/retrieval-sqlite-worker.mjs` 的 `createWorkerEngine()`。主线程收集当前分支投影、关联 trace，并渲染自动定位；实际手动调用走 `SQLiteBackgroundIndex.queryPage`，在 worker 内通过 index.queryPage 与 `sqliteRecallPage` 生成既有正文/details，仅传回实际页和返回 ids。沿用 session_start / compaction / tree / cadence 与 awaited shutdown；协作式 deadline 不重置 healthy worker。只有 `sourcePosition < eligibleCount` 的 user/assistant 进入索引；live 不进入候选或统计。机械 `createEngine` 及 `queryRows` 保留同步 / 线程完整排名对照，不读取 agent 配置，BM25 与排序不变。
 
-窗口选择使用共享 `selectFts5Range`：缺省为 120 Unicode 码点，有效显式 `snippetBudget` 则启用 `weighted:true`（Han 2 / 其他码点 1），自动/手动共用；完整 rows API 仍生成原片段，page 路径仅对页内展示行生成片段字符串。所有候选仍计算等价窗口与规范化 key，去重在 total/排名/分页之前，保留最新代表；不因延迟显示改变候选、排序、片段或页内容。hits 是 tokenizer 跨度对应的码点左闭右开位置，包含中文双字、所选分词器 ≥3 字词和英文完整词。片段选词来自实际 MATCH 操作数；操作符、列名和 NEAR 距离不作为命中。自动前五及既有预算保留，grep/expand 继续复用生产执行器，不走 SQLite。
+窗口选择使用共享 `selectFts5Range`：默认 240 加权单位，Han 2 / 其他码点 1；配置覆盖仍加载一次、环境优先。自动/手动共用。SQL 在完整可见语料上 MATCH、按全文 SHA-256 分组、选 BM25 最佳代表、按分数/时间排序，然后 LIMIT/OFFSET；total 由 count(DISTINCT content_hash) 得到。片段命中跨度、窗口和显示字符串均只在返回行被展示时计算并缓存，页外不生成。去重从「查询片段相同」改为「规范化全文相同」，不再承诺旧输出逐字节等价。
 
 显式 `history_recall` 不设查询长度、关键词数量或不同词数量上限，也不截取前 4000 码点。已删除 execute 的 5 词拒绝检查、`countKeywords` 函数及其计数测试；原始 query 完整进入 MATCH 重写和执行。自动提示仍只受 `autoGate` 加权长度门槛约束，不新增查询截断。下述 16000 码点预算仅约束工具输出，不是查询输入上限。
 
@@ -188,7 +188,7 @@ shared `history_recall_trace` 保留 toolCallId、模型 / execute 原始 query 
 
 `COMPACTION_RECALL_QUERY_TIMEOUT_MS` 优先于 `recallTimeoutMs`，`COMPACTION_RECALL_AUTO_GATE` 优先于 `autoGate`。文件值为正安全整数；环境值为严格十进制正安全整数字符串。所选值非法静默回退默认 5000 / 210，不报错，非法环境覆盖也不退回有效文件值。缺文件静默；畸形、不可读、超限文件的已有 warning 规则不变。`session_start` / `session_tree` 继续用已加载常量，超时不重建 worker，环境 / 文件变化需重载。实验 280 仍可显式设置；不是新默认，历史结果不变。只有 agent 配置加载器宽容回退；纯 `createIndex` / 机械 engine 的显式非法 `autoGate` 仍由 `parseAutoGate` 抛错。
 
-另可显式设置根键 `"snippetBudget": 240`；优先环境变量为 `COMPACTION_RECALL_SNIPPET_BUDGET`。同样加载一次，文件仅接受正安全整数、环境仅接受严格十进制正安全整数字符串。缺省或所选值无效时严格沿用 legacy 120 Unicode 码点窗口，不启用 weighted；非法环境覆盖不回取有效文件值。有效显式值启用 `\p{Script=Han}` 每码点 2、其他码点 1 的预算，自动提示与手动 recall 都使用；显式 120 也不是缺省 legacy120。窗口外可选省略号和自动提示/工具页预算仍按既有规则；没有新增工具参数。第 1 组和本轮默认 byte-parity 均使用缺省 legacy 路径，不把显式 override 的结果冒充默认等价。
+根键 `snippetBudget` 与优先环境变量 `COMPACTION_RECALL_SNIPPET_BUDGET` 加载一次：文件接受正安全整数，环境接受严格十进制正安全整数字符串；缺省/非法所选值回退 240 加权单位，非法环境不回取有效文件值。所有有效预算都按 Han 2 / 其他码点 1 计算，自动和手动共用；没有旧 120 码点默认分支或兼容开关。省略号、自动提示整体预算和工具页预算不变。
 
 
 显式 recall 的协作式 JavaScript deadline 从父线程请求起始计时，覆盖必要的索引准备、排队、MATCH 与后处理；自动提示不增加超时。JS 循环/阶段与 MATCH 前后检查，worker 回复及父线程接收再丢弃 late results。到检查点抛 `TimeoutError`，模型收到 `history_recall timed out after N ms; narrow the query or use history_grep`。同步 native MATCH 不可抢占，允许超过名义期限直到 native call 返回检查点；5000 ms 不是硬停止或精确墙钟返回承诺。超时不 terminate/reset worker、不清空索引/惰性跨度缓存、不取消其他排队请求、不回退同步主线程扫描；后续请求正常复用 healthy worker caches。真正 session/tree/shutdown 生命周期仍按公共 seam 处理，与单请求 deadline 不同。

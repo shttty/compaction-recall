@@ -80,7 +80,7 @@ test('latest duplicate ids replace earlier text, and latest empty text shadows a
   assert.deepEqual(index.missingTerms('obsolete'), ['obsolete']);
 });
 
-test('normalized snippet duplicates retain newest representatives before total, limit and pagination', t => {
+test('normalized content duplicates retain score/time representatives before total, limit and pagination', t => {
   const { index, worker } = corpus(t, [doc('a-old', 'aurora red', 0), doc('unique', 'aurora blue', 1),
   doc('z-new', 'aurora  red', 2)]);
   const found = worker.query('aurora', { mode: 'manual' });
@@ -99,7 +99,7 @@ test('normalized snippet duplicates retain newest representatives before total, 
   assert.ok(next.text.includes('unique'));
 });
 
-test('snippet representative is newest even when the older duplicate has better BM25', async t => {
+test('different full messages survive even when their query snippets coincide', async t => {
   const { DatabaseSync } = await import('node:sqlite');
   const documents = [doc('older', 'needle '.repeat(100), 0), doc('newer', 'needle '.repeat(25), 1)];
   const db = new DatabaseSync(':memory:');
@@ -111,10 +111,10 @@ test('snippet representative is newest even when the older duplicate has better 
   assert.ok(scores[0].score < scores[1].score, 'older native score must be better');
   const { index, worker } = corpus(t, documents);
   const found = index.searchRaw('needle');
-  assert.equal(found.total, 1);
-  assert.deepEqual(ids(found), ['newer']);
-  assert.equal(found.results[0].score, scores[1].score);
-  assert.deepEqual(ids(worker.query('needle', { mode: 'manual' })), ['newer']);
+  assert.equal(found.total, 2);
+  assert.deepEqual(ids(found), ['older', 'newer']);
+  assert.equal(found.results[0].score, scores[0].score);
+  assert.deepEqual(ids(worker.query('needle', { mode: 'manual' })), ['older', 'newer']);
 });
 
 test('exact native score ties prefer source recency rather than lexicographic id', t => {
@@ -125,15 +125,15 @@ test('exact native score ties prefer source recency rather than lexicographic id
   assert.deepEqual(ids(worker.query('aurora', { mode: 'manual' })), ['z-new', 'a-old']);
 });
 
-test('exact BM25 ties prefer more distinct matched query terms before recency', t => {
+test('exact BM25 ties use source time rather than distinct-term count', t => {
   const { index, worker } = corpus(t, [
     doc('older-two', 'alpha beta ' + 'padding '.repeat(47), 0),
     doc('newer-one', 'alpha ' + 'padding '.repeat(4), 1),
   ]);
   const found = index.searchRaw('alpha beta');
   assert.equal(found.results[0].score, found.results[1].score);
-  assert.deepEqual(ids(found), ['older-two', 'newer-one']);
-  assert.deepEqual(ids(worker.query('alpha beta', { mode: 'manual' })), ['older-two', 'newer-one']);
+  assert.deepEqual(ids(found), ['newer-one', 'older-two']);
+  assert.deepEqual(ids(worker.query('alpha beta', { mode: 'manual' })), ['newer-one', 'older-two']);
 });
 
 test('apostrophe single-letter fragments are absent from the index', t => {
