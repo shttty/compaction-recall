@@ -6,6 +6,7 @@
 - v3（19:58）：从 `~/.hermes/task-runs/recall-soft-match-20261003/eval-plan.md` 移入本仓库 `doc/`（凛音指定）；定下计分口径、query 由主模型自己决定、保留「中文拆双字」、grep/expand 描述、trace 一档进配置文件。
 - v3.1（20:00）：提示词文件移入 `doc/SOFT_MATCH_PROMPTS.md`；benchmark 主模型定为 gpt-6-luna high；去掉"运行产物不进仓库"。
 - v3.2（20:01）：第 2 组每题跑一次（同以往模型 benchmark）。待决项清空。
+- v3.3（2026-10-04 13:20）：新增「搜索场景优化」待定项（编码场景下的查询语法与短语问题，凛音要求先记入计划）。
 
 只是计划，尚未派给 OMP，也没开始跑。
 
@@ -88,7 +89,32 @@
 
 ## 待决
 
-无。
+- 搜索场景优化：见下一节，未定，不进 S6。
+
+## 搜索场景优化（待定，2026-10-04）
+
+**为什么要单列**：LongMemEval 是闲聊记忆，题目里没有技术写法。v4、S4 两轮 SQLite 一共 120 次显式查询，带 `$` 的 0 次，带引号的短语 2 次（`"The Power"`、`"past month"`），NEAR 0 次。插件实际是给 Pi 编码会话用的，路径、命令行参数、`$VAR`、带点的名字、驼峰/下划线标识符、报错原文都是常态，这批评测覆盖不到，0 次不代表少见。
+
+**已核实的问题**
+
+SQLite（S5，`7cc5eba`）
+1. FTS5 不加引号的词只认字母、数字、下划线、非 ASCII 字符。`src/locator.mjs`、`--no-extensions`、`v26.7.0`、`$HOME`、`foo-bar` 直接报语法错误；`node:sqlite` 的 `:` 被当成列过滤，报"没有这一列"。报错原样返回给模型，模型加引号就能查。
+2. 驼峰/下划线拆出来的小词追加在整词后面、写进同一列：`getUserName returns` 存成 `getusername get user name returns`。模型正确写出的短语 `"getusername returns"` 查不到，NEAR 的距离也被拉长。这条与模型能力无关，写对了也会漏。
+3. 中文双字重叠切分（苏联/联动/动画），中文短语 `"苏联 动画"` 对不上；整串加引号会变成索引里没有的一个长词。
+
+MiniSearch（S5，`d13628f`）
+4. 字符串查询先切词再匹配，不报语法错误；没有短语功能，所以也没有位置问题。实测 `src/locator.mjs`、`node:sqlite`、`--no-extensions`、`$HOME`、`E2BIG` 正确那条都排第一。
+5. 模糊和前缀匹配会把相近的标识符混进来：搜 `locator.mjs` 带出 `locator.cjs`，搜 `v26` 带出 `v25`，`--no-extensions` 里的 `no` 前缀带出 `node`。都排在正确条目之后，但没法要求"就要这个写法"。
+6. 以 `{` 开头的查询会被当成 MiniSearch Query JSON 解析：`{"a": 1}` 直接抛 `Cannot read properties of undefined (reading 'map')`。
+
+**候选改动（都未定）**
+
+- SQLite a：显式查询里不合规的词由后端自动加引号。凛音倾向不做：写合格的 FTS5 查询在模型能力范围内。
+- SQLite b：小词另放一列 `parts`，主列只放整词、保持原文顺序；不加引号的词默认搜所有列，`user` 仍能命中 `getUser`。
+- 编码场景离线用例（两边都跑）：路径、参数、`$VAR`、带点的名字、驼峰、`snake_case`、报错原文、`node:xxx`；检查不报错、短语命中的是对的消息。查询和答案最好取自真实 Pi 编码会话。
+- MiniSearch：`{` 开头的查询只在符合 Query JSON 格式时按 JSON 处理，其余当普通文本；标识符类词（含数字、`$`、`_`）关掉模糊匹配，做成开关离线对比。
+- 中文短语：在提示词里说明，或另议。
+- 编码会话评测集：迟早要另做，单独议。
 
 ## 约束
 
