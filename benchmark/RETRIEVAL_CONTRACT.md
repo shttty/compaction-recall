@@ -24,6 +24,37 @@ The shared `searchAutomatic(engine, question)` applies the automatic-only 210 we
 
 Both groups pass the frozen user question verbatim to `searchAutomatic`. Group 2's no-call fallback must equal group 1 for the same engine/corpus/question, so the ASK framing is not included in automatic term selection or the 210 gate. The model still receives `evaluate.py`'s `ASK.format(question_date, question)`. Models write manual queries themselves; those raw query strings remain untouched. Do not force a call or substitute the question as a raw query.
 
+### Shared worker engine seam (S2-0)
+
+Evaluation adapters must use `BackgroundIndex` from `src/background-index.mjs`, not implement a second worker protocol. Construct `new BackgroundIndex({ engineModule: new URL('./worker-engine.mjs', import.meta.url), timer: recallTiming })`; the path is an explicit native JavaScript **file URL**, supplied by the adapter. `src/` never imports a prototype or benchmark module. Omit `engineModule` for the production cached-token engine in `src/default-worker-engine.mjs`.
+
+The worker module exports `createWorkerEngine()` (sync or async), returning:
+
+```ts
+type WorkerEntry = {
+  type: 'message'; sourcePosition: number; id: string; timestamp: string;
+  message: { role: 'user' | 'assistant'; content: string };
+};
+type RankedRow = { id: string; date: string; role: string; snippet: string; score?: number };
+interface WorkerEngine {
+  prepareEntry?(entry: WorkerEntry): WorkerEntry;
+  commit(entries: WorkerEntry[], settings: {
+    eligibleCount: number; append: boolean; timer?: StageTiming;
+  }): { documents: number } | Promise<{ documents: number }>;
+  query(query: unknown, settings: {
+    mode: 'auto' | 'manual'; options: {limit?: number; offset?: number}; timer?: StageTiming;
+  }): { total: number; results: RankedRow[] } | Promise<{ total: number; results: RankedRow[] }>;
+  dispose?(): void | Promise<void>;
+}
+```
+
+The common host owns `begin`, bounded `batch`, oversized text chunk assembly, `commit`, generation checks and serialized asynchronous command execution. `prepareEntry` can pre-tokenize both eligible and live text, preserving entry metadata/source position; omit it when no useful precomputation exists. `commit` receives the complete staged list (not just the additions). **Only entries with `sourcePosition < eligibleCount` may enter searchable postings/statistics.** Live entries may retain prepared tokens, never searchable candidates/DF/N. `append` means the transferred source prefix is unchanged, not that all old entries remain live or eligible; eligibility can expand with zero additions. Engines may diff their previous eligible entries to incrementally update, or rebuild; branch/edit changes use the same common rebuild/reset path. The default engine preserves its cached-token activation.
+
+`index.prepare(branch, {preindexLive:true})` is lifecycle prewarming; `index.queryRanked(question, branch, {mode:'auto'})` waits for required readiness and returns complete automatic ranks for an explicit engine. `index.queryRanked(params.query, branch, {mode:'manual',options:params})` preserves the raw string/Query JSON object. Prototype query selection, the automatic 210 gate, ranking and snippets belong to the engine wrapper; raw queries must not be rewritten. Results must be the complete ranking, with `total === results.length`, valid branch IDs and date/role/snippet metadata; `limit`/`offset` are the display page request, **not permission to truncate the engine ranking**. Render on the main thread using `formatLocatorRows(results)` / `recallPageFromRows(results, params)`. Do not send engine scores or internal fields to the model unless present in the intended row format. The convenience `index.query` uses the same main-thread renderers and preserves production output.
+
+Custom engine query failures return the original error `message` and `name` over RPC, without lexical fallback, rewriting or stopping a healthy worker. Build/import/commit failures likewise surface instead of silently switching retrieval semantics; stack identity/native error properties are not transported. Production's default worker-failure synchronous-scan fallback remains intact. `await index.dispose()` waits for custom `dispose()` then worker termination; generation invalidation/reset may forcibly terminate an obsolete worker, so cleanup must not depend on a graceful callback after cancellation. Reuse the production cadence and lifecycle schedule (`session_start`, compaction, tree, shutdown) rather than adding timers or per-tool rebuilds. Worker modules and their dependencies must be native JavaScript, with no runtime TypeScript loader.
+
+
 ## Rendering and production package loading
 
 Automatic display reuses production `formatLocatorRows(rows)` from `src/locator.mjs` (top-five and character budget). Manual display reuses `recallPageFromRows(rows, { limit, offset }, timer?)` from the same file. Rows are already ordered `{ id, date, role, snippet }`; the helper does not score, reorder, filter or deduplicate. It uses the same JSON escaping, header, 16000-code-point budget, oversized-row progress rule, defaults, validation and pagination details as the production `recallPageFromCandidates` path. Offsets refer to the supplied complete ranking; fetch enough engine results before rendering. Relevance metrics use full ranking sidecars, not ids parsed from budget-truncated display text.
@@ -33,9 +64,9 @@ A production arm is an explicit, fixed, read-only package root with `package.jso
 ### Adapter responsibilities
 
 - Export a normal Pi extension registration function from the manifest entry. Register the three tools with the frozen prototype-specific descriptions and parameters from `doc/SOFT_MATCH_PROMPTS.md`; do not change production descriptions.
-- Build/update the engine from the current branch's production `compactedEntries` / `searchableEntryText` projection. Gold, answers, judge records and scorer sidecars never enter the engine or provider request.
-- In `context`, resolve the initial ASK to the original question using the explicit read-only `PI_RETRIEVAL_INPUT_FILE` metadata, call `searchAutomatic(engine, question)`, and inject `LOCATOR_TYPE` using production `withLocators` and `formatLocatorRows`. Use the same engine module supplied to the runner; preserve the complete ordering before rendering only the top five.
-- In `history_recall.execute`, pass `params.query` unchanged to `searchRaw`. Obtain the **complete** ranked rows for `recallPageFromRows`; if a prefix search reports a larger `total`, request that `total` as the engine limit before rendering. Do not render a truncated prefix as if its length were the total. The tool page limit remains at most 50; engine prefix limits are not tool-page limits. Return production page text/details, preserving native error messages and offsets.
+- Build/update the worker engine through `BackgroundIndex.prepare`; the common layer owns the current branch's production projection and transfer. Gold, answers, judge records and scorer sidecars never enter the engine or provider request.
+- In `context`, resolve the initial ASK to the original question using explicit read-only `PI_RETRIEVAL_INPUT_FILE` metadata, call `index.queryRanked(question, branch, {mode:'auto'})`, and inject `LOCATOR_TYPE` using production `withLocators` and `formatLocatorRows`. The worker wrapper applies the same `searchAuto` and 210 gate as the mechanical engine, retaining complete rankings; render only top five on the main thread.
+- In `history_recall.execute`, call `index.queryRanked(params.query, branch, {mode:'manual',options:params})` unchanged. The worker wrapper invokes the prototype's `searchRaw` and obtains **complete** ranks before returning (if a prefix reports larger total, request that total inside the worker). Render `recallPageFromRows` on the main thread. Do not render a truncated prefix as a complete total. Tool page limit remains at most 50; engine prefix limits are not page limits. Preserve native errors and offsets.
 - Import `loadRecallConfig` and `createRecallTrace` from the shared `src/` modules. When trace is enabled with a file, wire `message_end` to `messageEnd(sessionId, message)`, `tool_call` to `toolCall(sessionId, event)`, and `agent_end` / shutdown to `flush()`. Call `begin(sessionId, toolCallId, params)` before searching, `complete(token, {ids,total,offset,returned,nextOffset})` with **only actually returned** ids in rank order, or `fail(token, error)` on failure before rethrowing. See `doc/TIMING.md` for nested/missing-model and snapshot semantics.
 - Reuse production history helpers for grep/expand scope and branch edits; those tools do not use the prototype engine. Close engine resources on shutdown. A package must include its source dependency closure and explicit engine dependencies; the harness does not rewrite imports or provision them.
 

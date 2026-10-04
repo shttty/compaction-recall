@@ -34,6 +34,7 @@ The parent directory must already exist. Logs are append-only JSONL, created wit
 | `preindex_scheduled` mark | Trigger source, user counter, tool counter and scheduling thread; never message contents |
 | `worker_maintenance`, `index_maintenance` marks | Maintenance kind, entry count and executing thread |
 | `worker_online`, `background_index_ready`, `worker_failed`, `fallback_required` marks | Lifecycle/readiness/failure observations, without error text or source content |
+| `index_memory` mark | After each successful worker commit: numeric `processRssBytes`, `mainHeapUsedBytes`, `workerHeapBytes` and `entries`; only sampled with a timer and `COMPACTION_RECALL_TIMING_FILE` |
 
 `session_start` schedules prewarm, cadence callbacks schedule live-token batches, `session_compact` schedules eligibility maintenance, and `session_tree` invalidates the branch. A queued live prewarm waits for active foreground lookups rather than cancelling a valid cold query. Worker failure selects synchronous scan until an explicit lifecycle reset; shutdown awaits termination. [BACKGROUND_INDEX.md](BACKGROUND_INDEX.md) defines the SDK 1.0.0 lifecycle and batching contract.
 
@@ -42,6 +43,13 @@ The parent directory must already exist. Logs are append-only JSONL, created wit
 Durations use monotonic `performance.now()` in Node. Spans are **inclusive**, carry UUID-qualified IDs and parent IDs, and retain actual execution labels (`synchronous_main_thread`, `worker_thread`, or `awaited_walltime`). AsyncLocalStorage prevents concurrent tools from being falsely nested. Worker origins are carried back and rebased into the main observer's time origin; worker execution duration is not inferred by subtracting roundtrip and main-thread time.
 
 Do not add parent spans to their children, background preparation to foreground readiness waiting, or overlapping RPC/query operations. Background work is not free and cannot be subtracted from user-visible latency. Timing/logging overhead remains part of outer wall time. A slow cold build, main-thread extraction, fallback scan and additional worker memory remain real costs.
+
+### Commit memory samples
+
+Each completed worker commit (initial build, rebuild, eligibility activation or live maintenance) samples process `rss` and main-thread `heapUsed` from `process.memoryUsage()`, then awaits that worker's `Worker.getHeapStatistics()` and records `used_heap_size` as `workerHeapBytes`. `entries` is the engine's indexed-document count, not all retained/live messages. The additional mark payload contains numbers only; the standard timing envelope retains its fixed stage/thread labels. `trace: true` is not required. Without a timing destination, the new main-thread memory and `Worker.getHeapStatistics()` samples are not taken. The legacy `background_index_ready.workerHeapBytes` remains the worker-side `process.memoryUsage().heapUsed` returned at commit whenever a timer is supplied, including explicit benchmark timers without a destination. With production timing disabled, no timer is supplied and neither legacy nor new memory samples run.
+
+These are **three different measurements; do not add them**. RSS covers the entire process, including worker runtimes, code, native allocations and allocator high-water marks. Main heap is the calling V8 isolate; worker heap is that worker's V8 isolate and **is not the pure index size**. SQLite/native index allocations may appear only in RSS, not either JavaScript heap. The worker heap reply arrives after the main sample; no explicit main/worker GC is performed. These marks are not baseline-subtracted plugin overhead or an atomic snapshot. Compare equivalent baseline runs separately to estimate incremental cost. A failed or cancelled sample is omitted and cannot fail an otherwise completed index.
+
 
 With `trace` disabled (the default), metadata is allowlisted: numeric counts/durations and fixed operation/kind/trigger/thread labels. Timing events do not record body text, queries, snippets, tool parameters, credentials, URLs, headers or exception messages. Worker result payloads still carry the requested retrieval output, but those payloads are not timing events.
 
