@@ -32,8 +32,15 @@ export class BackgroundIndex {
  serveWhilePreparing = false;
  activeQueries = 0;
  queryIdleWaiters = [];
+ /** @type {Set<NodeJS.Timeout> | undefined} */
+ memoryTimers;
+ memoryDocuments = 0;
  event(stage, fields = {}) { this.timer?.mark(stage, fields); }
  async stopWorker() {
+  if (this.memoryTimers) {
+   for (const timer of this.memoryTimers) clearTimeout(timer);
+   this.memoryTimers.clear();
+  }
   const worker = this.worker;
   this.worker = null;
   for (const { reject } of this.pending.values()) reject(cancelled());
@@ -199,16 +206,38 @@ export class BackgroundIndex {
   this.event('background_index_ready', { kind: append ? 'incremental_update' : 'build_or_rebuild', documents: result.documents, workerHeapBytes: result.heapUsed });
   if (this.timer && process.env.COMPACTION_RECALL_TIMING_FILE) {
    const worker = this.worker;
-   try {
-    const { rss, heapUsed } = process.memoryUsage();
-    const heap = await worker.getHeapStatistics();
-    if (generation !== this.generation || this.disposed || worker !== this.worker) throw cancelled();
-    this.event('index_memory', { processRssBytes: rss, mainHeapUsedBytes: heapUsed, workerHeapBytes: heap.used_heap_size, entries: result.documents });
-   } catch (error) {
-    if (generation !== this.generation || this.disposed) throw cancelled();
-    // Optional diagnostics cannot invalidate a completed index.
-   }
+   this.memoryDocuments = result.documents;
+   await this.sampleMemory(worker, generation, result.documents, 'post_build');
+   if (generation !== this.generation || this.disposed) throw cancelled();
+   if (worker !== this.worker || worker.threadId === -1) return;
+   this.memoryTimers ??= new Set();
+   const timer = setTimeout(() => {
+    this.memoryTimers.delete(timer);
+    // Later commits may have changed the document count in this same worker.
+    void this.sampleMemory(worker, generation, this.memoryDocuments, 'settled')
+     .then(path => { if (path) this.timer?.flush(path); }).catch(() => { });
+   }, 3000);
+   timer.unref();
+   this.memoryTimers.add(timer);
   }
+ }
+ /** @param {Worker} worker @param {number} generation @param {number} entries
+  * @param {'post_build' | 'settled'} phase */
+ async sampleMemory(worker, generation, entries, phase) {
+  const path = process.env.COMPACTION_RECALL_TIMING_FILE;
+  if (!this.timer || !path || this.disposed || generation !== this.generation || worker !== this.worker || worker.threadId === -1) return;
+  try {
+   const { rss, heapUsed, heapTotal, external, arrayBuffers } = process.memoryUsage();
+   const heap = await worker.getHeapStatistics();
+   if (this.disposed || generation !== this.generation || worker !== this.worker || worker.threadId === -1) return;
+   this.event('index_memory', {
+    processRssBytes: rss, mainHeapUsedBytes: heapUsed, workerHeapBytes: heap.used_heap_size, entries,
+    mainHeapTotalBytes: heapTotal, mainExternalBytes: external + arrayBuffers,
+    workerHeapTotalBytes: heap.total_heap_size,
+    ...(typeof heap.external_memory === 'number' ? { workerExternalBytes: heap.external_memory } : {}), phase,
+   });
+   return path;
+  } catch { /* Optional diagnostics cannot invalidate a completed index. */ }
  }
  scan(query, branch, mode, options) {
   return measured(this.timer, 'synchronous_scan_fallback', () => mode === 'manual' ? buildRecallPage(query, branch, options, this.timer) : buildLocator(query, branch, this.timer));

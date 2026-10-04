@@ -35,6 +35,7 @@ const numericFields = {
  windowStartMs: true, windowEndMs: true, samples: true, maxLagMs: true, p95LagMs: true, over16ms: true,
  nodeProcessUptimeMs: true, requestId: true, sinceRequestMs: true,
  processRssBytes: true, mainHeapUsedBytes: true,
+ mainHeapTotalBytes: true, mainExternalBytes: true, workerHeapTotalBytes: true, workerExternalBytes: true,
 };
 /** @type {Record<string, Record<string, true>>} */
 const labelFields = {
@@ -42,6 +43,7 @@ const labelFields = {
  kind: { incremental_update: true, build_or_rebuild: true, initial_build: true, branch_rebuild: true, pretokenize: true, activation: true },
  execution: { worker_startup: true, background_worker: true, synchronous_transfer: true, background_worker_with_main_thread_extraction: true, awaited_readiness: true, synchronous_main_thread: true, worker_thread: true },
  trigger: { lifecycle: true, session_start: true, session_switch: true, session_compact: true, session_tree: true, agent_end: true, tool_result: true, turn_end: true },
+ phase: { post_build: true, settled: true },
 };
 
 /**
