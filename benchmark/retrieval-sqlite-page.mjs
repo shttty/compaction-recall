@@ -1,7 +1,7 @@
 import { recallPageFromRows } from '../src/locator.mjs';
 
 export function displayRows(rows) {
-  return rows.map(({ id, date, role, snippet }) => ({ id, date, role, snippet }));
+  return rows.map(row => ({ id: row.id, date: row.date, role: row.role, get snippet() { return row.snippet; } }));
 }
 
 function missingNote(terms, budget) {

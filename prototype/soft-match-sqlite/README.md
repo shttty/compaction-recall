@@ -2,6 +2,8 @@
 
 独立、可丢弃的匹配行为实验；生产 `src/` 不变。S1 在 `benchmark/` 接入独立评测适配层，不安装用户 profile。默认 `off` 是 **SQLite 原生 MATCH + BM25**，自动路径仍为 OR 精确词项，不是 MiniSearch 宽松匹配的等价替换。S6 候选仅在评测入口显式启用，见文末。
 
+2026-10-05 经凛音同意，**英文 v8 已应用 SQLite 原型适配层**，用于 RSM-SQLITE-V8-JSFAST-20261005 端到端对比；[完整描述、参数与逐句依据](../../doc/SOFT_MATCH_PROMPTS_V8.md)。正式 `src/recall-extension.ts`、冻结 `doc/SOFT_MATCH_PROMPTS.md` 和历史 benchmark 结果不改。应用描述不是已运行模型评测的声明。
+
 ## 运行与版本
 
 仓库根目录执行。默认 off 的 demo 只用内置模块；运行 jieba、porter-jieba、porter-js、inflect-wink 或 lemma-index 候选前先执行 `npm ci --ignore-scripts`：
@@ -25,7 +27,7 @@ Demo 输出一份 JSON：运行版本、a–m 原文及分词、查询提取文�
 - `weightedLength(text): number`：按 Unicode 码点，Han 权重 2，其余权重 1，空格、标点、换行及 emoji 均计入。
 - `extractText(content): string`：字符串原样返回；数组只提取字符串类型的 `text` 块，按原顺序以换行连接；图片和其他块忽略。
 - `implicitOr(query): string`：无状态纯函数，把 FTS5 操作数之间的隐式 AND 连接改为 OR；显式操作符及其分组保留。相同原始 query 得到相同 MATCH 字符串，供执行及事后复算使用，详见 v4 规则。
-- `createIndex([{id,text,sourcePosition?,date?,role?}], {arm='off',autoGate=210,timer}={})`：同 id 先保留最新（sourcePosition/recency，否则输入顺序），再排除空正文；最新空编辑遮蔽旧文本。返回 search / searchRaw / queryRows / missingTerms / close，size 为去重及空正文过滤后的语料数。queryRows 返回完整内部排名供同步和 worker 共用；autoGate 为正安全整数，只作用于自动查询。
+- `createIndex([{id,text,sourcePosition?,date?,role?}], {arm='off',autoGate=210,snippetBudget,timer}={})`：同 id 先保留最新（sourcePosition/recency，否则输入顺序），再排除空正文；最新空编辑遮蔽旧文本。返回 search / searchRaw / queryRows / queryPage / missingTerms / close，size 为去重及空正文过滤后的语料数。queryRows 保留完整内部排名供同步和 worker 共用；`queryPage(query, options, {timer,check})` 返回 `{total,page:{text,details},ids,missingTerms}`，供实际 SQLite 工具分页。autoGate 为正安全整数，只作用于自动查询。 有效显式 snippetBudget 对自动/手动 snippet 都启用 Han 2 / 其他码点 1 的加权窗口；缺省保持旧 120 码点。
 - `search` 返回 `{skipped, total, results: [{id, score}], queryTerms}`。limit 为非负安全整数；`limit: 0` 仍返回真实 total。空查询、全英文停用词、单 Han 字无词项时正常返回空，不执行无效 MATCH。
 - `searchRaw(query, {limit}={})` 返回 `{total, results:[{id,score}]}`。将 implicitOr(query) 绑定 MATCH，不去停用词、拆中文、截断或设自动长度门槛。每个候选先生成片段，按空白折叠、去首尾空白后的片段去重，保留最新代表；然后按 BM25 升序、命中不同实际查询词数降序、原文新旧降序排序。total 和 limit 均在去重后计算。模型展示前另投影四字段，不包含 score。
 
@@ -58,7 +60,7 @@ CREATE VIRTUAL TABLE terms USING fts5(
 );
 ```
 
-预分词结果以 ASCII 空格连接。FTS5 的 ascii tokenizer 保留非 ASCII Han 词项，tokenchars 保留 `_` / `$`。contentless 不存原文或完整预分词文本副本，保留倒排频次、位置及 BM25 所需文档长度元数据；JavaScript 保留 id/date/role/recency 及原文引用，查询时惰性缓存词项跨度，展开仍按 id 查回。
+预分词结果以 ASCII 空格连接。FTS5 的 ascii tokenizer 保留非 ASCII Han 词项，tokenchars 保留 `_` / `$`。contentless 不存原文或完整预分词文本副本，保留倒排频次、位置及 BM25 所需文档长度元数据；JavaScript 保留 id/date/role/recency 及原文引用，查询时惰性缓存词项跨度和 document.chars 码点数组，展开仍按 id 查回。
 
 `temp_store=MEMORY`；不生成数据库、WAL、SHM 文件。构建为一次事务，close 释放连接。没有持久化、增量更新或服务。
 
@@ -163,15 +165,40 @@ trace 两侧仍保存模型/工具收到的原始 query；实际 MATCH 可用本
 
 `benchmark/retrieval-sqlite-engine.mjs` 导出 S0 `createEngine(documents)`：searchAuto 用现有 search 且保留完整排名；searchRaw 用显式入口；dispose 关闭内存数据库。适配层入口为 `benchmark/retrieval-sqlite-adapter.ts`，只用于评测，不注册生产入口。
 
-S4 适配层使用公共 `BackgroundIndex({engineModule, timer})`，模块为原生 JavaScript `benchmark/retrieval-sqlite-worker.mjs`，导出 `createWorkerEngine()`。主线程只收集当前分支投影、关联 trace、渲染生产 `formatLocatorRows` / `withLocators` 与 `recallPageFromRows`；SQLite 建索引、自动/显式检索、词表检查、命中定位和片段选择都在 worker 中执行。沿用生产 session_start / compaction / tree / cadence 维护及 awaited shutdown，不新增协议或后台定时器。只有 `sourcePosition < eligibleCount` 的 user/assistant 进入索引；live 文本不进入候选或统计。机械 `createEngine` 保留同步实现作为同语料完整排名对照，排序及 BM25 不变。
+适配层使用 `benchmark/sqlite-background-index.mjs` 的 `SQLiteBackgroundIndex`，继承公共 `BackgroundIndex` 的分批传输、分支代次与生命周期；原生 JavaScript `src/index-worker.mjs` 继续运行在现有 Worker 线程，引擎仍为 `benchmark/retrieval-sqlite-worker.mjs` 的 `createWorkerEngine()`。主线程收集当前分支投影、关联 trace，并渲染自动定位；实际手动调用走 `SQLiteBackgroundIndex.queryPage`，在 worker 内通过 index.queryPage 与 `sqliteRecallPage` 生成既有正文/details，仅传回实际页和返回 ids。沿用 session_start / compaction / tree / cadence 与 awaited shutdown；协作式 deadline 不重置 healthy worker。只有 `sourcePosition < eligibleCount` 的 user/assistant 进入索引；live 不进入候选或统计。机械 `createEngine` 及 `queryRows` 保留同步 / 线程完整排名对照，不读取 agent 配置，BM25 与排序不变。
 
-自动和手动片段均使用共享 `fts5Snippet(text, hits, 120, {sentenceBonus:false})`；hits 是原文索引 tokenizer 跨度对应的码点左闭右开位置，包含中文双字、ICU ≥3 字词和英文完整词。显式定位词来自实际 implicitOr MATCH 的词项，再按本原型 tokenize 生成定位词；操作符、列名和 NEAR 距离不作为命中。片段只影响显示，不改变排名；格式、自动前五及生产预算保留。grep/expand 继续复用生产执行器，不走 SQLite。
+窗口选择使用共享 `selectFts5Range`：缺省为 120 Unicode 码点，有效显式 `snippetBudget` 则启用 `weighted:true`（Han 2 / 其他码点 1），自动/手动共用；完整 rows API 仍生成原片段，page 路径仅对页内展示行生成片段字符串。所有候选仍计算等价窗口与规范化 key，去重在 total/排名/分页之前，保留最新代表；不因延迟显示改变候选、排序、片段或页内容。hits 是 tokenizer 跨度对应的码点左闭右开位置，包含中文双字、所选分词器 ≥3 字词和英文完整词。片段选词来自实际 MATCH 操作数；操作符、列名和 NEAR 距离不作为命中。自动前五及既有预算保留，grep/expand 继续复用生产执行器，不走 SQLite。
 
-`prototype/soft-match-sqlite/query.mjs` 导出纯函数 `countKeywords(query): number`，仅在 history_recall execute 的原始 query 上计数并限制 5。空白切分一段算一个，中文不拆；双引号短语算一个，AND/OR/NOT、括号、列过滤前缀不计，NEAR 内词照计但距离数字不计。刚好 5 可执行，6 个以上在取分支/查询 worker 之前报 `本次 N 个关键词，上限 5，请拆开分几次查`。不改变 searchRaw 或自动路径的完整排名接口，自动查询不限 5 个词。
+显式 `history_recall` 不设查询长度、关键词数量或不同词数量上限，也不截取前 4000 码点。已删除 execute 的 5 词拒绝检查、`countKeywords` 函数及其计数测试；原始 query 完整进入 MATCH 重写和执行。自动提示仍只受 `autoGate` 加权长度门槛约束，不新增查询截断。下述 16000 码点预算仅约束工具输出，不是查询输入上限。
 
 SQLite 通过内存 fts5vocab 检查缺词，不改 query、不拆长中文。生产页内缺词行最多列 10 个词，每词最多 40 码点再加 …，整行最多 512 码点并受当前页剩余 16000 码点预算限制；其余写明省略 N 个。若本页没有最小省略提示的空间，则减少返回行重渲染，nextOffset 始终指向尚未返回行，不清空全部片段。生产单个异常超长 id 的预算进度例外保留，缺词行不会给已耗尽预算的元数据再加字符。
 
-shared `history_recall_trace` token 附加 `keywordCount` 和 `rejected`，含被拒/native-error 的 toolCallId、模型/execute 原始 query、原文错误。trace 关闭不写正文；存在 timing 文件时公共 BackgroundIndex 的 `index_memory` mark 记录 processRssBytes、mainHeapUsedBytes、workerHeapBytes、entries。不改 src trace/timing 或公共 benchmark。
+shared `history_recall_trace` 保留 toolCallId、模型 / execute 原始 query 与原文错误，不再附加 `keywordCount` / `rejected`；成功页只记录实际返回 ids，过期结果丢弃。trace 关闭不写正文；timing 的 `index_memory` 保留线程模式的 processRssBytes / mainHeapUsedBytes / workerHeapBytes / entries，没有额外宿主进程 RSS 或 IPC 日志字段。worker 堆已包含在进程 RSS 中，不能重复相加。
+
+### 显式查询超时与配置（2026-10-05）
+
+`src/recall-config.mjs` 在扩展加载时读取一次 `<getAgentDir()>/extensions/compaction-recall.json`；不读项目配置，SDK 嵌入请在注册前设置 `PI_CODING_AGENT_DIR`。两个原型根键与 mode / preindex / trace 共用文件：
+
+```json
+{
+  "recallTimeoutMs": 5000,
+  "autoGate": 210
+}
+```
+
+`COMPACTION_RECALL_QUERY_TIMEOUT_MS` 优先于 `recallTimeoutMs`，`COMPACTION_RECALL_AUTO_GATE` 优先于 `autoGate`。文件值为正安全整数；环境值为严格十进制正安全整数字符串。所选值非法静默回退默认 5000 / 210，不报错，非法环境覆盖也不退回有效文件值。缺文件静默；畸形、不可读、超限文件的已有 warning 规则不变。`session_start` / `session_tree` 继续用已加载常量，超时不重建 worker，环境 / 文件变化需重载。实验 280 仍可显式设置；不是新默认，历史结果不变。只有 agent 配置加载器宽容回退；纯 `createIndex` / 机械 engine 的显式非法 `autoGate` 仍由 `parseAutoGate` 抛错。
+
+另可显式设置根键 `"snippetBudget": 240`；优先环境变量为 `COMPACTION_RECALL_SNIPPET_BUDGET`。同样加载一次，文件仅接受正安全整数、环境仅接受严格十进制正安全整数字符串。缺省或所选值无效时严格沿用 legacy 120 Unicode 码点窗口，不启用 weighted；非法环境覆盖不回取有效文件值。有效显式值启用 `\p{Script=Han}` 每码点 2、其他码点 1 的预算，自动提示与手动 recall 都使用；显式 120 也不是缺省 legacy120。窗口外可选省略号和自动提示/工具页预算仍按既有规则；没有新增工具参数。第 1 组和本轮默认 byte-parity 均使用缺省 legacy 路径，不把显式 override 的结果冒充默认等价。
+
+
+显式 recall 的协作式 JavaScript deadline 从父线程请求起始计时，覆盖必要的索引准备、排队、MATCH 与后处理；自动提示不增加超时。JS 循环/阶段与 MATCH 前后检查，worker 回复及父线程接收再丢弃 late results。到检查点抛 `TimeoutError`，模型收到 `history_recall timed out after N ms; narrow the query or use history_grep`。同步 native MATCH 不可抢占，允许超过名义期限直到 native call 返回检查点；5000 ms 不是硬停止或精确墙钟返回承诺。超时不 terminate/reset worker、不清空索引/惰性跨度缓存、不取消其他排队请求、不回退同步主线程扫描；后续请求正常复用 healthy worker caches。真正 session/tree/shutdown 生命周期仍按公共 seam 处理，与单请求 deadline 不同。
+
+中断能力已按当前 **Node 24.18.0 / Bun 1.4.2** 查官方文档、发布标签源码和实际 API：均无公开 interrupt / progress handler。SQLite C 本身有 [sqlite3_interrupt](https://www.sqlite.org/c3ref/interrupt.html) / [progress handler](https://www.sqlite.org/c3ref/progress_handler.html)，但 JS 绑定未提供。Node 的构造参数 timeout 是锁等待 busy timeout，不是执行期限（[版本文档](https://nodejs.org/download/release/v24.18.0/docs/api/sqlite.html#new-databasesyncpath-options)、[绑定源码](https://github.com/nodejs/node/blob/v24.18.0/src/node_sqlite.cc)）；Bun 的 handle 是数组编号而非可传给 FFI 的 sqlite3 指针（[官方文档](https://bun.sh/docs/runtime/sqlite)、[1.4.2 类型声明](https://github.com/oven-sh/bun/blob/bun-v1.4.2/packages/bun-types/sqlite.d.ts)、[原生注册表](https://github.com/oven-sh/bun/blob/bun-v1.4.2/src/jsc/bindings/sqlite/JSSQLStatement.cpp)）。
+
+Node [Worker.terminate](https://nodejs.org/download/release/v24.18.0/docs/api/worker_threads.html#workerterminate) 只承诺尽快停止 JS。历史实证：同步 SQLite 递归聚合运行中 terminate 后 1 / 3 秒仍占 CPU 约 1.001 / 3.002 秒，有限查询仍等 1570 ms 才退出，而纯 JS 循环只需 2.03 ms；Bun 线程终止未实测，不对其作保证。这些实证解释为何当前 deadline 只保证 JS 检查点与过期结果丢弃，不声称中断 native SQL。
+
+当前仅保留一个 worker 线程，不增加宿主进程、跨进程 IPC 或额外 RSS 字段；deadline 不损失现有索引/span 缓存，也不取消同代次其他有效请求。grep / expand 执行器仍独立可用。没有持久化索引或新增模型调用，默认生产 worker 不变。旧授权 run 的 `runs/sqlite/nocap-timeout-20261005.json` 属于历史实验，不是当前协作式 deadline 的证明或历史评测重跑。
+
 
 S4 第 3 步离线验收：本原型三份测试 **34/34**、`npm run check` 类型检查及 **202/202**、Python unittest **28/28** 全部通过。首次预算测试 fixture 未触发分页而断言 nextOffset 错误，已改成真正超预算的长 id fixture；首次 fake-provider 完成断言后未 emit SDK session_shutdown 导致 worker 留存超时，已修成 await extension shutdown 后 dispose，重跑 **0.98 秒正常退出**。没有改公共代码来绕过失败。
 
@@ -192,6 +219,8 @@ node benchmark/retrieval-sqlite-package.mjs --output /home/rinne/.hermes/task-ru
 ## S5 主线对齐
 
 基线为 `ec16440`，本 worktree 的只读 src/locator.mjs SHA-256 与它完全一致，测试直接对照其 lex。保留中文双字+≥3词、BM25、索引停用词、implicit OR、关键词上限、fts5Snippet sentenceBonus=false、210 门槛等已定差异。未引入 jieba、翻译或额外前缀逻辑。
+本节记录 S5 历史接口与验证；当前完整排名仍由 `queryRows` 提供，实际手动工具已切换到前述 worker 内 `queryPage`，共享同一窗口/去重/排名实现，历史成本和验证数字不重标为本轮结果。
+
 
 同步和 worker 共用 index.queryRows：最新 id 及空正文处理、候选 snippet、规范化片段去重、不同查询词计数及同分 recency 顺序只有一份实现。Snippet 去重发生在 total/分页之前；相同片段始终以最新消息代表，不用较旧的高分消息覆盖它。命中计数使用缓存文档词集合，前缀计数按不同查询词归并，不按展开词数量加分；原生分数仍是第一排序项。
 
@@ -214,9 +243,9 @@ dev8/3d86fd0a 中英各 5035 条真实输入，en 1 自动+6 显式、zh 1 自�
 
 ## S6：默认关闭的离线候选
 
-评测入口 `retrieval-sqlite-engine.mjs` / `retrieval-sqlite-worker.mjs` 读取单值 `COMPACTION_RECALL_SQLITE_ARM`；允许 `off`、`prefix-all`、`prefix-min4`、`jieba`、`porter`、`porter-jieba`、`porter-js`、`inflect-wink`、`lemma-index`，默认 off，各值互斥，未知值或自行拼接组合报错。`createIndex` 只接受显式 `{arm,autoGate}`，不读取环境；生产 src、工具描述、关键词上限和原始 query trace 均未改。主线 89 个停用词只过滤自动提示，索引和显式查询保留它们。
+评测入口 `retrieval-sqlite-engine.mjs` / `retrieval-sqlite-worker.mjs` 读取单值 `COMPACTION_RECALL_SQLITE_ARM`；允许 `off`、`prefix-all`、`prefix-min4`、`jieba`、`porter`、`porter-jieba`、`porter-js`、`inflect-wink`、`lemma-index`，默认 off，各值互斥，未知值或自行拼接组合报错。`createIndex` 只接受显式 `{arm,autoGate}`，不读取环境；生产检索语义和原始 query trace 不变，当前显式查询已取消关键词上限。主线 89 个停用词只过滤自动提示，索引和显式查询保留它们。
 
-`COMPACTION_RECALL_AUTO_GATE` 控制所有评测 arm 的自动提示加权长度门槛：Han 每码点 2，其余（含空格、标点、emoji）每码点 1。未设仍为 210；只接受十进制正安全整数，空值、非整数、非正数及超出安全范围均报 `RangeError`。评测 engine / worker 工厂创建时读取一次，并显式传给每次建索引及 worker；改变环境后需重新创建引擎 / 重启 adapter。设置 280 时，279/280 允许，281 跳过；显式 searchRaw / history_recall 不受影响。`benchmark/retrieval-sqlite-adapter.ts` 的实际索引 worker 继承这两个环境变量，生产插件不读取它们。第 1 组结果新增 autoGate 字段，历史文件不修改。
+`COMPACTION_RECALL_AUTO_GATE` 控制所有评测 arm 的自动提示加权长度门槛：Han 每码点 2，其余（含空格、标点、emoji）每码点 1。默认仍为 210。机械 engine / worker 工厂创建时读取环境一次，非法值仍由 `parseAutoGate` 抛 `RangeError`；实际扩展入口先通过上述 agent 配置加载器解析环境 / 文件、宽容回退后显式传给 worker，每次重建继续使用已加载值。设置 280 时，279/280 允许，281 跳过；显式 searchRaw / history_recall 不受门槛影响。生产插件不启用这些原型检索选项。第 1 组结果的 autoGate 字段及历史文件不修改。
 
 ```sh
 COMPACTION_RECALL_SQLITE_ARM=porter-jieba COMPACTION_RECALL_AUTO_GATE=280 pi -e ./benchmark/retrieval-sqlite-adapter.ts

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createIndex, tokenize, tokenizeSpans as prototypeSpans } from '../prototype/soft-match-sqlite/index.mjs';
-import { countKeywords, queryTerms } from '../prototype/soft-match-sqlite/query.mjs';
+import { queryTerms } from '../prototype/soft-match-sqlite/query.mjs';
 import { createWorkerEngine } from '../benchmark/retrieval-sqlite-worker.mjs';
 import { fts5Snippet } from '../benchmark/fts5-snippet.mjs';
 import { BackgroundIndex } from '../src/background-index.mjs';
@@ -13,21 +13,6 @@ const entry = (id, text, sourcePosition) => ({
 });
 const ranks = rows => rows.map(({ id, score }) => ({ id, score }));
 const engineModule = new URL('../benchmark/retrieval-sqlite-worker.mjs', import.meta.url);
-
-test('keyword limit counts input operands, not normalized/deduplicated index terms', () => {
-  for (const [query, expected] of [
-    ['one two three four five', 5], ['one two three four five six', 6],
-    ['one one one one one one', 6], ['"one two" three four five six', 5],
-    ['tokens:one AND (two OR three) NOT four', 4],
-    ['{tokens}: NEAR("one two" three, 12) OR four', 3],
-    ['NEAR(one two, 10) 42', 3], ['tokens : "one two"*', 1],
-    ['^"one two"', 1], ['tokens:^"one two"*', 1],
-    ['"one ""two"" three" four', 2], ['强迫性性行为 网关', 2],
-    ['one 网关 two 重启 three', 5], [' \t\n ', 0],
-    ['foo-bar foo_bar foo*', 3], ['"', 0], ['', 0],
-    ['"one two three four five six', 6], ['one OR (two three', 3],
-  ]) assert.equal(countKeywords(query), expected, query);
-});
 
 test('MATCH term extraction preserves literal Han and phrase constituents, ignoring grammar', () => {
   assert.deepEqual(queryTerms('{tokens}:NEAR("Alpha beta" 强迫性性行为, 10) NOT absent'),

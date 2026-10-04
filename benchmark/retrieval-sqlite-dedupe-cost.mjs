@@ -23,7 +23,7 @@ await mkdir(output); // Refuse to overwrite an earlier evidence run.
 const count = 5000;
 const query = 'aurora';
 const expression = '"aurora"';
-const stages = ['native_query', 'candidate_materialization', 'snippet_render', 'deduplicate', 'mechanical_rank'];
+const stages = ['expression_rewrite', 'native_query', 'candidate_materialization', 'snippet_selection', 'snippet_render', 'deduplicate', 'mechanical_rank'];
 const padding = 'cobalt granite meadow river forest copper quartz silver '.repeat(80);
 function documents(duplicates) {
   return Array.from({ length: count }, (_, i) => {
@@ -71,7 +71,7 @@ const report = {
     'stage durations are inclusive; do not sum nested spans as elapsed time',
     'native-only comparator uses the same tokenizer, FTS5 schema, corpus and MATCH expression',
     'native-only includes SQLite row materialization but excludes metadata, snippets, deduplication and ranking',
-    'full queryRows returns all distinct snippets; there is no top-k shortcut',
+    'full queryRows lazily renders snippets; this measurement materializes every returned row inside the timed operation, with no top-k shortcut',
   ],
   scenarios: [],
 };
@@ -89,7 +89,10 @@ for (const duplicates of [false, true]) {
     const allEvents = [...timer.events];
     timer.events.length = 0;
     for (let run = 0; run <= warmRuns; run++) {
-      const sample = timed(() => index.queryRows(query, { mode: 'manual', timer }));
+      const sample = timed(() => {
+        const found = index.queryRows(query, { mode: 'manual', timer });
+        return { ...found, results: found.results.map(row => ({ ...row })) };
+      });
       const breakdown = summary(timer.events);
       for (const stage of stages) if (!breakdown[stage]) throw new Error(`Missing enabled stage span: ${stage}`);
       const expected = duplicates ? count / 5 : count;

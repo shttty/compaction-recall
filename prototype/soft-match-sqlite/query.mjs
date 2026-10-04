@@ -1,11 +1,12 @@
 // Parse only operand identities. SQLite remains the authority on MATCH syntax.
-// Quoted phrases count as one keyword, but each phrase constituent is a term.
-function operands(query) {
+// Phrase constituents are terms; SQLite owns their positional semantics.
+function operands(query, check) {
   const tokens = String(query).match(/"(?:[^"]|"")*"|[(){}:,^*]|[^\s(){}:,^*]+/gu) ?? [];
   const result = [];
   const scopes = [];
   let columns = false;
   for (let i = 0; i < tokens.length; i++) {
+    check?.();
     const token = tokens[i];
     if (token === '{') { columns = true; continue; }
     if (token === '}') { columns = false; continue; }
@@ -23,12 +24,9 @@ function operands(query) {
   return result;
 }
 
-export function countKeywords(query) {
-  return operands(query).length;
-}
-
-export function queryOperands(query) {
-  return operands(query).flatMap(({ text, prefix }) => {
+export function queryOperands(query, check) {
+  return operands(query, check).flatMap(({ text, prefix }) => {
+    check?.();
     // FTS5 ascii tokenization of MATCH operands: do not re-tokenize Han into bigrams.
     const terms = text.match(/[A-Za-z0-9_$\u0080-\u{10ffff}]+/gu) ?? [];
     return terms.map((term, index) => ({ term: term.toLowerCase(), prefix: prefix && index === terms.length - 1 }));
@@ -41,7 +39,7 @@ export function queryTerms(query) {
 
 // Add only implicit prefixes. Explicit phrase operators (^, +, *) own their
 // operands; column names and NEAR groups are syntax, not expansion candidates.
-export function prefixExpression(query, arm) {
+export function prefixExpression(query, arm, check) {
   if (arm !== 'prefix-all' && arm !== 'prefix-min4') return query;
   const tokens = [...query.matchAll(/"(?:[^"]|"")*"|[A-Za-z0-9_\x1a\u0080-\u{10ffff}]+|[^\s]/gu)];
   // Never complete or otherwise repair an unterminated user phrase.
@@ -52,6 +50,7 @@ export function prefixExpression(query, arm) {
   let result = '';
   let copied = 0;
   for (let i = 0; i < tokens.length; i++) {
+    check?.();
     const word = text(i);
     if (nearDepth) {
       if (word === '(') nearDepth++;

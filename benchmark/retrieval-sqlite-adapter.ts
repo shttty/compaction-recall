@@ -6,49 +6,32 @@ import registerProduction from "../src/recall-extension.ts";
 import { formatLocatorRows, locatorText, withLocators } from "../src/locator.mjs";
 import { loadRecallConfig } from "../src/recall-config.mjs";
 import { createRecallTrace } from "../src/recall-trace.mjs";
-import { BackgroundIndex } from "../src/background-index.mjs";
+import { SQLiteBackgroundIndex } from "./sqlite-background-index.mjs";
 import { PreindexCadence } from "../src/preindex-cadence.mjs";
 import { recallTiming, flushTiming } from "../src/timing.mjs";
-import { countKeywords } from "../prototype/soft-match-sqlite/query.mjs";
-import { displayRows, sqliteRecallPage } from "./retrieval-sqlite-page.mjs";
+import { displayRows } from "./retrieval-sqlite-page.mjs";
 
 const descriptions = {
-  history_recall: `搜当前分支压缩后历史。
-范围：user/assistant 正文、assistant 工具调用名+参数。不含工具结果、思考、图片。
-关键词匹配，非语义。
-query = FTS5 MATCH 语法。空格=OR。
-每次≤5个关键词，超了报错。同义词、别称、译名分几次查。
-索引：中文=相邻双字+分词所得≥3字词；英文整词。
-中文写2字词；1字查不到，3字以上多半不在索引。
-零命中→换说法。没命中≠没说过。
-命中 id→history_expand 读原文。正则/字面子串→history_grep。`,
-  history_grep: `正则/字面子串搜当前分支压缩后历史。按关键词找线索先用 history_recall。
-范围：user/assistant 正文、assistant 工具调用名+参数。不含工具结果、思考、图片。
-pattern = JS 正则，不分大小写；正则非法→按字面搜。
-片段有截断，读全文→history_expand。
-没命中≠没说过。`,
-  history_expand: `按 id 读当前分支压缩后历史条目全文，附前后邻居。
-id 来自自动提示、history_recall、history_grep。
-含工具调用名+参数、可读的工具结果；不含思考、图片。
-长条目分页，邻居只在目标读完时附上。`,
+  history_recall: "Primary keyword lookup of compacted conversation history on the current branch. Honors the latest branch-local context edits: omitted entries are unavailable and replacements hide original content. Use automatic locator hints, then this tool with focused or rewritten keywords to find related entry ids. Uses the same lexical ranking as automatic hints, not semantic search: supply alternative wording or synonyms yourself. The query uses FTS5 MATCH syntax; space-separated bare terms are combined with OR, while explicit AND, NOT and NEAR() expressions are supported. Double quotes request an exact indexed-token phrase, not an arbitrary substring of the original text; unqualified quoted terms are not Porter-stemmed. In the porter-jieba configuration, unquoted English terms also match their English Porter stems, while Chinese indexing combines adjacent Han bigrams with jieba-derived words of at least three Han characters. Two-character Chinese terms are the most reliable building blocks; longer terms must exist in the index, and mixed bigram/word token sequences can affect quoted phrase matches. There is no explicit query-length or keyword-count cap; SQLite syntax and resource limits still apply. Manual recall has a configurable cooperative JavaScript deadline, defaulting to 5000 ms, covering index preparation and query execution; native MATCH is non-interruptible and may continue until the next checkpoint, late results are discarded, and healthy worker caches are reused without cancelling other requests. Searches user/assistant text plus assistant tool-call names and arguments; excludes toolResult bodies, thinking and images. Paginated results: limit defaults to 50 (maximum 50), offset defaults to 0. Returns total, returned, nextOffset and hasMore; use nextOffset (not offset + limit) with the same query and unchanged branch for another page. Pages target 16000 Unicode codepoints; an oversized metadata row is returned alone and flagged rather than lost. Each snippet contains up to the configured snippet budget (default 120 Unicode codepoints) in a matched-term window selected for distinct-term coverage, plus optional ellipses. With an explicitly configured snippetBudget, Han codepoints count as 2 budget units and other codepoints as 1; the unconfigured default retains the legacy 120-codepoint window. Verify exact details with history_expand. If evidence remains insufficient, use history_grep as a supplementary text-search fallback over the same text and tool-input scope. No hit does not prove the information was never mentioned.",
+  history_grep: "Supplementary text-search fallback when automatic locators, history_recall and expanded entries leave insufficient evidence. Search branch-effective user/assistant text and assistant tool-call names/arguments on the current compacted branch, honoring context edits; exclude toolResult bodies, thinking and images. No matches do not prove absence. `pattern` is a case-insensitive JavaScript regular expression (not SQL LIKE); invalid patterns fall back to literal search. Pages matching entries in branch order: limit defaults to 30 (maximum 50), offset defaults to 0. Use nextOffset with the same pattern and unchanged branch; returned counts entries consumed, including explicitly skipped oversized metadata. total counts raw regex matches, totalEntries matching entries; covered counts other matches visible in this page's snippets, omitted counts raw matches not shown anywhere in this response. Each page shows up to 30 representative snippets overall and at most 3 per entry; full output stays within 16000 Unicode codepoints. Clipped-out text is not covered. Read full text with history_expand or use a narrower pattern to find matching context not shown.",
+  history_expand: "Read branch-effective text (honoring context edits) of a compacted history entry by id (from automatic locators, history_recall or history_grep). The requested entry is shown first; output is bounded to 16000 Unicode codepoints. Use offset (default 0), in Unicode codepoints of the requested entry, to continue a long entry; when hasMore is true, pass nextOffset with the same id and before/after values. Neighbor entries (before/after default 2, maximum 20) are included only when the full target is shown and each full neighbor fits. Includes tool-call names/arguments and readable toolResult text; excludes thinking and images. Only the current compacted branch is readable.",
 };
-const offset = () => Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "翻页时填上一页返回的 nextOffset" }));
 const parameters = {
   history_recall: Type.Object({
-    query: Type.String({ description: "FTS5 MATCH 表达式，空格=OR" }),
-    limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 50, description: "每页条数，默认 50，最多 50" })),
-    offset: offset(),
+    query: Type.String({ description: "FTS5 MATCH expression; space-separated bare terms use OR; explicit AND, NOT and NEAR() are supported. Double quotes match an exact indexed-token phrase, not an arbitrary original-text substring, and unqualified quoted terms are not Porter-stemmed. In the porter-jieba configuration, unquoted English terms also match English Porter stems; Chinese uses adjacent Han bigrams plus jieba-derived words of at least three Han characters, so two-character terms are the most reliable and mixed token sequences can affect phrases. No explicit query-length or keyword-count cap; SQLite syntax and resource limits still apply. Manual recall uses a cooperative JavaScript deadline of 5000 ms by default, including preparation and query execution; native MATCH is non-interruptible and may continue until the next checkpoint, late results are discarded, and healthy worker caches are reused without cancelling other requests; configure recallTimeoutMs or COMPACTION_RECALL_QUERY_TIMEOUT_MS." }),
+    limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 50, description: "Maximum results on this page (default 50)" })),
+    offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Result offset (default 0); use nextOffset from the previous page" })),
   }),
   history_grep: Type.Object({
-    pattern: Type.String({ description: "JS 正则，不分大小写" }),
-    limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 50, description: "每页条目数，默认 30，最多 50" })),
-    offset: offset(),
+    pattern: Type.String({ description: "Case-insensitive JavaScript regular expression" }),
+    limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 50, description: "Maximum matching entries on this page (default 30)" })),
+    offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Matching-entry offset (default 0); use nextOffset to continue" })),
   }),
   history_expand: Type.Object({
-    id: Type.String({ description: "条目 id" }),
-    before: Type.Optional(Type.Integer({ minimum: 0, maximum: 20, description: "前、后邻居条数，默认 2，最多 20" })),
-    after: Type.Optional(Type.Integer({ minimum: 0, maximum: 20, description: "前、后邻居条数，默认 2，最多 20" })),
-    offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "续读长条目时填上一页返回的 nextOffset，id 和 before/after 保持不变" })),
+    id: Type.String({ description: "Entry id from automatic locators, history_recall or history_grep" }),
+    before: Type.Optional(Type.Integer({ minimum: 0, maximum: 20, description: "Entries before (default 2)" })),
+    after: Type.Optional(Type.Integer({ minimum: 0, maximum: 20, description: "Entries after (default 2)" })),
+    offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Unicode codepoint offset within the requested entry (default 0); use nextOffset to continue" })),
   }),
 };
 
@@ -88,7 +71,10 @@ export default function sqliteAdapter(pi: ExtensionAPI) {
 
   // jiti loads the TS entry while workers require its original native file URL.
   const sourceURL = typeof __filename === "string" ? pathToFileURL(__filename) : import.meta.url;
-  const index = new BackgroundIndex({ engineModule: new URL("./retrieval-sqlite-worker.mjs", sourceURL), timer: recallTiming });
+  const index = new SQLiteBackgroundIndex({
+    engineModule: new URL("./retrieval-sqlite-worker.mjs", sourceURL), timer: recallTiming,
+    autoGate: config.autoGate, recallTimeoutMs: config.recallTimeoutMs, snippetBudget: config.snippetBudget
+  });
   const cadence = new PreindexCadence(config.userCycles, config.toolRounds);
   let scheduled: NodeJS.Immediate | undefined;
   let locator: string | undefined;
@@ -128,15 +114,11 @@ export default function sqliteAdapter(pi: ExtensionAPI) {
     parameters: parameters.history_recall,
     async execute(id, params, _signal, _onUpdate, ctx) {
       const token = trace?.begin(ctx.sessionManager.getSessionId(), id, params);
-      const keywordCount = countKeywords(params.query);
-      if (token) Object.assign(token, { keywordCount, rejected: keywordCount > 5 });
       try {
-        if (keywordCount > 5) throw new Error(`本次 ${keywordCount} 个关键词，上限 5，请拆开分几次查`);
-        const found = await index.queryRanked(params.query, ctx.sessionManager.getBranch(), { mode: "manual", options: params });
-        const missingTerms = (found as typeof found & { missingTerms?: string[] }).missingTerms ?? [];
-        const page = sqliteRecallPage(found.results, params, missingTerms);
+        const found = await index.queryPage(params.query, ctx.sessionManager.getBranch(), params);
+        const page = found.page;
         const { total, offset, returned, nextOffset } = page.details;
-        trace?.complete(token, { ids: found.results.slice(offset, offset + returned).map(row => row.id), total, offset, returned, nextOffset });
+        trace?.complete(token, { ids: found.ids, total, offset, returned, nextOffset });
         return { content: [{ type: "text" as const, text: page.text }], details: page.details };
       } catch (error) {
         trace?.fail(token, error);

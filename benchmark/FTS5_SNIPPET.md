@@ -5,11 +5,13 @@ This benchmark-only module is not a production locator replacement. It imports n
 ## Public interface
 
 ```js
-import { fts5Snippet, selectFts5Window } from './fts5-snippet.mjs';
+import { fts5Snippet, selectFts5Window, selectFts5Range } from './fts5-snippet.mjs';
 const hits = [{ term: '网关', start: 5, end: 7 }];
 const snippet = fts5Snippet(text, hits); // default budget: 120 codepoints
 const window = selectFts5Window(text, hits, 120);
 // { start, end, score, snippet }
+const range = selectFts5Range(Array.from(text), hits, 120); // { start, end, score }; no display string
+const weighted = selectFts5Window(text, hits, 240, { weighted: true });
 ```
 
 `text` is a string. Each hit supplies a query identity `term`, an inclusive `start`, and an exclusive `end`, all measured in Unicode codepoints (`Array.from(text)`), not UTF-16 offsets, bytes, or tokens. A repeated identity earns repeat credit; distinct identities earn distinct-term credit. Caller-provided instances are neither tokenized nor deduplicated. Positions are stably sorted without mutating the caller's array. Invalid/empty/out-of-document hit ranges and nonpositive/noninteger budgets throw `RangeError`. The caller owns term matching, normalization, query identity, and stopword decisions.
@@ -17,6 +19,10 @@ const window = selectFts5Window(text, hits, 120);
 Returned offsets refer to original text, excluding ellipses. The literal `…` appears only where original text was cut. Ellipses are outside the content budget. No highlighting, word-boundary expansion, trimming, or surrogate splitting is performed. Empty/no-hit input returns the prefix (empty for empty text), score zero. A short document is returned whole.
 
 Both functions accept a fourth argument `{ sentenceBonus: false }` to disable only the sentence-start +100 and first-sentence +120 additions. The default is `{ sentenceBonus: true }`, preserving all prior results. Sentence candidates remain enumerated; distinct/repeated scoring, candidate order/ties, original-score centering, end clamp and ellipses are unchanged.
+
+All three functions accept an optional `check()` callback at JavaScript checkpoints; errors propagate unchanged. A native SQLite call is outside this module and cannot be preempted by this callback. `selectFts5Range` accepts cached codepoint characters and returns only the selected bounds/score, allowing query-selected deduplication before rendering a display snippet for the requested page.
+
+`weighted: true` changes the selection coordinate budget: Han (`\p{Script=Han}`) codepoints cost 2, every other codepoint costs 1. Forward-window inclusion, distinct/repeat scores, original candidate order, first-wins ties and centering remain the same in weighted coordinates; the final start rounds upward and end downward to original codepoint boundaries. Returned offsets are still codepoints; no character is split and the body never exceeds the configured weight. Ellipses remain outside the body budget. Without `weighted`, the legacy 120-codepoint default remains byte-identical and no weighted-coordinate array is allocated. The SQLite adapter only enables weighted mode for an explicit valid `snippetBudget` / `COMPACTION_RECALL_SNIPPET_BUDGET`; absent or invalid settings keep legacy mode.
 
 ## Upstream source and provenance
 
@@ -54,7 +60,7 @@ if iAdj < 0: iAdj = 0
 3. **Multilingual deterministic boundaries.** Upstream recognizes the first token and tokens preceded by ASCII whitespace after `.` or `:`; it does not recognize Chinese punctuation and depends on tokenization. Here the first boundary is codepoint zero. ASCII `. : ! ?` require following whitespace (after optional closing quotes/brackets); Chinese `。！？：` do not. CR/LF create boundaries independently, including CRLF as one effective boundary. Closing characters `" ' ” ’ 」 』 ） ) ]` immediately following punctuation are skipped, then JavaScript Unicode whitespace is skipped. This includes quoted Chinese sentence endings without NLP, abbreviation handling, or language models. Leading opening quotes are retained as content. ASCII punctuation without following whitespace is not a sentence boundary.
 4. **Rendering.** SQLite uses tokenizer byte spans and highlight callbacks to retain whole tokens and trailing punctuation. This port slices the chosen codepoint interval literally, which may cut an English word or whitespace. It emits only cut ellipses, no markup.
 
-The direct scoring implementation is intentionally straightforward: each candidate scans caller instances. Its cost is quadratic in hit count plus sentence-count × hit-count, appropriate to this bounded-snippet benchmark; it does not introduce an index or production optimization.
+The current implementation uses three monotone sliding windows to retain the original interleaved candidate-evaluation order. Each stream adds/removes each ordered hit at most once; total cost is `O(C + H log H + H + S)` for codepoints, hit sorting and sentence candidates, rather than the former repeated full-instance scans. Window selection is still performed for all candidates whose query-selected snippets determine deduplication; display rendering can be deferred until after representative selection, ranking and pagination.
 
 ## Verification fixtures
 

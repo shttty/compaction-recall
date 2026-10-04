@@ -6,8 +6,9 @@ import { createJsStemmer } from './porter-js.mjs';
 import { createStemmer, porterExpression, porterTerm } from './porter.mjs';
 import { createInflections } from './inflect.mjs';
 import { createLemmaNormalizer } from './lemma.mjs';
-import { fts5Snippet } from '../../benchmark/fts5-snippet.mjs';
+import { selectFts5Range } from '../../benchmark/fts5-snippet.mjs';
 import { measured } from '../../src/timing.mjs';
+import { sqliteRecallPage } from '../../benchmark/retrieval-sqlite-page.mjs';
 export { STOPWORDS, tokenize, tokenizeSpans } from './lexical.mjs';
 const HAN = /\p{Script=Han}/u;
 
@@ -36,9 +37,12 @@ export function extractText(content) {
 
 // Recognize FTS5 operands, not document terms. Keep native implicit-AND grouping
 // when replacing its connectors; SQLite remains responsible for syntax errors.
-export function implicitOr(query) {
-  const tokens = [...query.matchAll(/"(?:[^"]|"")*"|[A-Za-z0-9_\x1a\u0080-\uffff]+|[^ \t\r\n]/g)]
-    .map(match => ({ text: match[0], start: match.index, end: match.index + match[0].length }));
+export function implicitOr(query, check) {
+  const tokens = [];
+  for (const match of query.matchAll(/"(?:[^"]|"")*"|[A-Za-z0-9_\x1a\u0080-\uffff]+|[^ \t\r\n]/g)) {
+    check?.();
+    tokens.push({ text: match[0], start: match.index, end: match.index + match[0].length });
+  }
   // Do not turn an unterminated quote into another error or a valid expression.
   if (tokens.some(token => token.text === '"')) return query;
   const text = i => tokens[i]?.text;
@@ -47,6 +51,7 @@ export function implicitOr(query) {
   const closes = new Map();
   const delimiters = [];
   for (let i = 0; i < tokens.length; i++) {
+    check?.();
     if (text(i) === '(' || text(i) === '{') delimiters.push(i);
     else if ((text(i) === ')' && text(delimiters.at(-1)) === '(') ||
       (text(i) === '}' && text(delimiters.at(-1)) === '{')) {
@@ -73,6 +78,7 @@ export function implicitOr(query) {
       i++;
       if (text(i) === '*') i++;
       while (text(i) === '+' && isString(i + 1)) {
+        check?.();
         i += 2;
         if (text(i) === '*') i++;
       }
@@ -82,12 +88,14 @@ export function implicitOr(query) {
   const inserts = [];
   const scopes = [[0, tokens.length]];
   while (scopes.length) {
+    check?.();
     const [start, end] = scopes.pop();
     let run = [];
     const flush = () => {
       if (run.length > 1) {
         inserts.push({ at: run[0].start, text: '(' });
         for (let i = 1; i < run.length; i++) {
+          check?.();
           inserts.push({ at: run[i].start, text: run[i - 1].end === run[i].start ? ' OR ' : 'OR ' });
         }
         inserts.push({ at: run.at(-1).end, text: ')' });
@@ -95,6 +103,7 @@ export function implicitOr(query) {
       run = [];
     };
     for (let i = start; i < end;) {
+      check?.();
       const found = operand(i, end);
       if (!found) {
         flush();
@@ -112,17 +121,20 @@ export function implicitOr(query) {
     flush();
   }
   if (!inserts.length) return query;
-  inserts.sort((a, b) => a.at - b.at);
+  inserts.sort((a, b) => { check?.(); return a.at - b.at; });
   let rewritten = '', offset = 0;
   for (const insert of inserts) {
+    check?.();
     rewritten += query.slice(offset, insert.at) + insert.text;
     offset = insert.at;
   }
   return rewritten + query.slice(offset);
 }
 
-export function createIndex(documents, { arm = 'off', autoGate = 210, timer: buildTimer } = {}) {
+export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBudget, timer: buildTimer } = {}) {
   autoGate = parseAutoGate(autoGate);
+  const weightedSnippet = Number.isSafeInteger(snippetBudget) && snippetBudget > 0;
+  const budget = weightedSnippet ? snippetBudget : 120;
   const { tokenize, tokenizeSpans } = createTokenizer(arm);
   const porter = arm === 'porter' || arm === 'porter-jieba' || arm === 'porter-js';
   const lemma = arm === 'lemma-index' ? createLemmaNormalizer() : undefined;
@@ -165,69 +177,135 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, timer: bui
     vocabulary = db.prepare(stem ? 'SELECT 1 FROM vocabulary WHERE term = ? AND col = ?' : 'SELECT 1 FROM vocabulary WHERE term = ?');
   } catch (error) { db.close(); throw error; }
 
-  function collect(expression, actualTerms, snippetTerms, timer) {
+  function compileOperands(operands, check) {
+    const raw = new Map(), stems = new Map(), rawPrefixes = [], stemPrefixes = [], widths = new Set(), cache = new Map();
+    const add = (map, term, index) => {
+      if (!map.has(term)) map.set(term, []);
+      map.get(term).push(index);
+    };
+    for (let i = 0; i < operands.length; i++) {
+      check?.();
+      const operand = operands[i];
+      if (!operand.columns || operand.columns.includes('tokens')) {
+        if (operand.prefix) rawPrefixes.push([operand.term, i]);
+        else add(raw, operand.term, i);
+      }
+      if (operand.columns && !operand.columns.includes('stems')) continue;
+      const alias = operand.stem ? stem(operand.term) : operand.term;
+      if (alias === undefined) continue;
+      if (operand.prefix) stemPrefixes.push([alias, i]);
+      else { add(stems, alias, i); widths.add(alias.split(' ').length); }
+    }
+    return value => {
+      if (cache.has(value)) return cache.get(value);
+      const matched = new Set(raw.get(value));
+      for (const [prefix, i] of rawPrefixes) if (value.startsWith(prefix)) matched.add(i);
+      const alias = stem(value);
+      if (alias !== undefined) {
+        const pieces = alias.split(' ');
+        for (const width of widths) for (let at = 0; at + width <= pieces.length; at++) {
+          const key = width === 1 ? pieces[at] : pieces.slice(at, at + width).join(' ');
+          for (const i of stems.get(key) ?? []) matched.add(i);
+        }
+        for (const [prefix, i] of stemPrefixes) if (` ${alias}`.includes(` ${prefix}`)) matched.add(i);
+      }
+      const terms = [...matched].sort((a, b) => a - b).map(i => operands[i].term);
+      cache.set(value, terms);
+      return terms;
+    };
+  }
+  function collect(expression, actualTerms, snippetTerms, timer, check) {
+    check?.();
     const native = measured(timer, 'native_query', () => match.all(expression));
+    check?.(); // SQLite is synchronous and cannot check a deadline inside MATCH.
     const exact = new Set(snippetTerms.filter(term => !term.prefix).map(({ term }) => term));
     const prefixes = [...new Set(snippetTerms.filter(term => term.prefix).map(({ term }) => term))];
-    const candidates = measured(timer, 'candidate_materialization', () => native.map(({ rowid, score }) => {
-      const document = corpus[rowid - 1];
-      document.spans ??= lemma ? tokenizeSpans(document.text).map(span => ({ ...span, term: lemma.normalize(span.term) })) : tokenizeSpans(document.text);
-      document.terms ??= new Set(document.spans.map(span => span.term));
-      const matches = new Set();
-      for (const { term, prefix } of stem ? [] : actualTerms) {
-        if (!prefix && document.terms.has(term)) matches.add(term);
-        if (prefix) for (const value of document.terms) {
-          if (value.startsWith(term)) { matches.add(term); break; }
-        }
-      }
-      const hits = [];
-      for (const span of document.spans) {
+    const candidates = measured(timer, 'candidate_materialization', () => {
+      const actualMatch = stem ? compileOperands(actualTerms, check) : undefined;
+      const snippetMatch = stem ? actualTerms === snippetTerms ? actualMatch : compileOperands(snippetTerms, check) : undefined;
+      const phrases = stem ? actualTerms.map(operand => ({ operand, alias: operand.stem ? stem(operand.term) : undefined }))
+        .filter(({ alias }) => alias?.includes(' ')) : [];
+      const rows = [];
+      for (const { rowid, score } of native) {
+        check?.();
+        const document = corpus[rowid - 1];
+        document.spans ??= lemma ? tokenizeSpans(document.text).map(span => ({ ...span, term: lemma.normalize(span.term) })) : tokenizeSpans(document.text);
+        const matches = new Set(), hits = [];
         if (!stem) {
-          if (exact.has(span.term)) hits.push(span);
-          for (const term of prefixes) if (span.term.startsWith(term)) hits.push({ ...span, term });
-        } else {
-          for (const operand of actualTerms) if (matchesOperand(span.term, operand)) matches.add(operand.term);
-          for (const operand of snippetTerms) if (matchesOperand(span.term, operand)) hits.push({ ...span, term: operand.term });
+          document.terms ??= new Set(document.spans.map(span => span.term));
+          for (const { term, prefix } of actualTerms) {
+            check?.();
+            if (!prefix && document.terms.has(term)) matches.add(term);
+            if (prefix) for (const value of document.terms) if (value.startsWith(term)) { matches.add(term); break; }
+          }
         }
-      }
-      if (stem) {
-        let stemText;
-        for (const operand of actualTerms) {
-          const alias = operand.stem ? stem(operand.term) : undefined;
-          if (!alias?.includes(' ') || matches.has(operand.term)) continue;
-          stemText ??= ` ${document.spans.map(span => stem(span.term)).filter(Boolean).join(' ')} `;
-          if (stemText.includes(` ${alias}${operand.prefix ? '' : ' '}`)) matches.add(operand.term);
+        for (let at = 0; at < document.spans.length; at++) {
+          if ((at & 255) === 0) check?.();
+          const span = document.spans[at];
+          if (!stem) {
+            if (exact.has(span.term)) hits.push(span);
+            for (const term of prefixes) if (span.term.startsWith(term)) hits.push({ ...span, term });
+          } else {
+            for (const term of actualMatch(span.term)) matches.add(term);
+            for (const term of snippetMatch(span.term)) hits.push({ ...span, term });
+          }
         }
+        for (const { operand, alias } of phrases) {
+          check?.();
+          if (matches.has(operand.term)) continue;
+          document.stemText ??= ` ${document.spans.map(span => stem(span.term)).filter(Boolean).join(' ')} `;
+          if (document.stemText.includes(` ${alias}${operand.prefix ? '' : ' '}`)) matches.add(operand.term);
+        }
+        rows.push({ document, score, matches: matches.size, hits });
       }
-      return { document, score, matches: matches.size, hits };
-    }));
-    measured(timer, 'snippet_render', () => {
-      for (const candidate of candidates) candidate.snippet = fts5Snippet(candidate.document.text, candidate.hits, 120, { sentenceBonus: false });
+      return rows;
     });
+    measured(timer, 'snippet_selection', () => {
+      for (const candidate of candidates) {
+        check?.();
+        candidate.document.chars ??= Array.from(candidate.document.text);
+        candidate.range = selectFts5Range(candidate.document.chars, candidate.hits, budget, { sentenceBonus: false, check, weighted: weightedSnippet });
+        candidate.hits = undefined;
+      }
+    });
+    const snippet = candidate => {
+      const { document, range } = candidate;
+      return `${range.start > 0 ? '…' : ''}${document.chars.slice(range.start, range.end).join('')}${range.end < document.chars.length ? '…' : ''}`;
+    };
+    const dedupKey = candidate => {
+      const { document, range } = candidate;
+      let key = range.start > 0 ? '…' : '', space = false;
+      for (let at = range.start; at < range.end; at++) {
+        if ((at & 255) === 0) check?.();
+        const char = document.chars[at];
+        if (/\s/u.test(char)) space = key.length > 0;
+        else { key += (space ? ' ' : '') + char; space = false; }
+      }
+      if (range.end < document.chars.length) key += (space ? ' ' : '') + '…';
+      return key;
+    };
     const distinct = measured(timer, 'deduplicate', () => {
       const snippets = new Map();
       for (const candidate of candidates) {
-        const key = candidate.snippet.replace(/\s+/g, ' ').trim();
+        check?.();
+        // The key must retain the old query-selected window, not the full text
+        // or highest-scoring duplicate. Only the newest representative wins.
+        const key = dedupKey(candidate);
         const previous = snippets.get(key);
         if (!previous || candidate.document.recency > previous.document.recency) snippets.set(key, candidate);
       }
       return [...snippets.values()];
     });
-    measured(timer, 'mechanical_rank', () => distinct.sort((a, b) =>
-      a.score - b.score || b.matches - a.matches || b.document.recency - a.document.recency));
-    return distinct.map(({ document, score, snippet }) => ({
-      id: document.id, score,
-      date: document.date ?? '', role: document.role ?? 'user', snippet
+    measured(timer, 'mechanical_rank', () => distinct.sort((a, b) => {
+      check?.();
+      return a.score - b.score || b.matches - a.matches || b.document.recency - a.document.recency;
     }));
-  }
-  function matchesOperand(value, operand) {
-    const compare = candidate => candidate !== undefined && (operand.prefix ? candidate.startsWith(operand.term) : candidate === operand.term);
-    if ((!operand.columns || operand.columns.includes('tokens')) && compare(value)) return true;
-    if (operand.columns && !operand.columns.includes('stems')) return false;
-    const alias = stem(value);
-    const target = operand.stem ? stem(operand.term) : operand.term;
-    if (alias === undefined || target === undefined) return false;
-    return operand.prefix ? ` ${alias}`.includes(` ${target}`) : ` ${alias} `.includes(` ${target} `);
+    check?.();
+    return distinct.map(candidate => ({
+      id: candidate.document.id, score: candidate.score,
+      date: candidate.document.date ?? '', role: candidate.document.role ?? 'user',
+      get snippet() { check?.(); return measured(timer, 'snippet_render', () => snippet(candidate)); },
+    }));
   }
   function automaticRows(query, automatic, timer, limit) {
     const text = extractText(query);
@@ -247,15 +325,22 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, timer: bui
     const results = collect(expression, expanded, expanded, timer);
     return { skipped: false, total: results.length, results, queryTerms };
   }
-  function rawRows(query, timer) {
-    const effective = prefixExpression(query, arm);
-    const grouped = implicitOr(effective);
-    const porter = stem ? porterExpression(grouped, stem) : undefined;
-    const expression = lemma ? lemma.expression(grouped) : inflections ? inflections.expression(grouped) : porter?.expression ?? grouped;
-    const actual = porter?.operands ?? queryOperands(expression);
-    const snippets = actual.flatMap(operand => operand.prefix ? [operand] :
-      tokenize(operand.term).map(term => ({ ...operand, term, prefix: false })));
-    const results = collect(expression, actual, snippets, timer);
+  function rawRows(query, timer, check) {
+    check?.();
+    const prepared = measured(timer, 'expression_rewrite', () => {
+      const effective = prefixExpression(query, arm, check);
+      const grouped = implicitOr(effective, check);
+      const porter = stem ? porterExpression(grouped, stem, check) : undefined;
+      const expression = lemma ? lemma.expression(grouped) : inflections ? inflections.expression(grouped) : porter?.expression ?? grouped;
+      const actual = porter?.operands ?? queryOperands(expression, check);
+      const snippets = actual.flatMap(operand => {
+        check?.();
+        return operand.prefix ? [operand] : tokenize(operand.term).map(term => ({ ...operand, term, prefix: false }));
+      });
+      return { expression, actual, snippets };
+    });
+    check?.();
+    const results = collect(prepared.expression, prepared.actual, prepared.snippets, timer, check);
     return { total: results.length, results };
   }
   const ranks = rows => rows.map(({ id, score }) => ({ id, score }));
@@ -267,22 +352,36 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, timer: bui
       if (weightedLength(text) > autoGate) return [];
       return [...new Set(tokenize(text).filter(term => !STOPWORDS.has(term)))].map(term => ({ term, variants: inflections ? inflections.expand(term) : [term] }));
     },
-    missingTerms(query) {
-      const effective = prefixExpression(query, arm);
-      const grouped = implicitOr(effective);
-      const terms = (stem ? porterExpression(effective, stem).operands : queryOperands(lemma ? lemma.expression(grouped) : inflections ? inflections.expression(grouped) : grouped)).filter(({ prefix }) => !prefix);
-      if (!stem) return [...new Set(terms.map(({ term }) => term))].filter(term => !vocabulary.get(term));
-      return [...new Set(terms.filter(operand => {
-        const columns = operand.columns ?? ['tokens', 'stems'];
-        return !columns.some(column => {
-          const term = column === 'stems' && operand.stem ? stem(operand.term) : operand.term;
-          return term !== undefined && (column === 'stems' && operand.stem ? term.split(' ') : [term])
-            .every(value => vocabulary.get(value, column));
-        });
-      }).map(({ term }) => term))];
+    missingTerms(query, { timer = buildTimer, check } = {}) {
+      return measured(timer, 'missing_terms', () => {
+        check?.();
+        const effective = prefixExpression(query, arm, check);
+        const grouped = implicitOr(effective, check);
+        const terms = (stem ? porterExpression(effective, stem, check).operands : queryOperands(lemma ? lemma.expression(grouped) : inflections ? inflections.expression(grouped) : grouped, check)).filter(({ prefix }) => !prefix);
+        const missing = new Set();
+        for (const operand of terms) {
+          check?.();
+          const columns = operand.columns ?? ['tokens', 'stems'];
+          const available = !stem ? vocabulary.get(operand.term) : columns.some(column => {
+            const term = column === 'stems' && operand.stem ? stem(operand.term) : operand.term;
+            return term !== undefined && (column === 'stems' && operand.stem ? term.split(' ') : [term]).every(value => { check?.(); return vocabulary.get(value, column); });
+          });
+          if (!available) missing.add(operand.term);
+        }
+        check?.();
+        return [...missing];
+      });
     },
-    queryRows(query, { mode = 'manual', timer = buildTimer } = {}) {
-      return mode === 'auto' ? automaticRows(query, true, timer) : rawRows(query, timer);
+    queryRows(query, { mode = 'manual', timer = buildTimer, check } = {}) {
+      return mode === 'auto' ? automaticRows(query, true, timer) : rawRows(query, timer, check);
+    },
+    queryPage(query, options = {}, { timer = buildTimer, check } = {}) {
+      const found = rawRows(query, timer, check);
+      const missingTerms = this.missingTerms(query, { timer, check });
+      const page = sqliteRecallPage(found.results, options, missingTerms);
+      check?.();
+      const ids = found.results.slice(page.details.offset, page.details.offset + page.details.returned).map(row => row.id);
+      return { total: found.total, page, ids, missingTerms };
     },
     search(query, { automatic = false, limit = 20 } = {}) {
       const found = automaticRows(query, automatic, buildTimer, limit);

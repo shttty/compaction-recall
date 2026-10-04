@@ -34,20 +34,25 @@ export function porterTerm(term, stem, prefix = false) {
 
 // Rewrite complete native phrase/NEAR units, never operator names, column
 // names, or NEAR distances. Explicit column filters are native escape hatches.
-export function porterExpression(query, stem) {
-  const tokens = [...query.matchAll(/"(?:[^"]|"")*"|[A-Za-z0-9_\x1a\u0080-\uffff]+|[^ \t\r\n]/g)]
-    .map(match => ({ text: match[0], start: match.index, end: match.index + match[0].length }));
-  if (tokens.some(token => token.text === '"')) return { expression: query, operands: queryOperands(query) };
+export function porterExpression(query, stem, check) {
+  const tokens = [];
+  for (const match of query.matchAll(/"(?:[^"]|"")*"|[A-Za-z0-9_\x1a\u0080-\uffff]+|[^ \t\r\n]/g)) {
+    check?.();
+    tokens.push({ text: match[0], start: match.index, end: match.index + match[0].length });
+  }
+  if (tokens.some(token => token.text === '"')) return { expression: query, operands: queryOperands(query, check) };
   const replacements = [], operands = [];
   const text = i => tokens[i]?.text;
   const string = i => tokens[i] && /^["A-Za-z0-9_\x1a\u0080-\uffff]/.test(text(i)) && !['AND', 'OR', 'NOT'].includes(text(i));
   const closes = new Map(), stack = [];
   for (let i = 0; i < tokens.length; i++) {
+    check?.();
     if (['(', '{'].includes(text(i))) stack.push(i);
     else if ((text(i) === ')' && text(stack.at(-1)) === '(') || (text(i) === '}' && text(stack.at(-1)) === '{')) closes.set(stack.pop(), i);
   }
   function walk(start, end, columns) {
     for (let i = start; i < end;) {
+      check?.();
       let at = i, selected = columns;
       if (text(at) === '-') at++;
       const columnEnd = text(at) === '{' ? closes.get(at) : string(at) ? at : undefined;
@@ -83,16 +88,18 @@ export function porterExpression(query, stem) {
       const pieces = tokens.slice(first, at);
       const quoted = pieces.some(token => token.text.startsWith('"'));
       const effective = selected ?? (quoted ? ['tokens'] : ['tokens', 'stems']);
-      operands.push(...queryOperands(unit).map(operand => ({ ...operand, columns: effective, stem: !selected && !quoted })));
+      const unitOperands = queryOperands(unit, check);
+      operands.push(...unitOperands.map(operand => ({ ...operand, columns: effective, stem: !selected && !quoted })));
       if (!selected) {
         let rewritten;
         if (quoted) rewritten = `tokens : ${unit}`;
-        else if (!near && queryOperands(unit).length === 1 && !unit.includes('+') && !unit.startsWith('^')) {
-          const operand = queryOperands(unit)[0];
+        else if (!near && unitOperands.length === 1 && !unit.includes('+') && !unit.startsWith('^')) {
+          const operand = unitOperands[0];
           rewritten = porterTerm(operand.term, stem, operand.prefix);
         } else {
           let offset = tokens[first].start, alias = '', available = true, unchanged = true;
           for (let j = first; j < at; j++) {
+            check?.();
             const token = tokens[j];
             if (!string(j) || token.text === 'NEAR' || (text(j - 1) === ',' && /^\d+$/.test(token.text))) continue;
             const value = stem(token.text.toLowerCase());
@@ -113,6 +120,7 @@ export function porterExpression(query, stem) {
   walk(0, tokens.length);
   let expression = '', offset = 0;
   for (const replacement of replacements) {
+    check?.();
     expression += query.slice(offset, replacement.start) + replacement.text;
     offset = replacement.end;
   }

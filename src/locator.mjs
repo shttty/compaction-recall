@@ -300,8 +300,7 @@ export function recallPageFromRows(rows, options = {}, timer) {
   validateRecallPageOptions(options);
   const limit = options.limit ?? RECALL_DEFAULT_LIMIT, offset = options.offset ?? 0;
   return measured(timer, "manual_snippets_pagination_render", () => {
-    const lines = rows.map(row => safeJSON(row));
-    const total = lines.length;
+    const total = rows.length;
     /** @param {string[]} selected @param {boolean} [budgetExceeded] */
     const page = (selected, budgetExceeded = false) => {
       const returned = selected.length, hasMore = offset + returned < total;
@@ -319,14 +318,14 @@ export function recallPageFromRows(rows, options = {}, timer) {
     /** @type {string[]} */
     const selected = [];
     for (let at = offset; at < total && selected.length < limit; at++) {
-      const proposed = [...selected, lines[at]];
+      const proposed = [...selected, safeJSON(rows[at])];
       if (Array.from(page(proposed).text).length > RECALL_PAGE_CHARS) {
         if (selected.length) break; // Next page starts at this same row; never skip it.
         // A pathological id/metadata row cannot be truncated without corrupting its locator.
         // Emit exactly one oversized row and flag the soft-budget exception to guarantee progress.
         return page(proposed, true);
       }
-      selected.push(lines[at]);
+      selected.push(proposed[proposed.length - 1]);
     }
     return page(selected);
   });

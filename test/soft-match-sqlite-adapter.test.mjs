@@ -2,6 +2,8 @@ import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { join } from 'node:path';
 import { sqliteRecallPage } from '../benchmark/retrieval-sqlite-page.mjs';
 import { LOCATOR_TYPE, recallPageFromRows } from '../src/locator.mjs';
 import { weightedLength } from '../prototype/soft-match-sqlite/index.mjs';
@@ -22,7 +24,7 @@ test('missing vocabulary line preserves production pagination and the response b
   assert.equal(budget.details.nextOffset, budget.details.returned);
 });
 
-test('SDK adapter rejects six terms before starting worker but accepts five and preserves raw native errors', async t => {
+test('SDK adapter searches beyond old word/codepoint caps and preserves raw native errors', async t => {
   const { discoverAndLoadExtensions } = await import('@earendil-works/pi-coding-agent');
   const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
   assert.deepEqual(loaded.errors, []);
@@ -31,18 +33,22 @@ test('SDK adapter rejects six terms before starting worker but accepts five and 
   const timestamp = '2026-10-04T00:00:00Z';
   const ctx = {
     sessionManager: {
-      getSessionId: () => 'cap-fixture', getBranch: () => [
-        { type: 'message', id: 'match', timestamp, message: { role: 'user', content: 'alpha beta gamma delta epsilon' } },
+      getSessionId: () => 'uncapped-fixture', getBranch: () => [
+        { type: 'message', id: 'match', timestamp, message: { role: 'user', content: 'alpha beta gamma delta epsilon zeta tailneedle' } },
         { type: 'message', id: 'live', timestamp, message: { role: 'user', content: 'retained' } },
         { type: 'compaction', id: 'compact', timestamp, firstKeptEntryId: 'live', summary: '', tokensBefore: 10 },
       ]
     }
   };
   t.after(async () => { for (const handler of extension.handlers.get('session_shutdown') ?? []) await handler({ type: 'session_shutdown', reason: 'quit' }, ctx); });
-  await assert.rejects(recall.execute('six', { query: 'alpha beta gamma delta epsilon zeta' }, undefined, undefined, { sessionManager: { getSessionId: () => 'cap-fixture', getBranch: () => { throw new Error('rejection must not collect or query branch'); } } }), { message: '本次 6 个关键词，上限 5，请拆开分几次查' });
-  const five = await recall.execute('five', { query: 'alpha beta gamma delta epsilon' }, undefined, undefined, ctx);
-  assert.equal(five.details.total, 1);
-  assert.doesNotMatch(five.content[0].text, /未入索引/);
+  const many = Array.from({ length: 1000 }, (_, i) => `missing${i}`).join(' ') + ' tailneedle';
+  assert.ok(many.length > 4000);
+  const uncapped = await recall.execute('uncapped', { query: many }, undefined, undefined, ctx);
+  assert.equal(uncapped.details.total, 1);
+  assert.match(uncapped.content[0].text, /tailneedle/);
+  const six = await recall.execute('six', { query: 'alpha beta gamma delta epsilon zeta' }, undefined, undefined, ctx);
+  assert.equal(six.details.total, 1);
+  assert.doesNotMatch(six.content[0].text, /未入索引/);
   const partial = await recall.execute('partial', { query: 'alpha nonexistent' }, undefined, undefined, ctx);
   assert.equal(partial.details.total, 1);
   assert.match(partial.content[0].text, /未入索引：nonexistent/);
@@ -51,11 +57,16 @@ test('SDK adapter rejects six terms before starting worker but accepts five and 
   assert.equal(recovered.details.total, 1);
 });
 
-test('SDK context and history_recall use environment porter-jieba and gate 280 in the isolated profile', async t => {
-  const keys = ['COMPACTION_RECALL_SQLITE_ARM', 'COMPACTION_RECALL_AUTO_GATE', 'PI_RETRIEVAL_INPUT_FILE'];
+test('SDK loads file gate/timeout once; lifecycle rebuilds retain them over later file/environment changes', async t => {
+  const keys = ['COMPACTION_RECALL_SQLITE_ARM', 'COMPACTION_RECALL_AUTO_GATE', 'COMPACTION_RECALL_QUERY_TIMEOUT_MS', 'PI_RETRIEVAL_INPUT_FILE'];
   const saved = keys.map(key => process.env[key]);
   process.env.COMPACTION_RECALL_SQLITE_ARM = 'porter-jieba';
-  process.env.COMPACTION_RECALL_AUTO_GATE = '280';
+  delete process.env.COMPACTION_RECALL_AUTO_GATE;
+  delete process.env.COMPACTION_RECALL_QUERY_TIMEOUT_MS;
+  const config = join(process.env.PI_CODING_AGENT_DIR, 'extensions', 'compaction-recall.json');
+  mkdirSync(join(process.env.PI_CODING_AGENT_DIR, 'extensions'), { recursive: true });
+  writeFileSync(config, JSON.stringify({ autoGate: 280, recallTimeoutMs: 5000 }));
+  t.after(() => rmSync(config, { force: true }));
   delete process.env.PI_RETRIEVAL_INPUT_FILE;
   t.after(() => keys.forEach((key, i) => {
     if (saved[i] === undefined) delete process.env[key];
@@ -75,6 +86,10 @@ test('SDK context and history_recall use environment porter-jieba and gate 280 i
     for (const handler of extension.handlers.get('session_shutdown') ?? []) await handler({ type: 'session_shutdown', reason: 'quit' }, ctx);
   });
   const recall = extension.tools.get('history_recall').definition;
+  writeFileSync(config, JSON.stringify({ autoGate: 1, recallTimeoutMs: 1 }));
+  process.env.COMPACTION_RECALL_AUTO_GATE = '1';
+  process.env.COMPACTION_RECALL_QUERY_TIMEOUT_MS = '1';
+  for (const handler of extension.handlers.get('session_tree') ?? []) await handler({ type: 'session_tree' }, ctx);
   const base = 'running 南京市 😀𠀀𠀁';
   const padded = length => base + ' '.repeat(length - weightedLength(base));
   const locatorIds = messages => messages.filter(message => message.customType === LOCATOR_TYPE)

@@ -5,5 +5,5 @@ import { join } from 'node:path';
 
 const directory = mkdtempSync(join(tmpdir(), 'compaction-recall-test-agent-'));
 process.env.PI_CODING_AGENT_DIR = directory;
-for (const key of ['COMPACTION_RECALL_MODE', 'COMPACTION_RECALL_PREINDEX_TURNS', 'COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS', 'COMPACTION_RECALL_TIMING_FILE']) delete process.env[key];
+for (const key of ['COMPACTION_RECALL_MODE', 'COMPACTION_RECALL_PREINDEX_TURNS', 'COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS', 'COMPACTION_RECALL_TIMING_FILE', 'COMPACTION_RECALL_QUERY_TIMEOUT_MS', 'COMPACTION_RECALL_AUTO_GATE', 'COMPACTION_RECALL_SNIPPET_BUDGET']) delete process.env[key];
 process.once('exit', () => rmSync(directory, { recursive: true, force: true }));

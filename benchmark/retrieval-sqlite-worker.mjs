@@ -1,10 +1,13 @@
 import { createIndex, parseAutoGate } from '../prototype/soft-match-sqlite/index.mjs';
 import { measured } from '../src/timing.mjs';
 import { validateArm } from '../prototype/soft-match-sqlite/arms.mjs';
+import { createQueryCheck } from '../prototype/soft-match-sqlite/deadline.mjs';
 
-export function createWorkerEngine({ arm = process.env.COMPACTION_RECALL_SQLITE_ARM ?? 'off', autoGate = process.env.COMPACTION_RECALL_AUTO_GATE } = {}) {
+export function createWorkerEngine({ arm = process.env.COMPACTION_RECALL_SQLITE_ARM ?? 'off', autoGate = process.env.COMPACTION_RECALL_AUTO_GATE,
+  snippetBudget = process.env.COMPACTION_RECALL_SNIPPET_BUDGET } = {}) {
   validateArm(arm);
   autoGate = parseAutoGate(autoGate);
+  if (typeof snippetBudget === 'string') snippetBudget = /^\d+$/.test(snippetBudget) ? Number(snippetBudget) : undefined;
   let index;
   let documents = [];
   return {
@@ -17,16 +20,24 @@ export function createWorkerEngine({ arm = process.env.COMPACTION_RECALL_SQLITE_
         entry.id !== documents[i].id || entry.text !== documents[i].text ||
         entry.sourcePosition !== documents[i].sourcePosition || entry.date !== documents[i].date || entry.role !== documents[i].role);
       if (changed) {
-        const replacement = measured(timer, 'postings_activation', () => createIndex(next, { arm, autoGate }));
+        const replacement = measured(timer, 'postings_activation', () => createIndex(next, { arm, autoGate, snippetBudget }));
         index?.close(); index = replacement; documents = next;
       }
       timer?.mark('worker_maintenance', { kind: changed ? 'build_or_rebuild' : 'activation', entries: index.size, execution: 'worker_thread' });
       return { documents: index.size };
     },
-    query(query, { mode, timer }) {
+    query(query, { mode, timer, options = {} }) {
       if (!index) throw new Error('SQLite worker has not committed a corpus');
-      const found = measured(timer, 'candidate_collection', () => index.queryRows(query, { mode, timer }));
-      return { total: found.total, results: found.results, missingTerms: mode === 'manual' ? index.missingTerms(query) : [] };
+      const check = mode === 'manual' ? createQueryCheck(options.queryDeadlineAt, options.queryTimeoutMs) : undefined;
+      check?.();
+      if (mode === 'manual' && options.page) return index.queryPage(query, options, { timer, check });
+      const found = measured(timer, 'candidate_collection', () => index.queryRows(query, { mode, timer, check }));
+      const missingTerms = mode === 'manual' ? index.missingTerms(query, { timer, check }) : [];
+      // Materialize full-rank callers here: deadline errors must remain engine
+      // errors, not transport failures that would discard a healthy index.
+      const results = found.results.map(row => { check?.(); return { ...row }; });
+      check?.();
+      return { total: found.total, results, missingTerms };
     },
     dispose() { index?.close(); index = undefined; documents = []; },
   };

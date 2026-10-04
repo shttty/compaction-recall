@@ -36,6 +36,8 @@ pi install /absolute/path/to/compaction-recall
 {
   "mode": "full",
   "trace": false,
+  "recallTimeoutMs": 5000,
+  "autoGate": 210,
   "preindex": {
     "userCycles": 10,
     "toolRounds": 10
@@ -52,6 +54,13 @@ COMPACTION_RECALL_MODE=lite COMPACTION_RECALL_PREINDEX_TURNS=10 COMPACTION_RECAL
 ```
 
 mode 和预分词参数在**扩展加载时一起读取一次**，来源和生效时点一致。修改文件或环境变量后需重新加载扩展 / 重启 Pi。`session_start`、`session_tree` 只用已加载参数重置 cadence 计数器，不重新读取文件；无文件监听或每次工具调用的配置读取。lite 不使用预分词参数安排工作。检索方式是独立议题，本次没有加入嵌入模型配置或组合模式值。
+
+**SQLite 原型专用键：** 同一 agent 文件还接受根键 `recallTimeoutMs`（显式 `history_recall` 超时毫秒，默认 5000）和 `autoGate`（自动提示加权长度门槛，默认保持 210）。它们由 `benchmark/retrieval-sqlite-adapter.ts` 在加载时读取一次；正式 `src/` 插件只识别这两个配置字段，不启用 SQLite、不改变正式检索行为。`COMPACTION_RECALL_QUERY_TIMEOUT_MS` / `COMPACTION_RECALL_AUTO_GATE` 分别优先于文件；文件值只接受正安全整数，环境值只接受十进制正安全整数字符串。所选值无效时静默回退 5000 / 210；即使存在有效文件值，非法环境覆盖也直接用默认值。文件不存在仍静默，其他文件错误沿用上述规则。生命周期重建继续使用已加载值，修改后需重载。
+
+SQLite 自动提示可显式设 `autoGate: 280`（Han 每码点权重 2，其他权重 1）；280 允许、281 跳过，没有额外词数或前 4000 码点截断。显式查询不受该门槛及关键词数量限制；协作式 JavaScript deadline 从父线程请求起始计时，包含必要的索引准备、排队与查询。索引继续运行在现有 Worker 线程；到检查点后抛 `TimeoutError`，返回 `history_recall timed out after N ms; narrow the query or use history_grep`，过期结果不进入模型或 trace。同步 native MATCH 不可抢占，允许超过名义期限直到 native call 返回检查点；不是硬停止或精确墙钟返回保证。超时不 terminate/reset worker、不清空索引或跨度缓存，也不取消其他排队请求；后续请求正常复用 healthy worker caches，grep / expand 仍独立。2026-10-05 经凛音同意，SQLite 适配层已应用 [英文 v8](SOFT_MATCH_PROMPTS_V8.md) 用于端到端对比；正式 `src/recall-extension.ts` 和冻结历史描述/结果不变。详细依据见 [SQLite 原型 README](../prototype/soft-match-sqlite/README.md#显式查询超时与配置2026-10-05)。
+
+SQLite 另接受根键 `snippetBudget` 与优先环境变量 `COMPACTION_RECALL_SNIPPET_BUDGET`，加载一次，同时控制自动提示和显式 recall 的 snippet window。有效显式配置为正安全整数（环境值为严格十进制字符串）；例如 `"snippetBudget": 240` 采用加权预算：每个 `\p{Script=Han}` 码点计 2，其余 Unicode 码点计 1。没有配置或所选配置无效时**严格沿用旧 120 Unicode 码点窗口**，不是加权 120；非法环境覆盖不重新取有效文件值。显式 120 也使用加权规则，因而与缺省配置不同。该值不是工具参数、不改变 `recallTimeoutMs` / `autoGate` 或 16,000 码点页预算，正式生产描述与片段行为不变。
+
 
 `trace` 同样仅在扩展加载时读取，默认 false，只接受布尔值；非法值警告并回退 false，无 trace 环境变量。设为 true 时，每次 full 模式的 `history_recall` execute 在同一 `COMPACTION_RECALL_TIMING_FILE` 追加一条详细事件；未设置该文件时加载阶段仅警告一次、不记录。lite 不增加任何 hook。为等待 message_end 与 execute 的关联，事件延迟到 agent_end / shutdown 写入。关闭时 timing 仍只包含数值及固定标签；开启后会记录 assistant 正文、解析后的模型参数、插件收到的 query/params、返回 id 排序与分页、错误原文，不记录思考或逐字原始 JSON。文件权限 0600，可能含敏感内容，详见 [TIMING.md](TIMING.md#opt-in-content-trace)。
 
