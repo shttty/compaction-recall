@@ -63,9 +63,9 @@ const prompt = 'Today is 2026-10-03. Please recall: quasar';
 save('input.json', { question, question_date: '2026-10-03', prompt }, 0o444);
 const corpus = buildEvaluationCorpus({
   questionId: 'sqlite-smoke', haystack_dates: ['2026/09/01 10:00'], haystack_sessions: [[
-    { role: 'user', content: 'quasar nebula blue' },
-    { role: 'user', content: 'quasar nebula green' },
     { role: 'user', content: 'unrelated orchard apple' },
+    { role: 'user', content: 'blue quasar nebula' },
+    { role: 'user', content: 'green quasar nebula' },
   ]]
 });
 const sessionPath = path.join(output, 'session.jsonl');
@@ -82,6 +82,8 @@ try {
 } finally { await engine.dispose?.(); }
 assert.ok(nativeError, 'Malformed quote must fail in native FTS5');
 assert.equal(autoResults.length, 2);
+const expectedIds = [corpus.positions.get('0:2'), corpus.positions.get('0:1')];
+assert.deepEqual(autoResults.map(row => row.id), expectedIds, 'Equal-score matches rank newest first');
 const sdk = await import(sdkUrl);
 const { createAssistantMessageEventStream } = await import(aiUrl);
 const { InMemoryCodingAgentModelsStore } = await import(new URL('./core/models-store.js', sdkUrl).href);
@@ -94,13 +96,23 @@ const requests = [], seenPages = [], checks = [], extensionErrors = [];
 const rawQuery = 'quasar OR nebula';
 const rejectedQuery = 'quasar nebula blue green orchard apple';
 const rejectionError = '本次 6 个关键词，上限 5，请拆开分几次查';
-const text = message => message.content.filter(block => block.type === 'text').map(block => block.text).join('\n');
+const text = message => typeof message.content === 'string' ? message.content
+  : message.content.filter(block => block.type === 'text').map(block => block.text).join('\n');
+const visibleRows = content => content.split('\n').map(line => line.trim())
+  .filter(line => line.startsWith('{')).map(line => {
+    const row = JSON.parse(line);
+    assert.deepEqual(Object.keys(row).sort(), ['date', 'id', 'role', 'snippet'],
+      'Provider-visible locator rows contain exactly id,date,role,snippet; no score or other fields');
+    return row;
+  });
 const readPage = message => {
   assert.equal(message.isError, false);
   const content = text(message);
   const match = content.match(/^History recall page: (.+)$/m);
   assert.ok(match, 'Provider sees production recall page');
-  return { ...JSON.parse(match[1]), ids: content.split('\n').filter(line => line.startsWith('{"id":')).map(line => JSON.parse(line).id) };
+  const rows = visibleRows(content);
+  assert.equal(rows.length, 1, 'Provider sees one JSON locator row per page');
+  return { ...JSON.parse(match[1]), ids: rows.map(row => row.id) };
 };
 modelRuntime.registerProvider('sqlite-smoke', {
   api: 'openai-completions', apiKey: 'offline-fake-only', baseUrl: 'http://127.0.0.1:1',
@@ -113,11 +125,15 @@ modelRuntime.registerProvider('sqlite-smoke', {
     const turn = requests.length;
     let args;
     if (turn === 1) {
-      const request = JSON.stringify(context.messages);
-      assert.match(request, /Compacted-history locators \(lexical hints only\)/);
-      for (const row of autoResults) assert.ok(request.includes(row.id), 'Automatic locator reaches provider');
-      assert.ok(!request.includes('goldIds'), 'Scorer gold stays out of provider input');
-      checks.push('automatic locators observed in actual provider request');
+      const hints = context.messages.map(text).filter(content =>
+        content.includes('Compacted-history locators (lexical hints only)'));
+      assert.equal(hints.length, 1, 'Provider receives automatic hints');
+      const rows = visibleRows(hints[0]);
+      assert.deepEqual(rows.map(row => row.id), expectedIds, 'Automatic locator rows reach provider in recency order');
+      assert.equal(new Set(rows.map(row => row.snippet.replace(/\s+/g, ' ').trim())).size, 2,
+        'Archived matching messages produce distinct normalized snippets');
+      assert.ok(!JSON.stringify(context.messages).includes('goldIds'), 'Scorer gold stays out of provider input');
+      checks.push('automatic hints in actual provider request contain exactly id,date,role,snippet in newest-first order');
       args = { query: rawQuery, limit: 1 };
     } else {
       const result = context.messages.filter(message => message.role === 'toolResult').at(-1);
@@ -126,11 +142,14 @@ modelRuntime.registerProvider('sqlite-smoke', {
         const page = readPage(result); seenPages.push(page);
         assert.equal(page.total, 2); assert.equal(page.returned, 1); assert.equal(page.ids.length, 1);
         assert.equal(page.nextOffset, 1);
+        assert.deepEqual(page.ids, expectedIds.slice(0, 1));
         args = { query: rawQuery, limit: 1, offset: page.nextOffset };
       } else if (turn === 3) {
         const page = readPage(result); seenPages.push(page);
         assert.equal(page.total, 2); assert.equal(page.returned, 1); assert.equal(page.nextOffset, null);
         assert.notEqual(page.ids[0], seenPages[0].ids[0]);
+        assert.deepEqual(page.ids, expectedIds.slice(1));
+        checks.push('both history_recall pages seen by provider contain exactly id,date,role,snippet in newest-first order');
         checks.push('raw limit=1 followed provider-visible nextOffset once');
         args = { query: rejectedQuery, limit: 1 };
       } else if (turn === 4) {
@@ -224,7 +243,7 @@ assert.ok(workerQueries.some(event => event.execution === 'worker_thread' && eve
 assert.ok(workerQueries.some(event => event.execution === 'worker_thread' && event.outcome === 'error'),
   'Native malformed query fails in worker without preventing provider completion');
 checks.push('worker query execution and positive index memory fields observed');
-const goldIds = [corpus.positions.get('0:0'), corpus.positions.get('0:1')];
+const goldIds = expectedIds;
 const calls = traces.map(event => ({ results: event.result?.ids ?? [], query_identical: event.query_identical, error: event.error }));
 const metrics = scoreRetrieval({ goldIds, autoResults, calls });
 assert.equal(metrics.callCount, 4); assert.equal(metrics.errorCount, 2); assert.equal(metrics.queryMismatchCount, 0);
@@ -232,7 +251,7 @@ assert.equal(metrics.mrr, 1); assert.equal(metrics['recall@5'], 1); assert.equal
 assert.equal(metrics.locatedGoldTurns, 1); assert.equal(metrics.noCall, false);
 checks.push('scoreRetrieval covers automatic ranking, both pages and both failed calls in execution order');
 save('report.json', {
-  group: 2, stage: 'S4', synthetic: true, liveModel: false, adapterPackage, entry,
+  group: 2, stage: 'S5', synthetic: true, liveModel: false, adapterPackage, entry,
   engine: engineUrl.href, checks, autoResults, calls, metrics, memory, workerQueries
 });
 for (const check of checks) console.log(`PASS ${check}`);

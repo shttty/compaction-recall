@@ -30,7 +30,7 @@ export function countKeywords(query) {
 export function queryOperands(query) {
   return operands(query).flatMap(({ text, prefix }) => {
     // FTS5 ascii tokenization of MATCH operands: do not re-tokenize Han into bigrams.
-    const terms = text.match(/[A-Za-z0-9_\u0080-\u{10ffff}]+/gu) ?? [];
+    const terms = text.match(/[A-Za-z0-9_$\u0080-\u{10ffff}]+/gu) ?? [];
     return terms.map((term, index) => ({ term: term.toLowerCase(), prefix: prefix && index === terms.length - 1 }));
   });
 }

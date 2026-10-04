@@ -1,41 +1,10 @@
 import { DatabaseSync } from 'node:sqlite';
 import { queryOperands } from './query.mjs';
-
-// English-only value copy of src/locator.mjs; deliberately no production lexer import.
-const STOPWORDS = new Set((
-  'a an and are as at be been but by can could did do does for from had has have how i if in is it its me my of on or our please so than that the their them then there these they this to us was we were what when where which who why will with would you your ' +
-  'please tell help about find show recall remember previous earlier history'
-).split(/\s+/));
+import { STOPWORDS, tokenize, tokenizeSpans } from './lexical.mjs';
+import { fts5Snippet } from '../../benchmark/fts5-snippet.mjs';
+import { measured } from '../../src/timing.mjs';
+export { STOPWORDS, tokenize, tokenizeSpans } from './lexical.mjs';
 const HAN = /\p{Script=Han}/u;
-const PURE_HAN = /^\p{Script=Han}+$/u;
-const SEGMENTER = new Intl.Segmenter('zh', { granularity: 'word' });
-
-export function tokenize(text) {
-  const tokens = [];
-  for (const [run] of text.matchAll(/\p{Script=Han}+|[A-Za-z0-9_]+/gu)) {
-    if (!PURE_HAN.test(run)) {
-      tokens.push(run.toLowerCase());
-      continue;
-    }
-
-    const chars = Array.from(run);
-    const spans = [];
-    let offset = 0;
-    for (let i = 0; i + 1 < chars.length; i++) {
-      spans.push({ term: chars[i] + chars[i + 1], start: offset, length: 2 });
-      offset += chars[i].length;
-    }
-    for (const { segment, index, isWordLike } of SEGMENTER.segment(run)) {
-      if (!isWordLike || !PURE_HAN.test(segment)) continue;
-      const length = Array.from(segment).length;
-      // Every two-Han word already exists at this exact span as a bigram.
-      if (length > 2) spans.push({ term: segment, start: index, length });
-    }
-    spans.sort((a, b) => a.start - b.start || a.length - b.length);
-    for (const { term } of spans) tokens.push(term);
-  }
-  return tokens;
-}
 
 export function weightedLength(text) {
   let length = 0;
@@ -139,76 +108,115 @@ export function implicitOr(query) {
   return rewritten + query.slice(offset);
 }
 
-export function createIndex(documents) {
+export function createIndex(documents, { timer: buildTimer } = {}) {
+  // Latest id wins before the empty check, so a latest empty edit hides older text.
+  const byId = new Map();
+  documents.forEach((document, i) => {
+    const recency = document.sourcePosition ?? document.recency ?? i;
+    const previous = byId.get(document.id);
+    if (!previous || recency >= previous.recency) byId.set(document.id, {
+      id: document.id, text: document.text, date: document.date, role: document.role, recency,
+    });
+  });
+  const corpus = [...byId.values()].filter(document => document.text !== '');
   const db = new DatabaseSync(':memory:');
-  const ids = [];
-  let match;
-  let vocabulary;
+  let match, vocabulary;
   try {
     db.exec(`
       PRAGMA temp_store = MEMORY;
       CREATE VIRTUAL TABLE terms USING fts5(
         tokens, content='', columnsize=1, detail=full,
-        tokenize="ascii tokenchars '_'"
+        tokenize="ascii tokenchars '_$'"
       );
       CREATE VIRTUAL TABLE vocabulary USING fts5vocab(terms, 'row');
       BEGIN;
     `);
     const insert = db.prepare('INSERT INTO terms(rowid, tokens) VALUES (?, ?)');
-    for (const { id, text } of documents) {
-      ids.push(id);
-      insert.run(ids.length, tokenize(text).join(' '));
-    }
+    corpus.forEach((document, i) => insert.run(i + 1, tokenize(document.text).join(' ')));
     db.exec('COMMIT');
     match = db.prepare('SELECT rowid, bm25(terms) AS score FROM terms WHERE terms MATCH ?');
     vocabulary = db.prepare('SELECT 1 FROM vocabulary WHERE term = ?');
-  } catch (error) {
-    db.close();
-    throw error;
-  }
+  } catch (error) { db.close(); throw error; }
 
+  function collect(expression, actualTerms, snippetTerms, timer) {
+    const native = measured(timer, 'native_query', () => match.all(expression));
+    const exact = new Set(snippetTerms.filter(term => !term.prefix).map(({ term }) => term));
+    const prefixes = [...new Set(snippetTerms.filter(term => term.prefix).map(({ term }) => term))];
+    const candidates = measured(timer, 'candidate_materialization', () => native.map(({ rowid, score }) => {
+      const document = corpus[rowid - 1];
+      document.spans ??= tokenizeSpans(document.text);
+      document.terms ??= new Set(document.spans.map(span => span.term));
+      const matches = new Set();
+      for (const { term, prefix } of actualTerms) {
+        if (!prefix && document.terms.has(term)) matches.add(term);
+        if (prefix) for (const value of document.terms) {
+          if (value.startsWith(term)) { matches.add(term); break; }
+        }
+      }
+      const hits = [];
+      for (const span of document.spans) {
+        if (exact.has(span.term)) hits.push(span);
+        for (const term of prefixes) if (span.term.startsWith(term)) hits.push({ ...span, term });
+      }
+      return { document, score, matches: matches.size, hits };
+    }));
+    measured(timer, 'snippet_render', () => {
+      for (const candidate of candidates) candidate.snippet = fts5Snippet(candidate.document.text, candidate.hits, 120, { sentenceBonus: false });
+    });
+    const distinct = measured(timer, 'deduplicate', () => {
+      const snippets = new Map();
+      for (const candidate of candidates) {
+        const key = candidate.snippet.replace(/\s+/g, ' ').trim();
+        const previous = snippets.get(key);
+        if (!previous || candidate.document.recency > previous.document.recency) snippets.set(key, candidate);
+      }
+      return [...snippets.values()];
+    });
+    measured(timer, 'mechanical_rank', () => distinct.sort((a, b) =>
+      a.score - b.score || b.matches - a.matches || b.document.recency - a.document.recency));
+    return distinct.map(({ document, score, snippet }) => ({
+      id: document.id, score,
+      date: document.date ?? '', role: document.role ?? 'user', snippet
+    }));
+  }
+  function automaticRows(query, automatic, timer, limit) {
+    const text = extractText(query);
+    if (automatic && weightedLength(text) > 210) return { skipped: true, total: 0, results: [], queryTerms: [] };
+    if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) throw new RangeError('limit must be a non-negative safe integer');
+    const queryTerms = [...new Set(tokenize(text).filter(term => !STOPWORDS.has(term)))];
+    if (!queryTerms.length) return { skipped: false, total: 0, results: [], queryTerms };
+    const terms = queryTerms.map(term => ({ term, prefix: false }));
+    const results = collect(queryTerms.map(term => `"${term.replaceAll('"', '""')}"`).join(' OR '), terms, terms, timer);
+    return { skipped: false, total: results.length, results, queryTerms };
+  }
+  function rawRows(query, timer) {
+    const expression = implicitOr(query);
+    const actual = queryOperands(expression);
+    const snippets = actual.flatMap(operand => operand.prefix ? [operand] :
+      tokenize(operand.term).map(term => ({ term, prefix: false })));
+    const results = collect(expression, actual, snippets, timer);
+    return { total: results.length, results };
+  }
+  const ranks = rows => rows.map(({ id, score }) => ({ id, score }));
   return {
+    size: corpus.length,
     missingTerms(query) {
-      // Prefix expressions are not absent bare terms. Phrase constituents are
-      // checked independently; this does not promise phrase/Boolean matches.
       const terms = queryOperands(implicitOr(query)).filter(({ prefix }) => !prefix);
       return [...new Set(terms.map(({ term }) => term))].filter(term => !vocabulary.get(term));
     },
+    queryRows(query, { mode = 'manual', timer = buildTimer } = {}) {
+      return mode === 'auto' ? automaticRows(query, true, timer) : rawRows(query, timer);
+    },
     search(query, { automatic = false, limit = 20 } = {}) {
-      const text = extractText(query);
-      if (automatic && weightedLength(text) > 210) {
-        return { skipped: true, total: 0, results: [], queryTerms: [] };
-      }
-      if (!Number.isSafeInteger(limit) || limit < 0) {
-        throw new RangeError('limit must be a non-negative safe integer');
-      }
-      const queryTerms = [...new Set(tokenize(text).filter(term => !STOPWORDS.has(term)))];
-      if (queryTerms.length === 0) {
-        return { skipped: false, total: 0, results: [], queryTerms };
-      }
-      const expression = queryTerms.map(term => `"${term.replaceAll('"', '""')}"`).join(' OR ');
-      const candidates = match.all(expression)
-        .map(({ rowid, score }) => ({ id: ids[rowid - 1], score }));
-      // SQLite's native BM25 is negative: lower scores rank first.
-      candidates.sort((a, b) => a.score - b.score || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
-      return {
-        skipped: false,
-        total: candidates.length,
-        results: candidates.slice(0, limit),
-        queryTerms,
-      };
+      const found = automaticRows(query, automatic, buildTimer, limit);
+      if (found.skipped) return found;
+      return { ...found, results: ranks(found.results.slice(0, limit)) };
     },
     searchRaw(query, { limit } = {}) {
-      if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) {
-        throw new RangeError('limit must be a non-negative safe integer');
-      }
-      const candidates = match.all(implicitOr(query))
-        .map(({ rowid, score }) => ({ id: ids[rowid - 1], score }));
-      candidates.sort((a, b) => a.score - b.score || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
-      return { total: candidates.length, results: limit === undefined ? candidates : candidates.slice(0, limit) };
+      if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) throw new RangeError('limit must be a non-negative safe integer');
+      const found = rawRows(query, buildTimer);
+      return { total: found.total, results: ranks(limit === undefined ? found.results : found.results.slice(0, limit)) };
     },
-    close() {
-      db.close();
-    },
+    close() { db.close(); },
   };
 }

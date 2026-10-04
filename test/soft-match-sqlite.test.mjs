@@ -21,10 +21,10 @@ test('Han spans merge bigrams and dictionary words in position/short-span order,
   assert.deepEqual(tokenize('我们 可以 是否'), ['我们', '可以', '是否']);
 });
 
-test('ASCII identifiers stay whole and lowercase next to Han', () => {
+test('ASCII identifiers keep whole terms and aligned components next to Han', () => {
   assert.deepEqual(tokenize('修改youer服务端配置').filter(term => /^[a-z0-9_]+$/.test(term)), ['youer']);
   assert.deepEqual(tokenize('CompactionResult foo_BAR foo_BAR vm kvm 42 x _'),
-    ['compactionresult', 'foo_bar', 'foo_bar', 'vm', 'kvm', '42', 'x', '_']);
+    ['compactionresult', 'compaction', 'result', 'foo_bar', 'foo', 'bar', 'foo_bar', 'foo', 'bar', 'vm', 'kvm', '42']);
 });
 
 test('shared synthetic examples use exact OR candidates, including natural questions with missing terms', t => {
@@ -38,7 +38,7 @@ test('shared synthetic examples use exact OR candidates, including natural quest
     ['GPU显存', ['m']],
     ['What time do I stop checking work emails and messages?', ['k']],
     ['vm', ['g']], ['kvm', ['h']],
-    ['compaction', []], ['CompactionResult', ['f']],
+    ['compaction', ['f']], ['CompactionResult', ['f']],
     ['moto', []], ['motorcycle', ['l']],
     ['gatway', []], ['gateway', ['i', 'j']],
     ['gateway nonexistentword', ['i', 'j']],
@@ -68,19 +68,21 @@ test('bigrams cross dictionary boundaries but never punctuation; dictionary word
   assert.deepEqual(ids(index.search('𠀀')), []);
 });
 
-test('FTS keeps underscores, single ASCII tokens and whole identifiers without prefix or substring fallbacks', t => {
+test('FTS identifier components match while single-character terms and automatic prefixes do not', t => {
   const index = open(t, [
     { id: 'identifier', text: 'foo_bar CompactionResult 42 x _' },
     { id: 'split', text: 'foo bar compaction result 4 2' },
   ]);
-  for (const query of ['FOO_BAR', 'CompactionResult', '42', 'x', '_']) {
-    assert.deepEqual(ids(index.search(query)), ['identifier'], query);
+  for (const query of ['foo', 'bar', 'compaction', 'result']) {
+    assert.deepEqual(ids(index.search(query)).sort(), ['identifier', 'split'], query);
   }
-  for (const query of ['foo', 'bar', 'compaction', 'result', '4', '2']) {
-    assert.deepEqual(ids(index.search(query)), ['split'], query);
+  assert.deepEqual(ids(index.search('42')), ['identifier']);
+  assert.deepEqual(ids(index.searchRaw('FOO_BAR')), ['identifier']);
+  assert.deepEqual(ids(index.search('foo_b')).sort(), ['identifier', 'split']);
+  assert.deepEqual(ids(index.searchRaw('foo_b')), []);
+  for (const query of ['x', '_', '4', '2', 'comp*']) {
+    assert.deepEqual(ids(index.search(query)), [], query);
   }
-  assert.deepEqual(ids(index.search('comp*')), []);
-  assert.deepEqual(ids(index.search('foo_b')), []);
 });
 
 test('MATCH-looking input is bound as quoted OR terms, not interpreted as operators or SQL', t => {
@@ -114,9 +116,9 @@ test('contentless BM25 preserves true term frequency and document-length normali
   }
 });
 
-test('ties use id order, and total counts all candidates even at zero/one result limits', t => {
+test('ties prefer newest distinct snippets and limits apply after snippet deduplication', t => {
   const index = open(t, [
-    { id: 'z', text: 'gateway' }, { id: 'a', text: 'gateway' }, { id: 'A', text: 'gateway' },
+    { id: 'z', text: 'gateway red' }, { id: 'a', text: 'gateway blue' }, { id: 'A', text: 'gateway green' },
   ]);
   assert.deepEqual(ids(index.search('gateway')), ['A', 'a', 'z']);
   const limited = index.search('gateway', { limit: 1 });
@@ -203,12 +205,12 @@ test('raw FTS5 executes Chinese bigram OR and dictionary terms without automatic
 });
 
 test('raw FTS5 preserves case semantics, operators, full ranking, ties and optional prefix limit', t => {
-  const docs = Array.from({ length: 25 }, (_, i) => ({ id: String(i).padStart(2, '0'), text: 'Gateway' }));
+  const docs = Array.from({ length: 25 }, (_, i) => ({ id: String(i).padStart(2, '0'), text: `Gateway color${String(i).padStart(2, '0')}` }));
   const index = open(t, docs.reverse());
   const full = index.searchRaw('GATEWAY');
   assert.deepEqual(full, index.searchRaw('gateway'));
   assert.equal(full.total, 25);
-  assert.deepEqual(ids(full), docs.map(d => d.id).sort());
+  assert.deepEqual(ids(full), docs.map(d => d.id).reverse());
   assert.deepEqual(index.searchRaw('gateway', { limit: 1 }), { total: 25, results: full.results.slice(0, 1) });
   assert.deepEqual(index.searchRaw('gateway', { limit: 0 }), { total: 25, results: [] });
   assert.deepEqual(index.searchRaw(' '.repeat(211) + 'gateway'), full);
@@ -265,6 +267,7 @@ test('raw lookup retains history, find and every word in both automatic stopword
     { id: 'no-stopwords', text: 'needle' },
   ]);
   for (const word of new Set(words)) {
+    if (word.length < 2) continue; // Mainline drops single-character terms, not only stopwords.
     assert.deepEqual(ids(index.searchRaw(`needle AND ${word}`)), ['all-words'], word);
   }
 });

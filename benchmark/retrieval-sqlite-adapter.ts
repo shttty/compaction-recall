@@ -10,7 +10,7 @@ import { BackgroundIndex } from "../src/background-index.mjs";
 import { PreindexCadence } from "../src/preindex-cadence.mjs";
 import { recallTiming, flushTiming } from "../src/timing.mjs";
 import { countKeywords } from "../prototype/soft-match-sqlite/query.mjs";
-import { sqliteRecallPage } from "./retrieval-sqlite-page.mjs";
+import { displayRows, sqliteRecallPage } from "./retrieval-sqlite-page.mjs";
 
 const descriptions = {
   history_recall: `搜当前分支压缩后历史。
@@ -118,7 +118,7 @@ export default function sqliteAdapter(pi: ExtensionAPI) {
       const text = user ? locatorText(user) : "";
       const query = input && text === input.prompt ? input.question : text;
       const found = user ? await index.queryRanked(query, branch, { mode: "auto" }) : { results: [] };
-      locator = formatLocatorRows(found.results);
+      locator = formatLocatorRows(displayRows(found.results));
       return { messages: withLocators(event.messages, branch, () => locator) };
     } finally { flushTiming(); }
   });

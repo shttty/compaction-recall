@@ -14,8 +14,9 @@ mkdirSync(output, { recursive: false, mode: 0o700 });
 const files = [
   'benchmark/retrieval-sqlite-adapter.ts', 'benchmark/retrieval-sqlite-engine.mjs',
   'benchmark/retrieval-sqlite-worker.mjs', 'benchmark/retrieval-sqlite-page.mjs',
-  'benchmark/fts5-snippet.mjs', 'benchmark/snippet-compare-core.mjs',
+  'benchmark/fts5-snippet.mjs',
   'prototype/soft-match-sqlite/index.mjs', 'prototype/soft-match-sqlite/query.mjs',
+  'prototype/soft-match-sqlite/lexical.mjs',
   ...readdirSync(join(root, 'src')).filter(name => /\.(ts|mjs)$/.test(name)).map(name => `src/${name}`),
   'LICENSE', 'THIRD_PARTY_NOTICES.md',
 ];

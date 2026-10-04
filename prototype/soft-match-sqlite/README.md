@@ -19,13 +19,13 @@ Demo 输出一份 JSON：运行版本、a–m 原文及分词、查询提取文�
 
 `index.mjs` 导出：
 
-- `tokenize(text): string[]`：保留全部词项和词频，不删除停用词。建索引直接使用；自动 search 查询端另行过滤英文停用词，再按首次出现顺序去重。显式 searchRaw 不调用 tokenize。
+- `tokenize(text): string[]` / `tokenizeSpans(text)`：建索引不删除停用词；英文整词及组件词按主线 lex 规则、长度 ≥2。自动 query 再过滤完整 STOPWORDS（含中文），按首次出现顺序去重；显式 MATCH 不改写为分词串。spans 为原文码点左闭右开位置。
 - `weightedLength(text): number`：按 Unicode 码点，Han 权重 2，其余权重 1，空格、标点、换行及 emoji 均计入。
 - `extractText(content): string`：字符串原样返回；数组只提取字符串类型的 `text` 块，按原顺序以换行连接；图片和其他块忽略。
 - `implicitOr(query): string`：无状态纯函数，把 FTS5 操作数之间的隐式 AND 连接改为 OR；显式操作符及其分组保留。相同原始 query 得到相同 MATCH 字符串，供执行及事后复算使用，详见 v4 规则。
-- `createIndex([{id, text}])`：输入使用唯一字符串 id 和字符串 text；返回 `search(query, {automatic=false, limit=20}={})`、`searchRaw(query, {limit}={})` 与 `close()`。search 的 query 可为字符串或消息 content 块数组；searchRaw 的 query 为原生 FTS5 MATCH 字符串；结束后调用 close。
+- `createIndex([{id,text,sourcePosition?,date?,role?}], {timer}={})`：同 id 先保留最新（sourcePosition/recency，否则输入顺序），再排除空正文；最新空编辑遮蔽旧文本。返回 search / searchRaw / queryRows / missingTerms / close，size 为去重及空正文过滤后的语料数。queryRows 返回完整内部排名供同步和 worker 共用。
 - `search` 返回 `{skipped, total, results: [{id, score}], queryTerms}`。limit 为非负安全整数；`limit: 0` 仍返回真实 total。空查询、全英文停用词、单 Han 字无词项时正常返回空，不执行无效 MATCH。
-- `searchRaw(query, {limit}={})` 返回 `{total, results:[{id,score}]}`。v4 将 `implicitOr(query)` 的结果作为 `MATCH ?` 绑定参数；不做文档分词、去停用词、拆双字、转义、截断或应用 210 门槛。默认完整排名；可选非负安全整数 limit 只取排名前缀，total 不变。同分按 id 排序，分页由调用方处理。实际 MATCH 的 FTS5 错误原样抛出，不改写消息；不把空串或错误转成零命中。
+- `searchRaw(query, {limit}={})` 返回 `{total, results:[{id,score}]}`。将 implicitOr(query) 绑定 MATCH，不去停用词、拆中文、截断或设 210 门槛。每个候选先生成片段，按空白折叠、去首尾空白后的片段去重，保留最新代表；然后按 BM25 升序、命中不同实际查询词数降序、原文新旧降序排序。total 和 limit 均在去重后计算。模型展示前另投影四字段，不包含 score。
 
 ```js
 import { createIndex } from './index.mjs';
@@ -42,7 +42,7 @@ try {
 
 1. 每个连续 `\p{Script=Han}` 段生成相邻双字；不跨标点、中英边界或其他非 Han 字符。另对每段调用 `Intl.Segmenter('zh', {granularity:'word'})`，只接受 isWordLike、纯 Han、至少两个码点的词。
 2. 两字词与同位置双字完全重合，只记一次；不同位置的重复仍计频次。按原文位置、短跨度优先排序，所有词共用命名空间。不加单字或滑动 trigram；ICU 确实产出的三字及更长词仍保留，例如本机的“共和国”。
-3. `[A-Za-z0-9_]+` 为完整小写词项，包括一字符 ASCII 词；不拆 camelCase、不做内部子串、stemming 或前缀。两组英文停用词（常见功能词及 `please tell help about find show recall remember previous earlier history`）只在自动 search / searchAuto 查询端过滤，索引全部保留。集合仍为 `src/locator.mjs` 英文集合的同值副本，不使用生产 queryTerms/lex，不过滤中文停用词。
+3. 非汉字分支同主线 `[A-Za-z0-9_$]+`：整词小写且长度 ≥2；驼峰、缩写边界和 `_`/`$` 组件也索引（长度 ≥2、不等于整词）。完整 STOPWORDS 是 `ec16440:src/locator.mjs` 值拷贝，含中文；只过滤自动 query，不过滤索引。长度规则仍会淘汰单字母、单个数字，不能把这归因于停用词。
 4. 自动查询先 extractText，再在分词、停用词过滤和去重前计长：**大于 210 整次跳过，等于 210 允许**；不截断后搜索。主动查询没有此闸，也不截断尾部。独立 image 块不计；已经拼入 text 的附件文字正常计入，块间连接的换行也计入。
 
 ## 内存索引
@@ -167,7 +167,7 @@ S4 适配层使用公共 `BackgroundIndex({engineModule, timer})`，模块为原
 
 `prototype/soft-match-sqlite/query.mjs` 导出纯函数 `countKeywords(query): number`，仅在 history_recall execute 的原始 query 上计数并限制 5。空白切分一段算一个，中文不拆；双引号短语算一个，AND/OR/NOT、括号、列过滤前缀不计，NEAR 内词照计但距离数字不计。刚好 5 可执行，6 个以上在取分支/查询 worker 之前报 `本次 N 个关键词，上限 5，请拆开分几次查`。不改变 searchRaw 或自动路径的完整排名接口，自动查询不限 5 个词。
 
-SQLite 通过内存 `fts5vocab` 检查原始裸词是否完全存在；操作符、列名、NEAR 距离不当词，中文长裸词不自动拆字，前缀查询不当精确缺词。双引号短语检查其原生 ASCII tokenizer 词项，缺词按首次出现顺序去重。结果仍正常返回，有缺词才在生产分页头后加 `未入索引：词1、词2`，不改 query、不把部分命中变错误。新行占用同一 16000 码点预算；预算不足先缩短片段、再减少本页返回行且 nextOffset 指向未返回行；极端超长完整元数据/缺词行沿用单行预算超限进度规则。
+SQLite 通过内存 fts5vocab 检查缺词，不改 query、不拆长中文。生产页内缺词行最多列 10 个词，每词最多 40 码点再加 …，整行最多 512 码点并受当前页剩余 16000 码点预算限制；其余写明省略 N 个。若本页没有最小省略提示的空间，则减少返回行重渲染，nextOffset 始终指向尚未返回行，不清空全部片段。生产单个异常超长 id 的预算进度例外保留，缺词行不会给已耗尽预算的元数据再加字符。
 
 shared `history_recall_trace` token 附加 `keywordCount` 和 `rejected`，含被拒/native-error 的 toolCallId、模型/execute 原始 query、原文错误。trace 关闭不写正文；存在 timing 文件时公共 BackgroundIndex 的 `index_memory` mark 记录 processRssBytes、mainHeapUsedBytes、workerHeapBytes、entries。不改 src trace/timing 或公共 benchmark。
 
@@ -187,9 +187,25 @@ node benchmark/retrieval-sqlite-package.mjs --output /home/rinne/.hermes/task-ru
 
 包包含源依赖闭包、内置 SQLite 引擎和许可证，每个文件只读，manifest 只有一个 pi.extensions 入口。SDK/typebox 由宿主提供，无额外 npm 引擎依赖。runner 用法以 `benchmark/RETRIEVAL_CONTRACT.md` 为准，外部 config/profile 仅交给 runner，不复制凭据。trace 复用生产 history_recall 事件；另记 trace 开启时实际 provider payload 中本适配层提示的存在性及可识别的 reasoning effort，不记录完整请求或思考。
 
+## S5 主线对齐
+
+基线为 `ec16440`，本 worktree 的只读 src/locator.mjs SHA-256 与它完全一致，测试直接对照其 lex。保留中文双字+≥3词、BM25、索引停用词、implicit OR、关键词上限、fts5Snippet sentenceBonus=false、210 门槛等已定差异。未引入 jieba、翻译或额外前缀逻辑。
+
+同步和 worker 共用 index.queryRows：最新 id 及空正文处理、候选 snippet、规范化片段去重、不同查询词计数及同分 recency 顺序只有一份实现。Snippet 去重发生在 total/分页之前；相同片段始终以最新消息代表，不用较旧的高分消息覆盖它。命中计数使用缓存文档词集合，前缀计数按不同查询词归并，不按展开词数量加分；原生分数仍是第一排序项。
+
+自动提示调用 displayRows，手动页也在分页渲染之前投影 `{id,date,role,snippet}`；其他引擎字段不进入模型或字符预算。词表里同时保存 `_`、`$` 字符：`$x` 可索引、自动搜索可查，显式原生 MATCH 必须写 `"$x"`；裸 `$x` 仍是 FTS5 语法错误，backend 不代加引号。JS 组件词用空格序列写入 FTS5，不能在此 SQL/ascii 路径把别名放到原词同一位置；因此 phrase/NEAR 的位置按序列化词流，不保证与原标识符文本距离一致。单字 `s` 和单个数字仍可被原生 MATCH 解析，但索引没有这些项。
+
+去重成本的可重复脚本为 benchmark/retrieval-sqlite-dedupe-cost.mjs，计时拆分 native_query、candidate_materialization、snippet_render、deduplicate、mechanical_rank。原生对照只做 MATCH/BM25 候选收集，不含片段；不能把整条查询与原生对照的差额都称为新增 Map 去重成本，S4 worker 本来也生成候选片段。阶段证据与 cold/warm 结果记录在运行根目录 s5-dedupe-cost/，正式评测留到 Hermes 复验提交后。
+
+S5 第 5 步最终验收：四份本原型测试 **48/48**、`npm run check` 类型检查及 **216/216**、Python 全套 **28/28** 通过。旧 fixture 把 foo_b 当成纯前缀而断言空结果，已纠正：主线自动 lex 会生成 foo 组件，自动查询命中是正确的；原生 raw foo_b 仍零命中。新增原生不同匹配词数的精确 BM25 同分例子（较旧双词优先于较新单词），以及旧片段代表原生分数更好时仍只留最新的回归。
+
+dev8/3d86fd0a 中英各 5035 条真实输入，en 1 自动+6 显式、zh 1 自动+5 显式，worker 与同步版新规则完整 id/score 全部相等；记录为 parity-s5-final/parity.json。实际 SDK fake provider 同时检查自动提示及两页 recall 的 JSON 行只有四字段、同分最新在前；保留六词拒绝、引号错误、trace 和 index_memory，MRR=1、Recall@5/10/20=1。首次单独 smoke 0.98 秒正常退出，最终复跑同样通过；最终记录为 sdk-smoke-s5-final/。无真实模型或评分调用，等待 Hermes 复验提交再打包。
+
+最终成本样本在 s5-dedupe-cost-final/：5000 条、约 4495–4498 码点/条、单词 aurora 全匹配，5 次 warm；独特片段/五倍重复两种语料返回 5000/1000 条。warm 总耗时 **427.77/424.01 ms**，其中 snippet_render **388.18/386.04 ms**、规范化 Map 去重 **6.43/6.01 ms**，native-only 对照 **4.23/4.18 ms**。cold 首查询 **2563.95/2473.37 ms**（含首次 span 缓存构造）；不是操作系统冷缓存。不能把 warm 对照差额当作 S4 worker 的全部新增成本，S4 也已算片段。
+
 ## 确定的限制
 
-- 这是词面召回，不理解语义或短语约束。OR 会保留仅命中少量词的候选；上述“重启断连”查询中的 b、“修改youer…”中的 b 均非相关事实证据。双字还可能跨词边界形成偶然命中，例如“搜索引擎”中的“索引”。
-- 自动查询不补救错字、英文前缀/内部子串及单 Han 字；不能由 gatway 推出 gateway，也不能由 compaction/moto 推出完整标识符/单词。显式入口可由调用方使用原生 FTS5 前缀语法，但不会自动补写。无结果不代表历史没有相关语义。
+- 这是词面召回，不理解语义；原生 phrase/NEAR 约束作用于序列化索引词流。OR 会保留仅命中少量词的候选；历史“重启断连”查询中的 b、“修改youer…”中的 b 均非相关事实证据。双字可能跨词边界形成偶然命中，例如“搜索引擎”中的“索引”。
+- 自动查询不补救错字、任意英文前缀/内部子串及单 Han 字；不能由 gatway 推出 gateway 或由 moto 推出 motorcycle。S5 的确切标识符组件可以命中原词，如 compaction 命中 CompactionResult；这不是任意前缀匹配。显式可使用原生 FTS5 前缀语法，不自动补写；无结果不代表历史没有相关语义。
 - 同时索引双字与词语会影响 BM25 的词频和文档长度；分数不是概率，不应与另一引擎直接比较。ICU 升级可能改变多字词和排名。
 - 已完成 16 题机械评测及 v2/v3 各 32 个正式会话，均是单次运行，不给波动范围或跨引擎结论。v4 在显式查询端只替换隐式连接，显式 AND 仍要求全部操作数匹配，NEAR 和短语不放宽。片段窗口不保证展示最相关证据，应 expand 核实；OR 可能返回更多弱相关候选。
