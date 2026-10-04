@@ -2,7 +2,7 @@
 
 独立、可丢弃的匹配行为实验；生产 `src/` 不变。S1 在 `benchmark/` 接入独立评测适配层，不安装用户 profile。默认 `off` 是 **SQLite 原生 MATCH + BM25**，自动路径仍为 OR 精确词项，不是 MiniSearch 宽松匹配的等价替换。S6 候选仅在评测入口显式启用，见文末。
 
-2026-10-05 经凛音同意，**英文 v8 已应用 SQLite 原型适配层**，用于 RSM-SQLITE-V8-JSFAST-20261005 端到端对比；[完整描述、参数与逐句依据](../../doc/SOFT_MATCH_PROMPTS_V8.md)。正式 `src/recall-extension.ts`、冻结 `doc/SOFT_MATCH_PROMPTS.md` 和历史 benchmark 结果不改。应用描述不是已运行模型评测的声明。
+2026-10-05 经凛音同意，**英文 v8 已应用 SQLite 原型适配层**，用于 RSM-SQLITE-V8-JSFAST-20261005 端到端对比；[完整描述、参数与逐句依据](../../doc/SOFT_MATCH_PROMPTS_V9.md)。正式 `src/recall-extension.ts`、冻结 `doc/SOFT_MATCH_PROMPTS.md` 和历史 benchmark 结果不改。应用描述不是已运行模型评测的声明。
 
 ## 运行与版本
 
