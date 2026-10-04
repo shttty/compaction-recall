@@ -4,14 +4,14 @@
 
 ## 运行与版本
 
-仓库根目录执行。默认 off 的 demo 只用内置模块；运行 jieba 或 porter-js 候选前先执行 `npm ci --ignore-scripts`：
+仓库根目录执行。默认 off 的 demo 只用内置模块；运行 jieba、porter-js 或 inflect-wink 候选前先执行 `npm ci --ignore-scripts`：
 
 ```sh
 node prototype/soft-match-sqlite/demo.mjs
 node --test test/soft-match-sqlite.test.mjs
 ```
 
-本轮实际宿主：**Node v24.18.0 / ICU 78.3 / Unicode 17.0 / SQLite 3.53.1**，FTS5 已实测可用。默认 off 不调用第三方依赖；S6 锁定运行时依赖 `@node-rs/jieba@2.0.3` 和 `@orama/stemmers@3.1.18`，声明在根 package.json dependencies 与 package-lock.json。默认词典切分仍由 ICU 决定，不自动更换宿主。
+本轮实际宿主：**Node v24.18.0 / ICU 78.3 / Unicode 17.0 / SQLite 3.53.1**，FTS5 已实测可用。默认 off 不调用第三方依赖；S6 锁定运行时依赖 `@node-rs/jieba@2.0.3`、`@orama/stemmers@3.1.18`、`wink-lemmatizer@3.0.4`，声明在根 package.json dependencies 与 package-lock.json。默认词典切分仍由 ICU 决定，不自动更换宿主。
 
 Demo 输出一份 JSON：运行版本、a–m 原文及分词、查询提取文本与加权长度、去重 queryTerms、skipped、全部候选数 total、命中 id/原始 BM25 分数及原文展开。两条命令在上述宿主均未观察到 SQLite 实验警告，未压制 stderr；其他 Node 版本若发出警告会原样显示。
 
@@ -214,13 +214,14 @@ dev8/3d86fd0a 中英各 5035 条真实输入，en 1 自动+6 显式、zh 1 自�
 
 ## S6：默认关闭的离线候选
 
-评测入口 `retrieval-sqlite-engine.mjs` / `retrieval-sqlite-worker.mjs` 读取单值 `COMPACTION_RECALL_SQLITE_ARM`；允许 `off`、`prefix-all`、`prefix-min4`、`jieba`、`porter`、`porter-js`，默认 off，未知值或组合报错。`createIndex` 只接受显式 `{arm}`，不读取环境；生产 src、工具描述、关键词上限和原始 query trace 均未改。主线 89 个停用词只过滤自动提示，索引和显式查询保留它们。
+评测入口 `retrieval-sqlite-engine.mjs` / `retrieval-sqlite-worker.mjs` 读取单值 `COMPACTION_RECALL_SQLITE_ARM`；允许 `off`、`prefix-all`、`prefix-min4`、`jieba`、`porter`、`porter-js`、`inflect-wink`，默认 off，未知值或组合报错。`createIndex` 只接受显式 `{arm}`，不读取环境；生产 src、工具描述、关键词上限和原始 query trace 均未改。主线 89 个停用词只过滤自动提示，索引和显式查询保留它们。
 
 - **prefix-all**：自动选出的全部词项加原生 `*`；显式 MATCH 仅扩展裸操作数。引号、已有 `*`、`^` / `+` 所属短语及完整 NEAR 组不改；AND/OR/NOT、列名和分组保留。列作用域内独立裸词仍扩展。
 - **prefix-min4**：同上，仅扩展至少 4 字符的 ASCII 字母/数字/下划线裸词；不扩展 Han。
 - **jieba**：`Jieba.withDict(dict)`、`cutForSearch(hanRun,true)`，只替换连续 Han 段的 Intl 长词；双字不变。纯 Han 至少 3 码点的输出按 term/start/end 去重，重叠及重复位置仍保留。每 worker 惰性加载一次；主线程评测入口不加载 native addon 或字典，自动切词也在 worker。同步 createIndex 可在 worker 内使用；主线程同步启用 jieba 会明确拒绝，group1 引擎桥接到 worker 内同步索引。显式 MATCH 本身不切词改写。
 - **porter**：FTS5 的 tokenizer 是表级而非列级，因此用同连接内的 `tokenize='porter ascii'` 辅助表按原生位置生成英语 stems，再存入主表 tokens/stems 双列，执行 `bm25(terms,1.0,0.5)`。Han 不进入 stems。未加引号且未显式指定列的操作数走原词/词干；引号与显式列过滤保留 exact/native 语义。同词别名相同时使用单个跨列短语，其频次为 `1.0*origTF+0.5*stemTF` 后统一饱和；别名不同时为两条原生 OR phrase 的 BM25 相加，不能视为完全消除了重复贡献。命中词计数及片段按原始查询词去重。含引号的 NEAR/+ 单元保持原列完整短语；纯裸单元不做跨列混合短语；stems 排除 Han 会压缩该列位置，双列也改变原生文档长度统计。
 - **porter-js**：复用 porter 的 tokens/stems 双列及完整 query 重写/片段/去重语义；仅改为 JS `@orama/stemmers/english` 预生成词干，列权重 1.0/1.0。不创建 native porter 辅助表。JS helper 按 native ascii 边界拆 `_`/`$`、保持顺序及重复，Han 不进入 stems；依赖仅此 arm 初始化时加载。booked/booking/book、attended/attending、workshops、played→plai、assembled 与 native porter ascii 抽样一致。原 porter 保持 native helper 与 1.0/0.5 权重作对照。
+- **inflect-wink**：worker 内对实际索引词表的每个不同纯 ASCII 字母词，调用 wink 的 noun/verb/adjective，建立 lemma→索引词 Set。查询词按三种 lemma 共享关系扩展到实际索引词并保留自身；不自行补后缀规则、过滤词性歧义或修改库返回值。没有新列、tokenizer 或 postings。自动词项及显式独立裸词转换为 OR 组；引号、短语、已有 `*`、NEAR、完整显式列作用域不扩展，空格仍先按原 implicit OR 改写。210 门槛和原关键词上限不变。FTS5 原生叠加每个变体：测试同文档 book/booked 两项得 -2.4475508632442313，单变体得 -1.2237754316221157，不做分数组内去重。同步索引在 worker 内运行，主线程评测桥接，不加载 wink 词典。完整 16 题英文逐词扩展清单、lemma 表统计、12 个 GC 样本和排名证据见运行报告；库的 noun/verb/adjective 联合集合也可能产生 am→are/be/been/is/was/were、games→gamer 等扩展，照实接受。
 
 各候选最新离线验收、同步/background worker 完整排名对照及 off 对 S5b 的逐项 id/score 一致性见授权 runs/sqlite/s6-arms.md。auto-stopwords-iso 已移除代码、测试和依赖；此前结果仅保留存档，不代表当前可运行开关。
 

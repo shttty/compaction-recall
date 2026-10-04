@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "@node-rs/jieba": "2.0.3",
-    "@orama/stemmers": "3.1.18"
+    "@orama/stemmers": "3.1.18",
+    "wink-lemmatizer": "3.0.4"
   }
 }

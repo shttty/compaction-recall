@@ -9,7 +9,7 @@ const texts = ['booked tickets at coffee shops 有声书 网关服务 rowzero',
 const documents = texts.map((text, i) => ({ id: `m${i}`, text }));
 const ranks = rows => rows.map(({ id, score }) => ({ id, score }));
 
-for (const arm of ['off', 'prefix-all', 'prefix-min4', 'jieba', 'porter', 'porter-js']) {
+for (const arm of ['off', 'prefix-all', 'prefix-min4', 'jieba', 'porter', 'porter-js', 'inflect-wink']) {
   test(`${arm}: actual background transport and synchronous index return identical complete ranks`, async () => {
     const previous = process.env.COMPACTION_RECALL_SQLITE_ARM;
     process.env.COMPACTION_RECALL_SQLITE_ARM = arm;

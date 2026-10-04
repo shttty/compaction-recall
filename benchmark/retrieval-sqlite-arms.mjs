@@ -6,6 +6,7 @@ import { parseArgs } from 'node:util';
 import { createHash } from 'node:crypto';
 import { runGroup1 } from './retrieval-group1.mjs';
 import { validateArm } from '../prototype/soft-match-sqlite/arms.mjs';
+import { takeAutomaticEvidence } from './retrieval-sqlite-engine.mjs';
 
 const { values } = parseArgs({ options: Object.fromEntries(['arm', 'data', 'gold', 'output', 'baseline'].map(name => [name, { type: 'string' }])) });
 for (const name of ['data', 'gold', 'output', 'baseline']) if (!values[name]) throw new Error(`Explicit --${name} required`);
@@ -32,6 +33,11 @@ report.comparison = report.rows.map(row => {
   };
 });
 report.offIdenticalToS5b = arm === 'off' ? true : undefined;
+if (arm === 'inflect-wink') {
+  const evidence = takeAutomaticEvidence();
+  assert.equal(evidence.length, report.rows.length);
+  report.automaticExpansions = report.rows.map((row, i) => ({ key: row.key, language: row.language, ...evidence[i] }));
+}
 mkdirSync(dirname(resolve(values.output)), { recursive: true });
 writeFileSync(values.output, JSON.stringify(report, null, 2) + '\n', { flag: 'wx', mode: 0o600 });
 console.log(JSON.stringify({ arm, summary: report.summary, offIdenticalToS5b: report.offIdenticalToS5b }, null, 2));

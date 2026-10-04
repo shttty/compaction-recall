@@ -58,6 +58,7 @@ if (isMainThread) {
       execution: 'synchronous index inside fresh worker', gc: 'twice before/after load and build',
       tokenizerLoadMs, jiebaLoadRssDeltaBytes: arm === 'jieba' ? before.rss - beforeLoad.rss : 0,
       buildMs, liveHeapDeltaBytes: after.heapUsed - before.heapUsed, rssDeltaBytes: after.rss - before.rss,
+      inflections: index.inflectionStats(),
       beforeLoad, before, after, queries
     });
   } finally { index.close(); }

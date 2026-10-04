@@ -22,6 +22,10 @@ if (isMainThread) {
     for (const lang of ['en', 'zh']) {
       for (const sign of [1, -1]) for (const row of changes.filter(row => row.language === lang && Math.sign(row.mrrDelta) === sign).slice(0, 2)) selected.set(`${row.key}:${lang}`, row);
     }
+    if (arm === 'inflect-wink') for (const row of run.comparison.filter(row => row.language === 'en' &&
+      ['gpt4_15e38248', '2ce6a0f2', 'gpt4_731e37d7', '9d25d4e0', 'gpt4_65aabe59'].includes(row.key.split('/')[1]))) {
+      selected.set(`${row.key}:en`, row);
+    }
     for (const change of selected.values()) {
       const item = cases.find(row => row.key === change.key && row.language === change.language);
       const old = baseline.rows.find(row => row.key === change.key && row.language === change.language);
@@ -33,7 +37,8 @@ if (isMainThread) {
         .filter(row => (oldRanks.get(row.id) ?? Infinity) >= oldGold.rank).slice(0, 3) : [];
       const ids = new Set([...old.results.slice(0, 3), ...current.results.slice(0, 3), ...overtakers, oldGold, newGold].filter(Boolean).map(row => row.id));
       const documents = item.documents.filter(row => ids.has(row.id));
-      const worker = new Worker(new URL(import.meta.url), { workerData: { arm, question: item.question, documents }, execArgv: [] });
+      const inflectionExpansions = run.automaticExpansions?.find(row => row.key === item.key && row.language === item.language)?.expansions;
+      const worker = new Worker(new URL(import.meta.url), { workerData: { arm, question: item.question, documents, inflectionExpansions }, execArgv: [] });
       let features;
       try { features = await new Promise((resolve, reject) => { worker.once('message', resolve); worker.once('error', reject); worker.once('exit', code => { if (code) reject(new Error(`Evidence worker exited ${code}`)); }); }); }
       finally { await worker.terminate(); }
@@ -54,7 +59,7 @@ if (isMainThread) {
   writeFileSync(values.output, JSON.stringify({ note: 'Observed full rankings plus actual lexical/prefix/native-stem term evidence; no model calls, no causal guesses about individual BM25 contributions.', evidence }, null, 2) + '\n', { flag: 'wx' });
   console.log(JSON.stringify(evidence.map(row => ({ arm: row.arm, key: row.key, language: row.language, before: row.firstGoldBefore?.rank, after: row.firstGoldAfter?.rank, delta: row.mrrDelta, removed: row.removedQueryTerms }))));
 } else {
-  const { arm, question, documents } = workerData;
+  const { arm, question, documents, inflectionExpansions } = workerData;
   const old = createTokenizer('off'), current = createTokenizer(arm);
   const queryTermsBefore = [...new Set(old.tokenize(question).filter(term => !STOPWORDS.has(term)))];
   const queryTermsAfter = [...new Set(current.tokenize(question).filter(term => !STOPWORDS.has(term)))];
@@ -71,6 +76,7 @@ if (isMainThread) {
           const prefix = arm === 'prefix-all' || (arm === 'prefix-min4' && /^[A-Za-z0-9_]{4,}$/.test(query));
           if (prefix && term.startsWith(query)) expansions.push({ query, term, kind: 'prefix' });
           if (stem && stem(query) && stem(query) === stem(term)) expansions.push({ query, term, kind: 'porter', stem: stem(query) });
+          if (inflectionExpansions?.find(row => row.term === query)?.variants.includes(term)) expansions.push({ query, term, kind: 'inflection' });
         }
         const stemTokens = stem ? newTerms.flatMap(term => stem(term)?.split(' ') ?? []) : [];
         return {

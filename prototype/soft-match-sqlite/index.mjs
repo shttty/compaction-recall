@@ -4,6 +4,7 @@ import { createTokenizer } from './arms.mjs';
 import { STOPWORDS } from './lexical.mjs';
 import { createJsStemmer } from './porter-js.mjs';
 import { createStemmer, porterExpression, porterTerm } from './porter.mjs';
+import { createInflections } from './inflect.mjs';
 import { fts5Snippet } from '../../benchmark/fts5-snippet.mjs';
 import { measured } from '../../src/timing.mjs';
 export { STOPWORDS, tokenize, tokenizeSpans } from './lexical.mjs';
@@ -125,7 +126,7 @@ export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) 
   });
   const corpus = [...byId.values()].filter(document => document.text !== '');
   const db = new DatabaseSync(':memory:');
-  let match, vocabulary, stem;
+  let match, vocabulary, stem, inflections;
   try {
     db.exec(`
       PRAGMA temp_store = MEMORY;
@@ -147,6 +148,7 @@ export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) 
       else insert.run(i + 1, tokens.join(' '));
     });
     db.exec('COMMIT');
+    if (arm === 'inflect-wink') inflections = createInflections(db.prepare('SELECT term FROM vocabulary').all().map(row => row.term));
     match = db.prepare(`SELECT rowid, bm25(terms${stem ? `, 1.0, ${arm === 'porter-js' ? '1.0' : '0.5'}` : ''}) AS score FROM terms WHERE terms MATCH ?`);
     vocabulary = db.prepare(stem ? 'SELECT 1 FROM vocabulary WHERE term = ? AND col = ?' : 'SELECT 1 FROM vocabulary WHERE term = ?');
   } catch (error) { db.close(); throw error; }
@@ -227,15 +229,17 @@ export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) 
       ...(stem ? { stem: true } : {}),
     }));
     const expression = terms.map(({ term, prefix }) => stem ? porterTerm(term, stem, prefix)
-      : `"${term.replaceAll('"', '""')}"${prefix ? '*' : ''}`).join(' OR ');
-    const results = collect(expression, terms, terms, timer);
+      : inflections ? `(${inflections.expand(term).map(value => `"${value}"`).join(' OR ')})`
+        : `"${term.replaceAll('"', '""')}"${prefix ? '*' : ''}`).join(' OR ');
+    const expanded = inflections ? queryOperands(expression) : terms;
+    const results = collect(expression, expanded, expanded, timer);
     return { skipped: false, total: results.length, results, queryTerms };
   }
   function rawRows(query, timer) {
     const effective = prefixExpression(query, arm);
     const grouped = implicitOr(effective);
     const porter = stem ? porterExpression(grouped, stem) : undefined;
-    const expression = porter?.expression ?? grouped;
+    const expression = inflections ? inflections.expression(grouped) : porter?.expression ?? grouped;
     const actual = porter?.operands ?? queryOperands(expression);
     const snippets = actual.flatMap(operand => operand.prefix ? [operand] :
       tokenize(operand.term).map(term => ({ ...operand, term, prefix: false })));
@@ -245,10 +249,16 @@ export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) 
   const ranks = rows => rows.map(({ id, score }) => ({ id, score }));
   return {
     size: corpus.length,
+    inflectionStats() { return inflections ? { ...inflections.stats } : undefined; },
+    expansionTerms(query) {
+      const text = extractText(query);
+      if (weightedLength(text) > 210) return [];
+      return [...new Set(tokenize(text).filter(term => !STOPWORDS.has(term)))].map(term => ({ term, variants: inflections ? inflections.expand(term) : [term] }));
+    },
     missingTerms(query) {
       const effective = prefixExpression(query, arm);
       const grouped = implicitOr(effective);
-      const terms = (stem ? porterExpression(effective, stem).operands : queryOperands(grouped)).filter(({ prefix }) => !prefix);
+      const terms = (stem ? porterExpression(effective, stem).operands : queryOperands(inflections ? inflections.expression(grouped) : grouped)).filter(({ prefix }) => !prefix);
       if (!stem) return [...new Set(terms.map(({ term }) => term))].filter(term => !vocabulary.get(term));
       return [...new Set(terms.filter(operand => {
         const columns = operand.columns ?? ['tokens', 'stems'];

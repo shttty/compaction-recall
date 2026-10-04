@@ -19,6 +19,7 @@ const files = [
   'prototype/soft-match-sqlite/lexical.mjs', 'prototype/soft-match-sqlite/arms.mjs',
   'prototype/soft-match-sqlite/porter.mjs',
   'prototype/soft-match-sqlite/porter-js.mjs',
+  'prototype/soft-match-sqlite/inflect.mjs',
   ...readdirSync(join(root, 'src')).filter(name => /\.(ts|mjs)$/.test(name)).map(name => `src/${name}`),
   'LICENSE', 'THIRD_PARTY_NOTICES.md',
 ];

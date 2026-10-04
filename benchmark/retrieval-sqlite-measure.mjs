@@ -32,6 +32,10 @@ for (const arm of arms) for (const key of ['hard8/gpt4_7fce9456', 'dev8/3d86fd0a
   summaries.push({
     arm, key, language, samples, documents: group[0].documents,
     ...Object.fromEntries(fields.map(field => [field, median(group.map(row => row[field]))])),
+    ...(group[0].inflections ? {
+      inflections: Object.fromEntries(Object.keys(group[0].inflections).map(key =>
+        [key, median(group.map(row => row.inflections[key]))]))
+    } : {}),
     queries: group[0].queries.map((query, i) => ({
       mode: query.mode, query: query.query, total: query.total,
       coldMs: median(group.map(row => row.queries[i].coldMs)), warmMedianMs: median(group.map(row => row.queries[i].warmMedianMs))

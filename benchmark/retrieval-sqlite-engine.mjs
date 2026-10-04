@@ -1,11 +1,22 @@
 import { createIndex } from '../prototype/soft-match-sqlite/index.mjs';
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
 import { validateArm } from '../prototype/soft-match-sqlite/arms.mjs';
+const automaticEvidence = [];
+export function takeAutomaticEvidence() { return automaticEvidence.splice(0); }
 
 export function createEngine(documents, { arm = process.env.COMPACTION_RECALL_SQLITE_ARM ?? 'off',
-  execution = arm === 'jieba' ? 'worker' : 'sync' } = {}) {
+  execution = arm === 'jieba' || arm === 'inflect-wink' ? 'worker' : 'sync' } = {}) {
   validateArm(arm);
-  if (execution === 'worker') return threadedEngine(documents, arm);
+  if (execution === 'worker') return threadedEngine(documents, arm).then(engine => {
+    if (arm !== 'inflect-wink') return engine;
+    const search = engine.searchAuto;
+    engine.searchAuto = async query => {
+      const results = await search(query);
+      automaticEvidence.push({ question: query, expansions: await engine.expansionTerms(query), stats: await engine.inflectionStats() });
+      return results;
+    };
+    return engine;
+  });
   if (execution !== 'sync') throw new Error('execution must be sync or worker');
   const index = createIndex(documents, { arm });
   return {
@@ -15,6 +26,8 @@ export function createEngine(documents, { arm = process.env.COMPACTION_RECALL_SQ
     searchRaw(query, options) {
       return index.searchRaw(query, options);
     },
+    expansionTerms(query) { return index.expansionTerms(query); },
+    inflectionStats() { return index.inflectionStats(); },
     dispose() {
       index.close();
     },
@@ -39,6 +52,8 @@ function threadedEngine(documents, arm) {
         resolve({
           searchAuto: query => request('searchAuto', query),
           searchRaw: (query, options) => request('searchRaw', query, options),
+          expansionTerms: query => request('expansionTerms', query),
+          inflectionStats: () => request('inflectionStats'),
           dispose: async () => { try { await request('dispose'); } finally { await worker.terminate(); } }
         });
         return;
