@@ -1,4 +1,5 @@
 import { DatabaseSync } from 'node:sqlite';
+import { queryOperands } from './query.mjs';
 
 // English-only value copy of src/locator.mjs; deliberately no production lexer import.
 const STOPWORDS = new Set((
@@ -142,6 +143,7 @@ export function createIndex(documents) {
   const db = new DatabaseSync(':memory:');
   const ids = [];
   let match;
+  let vocabulary;
   try {
     db.exec(`
       PRAGMA temp_store = MEMORY;
@@ -149,6 +151,7 @@ export function createIndex(documents) {
         tokens, content='', columnsize=1, detail=full,
         tokenize="ascii tokenchars '_'"
       );
+      CREATE VIRTUAL TABLE vocabulary USING fts5vocab(terms, 'row');
       BEGIN;
     `);
     const insert = db.prepare('INSERT INTO terms(rowid, tokens) VALUES (?, ?)');
@@ -158,12 +161,19 @@ export function createIndex(documents) {
     }
     db.exec('COMMIT');
     match = db.prepare('SELECT rowid, bm25(terms) AS score FROM terms WHERE terms MATCH ?');
+    vocabulary = db.prepare('SELECT 1 FROM vocabulary WHERE term = ?');
   } catch (error) {
     db.close();
     throw error;
   }
 
   return {
+    missingTerms(query) {
+      // Prefix expressions are not absent bare terms. Phrase constituents are
+      // checked independently; this does not promise phrase/Boolean matches.
+      const terms = queryOperands(implicitOr(query)).filter(({ prefix }) => !prefix);
+      return [...new Set(terms.map(({ term }) => term))].filter(term => !vocabulary.get(term));
+    },
     search(query, { automatic = false, limit = 20 } = {}) {
       const text = extractText(query);
       if (automatic && weightedLength(text) > 210) {

@@ -302,6 +302,11 @@ test('SDK-loaded SQLite recall description matches the frozen document bytes', a
   });
   const actual = extension.tools.get('history_recall').definition.description;
   assert.deepEqual(Buffer.from(actual, 'utf8'), Buffer.from(expected, 'utf8'));
+  const schema = extension.tools.get('history_recall').definition.parameters;
+  for (const parameter of ['query', 'limit', 'offset']) {
+    const expectedParameter = section.match(new RegExp('- `' + parameter + '`：([^\\n]+)'))[1];
+    assert.deepEqual(Buffer.from(schema.properties[parameter].description, 'utf8'), Buffer.from(expectedParameter, 'utf8'));
+  }
 });
 
 test('implicitOr preserves tokens and whitespace while replacing native implicit connectors deterministically', () => {

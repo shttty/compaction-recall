@@ -161,14 +161,28 @@ trace 两侧仍保存模型/工具收到的原始 query；实际 MATCH 可用本
 
 `benchmark/retrieval-sqlite-engine.mjs` 导出 S0 `createEngine(documents)`：searchAuto 用现有 search 且保留完整排名；searchRaw 用显式入口；dispose 关闭内存数据库。适配层入口为 `benchmark/retrieval-sqlite-adapter.ts`，只用于评测，不注册生产入口。
 
-自动提示复用生产 `formatLocatorRows` / `withLocators`，前五条及生产预算；显式查询复用 `recallPageFromRows`，完整排名后按 limit/offset 分页，每页 16000 码点。grep/expand 复用生产执行函数，只替换冻结的描述和参数说明；不启动生产 worker。
+S4 适配层使用公共 `BackgroundIndex({engineModule, timer})`，模块为原生 JavaScript `benchmark/retrieval-sqlite-worker.mjs`，导出 `createWorkerEngine()`。主线程只收集当前分支投影、关联 trace、渲染生产 `formatLocatorRows` / `withLocators` 与 `recallPageFromRows`；SQLite 建索引、自动/显式检索、词表检查、命中定位和片段选择都在 worker 中执行。沿用生产 session_start / compaction / tree / cadence 维护及 awaited shutdown，不新增协议或后台定时器。只有 `sourcePosition < eligibleCount` 的 user/assistant 进入索引；live 文本不进入候选或统计。机械 `createEngine` 保留同步实现作为同语料完整排名对照，排序及 BM25 不变。
 
-片段定位仅影响显示：生产 lex(query) 提供显示定位词，选择原文中最早的不区分大小写字面出现位置，最多取其前 40 码点、窗口共 120 码点，首尾可附省略号；找不到则从正文开头取窗。不解析 FTS 表达式或选择最稀有词；不改 MATCH 输入或排序。每次操作重取当前分支投影；id/text 改变时整库重建，无持久索引。
+自动和手动片段均使用共享 `fts5Snippet(text, hits, 120, {sentenceBonus:false})`；hits 是原文索引 tokenizer 跨度对应的码点左闭右开位置，包含中文双字、ICU ≥3 字词和英文完整词。显式定位词来自实际 implicitOr MATCH 的词项，再按本原型 tokenize 生成定位词；操作符、列名和 NEAR 距离不作为命中。片段只影响显示，不改变排名；格式、自动前五及生产预算保留。grep/expand 继续复用生产执行器，不走 SQLite。
+
+`prototype/soft-match-sqlite/query.mjs` 导出纯函数 `countKeywords(query): number`，仅在 history_recall execute 的原始 query 上计数并限制 5。空白切分一段算一个，中文不拆；双引号短语算一个，AND/OR/NOT、括号、列过滤前缀不计，NEAR 内词照计但距离数字不计。刚好 5 可执行，6 个以上在取分支/查询 worker 之前报 `本次 N 个关键词，上限 5，请拆开分几次查`。不改变 searchRaw 或自动路径的完整排名接口，自动查询不限 5 个词。
+
+SQLite 通过内存 `fts5vocab` 检查原始裸词是否完全存在；操作符、列名、NEAR 距离不当词，中文长裸词不自动拆字，前缀查询不当精确缺词。双引号短语检查其原生 ASCII tokenizer 词项，缺词按首次出现顺序去重。结果仍正常返回，有缺词才在生产分页头后加 `未入索引：词1、词2`，不改 query、不把部分命中变错误。新行占用同一 16000 码点预算；预算不足先缩短片段、再减少本页返回行且 nextOffset 指向未返回行；极端超长完整元数据/缺词行沿用单行预算超限进度规则。
+
+shared `history_recall_trace` token 附加 `keywordCount` 和 `rejected`，含被拒/native-error 的 toolCallId、模型/execute 原始 query、原文错误。trace 关闭不写正文；存在 timing 文件时公共 BackgroundIndex 的 `index_memory` mark 记录 processRssBytes、mainHeapUsedBytes、workerHeapBytes、entries。不改 src trace/timing 或公共 benchmark。
+
+S4 第 3 步离线验收：本原型三份测试 **34/34**、`npm run check` 类型检查及 **202/202**、Python unittest **28/28** 全部通过。首次预算测试 fixture 未触发分页而断言 nextOffset 错误，已改成真正超预算的长 id fixture；首次 fake-provider 完成断言后未 emit SDK session_shutdown 导致 worker 留存超时，已修成 await extension shutdown 后 dispose，重跑 **0.98 秒正常退出**。没有改公共代码来绕过失败。
+
+真实语料 dev8/3d86fd0a en/zh 各 5035 条，en 自动+6 个显式 query、zh 自动+5 个显式 query，worker 与同步版完整 id 和 score 全部逐项相同；包含 OR、隐式 OR、短语、NEAR、列过滤及 NOT。证据在 `parity-s4/parity.json`。合成测试另覆盖同分、完整分页前排名、live 不影响候选/统计、激活/编辑、native error 后恢复、码点跨度和句首不加分片段。
+
+实际 SDK 假 provider 在 `sdk-smoke-s4-retry/` 通过自动提示→第一页→第二页→6 词拒绝→原生引号错误→完成；4 次 trace 的 keywordCount=2/2/6/0，rejected=false/false/true/false，query_identical 全 true。MRR=1，Recall@5/10/20=1，errorCount=2（两次有意错误）。index_memory 示例：RSS=227520512、主堆=46909568、worker 堆=8132848 bytes、entries=3；entries 为公共 seam 传输的消息条目数，不是 SQLite eligible 文档数，含本 fixture 的 1 条 live。测试日志保留在 `acceptance-s4-*` / `acceptance-s4-retry-*`。第 3 步完成即停止，等待 Hermes 提交后再打包、运行第 1/2 组和授权评分。
+
+最终补齐中英混合和全空白关键词用例后，依次再跑三份原型测试、npm check、Python 全套，仍分别 **34/34、202/202、28/28**；随后 `sdk-smoke-s4-final/` 以相同链路和指标 **1.00 秒正常退出**。最终日志为 `acceptance-s4-final-*`，早期失败及重跑产物不覆盖。
 
 打包命令（输出目录必须新建且位于本轮授权输出根目录）：
 
 ```sh
-node benchmark/retrieval-sqlite-package.mjs --output /home/rinne/.hermes/task-runs/recall-soft-match-20261003/runs/sqlite/adapter-package
+node benchmark/retrieval-sqlite-package.mjs --output /home/rinne/.hermes/task-runs/recall-soft-match-20261003/runs/sqlite/adapter-package-s4
 ```
 
 包包含源依赖闭包、内置 SQLite 引擎和许可证，每个文件只读，manifest 只有一个 pi.extensions 入口。SDK/typebox 由宿主提供，无额外 npm 引擎依赖。runner 用法以 `benchmark/RETRIEVAL_CONTRACT.md` 为准，外部 config/profile 仅交给 runner，不复制凭据。trace 复用生产 history_recall 事件；另记 trace 开启时实际 provider payload 中本适配层提示的存在性及可识别的 reasoning effort，不记录完整请求或思考。

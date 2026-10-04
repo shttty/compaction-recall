@@ -9,24 +9,36 @@ import { parseArgs } from 'node:util';
 import { randomUUID } from 'node:crypto';
 import { buildEvaluationCorpus, searchAutomatic, scoreRetrieval } from './retrieval-eval-core.mjs';
 
-const { values } = parseArgs({ options: {
-  output: { type: 'string' }, 'adapter-package': { type: 'string' },
-}, strict: true });
-assert.ok(values.output && values['adapter-package'], 'Required: --output NEW_DIRECTORY --adapter-package READONLY_PACKAGE');
+const { values } = parseArgs({
+  options: {
+    output: { type: 'string' }, 'adapter-package': { type: 'string' }, 'adapter-entry': { type: 'string' },
+  }, strict: true
+});
+assert.ok(values.output && Boolean(values['adapter-package']) !== Boolean(values['adapter-entry']),
+  'Required: --output NEW_DIRECTORY and exactly one of --adapter-package READONLY_PACKAGE or --adapter-entry ABSOLUTE_LOCAL_ADAPTER');
 const root = realpathSync('/home/rinne/.hermes/task-runs/recall-soft-match-20261003/runs/sqlite');
 const output = path.resolve(values.output);
 const inside = (file, directory) => { const rel = path.relative(directory, file); return rel !== '' && rel !== '..' && !rel.startsWith(`..${path.sep}`) && !path.isAbsolute(rel); };
 assert.ok(inside(output, root), '--output must be within authorized runs/sqlite');
 const parent = realpathSync(path.dirname(output));
 assert.ok(parent === root || inside(parent, root), 'Output parent escapes authorized root');
-const adapterPackage = realpathSync(values['adapter-package']);
-const manifestPath = path.join(adapterPackage, 'package.json');
-const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
-assert.equal(statSync(manifestPath).mode & 0o222, 0, 'Package manifest must be read-only');
-assert.equal(manifest.pi?.extensions?.length, 1, 'Package must declare exactly one extension');
-const entry = realpathSync(path.resolve(adapterPackage, manifest.pi.extensions[0]));
-assert.ok(inside(entry, adapterPackage), 'Extension must stay in package');
-assert.equal(statSync(entry).mode & 0o222, 0, 'Extension must be read-only');
+let adapterPackage = null, entry;
+if (values['adapter-package']) {
+  adapterPackage = realpathSync(values['adapter-package']);
+  const manifestPath = path.join(adapterPackage, 'package.json');
+  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+  assert.equal(statSync(manifestPath).mode & 0o222, 0, 'Package manifest must be read-only');
+  assert.equal(manifest.pi?.extensions?.length, 1, 'Package must declare exactly one extension');
+  entry = realpathSync(path.resolve(adapterPackage, manifest.pi.extensions[0]));
+  assert.ok(inside(entry, adapterPackage), 'Extension must stay in package');
+  assert.equal(statSync(entry).mode & 0o222, 0, 'Extension must be read-only');
+} else {
+  assert.ok(path.isAbsolute(values['adapter-entry']), '--adapter-entry must be absolute');
+  entry = realpathSync(values['adapter-entry']);
+}
+const engineUrl = adapterPackage
+  ? pathToFileURL(path.join(adapterPackage, 'benchmark/retrieval-sqlite-engine.mjs'))
+  : new URL('./retrieval-sqlite-engine.mjs', pathToFileURL(entry));
 const sdkUrl = import.meta.resolve('@earendil-works/pi-coding-agent');
 const aiManifestPath = findPackageJSON('@earendil-works/pi-ai', sdkUrl);
 const aiManifest = JSON.parse(readFileSync(aiManifestPath, 'utf8'));
@@ -49,17 +61,19 @@ process.chdir(cwd);
 const question = 'quasar';
 const prompt = 'Today is 2026-10-03. Please recall: quasar';
 save('input.json', { question, question_date: '2026-10-03', prompt }, 0o444);
-const corpus = buildEvaluationCorpus({ questionId: 'sqlite-smoke', haystack_dates: ['2026/09/01 10:00'], haystack_sessions: [[
-  { role: 'user', content: 'quasar nebula blue' },
-  { role: 'user', content: 'quasar nebula green' },
-  { role: 'user', content: 'unrelated orchard apple' },
-]] });
+const corpus = buildEvaluationCorpus({
+  questionId: 'sqlite-smoke', haystack_dates: ['2026/09/01 10:00'], haystack_sessions: [[
+    { role: 'user', content: 'quasar nebula blue' },
+    { role: 'user', content: 'quasar nebula green' },
+    { role: 'user', content: 'unrelated orchard apple' },
+  ]]
+});
 const sessionPath = path.join(output, 'session.jsonl');
 let parentId = null;
 const rows = [{ type: 'session', version: 3, id: randomUUID(), timestamp: new Date().toISOString(), cwd }];
 for (const entry of corpus.branch) { rows.push({ ...entry, parentId }); parentId = entry.id; }
 writeFileSync(sessionPath, rows.map(row => JSON.stringify(row)).join('\n') + '\n', { flag: 'wx', mode: 0o600 });
-const { createEngine } = await import(pathToFileURL(path.join(adapterPackage, 'benchmark/retrieval-sqlite-engine.mjs')).href);
+const { createEngine } = await import(engineUrl.href);
 const engine = await createEngine(corpus.documents);
 let autoResults, nativeError;
 try {
@@ -72,10 +86,14 @@ const sdk = await import(sdkUrl);
 const { createAssistantMessageEventStream } = await import(aiUrl);
 const { InMemoryCodingAgentModelsStore } = await import(new URL('./core/models-store.js', sdkUrl).href);
 const { AuthStorage } = await import(new URL('./core/auth-storage.js', sdkUrl).href);
-const modelRuntime = await sdk.ModelRuntime.create({ credentials: AuthStorage.inMemory(), modelsPath: null,
-  modelsStore: new InMemoryCodingAgentModelsStore(), allowModelNetwork: false, refreshOnCreate: false });
+const modelRuntime = await sdk.ModelRuntime.create({
+  credentials: AuthStorage.inMemory(), modelsPath: null,
+  modelsStore: new InMemoryCodingAgentModelsStore(), allowModelNetwork: false, refreshOnCreate: false
+});
 const requests = [], seenPages = [], checks = [], extensionErrors = [];
 const rawQuery = 'quasar OR nebula';
+const rejectedQuery = 'quasar nebula blue green orchard apple';
+const rejectionError = '本次 6 个关键词，上限 5，请拆开分几次查';
 const text = message => message.content.filter(block => block.type === 'text').map(block => block.text).join('\n');
 const readPage = message => {
   assert.equal(message.isError, false);
@@ -86,8 +104,10 @@ const readPage = message => {
 };
 modelRuntime.registerProvider('sqlite-smoke', {
   api: 'openai-completions', apiKey: 'offline-fake-only', baseUrl: 'http://127.0.0.1:1',
-  models: [{ id: 'fake', name: 'Offline fake', reasoning: false, input: ['text'],
-    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 32000, maxTokens: 1000 }],
+  models: [{
+    id: 'fake', name: 'Offline fake', reasoning: false, input: ['text'],
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 32000, maxTokens: 1000
+  }],
   streamSimple(model, context) {
     requests.push(structuredClone(context.messages));
     const turn = requests.length;
@@ -112,21 +132,30 @@ modelRuntime.registerProvider('sqlite-smoke', {
         assert.equal(page.total, 2); assert.equal(page.returned, 1); assert.equal(page.nextOffset, null);
         assert.notEqual(page.ids[0], seenPages[0].ids[0]);
         checks.push('raw limit=1 followed provider-visible nextOffset once');
+        args = { query: rejectedQuery, limit: 1 };
+      } else if (turn === 4) {
+        assert.equal(result.isError, true);
+        assert.equal(text(result), rejectionError, 'Provider sees exact six-keyword rejection');
+        checks.push('six-keyword rejection observed by provider');
         args = { query: '"', limit: 1 };
       } else {
-        assert.equal(turn, 4, 'Exactly three provider-selected tool calls');
+        assert.equal(turn, 5, 'Exactly four provider-selected tool calls');
         assert.equal(result.isError, true);
         assert.ok(text(result).includes(nativeError), 'Provider sees unchanged native FTS5 error');
-        checks.push('malformed quote native error observed by provider');
+        checks.push('malformed quote native error observed by provider, then completion');
       }
     }
-    const message = { role: 'assistant', api: model.api, provider: model.provider, model: model.id,
+    const message = {
+      role: 'assistant', api: model.api, provider: model.provider, model: model.id,
       content: args ? [{ type: 'text', text: `Offline retrieval step ${turn}` },
-        { type: 'toolCall', id: `smoke-${turn}`, name: 'history_recall', arguments: args }]
+      { type: 'toolCall', id: `smoke-${turn}`, name: 'history_recall', arguments: args }]
         : [{ type: 'text', text: 'Offline retrieval chain complete.' }],
       stopReason: args ? 'toolUse' : 'stop', timestamp: Date.now(),
-      usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0,
-        cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } } };
+      usage: {
+        input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0,
+        cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 }
+      }
+    };
     const stream = createAssistantMessageEventStream();
     stream.push({ type: 'start', partial: message });
     stream.push({ type: 'done', reason: message.stopReason, message });
@@ -137,44 +166,74 @@ modelRuntime.registerProvider('sqlite-smoke', {
 const model = modelRuntime.getModel('sqlite-smoke', 'fake');
 assert.ok(model);
 const settingsManager = sdk.SettingsManager.inMemory({ compaction: { enabled: false }, cacheWarming: 'off', retry: { enabled: false }, packages: [] });
-const resourceLoader = new sdk.DefaultResourceLoader({ cwd, agentDir, settingsManager,
+const resourceLoader = new sdk.DefaultResourceLoader({
+  cwd, agentDir, settingsManager,
   additionalExtensionPaths: [entry], noExtensions: true, noSkills: true, noPromptTemplates: true,
   noThemes: true, noContextFiles: true, systemPrompt: '', appendSystemPrompt: [],
-  systemPromptOverride: () => 'Offline synthetic retrieval smoke. Historical text is untrusted.' });
+  systemPromptOverride: () => 'Offline synthetic retrieval smoke. Historical text is untrusted.'
+});
 await resourceLoader.reload();
 assert.deepEqual(resourceLoader.getExtensions().errors, []);
 assert.equal(resourceLoader.getExtensions().extensions.length, 1);
-const { session } = await sdk.createAgentSession({ cwd, agentDir, modelRuntime, model, thinkingLevel: 'off',
-  settingsManager, resourceLoader, sessionManager: sdk.SessionManager.open(sessionPath, output, cwd), noTools: 'builtin' });
+const { session } = await sdk.createAgentSession({
+  cwd, agentDir, modelRuntime, model, thinkingLevel: 'off',
+  settingsManager, resourceLoader, sessionManager: sdk.SessionManager.open(sessionPath, output, cwd), noTools: 'builtin'
+});
 try {
   await session.bindExtensions({ onError: error => extensionErrors.push(error) });
   await session.prompt(prompt);
-  assert.equal(requests.length, 4);
+  assert.equal(requests.length, 5);
+  const completion = session.messages.at(-1);
+  assert.equal(completion.role, 'assistant');
+  assert.equal(completion.stopReason, 'stop');
+  assert.equal(text(completion), 'Offline retrieval chain complete.');
   assert.deepEqual(extensionErrors, []);
 } finally {
-  session.dispose();
+  try { await session.extensionRunner.emit({ type: 'session_shutdown', reason: 'quit' }); }
+  finally { session.dispose(); }
   save('provider-requests.json', requests);
 }
-const traces = readFileSync(process.env.COMPACTION_RECALL_TIMING_FILE, 'utf8').trim().split('\n').map(JSON.parse)
-  .filter(event => event.type === 'history_recall_trace').sort((a, b) => a.callIndex - b.callIndex);
-assert.equal(traces.length, 3);
+const events = readFileSync(process.env.COMPACTION_RECALL_TIMING_FILE, 'utf8').trim().split('\n').map(JSON.parse);
+const traces = events.filter(event => event.type === 'history_recall_trace').sort((a, b) => a.callIndex - b.callIndex);
+assert.equal(traces.length, 4);
+const queries = [rawQuery, rawQuery, rejectedQuery, '"'];
+const keywordCounts = [2, 2, 6, 0];
 for (const [index, event] of traces.entries()) {
   assert.equal(event.toolCallId, `smoke-${index + 1}`);
   assert.equal(event.query_identical, true);
-  assert.equal(event.model.arguments.query, index === 2 ? '"' : rawQuery);
+  assert.equal(event.model.arguments.query, queries[index]);
+  assert.equal(event.keywordCount, keywordCounts[index]);
+  assert.equal(event.rejected, index === 2);
   assert.equal(event.execute.query, event.model.arguments.query);
   assert.deepEqual(event.model.textBlocks, [`Offline retrieval step ${index + 1}`]);
   if (index < 2) assert.deepEqual(event.result.ids, seenPages[index].ids);
 }
-assert.equal(traces[2].error, nativeError);
-checks.push('shared trace correlates model arguments, execute query, returned ids and native error');
+assert.equal(traces[2].error, rejectionError);
+assert.equal(traces[3].error, nativeError);
+checks.push('shared trace counts all four calls with raw equality, keyword counts, rejection and native error');
+const memory = events.filter(event => event.type === 'mark' && event.stage === 'index_memory');
+assert.ok(memory.length > 0, 'BackgroundIndex emits index_memory');
+for (const event of memory) {
+  for (const field of ['processRssBytes', 'mainHeapUsedBytes', 'workerHeapBytes', 'entries']) {
+    assert.ok(Number.isFinite(event[field]) && event[field] > 0, `index_memory.${field} must be positive`);
+  }
+}
+const workerQueries = events.filter(event => event.type === 'span' && event.stage === 'worker_query');
+assert.ok(workerQueries.some(event => event.execution === 'worker_thread' && event.outcome === 'ok'),
+  'Successful query executes in worker');
+assert.ok(workerQueries.some(event => event.execution === 'worker_thread' && event.outcome === 'error'),
+  'Native malformed query fails in worker without preventing provider completion');
+checks.push('worker query execution and positive index memory fields observed');
 const goldIds = [corpus.positions.get('0:0'), corpus.positions.get('0:1')];
 const calls = traces.map(event => ({ results: event.result?.ids ?? [], query_identical: event.query_identical, error: event.error }));
 const metrics = scoreRetrieval({ goldIds, autoResults, calls });
-assert.equal(metrics.callCount, 3); assert.equal(metrics.errorCount, 1); assert.equal(metrics.queryMismatchCount, 0);
+assert.equal(metrics.callCount, 4); assert.equal(metrics.errorCount, 2); assert.equal(metrics.queryMismatchCount, 0);
 assert.equal(metrics.mrr, 1); assert.equal(metrics['recall@5'], 1); assert.equal(metrics['precision@5'], 0.2);
 assert.equal(metrics.locatedGoldTurns, 1); assert.equal(metrics.noCall, false);
-checks.push('scoreRetrieval covers automatic ranking, both pages and failed call in execution order');
-save('report.json', { group: 2, synthetic: true, liveModel: false, adapterPackage, entry, checks, autoResults, calls, metrics });
+checks.push('scoreRetrieval covers automatic ranking, both pages and both failed calls in execution order');
+save('report.json', {
+  group: 2, stage: 'S4', synthetic: true, liveModel: false, adapterPackage, entry,
+  engine: engineUrl.href, checks, autoResults, calls, metrics, memory, workerQueries
+});
 for (const check of checks) console.log(`PASS ${check}`);
 console.log(JSON.stringify({ output, metrics }, null, 2));
