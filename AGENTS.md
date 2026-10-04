@@ -13,3 +13,4 @@
 - doc/ holds current usage and historical method notes. README.md is the root index.
 - Do not run benchmarks, live model calls, install into a user's Pi profile, publish, or change remote repositories without authorization.
 - The project is MIT licensed; preserve LICENSE and THIRD_PARTY_NOTICES.md. Keep npm files limited to production src, bilingual README, licenses and the clean aggregate results doc; never package raw benchmarks, tests, sessions, profiles or controller artifacts.
+- Pending cleanup (2026-10-04): the evaluation-only S6 arms `porter`, `porter-js` and `prefix-all` (COMPACTION_RECALL_SQLITE_ARM) lost in offline group 1 and stay default-off. Keep them off. If they are not improved before this prototype is merged into mainline, delete them in that merge together with their tests and any dependency left unused (`@orama/stemmers`). Measured results stay in the task run directory, not in this repository.
