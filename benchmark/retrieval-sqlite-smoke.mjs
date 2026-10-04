@@ -47,7 +47,7 @@ mkdirSync(output, { mode: 0o700 });
 const save = (name, value, mode = 0o600) => writeFileSync(path.join(output, name), JSON.stringify(value, null, 2) + '\n', { flag: 'wx', mode });
 const agentDir = path.join(output, 'agent'), cwd = path.join(output, 'cwd');
 mkdirSync(agentDir); mkdirSync(cwd); mkdirSync(path.join(agentDir, 'extensions'));
-const keep = new Set(['PATH', 'LANG', 'LC_ALL', 'LC_CTYPE', 'TERM', 'TZ']);
+const keep = new Set(['PATH', 'LANG', 'LC_ALL', 'LC_CTYPE', 'TERM', 'TZ', 'COMPACTION_RECALL_SQLITE_ARM', 'COMPACTION_RECALL_AUTO_GATE']);
 for (const key of Object.keys(process.env)) if (!keep.has(key)) delete process.env[key];
 Object.assign(process.env, {
   HOME: output, USERPROFILE: output, PI_CODING_AGENT_DIR: agentDir,
@@ -252,6 +252,7 @@ assert.equal(metrics.locatedGoldTurns, 1); assert.equal(metrics.noCall, false);
 checks.push('scoreRetrieval covers automatic ranking, both pages and both failed calls in execution order');
 save('report.json', {
   group: 2, stage: 'S5', synthetic: true, liveModel: false, adapterPackage, entry,
+  arm: process.env.COMPACTION_RECALL_SQLITE_ARM ?? 'off', autoGate: process.env.COMPACTION_RECALL_AUTO_GATE ?? '210',
   engine: engineUrl.href, checks, autoResults, calls, metrics, memory, workerQueries
 });
 for (const check of checks) console.log(`PASS ${check}`);

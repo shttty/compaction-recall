@@ -4,7 +4,7 @@
 
 ## 运行与版本
 
-仓库根目录执行。默认 off 的 demo 只用内置模块；运行 jieba、porter-js、inflect-wink 或 lemma-index 候选前先执行 `npm ci --ignore-scripts`：
+仓库根目录执行。默认 off 的 demo 只用内置模块；运行 jieba、porter-jieba、porter-js、inflect-wink 或 lemma-index 候选前先执行 `npm ci --ignore-scripts`：
 
 ```sh
 node prototype/soft-match-sqlite/demo.mjs
@@ -25,9 +25,9 @@ Demo 输出一份 JSON：运行版本、a–m 原文及分词、查询提取文�
 - `weightedLength(text): number`：按 Unicode 码点，Han 权重 2，其余权重 1，空格、标点、换行及 emoji 均计入。
 - `extractText(content): string`：字符串原样返回；数组只提取字符串类型的 `text` 块，按原顺序以换行连接；图片和其他块忽略。
 - `implicitOr(query): string`：无状态纯函数，把 FTS5 操作数之间的隐式 AND 连接改为 OR；显式操作符及其分组保留。相同原始 query 得到相同 MATCH 字符串，供执行及事后复算使用，详见 v4 规则。
-- `createIndex([{id,text,sourcePosition?,date?,role?}], {arm='off',timer}={})`：同 id 先保留最新（sourcePosition/recency，否则输入顺序），再排除空正文；最新空编辑遮蔽旧文本。返回 search / searchRaw / queryRows / missingTerms / close，size 为去重及空正文过滤后的语料数。queryRows 返回完整内部排名供同步和 worker 共用。
+- `createIndex([{id,text,sourcePosition?,date?,role?}], {arm='off',autoGate=210,timer}={})`：同 id 先保留最新（sourcePosition/recency，否则输入顺序），再排除空正文；最新空编辑遮蔽旧文本。返回 search / searchRaw / queryRows / missingTerms / close，size 为去重及空正文过滤后的语料数。queryRows 返回完整内部排名供同步和 worker 共用；autoGate 为正安全整数，只作用于自动查询。
 - `search` 返回 `{skipped, total, results: [{id, score}], queryTerms}`。limit 为非负安全整数；`limit: 0` 仍返回真实 total。空查询、全英文停用词、单 Han 字无词项时正常返回空，不执行无效 MATCH。
-- `searchRaw(query, {limit}={})` 返回 `{total, results:[{id,score}]}`。将 implicitOr(query) 绑定 MATCH，不去停用词、拆中文、截断或设 210 门槛。每个候选先生成片段，按空白折叠、去首尾空白后的片段去重，保留最新代表；然后按 BM25 升序、命中不同实际查询词数降序、原文新旧降序排序。total 和 limit 均在去重后计算。模型展示前另投影四字段，不包含 score。
+- `searchRaw(query, {limit}={})` 返回 `{total, results:[{id,score}]}`。将 implicitOr(query) 绑定 MATCH，不去停用词、拆中文、截断或设自动长度门槛。每个候选先生成片段，按空白折叠、去首尾空白后的片段去重，保留最新代表；然后按 BM25 升序、命中不同实际查询词数降序、原文新旧降序排序。total 和 limit 均在去重后计算。模型展示前另投影四字段，不包含 score。
 
 ```js
 import { createIndex } from './index.mjs';
@@ -45,7 +45,7 @@ try {
 1. 每个连续 `\p{Script=Han}` 段生成相邻双字；不跨标点、中英边界或其他非 Han 字符。另对每段调用 `Intl.Segmenter('zh', {granularity:'word'})`，只接受 isWordLike、纯 Han、至少三个码点的词。
 2. 两字词与同位置双字完全重合，只记一次；不同位置的重复仍计频次。按原文位置、短跨度优先排序，所有词共用命名空间。不加单字或滑动 trigram；ICU 确实产出的三字及更长词仍保留，例如本机的“共和国”。
 3. 非汉字分支同主线 `[A-Za-z0-9_$]+`：整词小写且长度 ≥2；驼峰、缩写边界和 `_`/`$` 组件也索引（长度 ≥2、不等于整词）。完整 STOPWORDS 是 `ec16440:src/locator.mjs` 值拷贝，含中文；只过滤自动 query，不过滤索引。长度规则仍会淘汰单字母、单个数字，不能把这归因于停用词。
-4. 自动查询先 extractText，再在分词、停用词过滤和去重前计长：**大于 210 整次跳过，等于 210 允许**；不截断后搜索。主动查询没有此闸，也不截断尾部。独立 image 块不计；已经拼入 text 的附件文字正常计入，块间连接的换行也计入。
+4. 自动查询先 extractText，再在分词、停用词过滤和去重前计长：**大于 autoGate 整次跳过，等于门槛允许**，默认 210；不截断后搜索。主动查询没有此闸，也不截断尾部。独立 image 块不计；已经拼入 text 的附件文字正常计入，块间连接的换行也计入。
 
 ## 内存索引
 
@@ -214,14 +214,21 @@ dev8/3d86fd0a 中英各 5035 条真实输入，en 1 自动+6 显式、zh 1 自�
 
 ## S6：默认关闭的离线候选
 
-评测入口 `retrieval-sqlite-engine.mjs` / `retrieval-sqlite-worker.mjs` 读取单值 `COMPACTION_RECALL_SQLITE_ARM`；允许 `off`、`prefix-all`、`prefix-min4`、`jieba`、`porter`、`porter-js`、`inflect-wink`、`lemma-index`，默认 off，未知值或组合报错。`createIndex` 只接受显式 `{arm}`，不读取环境；生产 src、工具描述、关键词上限和原始 query trace 均未改。主线 89 个停用词只过滤自动提示，索引和显式查询保留它们。
+评测入口 `retrieval-sqlite-engine.mjs` / `retrieval-sqlite-worker.mjs` 读取单值 `COMPACTION_RECALL_SQLITE_ARM`；允许 `off`、`prefix-all`、`prefix-min4`、`jieba`、`porter`、`porter-jieba`、`porter-js`、`inflect-wink`、`lemma-index`，默认 off，各值互斥，未知值或自行拼接组合报错。`createIndex` 只接受显式 `{arm,autoGate}`，不读取环境；生产 src、工具描述、关键词上限和原始 query trace 均未改。主线 89 个停用词只过滤自动提示，索引和显式查询保留它们。
+
+`COMPACTION_RECALL_AUTO_GATE` 控制所有评测 arm 的自动提示加权长度门槛：Han 每码点 2，其余（含空格、标点、emoji）每码点 1。未设仍为 210；只接受十进制正安全整数，空值、非整数、非正数及超出安全范围均报 `RangeError`。评测 engine / worker 工厂创建时读取一次，并显式传给每次建索引及 worker；改变环境后需重新创建引擎 / 重启 adapter。设置 280 时，279/280 允许，281 跳过；显式 searchRaw / history_recall 不受影响。`benchmark/retrieval-sqlite-adapter.ts` 的实际索引 worker 继承这两个环境变量，生产插件不读取它们。第 1 组结果新增 autoGate 字段，历史文件不修改。
+
+```sh
+COMPACTION_RECALL_SQLITE_ARM=porter-jieba COMPACTION_RECALL_AUTO_GATE=280 pi -e ./benchmark/retrieval-sqlite-adapter.ts
+```
 
 - **prefix-all**：自动选出的全部词项加原生 `*`；显式 MATCH 仅扩展裸操作数。引号、已有 `*`、`^` / `+` 所属短语及完整 NEAR 组不改；AND/OR/NOT、列名和分组保留。列作用域内独立裸词仍扩展。
 - **prefix-min4**：同上，仅扩展至少 4 字符的 ASCII 字母/数字/下划线裸词；不扩展 Han。
 - **jieba**：`Jieba.withDict(dict)`、`cutForSearch(hanRun,true)`，只替换连续 Han 段的 Intl 长词；双字不变。纯 Han 至少 3 码点的输出按 term/start/end 去重，重叠及重复位置仍保留。每 worker 惰性加载一次；主线程评测入口不加载 native addon 或字典，自动切词也在 worker。同步 createIndex 可在 worker 内使用；主线程同步启用 jieba 会明确拒绝，group1 引擎桥接到 worker 内同步索引。显式 MATCH 本身不切词改写。
 - **porter**：FTS5 的 tokenizer 是表级而非列级，因此用同连接内的 `tokenize='porter ascii'` 辅助表按原生位置生成英语 stems，再存入主表 tokens/stems 双列，执行 `bm25(terms,1.0,0.5)`。Han 不进入 stems。未加引号且未显式指定列的操作数走原词/词干；引号与显式列过滤保留 exact/native 语义。同词别名相同时使用单个跨列短语，其频次为 `1.0*origTF+0.5*stemTF` 后统一饱和；别名不同时为两条原生 OR phrase 的 BM25 相加，不能视为完全消除了重复贡献。命中词计数及片段按原始查询词去重。含引号的 NEAR/+ 单元保持原列完整短语；纯裸单元不做跨列混合短语；stems 排除 Han 会压缩该列位置，双列也改变原生文档长度统计。
+- **porter-jieba**：组合已有 jieba tokenizer 与原生 porter helper，不另建切词或查询实现。Han 索引和自动查询保留双字底座及 jieba 搜索模式 ≥3 字词；ASCII 词沿用 porter 的原词/stems 双列、1.0/0.5 权重、操作数改写、命中计数及原文跨度。Han 不进入 stems。显式 MATCH 沿用 porter 的引号/列过滤 exact 语义，不额外改写中文。和 jieba 一样仅在 worker 内创建同步索引，第 1 组评测入口自动桥接；默认关闭。双列仍会影响中文 BM25 文档长度，不能把组合排名简单等同于两组单独排名。
 - **porter-js**：复用 porter 的 tokens/stems 双列及完整 query 重写/片段/去重语义；仅改为 JS `@orama/stemmers/english` 预生成词干，列权重 1.0/1.0。不创建 native porter 辅助表。JS helper 按 native ascii 边界拆 `_`/`$`、保持顺序及重复，Han 不进入 stems；依赖仅此 arm 初始化时加载。booked/booking/book、attended/attending、workshops、played→plai、assembled 与 native porter ascii 抽样一致。原 porter 保持 native helper 与 1.0/0.5 权重作对照。
-- **inflect-wink**：worker 内对实际索引词表的每个不同纯 ASCII 字母词，调用 wink 的 noun/verb/adjective，建立 lemma→索引词 Set。查询词按三种 lemma 共享关系扩展到实际索引词并保留自身；不自行补后缀规则、过滤词性歧义或修改库返回值。没有新列、tokenizer 或 postings。自动词项及显式独立裸词转换为 OR 组；引号、短语、已有 `*`、NEAR、完整显式列作用域不扩展，空格仍先按原 implicit OR 改写。210 门槛和原关键词上限不变。FTS5 原生叠加每个变体：测试同文档 book/booked 两项得 -2.4475508632442313，单变体得 -1.2237754316221157，不做分数组内去重。同步索引在 worker 内运行，主线程评测桥接，不加载 wink 词典。完整 16 题英文逐词扩展清单、lemma 表统计、12 个 GC 样本和排名证据见运行报告；库的 noun/verb/adjective 联合集合也可能产生 am→are/be/been/is/was/were、games→gamer 等扩展，照实接受。
+- **inflect-wink**：worker 内对实际索引词表的每个不同纯 ASCII 字母词，调用 wink 的 noun/verb/adjective，建立 lemma→索引词 Set。查询词按三种 lemma 共享关系扩展到实际索引词并保留自身；不自行补后缀规则、过滤词性歧义或修改库返回值。没有新列、tokenizer 或 postings。自动词项及显式独立裸词转换为 OR 组；引号、短语、已有 `*`、NEAR、完整显式列作用域不扩展，空格仍先按原 implicit OR 改写。默认 210 门槛和原关键词上限不变，自动门槛可由上述变量覆盖。FTS5 原生叠加每个变体：测试同文档 book/booked 两项得 -2.4475508632442313，单变体得 -1.2237754316221157，不做分数组内去重。同步索引在 worker 内运行，主线程评测桥接，不加载 wink 词典。完整 16 题英文逐词扩展清单、lemma 表统计、12 个 GC 样本和排名证据见运行报告；库的 noun/verb/adjective 联合集合也可能产生 am→are/be/been/is/was/were、games→gamer 等扩展，照实接受。
 - **lemma-index**：复用锁定 wink 3.0.4，在 worker 内缓存每个纯 ASCII 字母词的单个原形：verb、noun、adjective 依次取第一个与原词不同的结果。索引和查询共用函数；每个 lex 位置替换一个词，不增列、不增变体位置，重复原形仍保留原有实际词频。自动词项还原后 Set 去重；显式裸词及引号短语内原生 `_`/`$` 边界词还原，AND/OR/NOT/NEAR 与列名保留，列作用域内词项正常还原。已有 `*` 词不还原；带 `*` 短语的最后前缀词保持原样。还原索引里 booking* 不保证仍匹配 book，这是保留用户前缀字面语义的结果。归一化 spans 保留原文 codepoint 偏移，snippet 窗口能选到原文实际词形；共享 renderer 仍输出纯文本，不加额外标记。已测试 booking→book、leaves→leave、sold→sell、better→good、attendance 不变、原生短语位置和与直接归一化语料的 BM25 完全一致。
 
 各候选最新离线验收、同步/background worker 完整排名对照及 off 对 S5b 的逐项 id/score 一致性见授权 runs/sqlite/s6-arms.md。auto-stopwords-iso 已移除代码、测试和依赖；此前结果仅保留存档，不代表当前可运行开关。

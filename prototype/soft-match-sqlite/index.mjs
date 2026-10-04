@@ -17,6 +17,14 @@ export function weightedLength(text) {
   return length;
 }
 
+export function parseAutoGate(value = 210) {
+  const gate = typeof value === 'string' && /^\d+$/.test(value) ? Number(value) : value;
+  if (!Number.isSafeInteger(gate) || gate <= 0) {
+    throw new RangeError('COMPACTION_RECALL_AUTO_GATE must be a positive safe integer');
+  }
+  return gate;
+}
+
 export function extractText(content) {
   if (typeof content === 'string') return content;
   if (!Array.isArray(content)) return '';
@@ -113,9 +121,10 @@ export function implicitOr(query) {
   return rewritten + query.slice(offset);
 }
 
-export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) {
+export function createIndex(documents, { arm = 'off', autoGate = 210, timer: buildTimer } = {}) {
+  autoGate = parseAutoGate(autoGate);
   const { tokenize, tokenizeSpans } = createTokenizer(arm);
-  const porter = arm === 'porter' || arm === 'porter-js';
+  const porter = arm === 'porter' || arm === 'porter-jieba' || arm === 'porter-js';
   const lemma = arm === 'lemma-index' ? createLemmaNormalizer() : undefined;
   // Latest id wins before the empty check, so a latest empty edit hides older text.
   const byId = new Map();
@@ -139,7 +148,7 @@ export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) 
       CREATE VIRTUAL TABLE vocabulary USING fts5vocab(terms, '${porter ? 'col' : 'row'}');
       BEGIN;
     `);
-    if (arm === 'porter') stem = createStemmer(db);
+    if (arm === 'porter' || arm === 'porter-jieba') stem = createStemmer(db);
     else if (arm === 'porter-js') stem = createJsStemmer();
     const insert = db.prepare(porter
       ? 'INSERT INTO terms(rowid, tokens, stems) VALUES (?, ?, ?)'
@@ -222,7 +231,7 @@ export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) 
   }
   function automaticRows(query, automatic, timer, limit) {
     const text = extractText(query);
-    if (automatic && weightedLength(text) > 210) return { skipped: true, total: 0, results: [], queryTerms: [] };
+    if (automatic && weightedLength(text) > autoGate) return { skipped: true, total: 0, results: [], queryTerms: [] };
     if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) throw new RangeError('limit must be a non-negative safe integer');
     const queryTerms = [...new Set(tokenize(text).filter(term => !STOPWORDS.has(term)).map(term => lemma ? lemma.normalize(term) : term))];
     if (!queryTerms.length) return { skipped: false, total: 0, results: [], queryTerms };
@@ -255,7 +264,7 @@ export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) 
     inflectionStats() { return inflections ? { ...inflections.stats } : undefined; },
     expansionTerms(query) {
       const text = extractText(query);
-      if (weightedLength(text) > 210) return [];
+      if (weightedLength(text) > autoGate) return [];
       return [...new Set(tokenize(text).filter(term => !STOPWORDS.has(term)))].map(term => ({ term, variants: inflections ? inflections.expand(term) : [term] }));
     },
     missingTerms(query) {

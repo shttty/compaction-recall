@@ -1,13 +1,15 @@
-import { createIndex } from '../prototype/soft-match-sqlite/index.mjs';
+import { createIndex, parseAutoGate } from '../prototype/soft-match-sqlite/index.mjs';
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
 import { validateArm } from '../prototype/soft-match-sqlite/arms.mjs';
 const automaticEvidence = [];
 export function takeAutomaticEvidence() { return automaticEvidence.splice(0); }
 
 export function createEngine(documents, { arm = process.env.COMPACTION_RECALL_SQLITE_ARM ?? 'off',
-  execution = ['jieba', 'inflect-wink', 'lemma-index'].includes(arm) ? 'worker' : 'sync' } = {}) {
+  autoGate = process.env.COMPACTION_RECALL_AUTO_GATE,
+  execution = ['jieba', 'porter-jieba', 'inflect-wink', 'lemma-index'].includes(arm) ? 'worker' : 'sync' } = {}) {
   validateArm(arm);
-  if (execution === 'worker') return threadedEngine(documents, arm).then(engine => {
+  autoGate = parseAutoGate(autoGate);
+  if (execution === 'worker') return threadedEngine(documents, arm, autoGate).then(engine => {
     if (arm !== 'inflect-wink') return engine;
     const search = engine.searchAuto;
     engine.searchAuto = async query => {
@@ -18,7 +20,7 @@ export function createEngine(documents, { arm = process.env.COMPACTION_RECALL_SQ
     return engine;
   });
   if (execution !== 'sync') throw new Error('execution must be sync or worker');
-  const index = createIndex(documents, { arm });
+  const index = createIndex(documents, { arm, autoGate });
   return {
     searchAuto(question) {
       return index.search(question, { automatic: true, limit: documents.length }).results;
@@ -34,8 +36,8 @@ export function createEngine(documents, { arm = process.env.COMPACTION_RECALL_SQ
   };
 }
 
-function threadedEngine(documents, arm) {
-  const worker = new Worker(new URL(import.meta.url), { workerData: { sqliteEvaluationEngine: true, documents, arm }, execArgv: [] });
+function threadedEngine(documents, arm, autoGate) {
+  const worker = new Worker(new URL(import.meta.url), { workerData: { sqliteEvaluationEngine: true, documents, arm, autoGate }, execArgv: [] });
   return new Promise((resolve, reject) => {
     const pending = new Map();
     let sequence = 0;
@@ -70,7 +72,7 @@ function threadedEngine(documents, arm) {
 // For jieba, even the synchronous index stays inside a worker. The main thread
 // imports only the pure-JS arm selector; native addon and dictionary stay here.
 if (!isMainThread && workerData?.sqliteEvaluationEngine) {
-  const engine = createEngine(workerData.documents, { arm: workerData.arm, execution: 'sync' });
+  const engine = createEngine(workerData.documents, { arm: workerData.arm, autoGate: workerData.autoGate, execution: 'sync' });
   parentPort.postMessage({ ready: true });
   parentPort.on('message', ({ id, method, query, options }) => {
     try { parentPort.postMessage({ id, value: engine[method](query, options) }); }
