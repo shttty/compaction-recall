@@ -5,6 +5,7 @@ import { STOPWORDS } from './lexical.mjs';
 import { createJsStemmer } from './porter-js.mjs';
 import { createStemmer, porterExpression, porterTerm } from './porter.mjs';
 import { createInflections } from './inflect.mjs';
+import { createLemmaNormalizer } from './lemma.mjs';
 import { fts5Snippet } from '../../benchmark/fts5-snippet.mjs';
 import { measured } from '../../src/timing.mjs';
 export { STOPWORDS, tokenize, tokenizeSpans } from './lexical.mjs';
@@ -115,6 +116,7 @@ export function implicitOr(query) {
 export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) {
   const { tokenize, tokenizeSpans } = createTokenizer(arm);
   const porter = arm === 'porter' || arm === 'porter-js';
+  const lemma = arm === 'lemma-index' ? createLemmaNormalizer() : undefined;
   // Latest id wins before the empty check, so a latest empty edit hides older text.
   const byId = new Map();
   documents.forEach((document, i) => {
@@ -144,6 +146,7 @@ export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) 
       : 'INSERT INTO terms(rowid, tokens) VALUES (?, ?)');
     corpus.forEach((document, i) => {
       const tokens = tokenize(document.text);
+      if (lemma) for (let at = 0; at < tokens.length; at++) tokens[at] = lemma.normalize(tokens[at]);
       if (stem) insert.run(i + 1, tokens.join(' '), tokens.map(stem).filter(Boolean).join(' '));
       else insert.run(i + 1, tokens.join(' '));
     });
@@ -159,7 +162,7 @@ export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) 
     const prefixes = [...new Set(snippetTerms.filter(term => term.prefix).map(({ term }) => term))];
     const candidates = measured(timer, 'candidate_materialization', () => native.map(({ rowid, score }) => {
       const document = corpus[rowid - 1];
-      document.spans ??= tokenizeSpans(document.text);
+      document.spans ??= lemma ? tokenizeSpans(document.text).map(span => ({ ...span, term: lemma.normalize(span.term) })) : tokenizeSpans(document.text);
       document.terms ??= new Set(document.spans.map(span => span.term));
       const matches = new Set();
       for (const { term, prefix } of stem ? [] : actualTerms) {
@@ -221,7 +224,7 @@ export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) 
     const text = extractText(query);
     if (automatic && weightedLength(text) > 210) return { skipped: true, total: 0, results: [], queryTerms: [] };
     if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) throw new RangeError('limit must be a non-negative safe integer');
-    const queryTerms = [...new Set(tokenize(text).filter(term => !STOPWORDS.has(term)))];
+    const queryTerms = [...new Set(tokenize(text).filter(term => !STOPWORDS.has(term)).map(term => lemma ? lemma.normalize(term) : term))];
     if (!queryTerms.length) return { skipped: false, total: 0, results: [], queryTerms };
     const terms = queryTerms.map(term => ({
       term,
@@ -239,7 +242,7 @@ export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) 
     const effective = prefixExpression(query, arm);
     const grouped = implicitOr(effective);
     const porter = stem ? porterExpression(grouped, stem) : undefined;
-    const expression = inflections ? inflections.expression(grouped) : porter?.expression ?? grouped;
+    const expression = lemma ? lemma.expression(grouped) : inflections ? inflections.expression(grouped) : porter?.expression ?? grouped;
     const actual = porter?.operands ?? queryOperands(expression);
     const snippets = actual.flatMap(operand => operand.prefix ? [operand] :
       tokenize(operand.term).map(term => ({ ...operand, term, prefix: false })));
@@ -258,7 +261,7 @@ export function createIndex(documents, { arm = 'off', timer: buildTimer } = {}) 
     missingTerms(query) {
       const effective = prefixExpression(query, arm);
       const grouped = implicitOr(effective);
-      const terms = (stem ? porterExpression(effective, stem).operands : queryOperands(inflections ? inflections.expression(grouped) : grouped)).filter(({ prefix }) => !prefix);
+      const terms = (stem ? porterExpression(effective, stem).operands : queryOperands(lemma ? lemma.expression(grouped) : inflections ? inflections.expression(grouped) : grouped)).filter(({ prefix }) => !prefix);
       if (!stem) return [...new Set(terms.map(({ term }) => term))].filter(term => !vocabulary.get(term));
       return [...new Set(terms.filter(operand => {
         const columns = operand.columns ?? ['tokens', 'stems'];

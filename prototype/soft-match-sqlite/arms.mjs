@@ -2,12 +2,12 @@ import { createRequire } from 'node:module';
 import { isMainThread } from 'node:worker_threads';
 import { tokenize, tokenizeSpans } from './lexical.mjs';
 
-const ARMS = new Set(['off', 'prefix-all', 'prefix-min4', 'jieba', 'porter', 'porter-js', 'inflect-wink']);
+const ARMS = new Set(['off', 'prefix-all', 'prefix-min4', 'jieba', 'porter', 'porter-js', 'inflect-wink', 'lemma-index']);
 const lexical = { tokenize, tokenizeSpans };
 let jiebaTokenizer;
 
 export function validateArm(arm) {
-  if (!ARMS.has(arm)) throw new Error(`Invalid SQLite arm: ${String(arm)}; expected off, prefix-all, prefix-min4, jieba, porter, porter-js, or inflect-wink`);
+  if (!ARMS.has(arm)) throw new Error(`Invalid SQLite arm: ${String(arm)}; expected off, prefix-all, prefix-min4, jieba, porter, porter-js, inflect-wink, or lemma-index`);
   return arm;
 }
 

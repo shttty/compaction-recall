@@ -7,6 +7,7 @@ import { STOPWORDS } from '../prototype/soft-match-sqlite/lexical.mjs';
 import { createTokenizer, validateArm } from '../prototype/soft-match-sqlite/arms.mjs';
 import { createStemmer } from '../prototype/soft-match-sqlite/porter.mjs';
 import { createJsStemmer } from '../prototype/soft-match-sqlite/porter-js.mjs';
+import { createLemmaNormalizer } from '../prototype/soft-match-sqlite/lemma.mjs';
 
 if (isMainThread) {
   const { values } = parseArgs({ options: Object.fromEntries(['arm', 'data', 'gold', 'baseline', 'directory', 'output'].map(name => [name, { type: 'string' }])) });
@@ -22,8 +23,8 @@ if (isMainThread) {
     for (const lang of ['en', 'zh']) {
       for (const sign of [1, -1]) for (const row of changes.filter(row => row.language === lang && Math.sign(row.mrrDelta) === sign).slice(0, 2)) selected.set(`${row.key}:${lang}`, row);
     }
-    if (arm === 'inflect-wink') for (const row of run.comparison.filter(row => row.language === 'en' &&
-      ['gpt4_15e38248', '2ce6a0f2', 'gpt4_731e37d7', '9d25d4e0', 'gpt4_65aabe59'].includes(row.key.split('/')[1]))) {
+    if (['inflect-wink', 'lemma-index'].includes(arm)) for (const row of run.comparison.filter(row => row.language === 'en' &&
+      ['gpt4_15e38248', '2ce6a0f2', 'gpt4_731e37d7', '9d25d4e0', 'gpt4_65aabe59', '28dc39ac'].includes(row.key.split('/')[1]))) {
       selected.set(`${row.key}:en`, row);
     }
     for (const change of selected.values()) {
@@ -61,14 +62,15 @@ if (isMainThread) {
 } else {
   const { arm, question, documents, inflectionExpansions } = workerData;
   const old = createTokenizer('off'), current = createTokenizer(arm);
+  const lemma = arm === 'lemma-index' ? createLemmaNormalizer() : undefined;
   const queryTermsBefore = [...new Set(old.tokenize(question).filter(term => !STOPWORDS.has(term)))];
-  const queryTermsAfter = [...new Set(current.tokenize(question).filter(term => !STOPWORDS.has(term)))];
+  const queryTermsAfter = [...new Set(current.tokenize(question).filter(term => !STOPWORDS.has(term)).map(term => lemma ? lemma.normalize(term) : term))];
   const db = arm === 'porter' ? new DatabaseSync(':memory:') : undefined;
   const stem = db ? createStemmer(db) : arm === 'porter-js' ? createJsStemmer() : undefined;
   try {
     parentPort.postMessage({
       queryTermsBefore, queryTermsAfter, documents: documents.map(doc => {
-        const oldTerms = old.tokenize(doc.text), newTerms = current.tokenize(doc.text);
+        const oldTerms = old.tokenize(doc.text), newTerms = current.tokenize(doc.text).map(term => lemma ? lemma.normalize(term) : term);
         const unique = [...new Set(newTerms)];
         const expansions = [];
         for (const query of queryTermsAfter) for (const term of unique) {
@@ -82,6 +84,10 @@ if (isMainThread) {
         return {
           id: doc.id, tokenCountBefore: oldTerms.length, tokenCountAfter: newTerms.length + stemTokens.length,
           originalTokenCountAfter: newTerms.length, stemTokenCountAfter: stemTokens.length,
+          ...(lemma ? {
+            lemmaChanges: [...new Set(oldTerms)].filter(term => lemma.normalize(term) !== term).map(term =>
+            ({ original: term, lemma: lemma.normalize(term), queryMatch: queryTermsAfter.includes(lemma.normalize(term)) }))
+          } : {}),
           exactMatchesBefore: queryTermsBefore.filter(term => oldTerms.includes(term)),
           exactMatchesAfter: queryTermsAfter.filter(term => newTerms.includes(term)),
           expansions: expansions.slice(0, 50), addedTokens: [...new Set(newTerms)].filter(term => !oldTerms.includes(term)).slice(0, 50),

@@ -4,7 +4,7 @@
 
 ## 运行与版本
 
-仓库根目录执行。默认 off 的 demo 只用内置模块；运行 jieba、porter-js 或 inflect-wink 候选前先执行 `npm ci --ignore-scripts`：
+仓库根目录执行。默认 off 的 demo 只用内置模块；运行 jieba、porter-js、inflect-wink 或 lemma-index 候选前先执行 `npm ci --ignore-scripts`：
 
 ```sh
 node prototype/soft-match-sqlite/demo.mjs
@@ -214,7 +214,7 @@ dev8/3d86fd0a 中英各 5035 条真实输入，en 1 自动+6 显式、zh 1 自�
 
 ## S6：默认关闭的离线候选
 
-评测入口 `retrieval-sqlite-engine.mjs` / `retrieval-sqlite-worker.mjs` 读取单值 `COMPACTION_RECALL_SQLITE_ARM`；允许 `off`、`prefix-all`、`prefix-min4`、`jieba`、`porter`、`porter-js`、`inflect-wink`，默认 off，未知值或组合报错。`createIndex` 只接受显式 `{arm}`，不读取环境；生产 src、工具描述、关键词上限和原始 query trace 均未改。主线 89 个停用词只过滤自动提示，索引和显式查询保留它们。
+评测入口 `retrieval-sqlite-engine.mjs` / `retrieval-sqlite-worker.mjs` 读取单值 `COMPACTION_RECALL_SQLITE_ARM`；允许 `off`、`prefix-all`、`prefix-min4`、`jieba`、`porter`、`porter-js`、`inflect-wink`、`lemma-index`，默认 off，未知值或组合报错。`createIndex` 只接受显式 `{arm}`，不读取环境；生产 src、工具描述、关键词上限和原始 query trace 均未改。主线 89 个停用词只过滤自动提示，索引和显式查询保留它们。
 
 - **prefix-all**：自动选出的全部词项加原生 `*`；显式 MATCH 仅扩展裸操作数。引号、已有 `*`、`^` / `+` 所属短语及完整 NEAR 组不改；AND/OR/NOT、列名和分组保留。列作用域内独立裸词仍扩展。
 - **prefix-min4**：同上，仅扩展至少 4 字符的 ASCII 字母/数字/下划线裸词；不扩展 Han。
@@ -222,6 +222,7 @@ dev8/3d86fd0a 中英各 5035 条真实输入，en 1 自动+6 显式、zh 1 自�
 - **porter**：FTS5 的 tokenizer 是表级而非列级，因此用同连接内的 `tokenize='porter ascii'` 辅助表按原生位置生成英语 stems，再存入主表 tokens/stems 双列，执行 `bm25(terms,1.0,0.5)`。Han 不进入 stems。未加引号且未显式指定列的操作数走原词/词干；引号与显式列过滤保留 exact/native 语义。同词别名相同时使用单个跨列短语，其频次为 `1.0*origTF+0.5*stemTF` 后统一饱和；别名不同时为两条原生 OR phrase 的 BM25 相加，不能视为完全消除了重复贡献。命中词计数及片段按原始查询词去重。含引号的 NEAR/+ 单元保持原列完整短语；纯裸单元不做跨列混合短语；stems 排除 Han 会压缩该列位置，双列也改变原生文档长度统计。
 - **porter-js**：复用 porter 的 tokens/stems 双列及完整 query 重写/片段/去重语义；仅改为 JS `@orama/stemmers/english` 预生成词干，列权重 1.0/1.0。不创建 native porter 辅助表。JS helper 按 native ascii 边界拆 `_`/`$`、保持顺序及重复，Han 不进入 stems；依赖仅此 arm 初始化时加载。booked/booking/book、attended/attending、workshops、played→plai、assembled 与 native porter ascii 抽样一致。原 porter 保持 native helper 与 1.0/0.5 权重作对照。
 - **inflect-wink**：worker 内对实际索引词表的每个不同纯 ASCII 字母词，调用 wink 的 noun/verb/adjective，建立 lemma→索引词 Set。查询词按三种 lemma 共享关系扩展到实际索引词并保留自身；不自行补后缀规则、过滤词性歧义或修改库返回值。没有新列、tokenizer 或 postings。自动词项及显式独立裸词转换为 OR 组；引号、短语、已有 `*`、NEAR、完整显式列作用域不扩展，空格仍先按原 implicit OR 改写。210 门槛和原关键词上限不变。FTS5 原生叠加每个变体：测试同文档 book/booked 两项得 -2.4475508632442313，单变体得 -1.2237754316221157，不做分数组内去重。同步索引在 worker 内运行，主线程评测桥接，不加载 wink 词典。完整 16 题英文逐词扩展清单、lemma 表统计、12 个 GC 样本和排名证据见运行报告；库的 noun/verb/adjective 联合集合也可能产生 am→are/be/been/is/was/were、games→gamer 等扩展，照实接受。
+- **lemma-index**：复用锁定 wink 3.0.4，在 worker 内缓存每个纯 ASCII 字母词的单个原形：verb、noun、adjective 依次取第一个与原词不同的结果。索引和查询共用函数；每个 lex 位置替换一个词，不增列、不增变体位置，重复原形仍保留原有实际词频。自动词项还原后 Set 去重；显式裸词及引号短语内原生 `_`/`$` 边界词还原，AND/OR/NOT/NEAR 与列名保留，列作用域内词项正常还原。已有 `*` 词不还原；带 `*` 短语的最后前缀词保持原样。还原索引里 booking* 不保证仍匹配 book，这是保留用户前缀字面语义的结果。归一化 spans 保留原文 codepoint 偏移，snippet 窗口能选到原文实际词形；共享 renderer 仍输出纯文本，不加额外标记。已测试 booking→book、leaves→leave、sold→sell、better→good、attendance 不变、原生短语位置和与直接归一化语料的 BM25 完全一致。
 
 各候选最新离线验收、同步/background worker 完整排名对照及 off 对 S5b 的逐项 id/score 一致性见授权 runs/sqlite/s6-arms.md。auto-stopwords-iso 已移除代码、测试和依赖；此前结果仅保留存档，不代表当前可运行开关。
 

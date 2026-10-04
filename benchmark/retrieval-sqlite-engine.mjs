@@ -5,7 +5,7 @@ const automaticEvidence = [];
 export function takeAutomaticEvidence() { return automaticEvidence.splice(0); }
 
 export function createEngine(documents, { arm = process.env.COMPACTION_RECALL_SQLITE_ARM ?? 'off',
-  execution = arm === 'jieba' || arm === 'inflect-wink' ? 'worker' : 'sync' } = {}) {
+  execution = ['jieba', 'inflect-wink', 'lemma-index'].includes(arm) ? 'worker' : 'sync' } = {}) {
   validateArm(arm);
   if (execution === 'worker') return threadedEngine(documents, arm).then(engine => {
     if (arm !== 'inflect-wink') return engine;
