@@ -19,7 +19,6 @@ test('SQLite renderer preserves pagination and budget; warns only for a true zer
   assert.ok(budget.details.returned > 0 && budget.details.returned < 50);
   assert.equal(budget.details.nextOffset, budget.details.returned);
   const zero = sqliteRecallPage([], {}, { total: 0, baseOffset: 0 });
-  assert.doesNotMatch(zero.text, /history_grep/);
   assert.equal(zero.details.total, 0);
   assert.ok(Array.from(zero.text).length <= 16000);
   const emptyOffset = sqliteRecallPage([], { offset: 50 }, { total: 50, baseOffset: 50 });
@@ -33,8 +32,6 @@ test('SDK concept tool pages, validates strictly, excludes records and remains u
   const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
   assert.deepEqual(loaded.errors, []);
   const extension = loaded.extensions[0];
-  assert.deepEqual([...extension.tools.keys()].sort(), ['history_expand', 'history_recall']);
-  for (const tool of extension.tools.values()) assert.doesNotMatch(JSON.stringify(tool.definition), /history_grep/);
   const recall = extension.tools.get('history_recall').definition;
   const timestamp = '2026-10-04T00:00:00Z';
   const ctx = {
@@ -92,6 +89,58 @@ test('SDK concept tool pages, validates strictly, excludes records and remains u
   const expand = extension.tools.get('history_expand').definition;
   const expanded = await expand.execute('expand', { id: 'match', before: 0, after: 0 }, undefined, undefined, ctx);
   assert.match(expanded.content[0].text, /alpha beta gamma delta epsilon zeta tailneedle/);
+});
+
+test('SDK independent grep finds regex neighbors, pages counts and respects current branch edits', async t => {
+  const { discoverAndLoadExtensions } = await import('@earendil-works/pi-coding-agent');
+  const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
+  assert.deepEqual(loaded.errors, []);
+  const extension = loaded.extensions[0];
+  const timestamp = '2026-10-06T00:00:00Z';
+  const message = (id, content) => ({ type: 'message', id, timestamp, message: { role: 'user', content } });
+  let branch = [message('first', 'Telescope grant $125, receipt $125 [confirmed] 晨'),
+    message('second', 'telescope grant $250 baseline'), message('hidden', 'telescope grant $900 hiddenoriginal'),
+    message('edited', 'telescope grant $700 oldamount'), message('other', 'orchard $999'),
+    message('live', 'telescope grant $800 liveonly'),
+    { type: 'compaction', id: 'compact', timestamp, firstKeptEntryId: 'live', summary: '', tokensBefore: 100 },
+    { type: 'context_edit', id: 'omit', targetId: 'hidden', timestamp, replacement: null },
+    { type: 'context_edit', id: 'replace', targetId: 'edited', timestamp, replacement: { content: 'telescope grant $375 approved' } }];
+  const ctx = { sessionManager: { getSessionId: () => 'independent-grep', getBranch: () => branch } };
+  t.after(async () => { for (const handler of extension.handlers.get('session_shutdown') ?? []) await handler({ type: 'session_shutdown', reason: 'quit' }, ctx); });
+  const grep = extension.tools.get('history_grep').definition;
+  const run = params => grep.execute('grep', params, undefined, undefined, ctx);
+  const ids = result => [...result.content[0].text.matchAll(/^\[([^\]]+)\]/gm)].map(match => match[1]);
+  const pattern = 'telescope.{0,80}\\$\\d+';
+  const first = await run({ pattern, limit: 1 });
+  assert.deepEqual(ids(first), ['first']);
+  assert.equal(first.details.total, 3);
+  assert.equal(first.details.totalEntries, 3);
+  assert.equal(first.details.returned, 1);
+  assert.equal(first.details.nextOffset, 1);
+  const next = await run({ pattern, limit: 1, offset: first.details.nextOffset });
+  assert.deepEqual(ids(next), ['second']);
+  const last = await run({ pattern, limit: 1, offset: next.details.nextOffset });
+  assert.deepEqual(ids(last), ['edited']);
+  assert.equal(last.details.nextOffset, null);
+  assert.match(last.content[0].text, /\$375 approved/);
+  assert.doesNotMatch(last.content[0].text, /hiddenoriginal|oldamount|liveonly/);
+  const counted = await run({ pattern: '\\$\\d+', limit: 1 });
+  assert.equal(counted.details.total, 5);
+  assert.equal(counted.details.totalEntries, 4);
+  assert.equal(counted.details.snippets + counted.details.covered + counted.details.omitted, 5);
+  assert.deepEqual(ids(await run({ pattern: '[' })), ['first']); // Invalid regex uses literal matching.
+  const expand = extension.tools.get('history_expand').definition;
+  const expanded = await expand.execute('expand-grep-id', { id: ids(last)[0], before: 0, after: 0 }, undefined, undefined, ctx);
+  assert.match(expanded.content[0].text, /\$375 approved/);
+  assert.doesNotMatch(expanded.content[0].text, /oldamount/);
+  const literal = await extension.tools.get('history_recall').definition.execute('recall-literal', { concepts: [['晨']] }, undefined, undefined, ctx);
+  assert.equal(literal.details.total, 1);
+  assert.deepEqual(literal.details.fallback, { surfaces: ['晨'], scannedDocuments: 4, ranking: 'rarity' });
+  branch = [message('fork', 'telescope grant $450 fork'), message('fork-live', 'retained'),
+    { type: 'compaction', id: 'fork-compact', timestamp, firstKeptEntryId: 'fork-live', summary: '', tokensBefore: 10 }];
+  const fork = await run({ pattern });
+  assert.deepEqual(ids(fork), ['fork']);
+  assert.equal(fork.details.total, 1);
 });
 
 test('SDK registered recall routes whole literal surfaces and composes mixed groups before paging', async t => {
@@ -190,7 +239,6 @@ test('SDK loads file gate/timeout once; lifecycle rebuilds retain them over late
       if (result?.messages) messages = result.messages;
     }
     assert.deepEqual(locatorIds(messages).sort(), length <= 280 ? ['english', 'han', 'joint'] : []);
-    for (const message of messages.filter(message => message.customType === LOCATOR_TYPE)) assert.doesNotMatch(message.content, /history_grep/);
   }
   const unexpanded = await recall.execute('manual-no-stemming', { concepts: [['running']] }, undefined, undefined, ctx);
   assert.equal(unexpanded.details.total, 0);

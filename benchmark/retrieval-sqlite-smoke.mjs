@@ -165,7 +165,6 @@ modelRuntime.registerProvider('sqlite-smoke', {
         const page = readPage(result);
         assert.equal(page.total, 0);
         assert.equal(page.returned, 0);
-        assert.doesNotMatch(text(result), /history_grep/);
         checks.push('zero-token literal surface returns an ordinary empty page, then completion');
       }
     }

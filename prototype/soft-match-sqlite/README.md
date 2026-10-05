@@ -1,6 +1,6 @@
 # SQLite FTS5 soft-match 原型
 
-## 当前覆盖契约：literal fallback 与 rarity（2026-10-06）
+## 当前覆盖契约：独立 grep、literal fallback 与 rarity（2026-10-06）
 
 本节优先于下文历史接口、切词、候选 arm 和提示词说明。历史评估数字及验证正文保持原文，不代表本轮已重跑。本轮为 SQLite 原型 / benchmark 接入，不是生产发布；不请求 provider 或模型评测。共享 `src/recall-trace.mjs` 仅增加可选结构输入模式，`src/index-worker.mjs` / `src/background-index.mjs` 仅保留自定义引擎错误 code；生产入口、schema、默认字符串 trace 及输出字节契约不变。
 
@@ -9,9 +9,11 @@
 - **排除与片段**：`exclude` 最多 5 个 literal 词面，同样按覆盖路由；任意命中硬排除整条记录。FTS 仍为路径外 OR、路径内 AND 共现；literal 为整词面子串；任意/all/组内替代语义在混合请求中保持完整。正向 literal 片段必须露出实际 literal 证据；排除不引导片段。UTF-16 命中偏移转为 codepoint 锚点，不新增第二正文缓存或索引。
 - **排名边界**：纯 FTS 保留原生 BM25/SQL 分页；只要任一正向或排除词面需要 literal，整个请求在完整匹配后使用 rarity。每个 surface 权重 `1+log((N+1)/(surfaceDF+1))`；每正向组取命中替代的最大权重，各组相加，同分按命中组数、timestamp、recency、stable rowid。N/DF 按 eligible corpus 行计数，先于 all/exclude/page；live 不计，最终按 content_hash 去重。不是相关性概率、不按出现次数加分、不与 BM25 分数跨路线比较；普通可索引查询不会因零命中或低分进入新路线。
 - **自动与分页**：auto 的机器选词、210/配置 gate、cadence、生命周期及排名算法不变；manual 无自动 gate。默认/最大 50、16000 码点页、240 加权 snippet 单位、nextOffset 和超长元数据进度例外不变。只有真实 total=0 提示检查概念组/any/all/词面，正 total 空 offset 页不误报。hybrid queryRows/queryPage 额外返回 `fallback:{surfaces,scannedDocuments,ranking:'rarity'}`，page.details 同对象；surfaces 含正向和排除 literal，scannedDocuments=N。纯 FTS 不添加 fallback 字段。deadline 覆盖 literal 扫描、DF、排名、去重、片段与分页，native MATCH 仍不可抢占，健康 worker 不清缓存。
-- **工具与 trace**：SQLite 仅注册 `history_recall`、`history_expand`，不注册 grep、不增加 mode/pattern 参数。自动 locator → recall → expand 核验；所有 SQLite 可见提示不再推荐不存在的工具。共享 renderer 仅新增可选 header seam，生产默认 header 与注册不变。SQLite structured trace 保留完整 params/model arguments 与 input_identical；仅 hybrid 成功结果额外记录 fallback，不记录 SQL/内部权重/思考/凭据。生产默认 trace 不变。本轮是原型接入，不是生产发布；历史验证数字不是本轮重跑。
+- **工具与 trace**：SQLite 注册 `history_recall`、`history_grep`、`history_expand` 三工具。自动 locator → recall → expand 核验后若证据不足，可主动用独立 grep 补充，不强制调用。`history_grep({pattern,limit?,offset?})` 复用生产 lite 的真实执行器：case-insensitive JavaScript regex，非法 regex 按字面搜索；按分支顺序分页，默认 30 / 最大 50 个 entry；原 raw-match 计数、片段预算和 branch/context_edit 隔离不变。grep 的 `pattern` 与 recall 自动整词面 literal 路由相互独立；recall 不新增 mode/pattern 参数。共享 renderer 使用原型 header seam，生产默认 header 与注册不变。SQLite structured trace 保留完整 recall params/model arguments 与 input_identical；仅 hybrid 成功结果额外记录 fallback，不记录 SQL/内部权重/思考/凭据。生产默认 trace 不变；冻结两工具评测仍属于原版本，不重标为本次三工具结果。
 
-本轮离线验收：`npm run check` 的 338 项 JS 与 28 项 Python 回归通过，另以空临时 profile 实际加载 SDK/worker/SQLite 验证两工具、literal/rarity、自动提示和结构 trace（0 provider 请求）。纯 FTS 的独立合成完整 IDs/score/order 与本轮基线一致；小规模合成工具耗时/内存只记录在授权执行产物目录，不代表大库/线上性能或模型准确率。
+初轮两工具离线验收（历史记录）：`npm run check` 的 338 项 JS 与 28 项 Python 回归通过，另以空临时 profile 实际加载 SDK/worker/SQLite 验证两工具、literal/rarity、自动提示和结构 trace（0 provider 请求）。纯 FTS 的独立合成完整 IDs/score/order 与该轮基线一致；小规模合成工具耗时/内存只记录在授权执行产物目录，不代表大库/线上性能或模型准确率。
+
+独立 grep 恢复是上述初轮两工具验收后的后续变更；旧结果与 5728284 冻结评测保持不变。本次可复跑合成 SDK smoke 验证 grep 正则、计数、分页、expand、资格隔离及 worker recall literal/rarity，无 provider 请求；具体命令与实际结果记录在授权恢复任务目录，不据此宣称模型效果。
 
 后文 `searchRaw`、implicit OR、原生手写 MATCH、自动 Porter/长 Han、mixed index 等接口和说明均为历史设计 / 评估证据，不覆盖本节当前手动概念组协议。
 
@@ -212,7 +214,7 @@ shared `history_recall_trace` 保留 toolCallId、模型 / execute 原始 query 
 
 Node [Worker.terminate](https://nodejs.org/download/release/v24.18.0/docs/api/worker_threads.html#workerterminate) 只承诺尽快停止 JS。历史实证：同步 SQLite 递归聚合运行中 terminate 后 1 / 3 秒仍占 CPU 约 1.001 / 3.002 秒，有限查询仍等 1570 ms 才退出，而纯 JS 循环只需 2.03 ms；Bun 线程终止未实测，不对其作保证。这些实证解释为何当前 deadline 只保证 JS 检查点与过期结果丢弃，不声称中断 native SQL。
 
-当前仅保留一个 worker 线程，不增加宿主进程、跨进程 IPC 或额外 RSS 字段；deadline 不损失现有索引/span 缓存，也不取消同代次其他有效请求。expand 执行器仍独立可用，SQLite 不注册 grep。没有持久化索引或新增模型调用，默认生产 worker 不变。旧授权 run 属于历史实验，不是当前 deadline/fallback 的验证或历史评测重跑。
+当前仅保留一个 worker 线程，不增加宿主进程、跨进程 IPC 或额外 RSS 字段；deadline 不损失现有索引/span 缓存，也不取消同代次其他有效请求。grep/expand 复用生产 lite 的独立执行器；recall 超时后可收窄概念或主动用 focused history_grep 补充，但 regex 无执行超时，应避免高回溯模式。没有持久化索引或新增模型调用，默认生产 worker 不变。旧授权 run 属于历史实验，不是当前 deadline/fallback 或恢复三工具的验证及重跑。
 
 
 S4 第 3 步离线验收：本原型三份测试 **34/34**、`npm run check` 类型检查及 **202/202**、Python unittest **28/28** 全部通过。首次预算测试 fixture 未触发分页而断言 nextOffset 错误，已改成真正超预算的长 id fixture；首次 fake-provider 完成断言后未 emit SDK session_shutdown 导致 worker 留存超时，已修成 await extension shutdown 后 dispose，重跑 **0.98 秒正常退出**。没有改公共代码来绕过失败。
