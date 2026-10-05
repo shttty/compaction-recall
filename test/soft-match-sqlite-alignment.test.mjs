@@ -48,10 +48,10 @@ test('identifier components retrieve their original documents through sync and w
 
 test('Chinese stopwords remain indexed as bigrams while automatic selection filters stopwords', t => {
   const { index, worker } = corpus(t, [doc('stop', '我们 为什么', 0)]);
-  for (const [query, native] of [['我们', '我们'], ['为什么', '"为什 什么"']]) {
+  for (const query of ['我们', '为什么']) {
     assert.ok(STOPWORDS.has(query));
-    assert.deepEqual(ids(index.searchRaw(native)), ['stop']);
-    assert.deepEqual(ids(worker.query(native, { mode: 'manual' })), ['stop']);
+    assert.deepEqual(ids(index.search({ concepts: [[query]] })), ['stop']);
+    assert.deepEqual(ids(worker.query({ concepts: [[query]] }, { mode: 'manual' })), ['stop']);
     const auto = index.search(query, { automatic: true });
     assert.ok(!auto.queryTerms.includes(query));
     if (query === '我们') {
@@ -66,18 +66,18 @@ test('latest duplicate ids replace earlier text, and latest empty text shadows a
   doc('same', 'replacement', 2), doc('gone', '', 3)]);
   for (const query of ['obsolete', 'replacement']) {
     const expected = query === 'replacement' ? ['same'] : [];
-    assert.deepEqual(ids(index.searchRaw(query)), expected);
-    assert.deepEqual(ids(worker.query(query, { mode: 'manual' })), expected);
+    assert.deepEqual(ids(index.search({ concepts: [[query]] })), expected);
+    assert.deepEqual(ids(worker.query({ concepts: [[query]] }, { mode: 'manual' })), expected);
   }
 });
 
 test('normalized content duplicates retain score/time representatives before total, limit and pagination', t => {
   const { index, worker } = corpus(t, [doc('a-old', 'aurora red', 0), doc('unique', 'aurora blue', 1),
   doc('z-new', 'aurora  red', 2)]);
-  const found = worker.query('aurora', { mode: 'manual' });
+  const found = worker.query({ concepts: [['aurora']] }, { mode: 'manual' });
   assert.equal(found.total, 2);
   assert.deepEqual(ids(found), ['z-new', 'unique']);
-  const limited = index.searchRaw('aurora', { limit: 1 });
+  const limited = index.search({ concepts: [['aurora']] }, { limit: 1 });
   assert.equal(limited.total, 2);
   assert.deepEqual(ids(limited), ['z-new']);
   assert.equal(index.search('aurora', { automatic: true, limit: 1 }).total, 2);
@@ -101,19 +101,19 @@ test('different full messages survive even when their query snippets coincide', 
   const scores = db.prepare('SELECT rowid,bm25(terms) AS score FROM terms WHERE terms MATCH ? ORDER BY rowid').all('needle');
   assert.ok(scores[0].score < scores[1].score, 'older native score must be better');
   const { index, worker } = corpus(t, documents);
-  const found = index.searchRaw('needle');
+  const found = index.search({ concepts: [['needle']] });
   assert.equal(found.total, 2);
   assert.deepEqual(ids(found), ['older', 'newer']);
   assert.equal(found.results[0].score, scores[0].score);
-  assert.deepEqual(ids(worker.query('needle', { mode: 'manual' })), ['older', 'newer']);
+  assert.deepEqual(ids(worker.query({ concepts: [['needle']] }, { mode: 'manual' })), ['older', 'newer']);
 });
 
 test('exact native score ties prefer source recency rather than lexicographic id', t => {
   const { index, worker } = corpus(t, [doc('a-old', 'aurora red', 0), doc('z-new', 'aurora blue', 1)]);
-  const found = index.searchRaw('aurora');
+  const found = index.search({ concepts: [['aurora']] });
   assert.equal(found.results[0].score, found.results[1].score, 'fixture must exercise an exact BM25 tie');
   assert.deepEqual(ids(found), ['z-new', 'a-old']);
-  assert.deepEqual(ids(worker.query('aurora', { mode: 'manual' })), ['z-new', 'a-old']);
+  assert.deepEqual(ids(worker.query({ concepts: [['aurora']] }, { mode: 'manual' })), ['z-new', 'a-old']);
 });
 
 test('exact BM25 ties use source time rather than distinct-term count', t => {
@@ -121,40 +121,39 @@ test('exact BM25 ties use source time rather than distinct-term count', t => {
     doc('older-two', 'alpha beta ' + 'padding '.repeat(47), 0),
     doc('newer-one', 'alpha ' + 'padding '.repeat(4), 1),
   ]);
-  const found = index.searchRaw('alpha OR beta');
+  const found = index.search({ concepts: [['alpha'], ['beta']] });
   assert.equal(found.results[0].score, found.results[1].score);
   assert.deepEqual(ids(found), ['newer-one', 'older-two']);
-  assert.deepEqual(ids(worker.query('alpha OR beta', { mode: 'manual' })), ['newer-one', 'older-two']);
+  assert.deepEqual(ids(worker.query({ concepts: [['alpha'], ['beta']] }, { mode: 'manual' })), ['newer-one', 'older-two']);
 });
 
 test('apostrophe single-letter fragments are absent from the index', t => {
   const { index, worker } = corpus(t, [doc('friend', "friend's", 0)]);
-  assert.deepEqual(ids(index.searchRaw('friend')), ['friend']);
-  assert.deepEqual(ids(index.searchRaw('s')), []);
-  assert.deepEqual(ids(worker.query('s', { mode: 'manual' })), []);
+  assert.deepEqual(ids(index.search({ concepts: [['friend']] })), ['friend']);
+  assert.throws(() => index.search({ concepts: [['s']] }), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
+  assert.throws(() => worker.query({ concepts: [['s']] }, { mode: 'manual' }), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
 });
 
 test('empty documents do not change native BM25 corpus scores', t => {
   const documents = [doc('match', 'aurora sky', 0), doc('other', 'violet meadow', 1)];
   const baseline = corpus(t, documents);
   const padded = corpus(t, [...documents, doc('empty', '', 2)]);
-  assert.deepEqual(padded.index.searchRaw('aurora'), baseline.index.searchRaw('aurora'));
-  assert.deepEqual(padded.worker.query('aurora', { mode: 'manual' }), baseline.worker.query('aurora', { mode: 'manual' }));
+  assert.deepEqual(padded.index.search({ concepts: [['aurora']] }), baseline.index.search({ concepts: [['aurora']] }));
+  assert.deepEqual(padded.worker.query({ concepts: [['aurora']] }, { mode: 'manual' }), baseline.worker.query({ concepts: [['aurora']] }, { mode: 'manual' }));
 });
 
-test('native quoted single-letter dollar fragments stay unindexed, while bare dollar syntax errors', t => {
+test('single-letter dollar fragments produce author analysis errors, not FTS syntax errors', t => {
   const { index, worker } = corpus(t, [doc('dollar', '$x $_', 0)]);
-  for (const query of ['"$x"', '"$_"']) {
-    assert.deepEqual(ids(index.searchRaw(query)), []);
-    assert.deepEqual(ids(worker.query(query, { mode: 'manual' })), []);
+  for (const surface of ['$x', '$_']) {
+    const query = { concepts: [[surface]] };
+    assert.throws(() => index.search(query), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
+    assert.throws(() => worker.query(query, { mode: 'manual' }), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
   }
-  assert.throws(() => index.searchRaw('$x'), /syntax error/);
-  assert.throws(() => worker.query('$x', { mode: 'manual' }), /syntax error/);
 });
 
 test('actual display projection strips scores from retrieved rows and rendered pages', t => {
   const { worker } = corpus(t, [doc('visible', 'aurora', 0)]);
-  const found = worker.query('aurora', { mode: 'manual' });
+  const found = worker.query({ concepts: [['aurora']] }, { mode: 'manual' });
   assert.equal(typeof found.results[0].score, 'number');
   const projected = displayRows(found.results);
   assert.deepEqual(Object.keys(projected[0]).sort(), ['date', 'id', 'role', 'snippet']);
@@ -173,8 +172,8 @@ test('real background worker transports aligned aliases, deduped totals and inte
   try {
     await background.prepare(branch, { preindexLive: true });
     for (const [query, mode] of [['user', 'auto'], ['server', 'manual'], ['aurora', 'manual']]) {
-      const found = await background.queryRanked(query, branch, { mode });
-      const expected = mode === 'auto' ? sync.search(query, { automatic: true }) : sync.searchRaw(query);
+      const found = await background.queryRanked(mode === 'auto' ? query : { concepts: [[query]] }, branch, { mode });
+      const expected = mode === 'auto' ? sync.search(query, { automatic: true }) : sync.search({ concepts: [[query]] });
       assert.deepEqual(found.results.map(({ id, score }) => ({ id, score })), expected.results);
       assert.equal(found.total, query === 'aurora' ? 2 : 1);
       for (const row of displayRows(found.results)) assert.deepEqual(Object.keys(row).sort(), ['date', 'id', 'role', 'snippet']);

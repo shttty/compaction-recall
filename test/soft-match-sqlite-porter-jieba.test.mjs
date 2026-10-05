@@ -33,21 +33,19 @@ test('porter-jieba reuses both token channels for English, Han and mixed queries
       const ids = found => found.results.map(row => row.id).sort();
       try {
         for (const query of ['book', 'booked', 'booking', 'tickets']) {
-          assert.deepEqual(combo.search(query), porter.search(query));
-          assert.deepEqual(combo.searchRaw(query), porter.searchRaw(query));
+          assert.deepEqual(combo.search({ concepts: [[query]] }), porter.search({ concepts: [[query]] }));
         }
-        assert.deepEqual(ids(combo.searchRaw('stems:book')), ['base', 'past', 'present']);
-        assert.deepEqual(ids(combo.searchRaw('stems:ticket')), ['base', 'past', 'present']);
-        assert.deepEqual(ids(combo.searchRaw('stems:booking')), []);
-        assert.deepEqual(ids(combo.searchRaw('"booked"')), ['past']);
-        assert.deepEqual(ids(han.searchRaw('"南京 京市"')), ['city']);
-        assert.deepEqual(ids(han.searchRaw('南京')), ['city', 'split']);
-        assert.deepEqual(ids(han.searchRaw('京市')), ['city', 'split']);
-        assert.deepEqual(ids(han.searchRaw('stems:南京市')), []);
+        assert.deepEqual(ids(combo.search({ concepts: [['book']] })), ['base', 'past', 'present']);
+        assert.deepEqual(ids(combo.search({ concepts: [['ticket']] })), ['base', 'past', 'present']);
+        assert.deepEqual(ids(combo.search({ concepts: [['booking']] })), ['present']);
+        assert.deepEqual(ids(combo.search({ concepts: [['booked']] })), ['past']);
+        assert.deepEqual(ids(han.search({ concepts: [['南京 京市']] })), ['city', 'split']);
+        assert.deepEqual(ids(han.search({ concepts: [['南京']] })), ['city', 'split']);
+        assert.deepEqual(ids(han.search({ concepts: [['京市']] })), ['city', 'split']);
         assert.deepEqual(han.search('南京市', { automatic: true }).queryTerms, ['南京', '南京市', '京市']);
         assert.deepEqual(ids(mixedIndex.search('booked 南京市', { automatic: true })), ['both', 'english', 'han']);
-        assert.deepEqual(ids(mixedIndex.searchRaw('stems:book AND "南京 京市"')), ['both']);
-        const row = mixedIndex.queryRows('stems:book AND "南京 京市"').results[0];
+        assert.deepEqual(ids(mixedIndex.search({ concepts: [['book'], ['南京市']], match: 'all' })), ['both']);
+        const row = mixedIndex.queryRows({ concepts: [['book'], ['南京市']], match: 'all' }).results[0];
         assert.equal(row.snippet, 'booking 南京市');
       } finally { porter.close(); combo.close(); han.close(); mixedIndex.close(); }
       parentPort.postMessage('passed');

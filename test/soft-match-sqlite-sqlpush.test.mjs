@@ -20,12 +20,12 @@ test('full whitespace-normalized content dedupes case-sensitively, not by the se
     { id: 'tail-b', text: prefix + 'tailB', timestamp: '2026-10-01T12:00:00Z' },
   ]);
   t.after(() => index.close());
-  const found = index.queryRows('needle');
+  const found = index.queryRows({ concepts: [['needle']] });
   assert.equal(found.total, 4);
   assert.deepEqual(found.results.map(row => row.id), ['new', 'case', 'tail-b', 'tail-a']);
   assert.equal(found.results.find(row => row.id === 'tail-a').snippet, found.results.find(row => row.id === 'tail-b').snippet);
-  assert.equal(index.queryPage('needle', { limit: 1, offset: 1 }).total, 4);
-  assert.deepEqual(index.queryPage('needle', { limit: 1, offset: 1 }).ids, ['case']);
+  assert.equal(index.queryPage({ concepts: [['needle']] }, { limit: 1, offset: 1 }).total, 4);
+  assert.deepEqual(index.queryPage({ concepts: [['needle']] }, { limit: 1, offset: 1 }).ids, ['case']);
 });
 
 test('BM25 precedes timestamp, then full timestamp precedes source position and rowid', t => {
@@ -38,7 +38,7 @@ test('BM25 precedes timestamp, then full timestamp precedes source position and 
     { id: 'late-distinct', text: 'needle OTHER', timestamp: '2026-10-04T12:00:00Z', sourcePosition: 3 },
   ]);
   t.after(() => index.close());
-  const found = index.queryRows('needle');
+  const found = index.queryRows({ concepts: [['needle']] });
   assert.deepEqual(found.results.map(row => row.id), ['late-distinct', 'late-high-new-row', 'early', 'newer-weak']);
   assert.ok(found.results[0].score < found.results.at(-1).score);
   assert.equal(found.total, 4);
@@ -50,7 +50,7 @@ test('actual engine SQL pages materialize and render only the requested candidat
   worker.commit(Array.from({ length: 30 }, (_, i) => ({ ...msg(i, ''), sourcePosition: i, message: { role: 'user', content: `needle row${String(i).padStart(2, '0')}` } })), { eligibleCount: 30 });
   const stages = [], materialized = [];
   const timer = { run(stage, work) { stages.push(stage); const result = work(); if (stage === 'candidate_materialization') materialized.push(result.length); return result; } };
-  const result = worker.query('needle OR ghost', { mode: 'manual', options: { page: true, limit: 2, offset: 7 }, timer });
+  const result = worker.query({ concepts: [['needle'], ['ghost']] }, { mode: 'manual', options: { page: true, limit: 2, offset: 7 }, timer });
   assert.equal(result.total, 30);
   assert.deepEqual(result.ids, ['m22', 'm21']);
   assert.deepEqual(visibleRows(result.page).map(row => row.id), result.ids);
@@ -75,7 +75,7 @@ test('worker-thread projection applies omit/replacement before dedupe/count/page
   const pages = async (branch, expected) => {
     const seen = []; let offset = 0; let count = 0;
     do {
-      const result = await index.queryRanked('needle', branch, { mode: 'manual', options: { page: true, limit: 50, offset } });
+      const result = await index.queryRanked({ concepts: [['needle']] }, branch, { mode: 'manual', options: { page: true, limit: 50, offset } });
       assert.equal(result.total, expected.length);
       assert.equal(result.page.details.total, expected.length);
       assert.equal(result.page.details.offset, offset);
@@ -95,7 +95,7 @@ test('worker-thread projection applies omit/replacement before dedupe/count/page
   try {
     const reverse = records.map(row => row.id).reverse();
     await pages(changed, reverse.filter(id => id !== records[3].id && id !== records[4].id));
-    const absent = await index.queryRanked('temporary OR liveOnly', changed, { mode: 'manual', options: { page: true, limit: 2 } });
+    const absent = await index.queryRanked({ concepts: [['temporary'], ['liveOnly']] }, changed, { mode: 'manual', options: { page: true, limit: 2 } });
     assert.equal(absent.total, 0);
     assert.deepEqual(absent.ids, []);
     await pages(original, reverse);

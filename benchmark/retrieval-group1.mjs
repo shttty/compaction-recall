@@ -20,7 +20,7 @@ export async function runGroup1({ enginePath, dataRoot, goldPath, prototype, que
     const engine = await createEngine(item.documents);
     const buildMs = performance.now() - start;
     try {
-      if (typeof engine.searchAuto !== 'function' || typeof engine.searchRaw !== 'function') throw new Error('Engine requires searchAuto and searchRaw');
+      if (typeof engine.searchAuto !== 'function') throw new Error('Engine requires searchAuto');
       const searchStart = performance.now();
       const results = await searchAutomatic(engine, item.question);
       const searchMs = performance.now() - searchStart;

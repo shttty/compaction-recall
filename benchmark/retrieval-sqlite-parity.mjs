@@ -6,8 +6,7 @@ import { parseArgs } from 'node:util';
 import { performance } from 'node:perf_hooks';
 import { loadEvaluationCases } from './retrieval-eval-core.mjs';
 import { createEngine } from './retrieval-sqlite-engine.mjs';
-import { countKeywords } from '../prototype/soft-match-sqlite/query.mjs';
-import { BackgroundIndex } from '../src/background-index.mjs';
+import { SQLiteBackgroundIndex } from './sqlite-background-index.mjs';
 
 const authorizedRoot = '/home/rinne/.hermes/task-runs/recall-soft-match-20261003/runs/sqlite';
 const ranks = rows => rows.map(({ id, score }) => ({ id, score }));
@@ -28,31 +27,32 @@ export async function runParity({ output, dataRoot = '/home/rinne/workspace/pi-c
   };
   for (const item of cases) {
     const sync = await createEngine(item.documents);
-    const worker = new BackgroundIndex({ engineModule: new URL('./retrieval-sqlite-worker.mjs', import.meta.url) });
+    const worker = new SQLiteBackgroundIndex({ engineModule: new URL('./retrieval-sqlite-worker.mjs', import.meta.url) });
     const results = [];
     try {
       const start = performance.now();
       await worker.prepare(item.branch, { preindexLive: true });
       const buildMs = performance.now() - start;
-      const rawQueries = item.language === 'en'
-        ? ['coffee shop', 'NEAR(coffee shop, 5)', '"coffee shop"', 'relationship OR friend', 'Sophia', 'tokens:coffee NOT absent']
-        : ['咖啡 商店', '关系 OR 朋友', '"咖啡"', 'tokens:城市', '强迫性性行为 OR 网关'];
+      const manualQueries = item.language === 'en'
+        ? [{ concepts: [['coffee shop']] }, { concepts: [['coffee'], ['shop']], match: 'all' },
+          { concepts: [['relationship', 'friend']] }, { concepts: [['Sophia']] }, { concepts: [['coffee']], exclude: ['absent'] }]
+        : [{ concepts: [['咖啡商店']] }, { concepts: [['关系', '朋友']] }, { concepts: [['咖啡']] },
+          { concepts: [['城市']] }, { concepts: [['强迫性性行为'], ['网关']] }];
       const automaticQueries = item.language === 'en' ? [item.question, 'Where coffee shops Sophia?', 'friend relationship']
         : [item.question, '咖啡商店 Sophia', '关系朋友'];
-      for (const [mode, query] of [...automaticQueries.map(query => ['auto', query]), ...rawQueries.map(query => ['manual', query])]) {
-        if (mode === 'manual') assert.ok(countKeywords(query) <= 5, query);
+      for (const [mode, query] of [...automaticQueries.map(query => ['auto', query]), ...manualQueries.map(query => ['manual', query])]) {
         const before = performance.now();
-        const expected = mode === 'auto' ? await sync.searchAuto(query) : (await sync.searchRaw(query)).results;
+        const expected = mode === 'auto' ? await sync.searchAuto(query) : (await sync.search(query)).results;
         const synchronousMs = performance.now() - before;
         const requested = performance.now();
         const actual = await worker.queryRanked(query, item.branch, { mode, options: { limit: 1, offset: 1 } });
         const workerMs = performance.now() - requested;
         assert.equal(actual.total, expected.length);
-        assert.deepEqual(ranks(actual.results), expected, `${item.language} ${mode} ${query}`);
+        assert.deepEqual(ranks(actual.results), expected, `${item.language} ${mode} ${JSON.stringify(query)}`);
         results.push({
-          mode, query, keywordCount: mode === 'manual' ? countKeywords(query) : null,
+          mode, query,
           total: actual.total, identicalRanksAndScores: true, synchronousMs, workerMs,
-          missingTerms: actual.missingTerms, ranking: ranks(actual.results)
+          ranking: ranks(actual.results)
         });
       }
       report.cases.push({ language: item.language, documents: item.documents.length, buildMs, results });

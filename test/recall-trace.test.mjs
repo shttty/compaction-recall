@@ -198,3 +198,48 @@ test('unserializable diagnostics drop their events without replacing successful 
     assert.deepEqual(rows(f.path)[0].model.arguments.extra, { preserved: [1] });
   } finally { f.close(); }
 });
+
+test('concept consumer snapshots structured inputs with fixed field order, ordered arrays and structured errors', () => {
+  const f = fixture();
+  try {
+    const trace = createRecallTrace({ enabled: true, path: f.path, inputFields: ['concepts', 'match', 'exclude'] });
+    const args = { exclude: ['obsolete'], match: 'all', concepts: [['alpha', 'beta'], ['gamma']], limit: 1, offset: 0, unknown: 'retained' };
+    trace.messageEnd('concept', message('same', args));
+    const same = trace.begin('concept', 'same', { concepts: args.concepts, match: 'all', exclude: args.exclude, offset: 1, limit: 2, unknown: 'retained' });
+    trace.complete(same, result);
+    trace.messageEnd('concept', message('changed', args));
+    const modified = { ...args, concepts: [['beta', 'alpha'], ['gamma']] };
+    const changed = trace.begin('concept', 'changed', modified);
+    modified.concepts[0].push('later-mutation');
+    trace.complete(changed, result);
+    const failed = trace.begin('concept', 'error', { concepts: [] });
+    const error = Object.assign(new Error('concepts: expected 1..5 items'), { name: 'QueryError', code: 'INVALID_ARRAY' });
+    trace.fail(failed, error);
+    trace.fail(trace.begin('concept', 'native', { concepts: [['alpha']] }), Object.assign(new Error('SQLite failure'), { code: 'ERR_SQLITE_ERROR' }));
+    trace.flush();
+    const [equal, unequal, failure, native] = rows(f.path);
+    assert.deepEqual(equal.execute.input, { concepts: [['alpha', 'beta'], ['gamma']], match: 'all', exclude: ['obsolete'] });
+    assert.deepEqual(Object.keys(equal.execute.input), ['concepts', 'match', 'exclude']);
+    assert.deepEqual(equal.model.arguments, args);
+    assert.equal(equal.execute.params.unknown, 'retained');
+    assert.equal(equal.execute.params.offset, 1);
+    assert.equal(equal.input_identical, true);
+    assert.equal(unequal.input_identical, false);
+    assert.deepEqual(unequal.execute.input.concepts, [['beta', 'alpha'], ['gamma']]);
+    assert.equal('query' in equal.execute, false);
+    assert.equal('query_identical' in equal, false);
+    assert.equal(failure.input_identical, null);
+    assert.deepEqual(failure.error, { name: 'QueryError', code: 'INVALID_ARRAY', message: error.message });
+    assert.deepEqual(native.error, { name: 'Error', code: 'ERR_SQLITE_ERROR', message: 'SQLite failure' });
+    assert.doesNotMatch(readFileSync(f.path, 'utf8'), /NEVER_RECORD/);
+  } finally { f.close(); }
+});
+
+test('structured trace disabled leaves the destination untouched', () => {
+  const f = fixture();
+  try {
+    writeFileSync(f.path, 'existing bytes\n');
+    assert.equal(createRecallTrace({ enabled: false, path: f.path, inputFields: ['concepts', 'match', 'exclude'] }), undefined);
+    assert.equal(readFileSync(f.path, 'utf8'), 'existing bytes\n');
+  } finally { f.close(); }
+});

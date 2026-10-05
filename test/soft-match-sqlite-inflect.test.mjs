@@ -55,7 +55,7 @@ test('wink unions irregular noun verb and adjective lemmas without derivational 
 
 
 
-test('worker engine expands automatic recall while manual search and errors stay native', async () => {
+test('inflect engine expands only automatic recall and validates manual concepts', async () => {
   const docs = [{ id: 'base', text: 'book padding' }, { id: 'past', text: 'booked padding' },
     { id: 'both', text: 'book booked' }, ...Array.from({ length: 7 }, (_, i) => ({ id: `noise${i}`, text: 'other padding' }))];
   const enabled = await createEngine(docs, { arm: 'inflect-wink' });
@@ -63,16 +63,13 @@ test('worker engine expands automatic recall while manual search and errors stay
   const ids = rows => rows.map(row => row.id).sort();
   try {
     assert.deepEqual(ids(await enabled.searchAuto('book')), ['base', 'both', 'past']);
-    const raw = await enabled.searchRaw('book');
-    assert.deepEqual(ids(raw.results), ['base', 'both']);
-    for (const query of ['"book"', 'tokens:(book)', 'tokens:((book))', '^book']) {
-      assert.deepEqual(ids((await enabled.searchRaw(query)).results), ['base', 'both']);
-    }
+    const manual = await enabled.search({ concepts: [['book']] });
+    assert.deepEqual(ids(manual.results), ['base', 'both']);
     assert.deepEqual(ids(await off.searchAuto('book')), ['base', 'both']);
-    assert.deepEqual(ids((await off.searchRaw('book')).results), ['base', 'both']);
+    assert.deepEqual(ids((await off.search({ concepts: [['book']] })).results), ['base', 'both']);
     assert.equal(Object.keys(require.cache).some(path => path.includes('/wink-lemmatizer/')), false);
-    await assert.rejects(enabled.searchRaw('"book'));
-    await assert.rejects(enabled.searchRaw('unknown:book'));
+    await assert.rejects(enabled.search({ concepts: [] }), { name: 'QueryError', code: 'INVALID_ARRAY' });
+    await assert.rejects(enabled.search({ concepts: [['book']], must: ['book'] }), { name: 'QueryError', code: 'UNKNOWN_FIELD' });
   } finally {
     await enabled.dispose();
     await off.dispose();

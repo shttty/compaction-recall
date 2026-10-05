@@ -4,6 +4,8 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { buildBlindCorpus } from '../benchmark/blind-harness-core.mjs';
 import { compactedEntries } from '../src/history.mjs';
 import { buildEvaluationCorpus, loadEvaluationCases, searchAutomatic, scoreRetrieval, summarizeRetrieval } from '../benchmark/retrieval-eval-core.mjs';
@@ -84,6 +86,26 @@ test('group2 recall unions per-call top K, while rank metrics use only first cal
   assert.equal(grouped.length, 2);
   assert.equal(grouped[0].mrr, 0.75);
   assert.equal(grouped[0].noCallQuestions, 1);
+});
+
+test('score CLI counts structured-input mutations without fabricating legacy query identity', t => {
+  const dir = mkdtempSync(join(tmpdir(), 'concept-trace-score-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  const metadata = join(dir, 'metadata.json'), trace = join(dir, 'trace.jsonl');
+  const report = join(dir, 'report.json'), request = join(dir, 'request.json');
+  writeFileSync(metadata, JSON.stringify({ key: 'synthetic', language: 'en', goldIds: ['gold'], autoResults: [], preparation: { wallMs: 0 } }));
+  writeFileSync(trace, [false, true, null].map((input_identical, i) => JSON.stringify({
+    type: 'history_recall_trace', callIndex: i + 1, input_identical,
+    result: { ids: i === 0 ? ['other'] : ['gold'] }, error: null,
+  })).join('\n') + '\n');
+  writeFileSync(request, JSON.stringify({ prototype: 'concept-synthetic', report,
+    cases: [{ metadata, trace, recallCalls: 3 }] }));
+  const child = spawnSync(process.execPath, [new URL('../benchmark/retrieval-session.mjs', import.meta.url).pathname, 'score', request], { encoding: 'utf8' });
+  assert.equal(child.status, 0, child.stderr);
+  const metrics = JSON.parse(readFileSync(report, 'utf8')).rows[0].metrics;
+  assert.equal(metrics.queryMismatchCount, 1);
+  assert.equal(metrics.mrr, 0);
+  assert.equal(metrics['recall@5'], 1);
 });
 
 function dataset(t) {

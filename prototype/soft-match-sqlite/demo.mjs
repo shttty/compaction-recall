@@ -26,8 +26,8 @@ if (import.meta.main) {
       'What time do I stop checking work emails and messages?',
       'vm', 'kvm', 'compaction', 'CompactionResult', 'moto', 'motorcycle',
       'gatway', 'gateway', 'gateway nonexistentword', '网关 不存在的词',
-    ].map(query => ({ name: query || 'empty', query })),
-    { name: 'total-before-limit', query: 'gateway', options: { limit: 1 } },
+    ].map(query => ({ name: query || 'empty', query, options: { automatic: true } })),
+    { name: 'total-before-limit', query: { concepts: [['gateway']] }, options: { limit: 1 } },
     { name: 'ascii-210', query: 'gateway' + ' '.repeat(203), options: { automatic: true } },
     { name: 'ascii-211', query: 'gateway' + ' '.repeat(204), options: { automatic: true } },
     { name: 'han-210', query: '网关' + '网'.repeat(103), options: { automatic: true } },
@@ -44,7 +44,7 @@ if (import.meta.main) {
       query: [{ type: 'text', text: 'gateway' }, { type: 'text', text: '[attachment]\n' + 'x'.repeat(200) }],
       options: { automatic: true },
     },
-    { name: 'long-active-tail-match', query: 'x '.repeat(106) + 'gateway' },
+    { name: 'long-active-tail-match', query: { concepts: [['gateway' + ' '.repeat(211)]] } },
     { name: 'same-long-automatic-skipped', query: 'x '.repeat(106) + 'gateway', options: { automatic: true } },
   ];
   try {
@@ -53,7 +53,7 @@ if (import.meta.main) {
       runtime: { node: process.version, icu: process.versions.icu, unicode: process.versions.unicode, sqlite: process.versions.sqlite },
       documents: documents.map(document => ({ ...document, tokens: tokenize(document.text) })),
       searches: cases.map(({ name, query, options = {} }) => {
-        const text = extractText(query);
+        const text = options.automatic ? extractText(query) : query.concepts.flat().join(' ');
         const result = index.search(query, options);
         return {
           name, query, text, weightedLength: weightedLength(text), options,

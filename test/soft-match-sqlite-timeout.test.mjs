@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
+import { DatabaseSync } from 'node:sqlite';
 import { SQLiteBackgroundIndex } from '../benchmark/sqlite-background-index.mjs';
 import { initialBranch, msg } from './corpus.mjs';
 
@@ -29,9 +30,11 @@ test('cooperative native/JS deadlines discard late results without resetting or 
           for (const entry of entries) db.prepare('INSERT INTO docs VALUES (?, ?)').run(entry.id, entry.message.content);
           return { documents: entries.length };
         },
-        query(query, { options }) {
+        query(input, { options }) {
+          const query = input.concepts[0][0];
           const check = createQueryCheck(options.queryDeadlineAt, options.queryTimeoutMs);
           check?.();
+          if (query === 'native-error') db.prepare('SELECT * FROM missing_native_table');
           if (query === 'native' || query === 'late') {
             parentPort.postMessage({ enteringNative: true });
             slow.get();
@@ -51,15 +54,15 @@ test('cooperative native/JS deadlines discard late results without resetting or 
   const index = new SQLiteBackgroundIndex({ engineModule: pathToFileURL(module), recallTimeoutMs: 5000 });
   t.after(async () => { await index.dispose(); rmSync(dir, { recursive: true, force: true }); });
   const branch = initialBranch([msg('evidence', 'alpha evidence')]);
-  await index.queryRanked('alpha', branch, { mode: 'manual' });
+  await index.queryRanked({ concepts: [['alpha']] }, branch, { mode: 'manual' });
   const worker = index.worker, threadId = worker.threadId, generation = index.generation;
   for (const query of ['native', 'late']) {
     const entered = new Promise(resolve => worker.once('message', message => { if (message.enteringNative) resolve(); }));
-    const expired = assert.rejects(index.queryRanked(query, branch, { mode: 'manual', timeoutMs: 100 }), {
+    const expired = assert.rejects(index.queryRanked({ concepts: [[query]] }, branch, { mode: 'manual', timeoutMs: 100 }), {
       name: 'TimeoutError', message: 'history_recall timed out after 100 ms; narrow the query or use history_grep',
     });
     await entered;
-    const queued = index.queryRanked('alpha', branch, { mode: 'manual' });
+    const queued = index.queryRanked({ concepts: [['alpha']] }, branch, { mode: 'manual' });
     await delay(5); // Main-thread events remain runnable during native SQL.
     await expired;
     const result = await queued;
@@ -71,10 +74,21 @@ test('cooperative native/JS deadlines discard late results without resetting or 
     assert.equal(index.failed, false);
     assert.equal(index.ready, true);
   }
-  const expiredJS = assert.rejects(index.queryRanked('js', branch, { mode: 'manual', timeoutMs: 25 }), { name: 'TimeoutError' });
-  const queuedJS = index.queryRanked('alpha', branch, { mode: 'manual' });
+  const expiredJS = assert.rejects(index.queryRanked({ concepts: [['js']] }, branch, { mode: 'manual', timeoutMs: 25 }), { name: 'TimeoutError' });
+  const queuedJS = index.queryRanked({ concepts: [['alpha']] }, branch, { mode: 'manual' });
   await expiredJS;
   assert.equal((await queuedJS).cacheHit, true);
   assert.equal(index.worker, worker);
   assert.equal(index.generation, generation);
+  const native = new DatabaseSync(':memory:');
+  let expected;
+  try { native.prepare('SELECT * FROM missing_native_table'); } catch (error) { expected = error; }
+  finally { native.close(); }
+  await assert.rejects(index.queryRanked({ concepts: [['native-error']] }, branch, { mode: 'manual' }),
+    error => error.name === expected.name && error.code === expected.code && error.message === expected.message);
+  assert.equal((await index.queryRanked({ concepts: [['alpha']] }, branch, { mode: 'manual' })).cacheHit, true);
+  assert.equal(index.worker, worker);
+  assert.equal(index.generation, generation);
+  assert.equal(index.failed, false);
+  assert.equal(index.ready, true);
 });

@@ -39,7 +39,7 @@ test('actual SQLite auto and manual output default to 240 weighted units and acc
     for (const fixture of fixtures) {
       worker.commit([{ type: 'message', id: 'target', sourcePosition: 0, timestamp: '2026-10-04T12:00:00Z', message: { role: 'user', content: fixture.text } }], { eligibleCount: 1 });
       for (const mode of ['auto', 'manual']) {
-        const query = mode === 'manual' && fixture.query === 'NeedleID' ? '"needle id"' : fixture.query;
+        const query = mode === 'manual' ? { concepts: [[fixture.query]] } : fixture.query;
         const result = worker.query(query, { mode });
         assert.deepEqual(result.results.map(row => row.id), ['target']);
         const snippet = body(result.results[0].snippet);

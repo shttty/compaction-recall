@@ -20,18 +20,18 @@ for (const arm of ['off', 'prefix-all', 'prefix-min4', 'jieba', 'porter', 'porte
       sync = await createEngine(documents, { arm });
       await worker.prepare(branch, { preindexLive: true });
       for (const [mode, query] of [['auto', 'Where booked tickets?'], ['auto', '有声书艺术课程'],
-      ['manual', 'book'], ['manual', 'coffee AND shop'], ['manual', '"booked tickets"'],
-      ['manual', 'tokens:power OR Sophia'], ['manual', 'NEAR(booked tickets, 3)'], ['manual', '"有声 声书"'],
-      ['manual', 'the OR power']]) {
-        const expected = mode === 'auto' ? await sync.searchAuto(query) : (await sync.searchRaw(query)).results;
+      ['manual', { concepts: [['book']] }], ['manual', { concepts: [['coffee'], ['shop']], match: 'all' }],
+      ['manual', { concepts: [['booked tickets']] }], ['manual', { concepts: [['power', 'Sophia']] }],
+      ['manual', { concepts: [['有声书']] }], ['manual', { concepts: [['the'], ['power']] }]]) {
+        const expected = mode === 'auto' ? await sync.searchAuto(query) : (await sync.search(query)).results;
         const actual = await worker.queryRanked(query, branch, { mode });
         assert.equal(actual.total, expected.length, query);
         assert.deepEqual(ranks(actual.results), expected, query);
       }
-      await assert.rejects(async () => sync.searchRaw('"'), /unterminated/);
-      await assert.rejects(() => worker.queryRanked('"', branch, { mode: 'manual' }), /unterminated/);
-      assert.deepEqual(ranks((await worker.queryRanked('power', branch, { mode: 'manual' })).results),
-        (await sync.searchRaw('power')).results);
+      await assert.rejects(async () => sync.search({ concepts: [] }), { name: 'QueryError', code: 'INVALID_ARRAY' });
+      await assert.rejects(() => worker.queryRanked({ concepts: [] }, branch, { mode: 'manual' }), { name: 'QueryError', code: 'INVALID_ARRAY' });
+      assert.deepEqual(ranks((await worker.queryRanked({ concepts: [['power']] }, branch, { mode: 'manual' })).results),
+        (await sync.search({ concepts: [['power']] })).results);
     } finally {
       await sync?.dispose(); await worker.dispose();
       if (previous === undefined) delete process.env.COMPACTION_RECALL_SQLITE_ARM;
@@ -40,17 +40,16 @@ for (const arm of ['off', 'prefix-all', 'prefix-min4', 'jieba', 'porter', 'porte
   });
 }
 
-test('prefix arm routing expands automatic terms while manual MATCH remains literal', async () => {
+test('prefix arms expand automatic terms but manual concept punctuation never means a prefix', async () => {
   const plain = createEngine([{ id: 'a', text: 'alphabet 网关服务' }], { arm: 'off' });
   const all = createEngine([{ id: 'a', text: 'alphabet 网关服务' }], { arm: 'prefix-all' });
   const min4 = createEngine([{ id: 'a', text: 'alphabet 网关服务' }], { arm: 'prefix-min4' });
   try {
     assert.deepEqual(plain.searchAuto('alpha'), []);
     assert.deepEqual(all.searchAuto('alpha').map(row => row.id), ['a']);
-    assert.deepEqual(all.searchRaw('alpha').results, []);
-    assert.deepEqual(all.searchRaw('"alpha"').results, []);
-    assert.deepEqual(min4.searchRaw('alp').results, []);
-    assert.deepEqual(min4.searchRaw('alpha').results, []);
-    assert.deepEqual(all.searchRaw('alpha*').results.map(row => row.id), ['a']);
+    assert.deepEqual(all.search({ concepts: [['alpha']] }).results, []);
+    assert.deepEqual(min4.search({ concepts: [['alp']] }).results, []);
+    assert.deepEqual(min4.search({ concepts: [['alpha']] }).results, []);
+    assert.deepEqual(all.search({ concepts: [['alpha*']] }).results, []);
   } finally { plain.dispose(); all.dispose(); min4.dispose(); }
 });

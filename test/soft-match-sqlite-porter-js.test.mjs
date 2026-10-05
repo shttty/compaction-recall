@@ -19,11 +19,12 @@ test('JS Porter shares native Porter query semantics and keeps Han outside stems
   const docs = [{ id: 'past', text: 'booked tickets 预约' }, { id: 'base', text: 'book padding' }, { id: 'next', text: 'booking noise' }];
   const js = createIndex(docs, { arm: 'porter-js' }), native = createIndex(docs, { arm: 'porter' });
   t.after(() => { js.close(); native.close(); });
-  for (const query of ['booked', 'book', 'booking', 'booked AND tickets', 'booked NOT tickets',
-    '"booked"', 'tokens:booked', 'stems:book', 'stems:预约', 'NEAR(booked tickets, 2)', '"booked tickets"']) {
-    assert.deepEqual(js.searchRaw(query).results.map(r => r.id).sort(), native.searchRaw(query).results.map(r => r.id).sort(), query);
+  for (const query of [{ concepts: [['booked']] }, { concepts: [['book']] }, { concepts: [['booking']] },
+    { concepts: [['booked'], ['tickets']], match: 'all' }, { concepts: [['booked']], exclude: ['tickets'] },
+    { concepts: [['预约']] }, { concepts: [['tickets booked']] }]) {
+    assert.deepEqual(js.search(query).results.map(r => r.id).sort(), native.search(query).results.map(r => r.id).sort());
   }
-  assert.deepEqual(js.searchRaw('stems:预约').results, []);
+  assert.deepEqual(js.search({ concepts: [['预约']] }).results.map(r => r.id), ['past']);
 });
 
 test('JS Porter applies native BM25 column weights 1/1 rather than the old 1/0.5', t => {
@@ -34,8 +35,6 @@ test('JS Porter applies native BM25 column weights 1/1 rather than the old 1/0.5
   const insert = db.prepare('INSERT INTO terms(rowid,tokens,stems) VALUES (?,?,?)');
   insert.run(1, 'book book', 'book book'); insert.run(2, 'booked padding', 'book pad'); insert.run(3, 'booking noise padding', 'book nois pad');
   const native = db.prepare('SELECT rowid,bm25(terms,1.0,1.0) AS score FROM terms WHERE terms MATCH ?');
-  for (const query of ['{tokens stems}:"book"', 'tokens:"booked" OR stems:"book"']) {
-    const actual = new Map(js.searchRaw(query).results.map(r => [r.id, r.score]));
-    for (const row of native.all(query)) assert.equal(actual.get(docs[row.rowid - 1].id), row.score);
-  }
+  const actual = new Map(js.search({ concepts: [['book']] }).results.map(r => [r.id, r.score]));
+  for (const row of native.all('"book"')) assert.equal(actual.get(docs[row.rowid - 1].id), row.score);
 });

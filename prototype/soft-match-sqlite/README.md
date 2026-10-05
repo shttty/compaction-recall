@@ -1,19 +1,17 @@
 # SQLite FTS5 soft-match 原型
 
-## 当前覆盖契约：raw FTS5 手动查询（2026-10-05）
+## 当前覆盖契约：literal 概念组手动查询（2026-10-05）
 
-本节优先于下文历史接口、切词、候选 arm 和提示词说明。旧评估方法、数字与验证记录按原文保留，不代表本轮已重跑；本轮修改前的 README 已归档至新产物目录 `raw-fts-explicit-20261005/baseline/prototype/soft-match-sqlite/README.md`。本轮仍只修改隔离原型及 benchmark 适配层，正式 `src/` 不变，无模型评测或大数据重跑。
+本节优先于下文历史接口、切词、候选 arm 和提示词说明。历史评估数字及验证正文保持原文，不代表本轮已重跑。本轮为 SQLite 原型 / benchmark 接入，不是生产发布；不请求 provider 或模型评测。共享 `src/recall-trace.mjs` 仅增加可选结构输入模式，`src/index-worker.mjs` / `src/background-index.mjs` 仅保留自定义引擎错误 code；生产入口、schema、默认字符串 trace 及输出字节契约不变。
 
-- **主动查询原样 MATCH**：`history_recall` / `searchRaw` 手动表达式以 SQL 参数绑定进入 FTS5，不自动 OR、Porter 扩展、汉字转换或修复。独立操作数之间必须显式写 `AND`、`OR` 或二元 `NOT`；合法原生表达式中的 implicit AND 邻接被拒绝。双引号 phrase、`+`、`NEAR()`、前缀 `*`、分组及列过滤仍按原生语法透传；其他 malformed 输入由 SQLite 报原始错误，不改写错误消息。
-- **模型负责切词**：Han 基础索引只存连续 Han run 内的相邻双字，run 位置边界阻止跨标点、中英或其他非 Han 边界形成短语；不自动补整段长词。更长中文可自行写原生双字短语，例如 `"南京 京市"`，而不是把整段 Han 原串当作已有索引词。ASCII 沿用驼峰/缩写边界，只存长度至少 2 的小写拆分组件，不存完整标识符或完整标识符与组件混串；`-`、`_`、`$` 分隔组件，单字组件不索引。FTS tokenizer 使用 `ascii`，不是保留 `_` / `$` 的旧 tokenchars 配置。引号匹配索引词流，不是原文任意子串。
-- **英文词根需显式指定**：手动查询不把 `running` 自动变成 `run`。有 stems 列的配置可由模型明确写 `stems:run`；native 列过滤不会由后端猜测或补写。
-- **jieba 排名未解决**：jieba 词只进入独立表，不与基础双字混成词流。raw `rankTerms` 没有来源信息；不能据此推断应走何种 jieba 排名。启用相关排名时仅明确标记 `page.details.jiebaRankingPending=true`，不是已完成融合算法，也不新增排名算法或开关。
-- **autocut 只由内部 mode 分流**：`mode='auto'` 保留机器选词、查询生成、默认 210/配置覆盖的加权长度门槛；不调用手动显式运算符校验，也不自查手动零命中 warning。`mode='manual'` 走 raw MATCH，无自动门槛。不向模型参数增加 autocut 开关；自然语言 context 自动提示仍可用。
-- **分页与真实零命中**：`queryPage` 返回 `{total,page,ids}`，`sqliteRecallPage(rows,options,bounds)` 为三参数接口。total 来自实际内容去重计数，分页、nextOffset、16000 码点 budget 与异常超长元数据的进度例外不变；删掉旧 missingTerms / “未入索引”猜测提示。只有真实 `total===0` 增加以下 warning；`total>0` 而 offset 空页不加。
+- **工具具名字段**：`history_recall({concepts:string[][],match?:'any'|'all',exclude?:string[],limit?,offset?})`。1..5 组，每组 1..4 个替代词面；默认 `any` 组间 OR，`all` 要求各组在同一索引记录命中。组内词面是 OR 替代，每个词面的分析路径外 OR、路径内词项 AND：只要求共现，不要求顺序、相邻或 phrase。词面是 literal 数据，不是 FTS / SQL / 任意 AST；不要求模型手切双字或写原生 MATCH。旧 `query` / `must` / `prefer` / raw 手动入口不兼容。
+- **严格作者编译器**：纯 JS `concept-query-compiler.mjs` 由未修改作者 TypeScript 源码经 Node builtin `stripTypeScriptTypes` 生成，导出 `parseQuery` / `compileFts5` / `QueryError` / `LIMITS`；worker 不加载 TypeScript。参数只剥离 `limit` / `offset`，其他未知键保留给 strict compiler 拒绝。词面 trim 后非空，每个最多 256 Unicode 码点、全部最多 2048；拒绝非法控制字符和孤立 surrogate，不截断。分析最多每词面 4 路径、每路径 16 原子、每原子 4096 码点、累计 256 原子、编译 MATCH 32768 UTF-16 单位；无可搜索词项报 `EMPTY_ANALYSIS`。原始校验、限额和语义不改，MATCH 仍绑定 SQL 参数。
+- **排除与分析**：`exclude` 最多 5 个 literal 词面，任意一个命中就硬排除整条记录，不是排名降权；过宽排除可能隐藏相关证据。查询使用真实基础 tokenizer，过滤 U+E000 位置屏障；`lemma-index` 对齐既有文档 normalize，其余不追加查询词干扩展。现有 arm / stems / jieba 默认及算法不变。snippetTerms 仅来自正向 concepts，不采 exclude。
+- **自动与排名不变**：仅内部 `mode='auto'|'manual'` 分流。auto 仍接受自然语言、机器选词及默认 210 / 配置覆盖加权门槛，gate / cadence / lifecycle 不变；manual 接概念对象，无自动 gate。默认原生 BM25、全文去重、时间 tie-break 及 SQL 页序不变，不新增排名算法。
+- **分页与错误**：`SQLiteBackgroundIndex.queryPage(queryObject,branch,{limit?,offset?})` 返回 `{total,page,ids}`。默认 / 最大 50 条、16000 码点页预算、默认 240 加权 snippet 单位（Han 2 / 其他 1）、nextOffset 和超长元数据进度例外不变。真实 `total===0` 才提示检查概念分组、any/all 和词面；正 total 的 offset 空页不误报。`QueryError` 的 name / code / message 经 worker 保留，native Error / code 保留；错误后健康 worker 不清缓存、不回退。原 cooperative deadline 不变。
+- **工具顺序与 trace**：自动 locator → history_recall → history_expand 核验；证据不足再 history_grep。正常 trace 保存完整原始 params 和完整 model.arguments。SQLite 使用 `inputFields:['concepts','match','exclude']`，生成 `execute.input` / `input_identical`，固定字段键序比较而保留数组顺序，不假称 query 改写；错误为 `{name,code,message}`。生产默认仍 `execute.query` / `query_identical` / 字符串 error；trace off 不新增行为。不记录 thinking 或 provider credentials。
 
-> 未找到匹配项。请检查参数格式、显式运算符以及查询切词是否与索引规则一致；必要时改写查询或使用 history_grep。零命中不代表历史中不存在相关内容。
-
-手动 cooperative deadline、原始 query trace、分支范围、grep / expand 和自动配置加载保持既有契约。下文涉及 implicit OR、自动 Porter/长 Han、混合索引、missing vocabulary 或已完成候选排名的叙述仅是历史设计/评估记录，均不覆盖本节当前手动契约。
+后文 `searchRaw`、implicit OR、原生手写 MATCH、自动 Porter/长 Han、mixed index 等接口和说明均为历史设计 / 评估证据，不覆盖本节当前手动概念组协议。
 
 独立、可丢弃的匹配行为实验；生产 `src/` 不变。S1 在 `benchmark/` 接入独立评测适配层，不安装用户 profile。默认 `off` 是 **SQLite 原生 MATCH + BM25**，自动路径仍为 OR 精确词项，不是 MiniSearch 宽松匹配的等价替换。S6 候选仅在评测入口显式启用，见文末。
 

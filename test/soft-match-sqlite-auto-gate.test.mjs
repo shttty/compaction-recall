@@ -64,8 +64,8 @@ for (const gate of [210, 280]) {
         const automatic = index.search(query, { automatic: true });
         assert.equal(automatic.skipped, length > gate, `${kind} ${length}`);
         assert.deepEqual(ids(automatic.results), length > gate ? [] : ['match']);
-        assert.deepEqual(ids(index.search('alpha' + ' '.repeat(length - 5)).results), ['match']);
-        assert.deepEqual(ids(index.searchRaw('网关' + ' '.repeat(length - 4)).results), ['match']);
+        assert.deepEqual(ids(index.search({ concepts: [['alpha' + ' '.repeat(length - 5)]] }).results), ['match']);
+        assert.deepEqual(ids(index.search({ concepts: [['网关' + ' '.repeat(length - 4)]] }).results), ['match']);
         assert.equal(index.expansionTerms(query).some(({ term }) => term === (kind === 'Han' ? '网关' : 'alpha')), length <= gate);
       }
     }
@@ -95,8 +95,8 @@ test('factories capture environment gate once and preserve it across worker corp
   }
   worker.commit([{ ...entries[0], message: { role: 'user', content: text + ' changed' } }], { eligibleCount: 1 });
   assert.deepEqual(ids(worker.query(queryAt(280, 'English'), { mode: 'auto' }).results), ['match']);
-  assert.deepEqual(ids(sync.searchRaw(queryAt(281, 'English')).results), ['match']);
-  assert.deepEqual(ids((await threaded.searchRaw(queryAt(281, 'English'))).results), ['match']);
+  assert.deepEqual(ids(sync.search({ concepts: [[queryAt(281, 'English')]] }).results), ['match']);
+  assert.deepEqual(ids((await threaded.search({ concepts: [[queryAt(281, 'English')]] })).results), ['match']);
 });
 
 for (const gate of [210, 280]) {
@@ -116,8 +116,8 @@ for (const gate of [210, 280]) {
         assert.deepEqual(ids(found.results), length <= gate ? ['match'] : []);
       }
     }
-    const manual = await background.queryRanked(queryAt(gate + 1, 'English'), branch, { mode: 'manual' });
-    assert.deepEqual(manual.results.map(({ id, score }) => ({ id, score })), sync.searchRaw(queryAt(gate + 1, 'English')).results);
+    const manual = await background.queryRanked({ concepts: [[queryAt(gate + 1, 'English')]] }, branch, { mode: 'manual' });
+    assert.deepEqual(manual.results.map(({ id, score }) => ({ id, score })), sync.search({ concepts: [[queryAt(gate + 1, 'English')]] }).results);
     assert.deepEqual(ids(manual.results), ['match']);
   });
 }

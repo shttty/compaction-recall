@@ -11,7 +11,7 @@ import { selectFts5Range } from '../../benchmark/fts5-snippet.mjs';
 import { measured } from '../../src/timing.mjs';
 import { sqliteRecallPage } from '../../benchmark/retrieval-sqlite-page.mjs';
 import { createHanPhraseTrial } from './han-phrase-trial.mjs';
-import { requireExplicitOperators } from './explicit-query.mjs';
+import { compileFts5, parseQuery } from './concept-query-compiler.mjs';
 export { STOPWORDS, tokenize, tokenizeSpans } from './lexical.mjs';
 const HAN = /\p{Script=Han}/u;
 
@@ -65,7 +65,7 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
   });
   const corpus = [...byId.values()].filter(document => document.text !== '');
   const db = new DatabaseSync(':memory:');
-  let match, count, stem, inflections, rankedSql, nativeParse;
+  let match, count, stem, inflections, rankedSql;
   try {
     db.exec(`
       PRAGMA temp_store = MEMORY;
@@ -75,7 +75,6 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
       );
       CREATE VIRTUAL TABLE vocabulary USING fts5vocab(terms, '${porter ? 'col' : 'row'}');
       CREATE TABLE messages(rowid INTEGER PRIMARY KEY, content_hash BLOB NOT NULL, timestamp TEXT NOT NULL, recency INTEGER NOT NULL);
-      CREATE VIRTUAL TABLE manual_syntax USING fts5(tokens, ${porter ? 'stems,' : ''} content='', tokenize='ascii');
       BEGIN;
     `);
     if (arm === 'porter' || arm === 'porter-jieba') stem = createStemmer(db);
@@ -110,7 +109,6 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
     match = db.prepare(`${rankedSql} SELECT rowid, score FROM ranked WHERE representative = 1
       ORDER BY score, timestamp DESC, recency DESC, rowid DESC LIMIT ? OFFSET ?`);
     count = db.prepare('SELECT count(DISTINCT content_hash) AS total FROM terms JOIN messages ON messages.rowid = terms.rowid WHERE terms MATCH ?');
-    nativeParse = db.prepare('SELECT rowid FROM manual_syntax WHERE manual_syntax MATCH ?');
   } catch (error) { db.close(); throw error; }
 
   function compileOperands(operands, check) {
@@ -213,12 +211,20 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
     const found = collect(expression, expanded, timer, undefined, { limit, offset });
     return { skipped: false, ...found, queryTerms };
   }
-  function rawRows(query, timer, check, options) {
+  const analyze = surface => {
+    const terms = tokenize(surface).filter(term => term !== '\ue000').map(term => lemma ? lemma.normalize(term) : term);
+    return terms.length ? [terms] : [];
+  };
+  function conceptRows(query, timer, check, options) {
     check?.();
-    measured(timer, 'manual_query_validation', () => requireExplicitOperators(query, nativeParse, check));
-    const snippets = queryOperands(query, check);
+    const normalized = parseQuery(query);
+    const plan = measured(timer, 'concept_query_compile', () => compileFts5(normalized, analyze));
+    // Negative surfaces remain only in MATCH. They cannot select windows or
+    // become positive coverage evidence, even for a surviving co-occurrence.
+    const terms = new Set(normalized.concepts.flatMap(group => group.flatMap(surface => analyze(surface).flat())));
+    const snippets = [...terms].map(term => ({ term, prefix: false }));
     check?.();
-    return collect(query, snippets, timer, check, options);
+    return collect(plan.match, snippets, timer, check, options);
   }
   const ranks = rows => rows.map(({ id, score }) => ({ id, score }));
   return {
@@ -235,16 +241,15 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
       return [...new Set(automaticTokenizer.tokenize(text).filter(term => !STOPWORDS.has(term)))].map(term => ({ term, variants: inflections ? inflections.expand(term) : [term] }));
     },
     queryRows(query, { mode = 'manual', timer = buildTimer, check, limit, offset = 0 } = {}) {
-      return mode === 'auto' ? automaticRows(query, true, timer, limit, offset) : rawRows(query, timer, check, { limit, offset });
+      return mode === 'auto' ? automaticRows(query, true, timer, limit, offset) : conceptRows(query, timer, check, { limit, offset });
     },
     queryPage(query, options = {}, { timer = buildTimer, check } = {}) {
       const limit = options.limit ?? 50, offset = options.offset ?? 0;
       if (!Number.isInteger(limit) || limit < 1 || limit > 50) throw new RangeError('limit must be an integer from 1 to 50');
       if (!Number.isSafeInteger(offset) || offset < 0) throw new RangeError('offset must be a nonnegative safe integer');
-      const found = rawRows(query, timer, check, { limit, offset });
+      const found = conceptRows(query, timer, check, { limit, offset });
       const page = sqliteRecallPage(found.results, options, { total: found.total, baseOffset: offset });
-      // The former compiler supplied original long words. Raw MATCH cannot
-      // recover them: do not guess or silently present a replacement ranking.
+      // Independent jieba ranking remains outside this selected BM25 protocol.
       if (trial.jieba) page.details.jiebaRankingPending = true;
       check?.();
       const ids = found.results.slice(0, page.details.returned).map(row => row.id);
@@ -253,17 +258,12 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
     search(query, { automatic = false, limit = 20 } = {}) {
       if (!Number.isSafeInteger(limit) || limit < 0) throw new RangeError('limit must be a non-negative safe integer');
       if (!automatic) {
-        const found = rawRows(query, buildTimer, undefined, { limit });
+        const found = conceptRows(query, buildTimer, undefined, { limit });
         return { ...found, results: ranks(found.results) };
       }
       const found = automaticRows(query, automatic, buildTimer, limit);
       if (found.skipped) return found;
       return { ...found, results: ranks(found.results) };
-    },
-    searchRaw(query, { limit } = {}) {
-      if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) throw new RangeError('limit must be a non-negative safe integer');
-      const found = rawRows(query, buildTimer, undefined, { limit });
-      return { total: found.total, results: ranks(found.results) };
     },
     close() { db.close(); },
   };

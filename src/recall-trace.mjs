@@ -7,15 +7,16 @@ const key = (sessionId, toolCallId) => JSON.stringify([sessionId, toolCallId]);
  * SDK 1.0.0: MessageEndEvent.message is AgentMessage; assistant content contains
  * TextContent and ToolCall {id, name, arguments}. ToolCallEvent.input is mutable;
  * parentToolCallId identifies nested calls (extensions/types.d.ts).
- * @param {{enabled?: boolean, path?: string, warn?: (message: string) => void}} options
+ * @param {{enabled?: boolean, path?: string, warn?: (message: string) => void, inputFields?: string[]}} options
  */
-export function createRecallTrace({ enabled = false, path = process.env.COMPACTION_RECALL_TIMING_FILE, warn = () => {} } = {}) {
+export function createRecallTrace({ enabled = false, path = process.env.COMPACTION_RECALL_TIMING_FILE, warn = () => {}, inputFields } = {}) {
   if (!enabled) return undefined;
   if (!path) {
     warn('compaction-recall: trace enabled without COMPACTION_RECALL_TIMING_FILE; trace disabled');
     return undefined;
   }
   const models = new Map(), parents = new Map(), counts = new Map(), failedModels = new Set();
+  const selectInput = params => Object.fromEntries(inputFields.map(field => [field, params?.[field]]));
   const pending = new Set();
   return {
     messageEnd(sessionId, message) {
@@ -41,8 +42,9 @@ export function createRecallTrace({ enabled = false, path = process.env.COMPACTI
         const token = {
           type: 'history_recall_trace', sessionId, callIndex, toolCallId,
           parentToolCallId: null, model: null,
-          execute: { params: snapshot(params), query: snapshot(params.query) },
-          query_identical: null, result: null, error: null,
+          execute: inputFields ? { params: snapshot(params), input: snapshot(selectInput(params)) }
+            : { params: snapshot(params), query: snapshot(params.query) },
+          ...(inputFields ? { input_identical: null } : { query_identical: null }), result: null, error: null,
         };
         pending.add(token);
         return token;
@@ -54,7 +56,11 @@ export function createRecallTrace({ enabled = false, path = process.env.COMPACTI
     },
     fail(token, error) {
       if (!token) return;
-      try { token.error = error instanceof Error ? error.message : String(error); }
+      try {
+        token.error = inputFields
+          ? snapshot({ name: error instanceof Error ? error.name : 'Error', code: error?.code ?? null, message: error instanceof Error ? error.message : String(error) })
+          : error instanceof Error ? error.message : String(error);
+      }
       catch { pending.delete(token); }
     },
     // agent_end/shutdown are correlation boundaries, not tool completion: message_end
@@ -66,11 +72,16 @@ export function createRecallTrace({ enabled = false, path = process.env.COMPACTI
         const id = key(event.sessionId, event.toolCallId);
         event.parentToolCallId = parents.get(id) ?? event.toolCallId.match(/^(.*)\/\d+$/)?.[1] ?? null;
         event.model = event.parentToolCallId ? null : models.get(id) ?? null;
-        const modelQuery = event.model?.arguments?.query;
-        event.query_identical = event.model === null ? null
-          : typeof modelQuery === 'string' && typeof event.execute.query === 'string'
-            ? modelQuery === event.execute.query
-            : JSON.stringify(modelQuery) === JSON.stringify(event.execute.query);
+        if (inputFields) {
+          event.input_identical = event.model === null ? null
+            : JSON.stringify(snapshot(selectInput(event.model.arguments))) === JSON.stringify(event.execute.input);
+        } else {
+          const modelQuery = event.model?.arguments?.query;
+          event.query_identical = event.model === null ? null
+            : typeof modelQuery === 'string' && typeof event.execute.query === 'string'
+              ? modelQuery === event.execute.query
+              : JSON.stringify(modelQuery) === JSON.stringify(event.execute.query);
+        }
       }
       models.clear();
       parents.clear();

@@ -98,7 +98,7 @@ async function respond(message) {
     parentPort.postMessage({
       requestId: message.requestId, generation: message.generation,
       error: customEngine ? (error?.message ?? String(error)) : 'Index worker operation failed',
-      ...(customEngine ? { errorName: error?.name ?? 'Error', ...(state.engineOperation ? { engineError: true } : {}) } : {}),
+      ...(customEngine ? { errorName: error?.name ?? 'Error', ...(typeof error?.code === 'string' ? { errorCode: error.code } : {}), ...(state.engineOperation ? { engineError: true } : {}) } : {}),
       ...(timer ? { stages: timer.events.splice(0), timingOrigin: timer.origin } : {}),
     });
   }

@@ -25,8 +25,8 @@ export function createEngine(documents, { arm = process.env.COMPACTION_RECALL_SQ
     searchAuto(question) {
       return index.search(question, { automatic: true, limit: documents.length }).results;
     },
-    searchRaw(query, options) {
-      return index.searchRaw(query, options);
+    search(query, options) {
+      return index.search(query, { limit: documents.length, ...options });
     },
     expansionTerms(query) { return index.expansionTerms(query); },
     inflectionStats() { return index.inflectionStats(); },
@@ -53,7 +53,7 @@ function threadedEngine(documents, arm, autoGate) {
       if (message.ready) {
         resolve({
           searchAuto: query => request('searchAuto', query),
-          searchRaw: (query, options) => request('searchRaw', query, options),
+          search: (query, options) => request('search', query, options),
           expansionTerms: query => request('expansionTerms', query),
           inflectionStats: () => request('inflectionStats'),
           dispose: async () => { try { await request('dispose'); } finally { await worker.terminate(); } }
@@ -63,7 +63,7 @@ function threadedEngine(documents, arm, autoGate) {
       const waiting = pending.get(message.id);
       if (!waiting) return;
       pending.delete(message.id);
-      if (message.error) waiting.reject(Object.assign(new Error(message.error.message), { name: message.error.name }));
+      if (message.error) waiting.reject(Object.assign(new Error(message.error.message), { name: message.error.name, ...(message.error.code === undefined ? {} : { code: message.error.code }) }));
       else waiting.resolve(message.value);
     });
   });
@@ -76,6 +76,6 @@ if (!isMainThread && workerData?.sqliteEvaluationEngine) {
   parentPort.postMessage({ ready: true });
   parentPort.on('message', ({ id, method, query, options }) => {
     try { parentPort.postMessage({ id, value: engine[method](query, options) }); }
-    catch (error) { parentPort.postMessage({ id, error: { name: error.name, message: error.message } }); }
+    catch (error) { parentPort.postMessage({ id, error: { name: error.name, message: error.message, code: error.code } }); }
   });
 }

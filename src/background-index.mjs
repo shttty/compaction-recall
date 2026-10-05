@@ -93,7 +93,7 @@ export class BackgroundIndex {
    this.pending.delete(message.requestId);
    if (message.stages) this.timer?.merge(message.stages, message.timingOrigin);
    if (message.generation !== this.generation) pending.reject(cancelled());
-   else if (message.error !== undefined) pending.reject(Object.assign(new Error(message.error), { name: message.errorName ?? 'Error', engineError: message.engineError === true }));
+   else if (message.error !== undefined) pending.reject(Object.assign(new Error(message.error), { name: message.errorName ?? 'Error', ...(typeof message.errorCode === 'string' ? { code: message.errorCode } : {}), engineError: message.engineError === true }));
    else pending.resolve(message.result);
   });
   const fail = () => {

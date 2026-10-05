@@ -18,42 +18,33 @@ function open(t, docs = documents, arm = 'porter') {
   return index;
 }
 
-test('Porter manual queries stay literal and explicit stem roots recall inflections', t => {
+test('Porter concepts match existing stem atoms without adding query stemming', t => {
   const index = open(t);
   for (const [word, expected] of [['book', ['base', 'past', 'progress']], ['booked', ['past']], ['booking', ['progress']]]) {
-    assert.deepEqual(ids(index.search(word)), expected);
-    assert.deepEqual(ids(index.searchRaw(word)), expected);
+    assert.deepEqual(ids(index.search({ concepts: [[word]] })), expected);
   }
-  assert.deepEqual(ids(index.searchRaw('"booked"')), ['past']);
-  assert.deepEqual(ids(index.searchRaw('tokens:booked')), ['past']);
-  assert.deepEqual(ids(index.searchRaw('stems:book')), ['base', 'past', 'progress']);
-  assert.deepEqual(ids(index.searchRaw('stems:booked')), []);
-  assert.deepEqual(ids(index.searchRaw('"book"')), ['base', 'past', 'progress']);
-  assert.deepEqual(ids(index.searchRaw('booked OR tickets')), ['past']);
-  assert.deepEqual(ids(index.searchRaw('booked AND tickets')), ['past']);
-  assert.deepEqual(ids(index.searchRaw('stems:book NOT tokens:tickets')), ['base', 'progress']);
-  assert.deepEqual(ids(index.searchRaw('tokens:(booked OR booking)')), ['past', 'progress']);
-  assert.deepEqual(ids(index.searchRaw('NEAR(booked tickets, 2)')), ['past']);
-  assert.deepEqual(ids(index.searchRaw('"booked tickets"')), ['past']);
-  assert.throws(() => index.searchRaw('unknown:book'), /no such column/);
-  assert.throws(() => index.searchRaw('"book'), /unterminated|syntax/);
+  assert.deepEqual(ids(index.search({ concepts: [['booked', 'tickets']] })), ['past']);
+  assert.deepEqual(ids(index.search({ concepts: [['booked'], ['tickets']], match: 'all' })), ['past']);
+  assert.deepEqual(ids(index.search({ concepts: [['book']], exclude: ['tickets'] })), ['base', 'progress']);
+  assert.deepEqual(ids(index.search({ concepts: [['booked', 'booking']] })), ['past', 'progress']);
+  assert.deepEqual(ids(index.search({ concepts: [['booked tickets']] })), ['past']);
+  assert.deepEqual(ids(index.search({ concepts: [['stems:book']] })), []);
+  assert.throws(() => index.search('book'), { name: 'QueryError', code: 'INVALID_QUERY' });
 });
 
-test('Porter excludes Han from the stem channel', t => {
+test('Porter Han concepts use the unchanged token channel', t => {
   const index = open(t, [{ id: 'one', text: 'booking 预约' }]);
-  assert.deepEqual(ids(index.searchRaw('预约')), ['one']);
-  assert.deepEqual(ids(index.searchRaw('tokens:预约')), ['one']);
-  assert.deepEqual(ids(index.searchRaw('stems:预约')), []);
+  assert.deepEqual(ids(index.search({ concepts: [['预约']] })), ['one']);
 });
 
 test('Porter stem hits anchor snippets at original inflected spans', t => {
   const index = open(t, [{ id: 'one', text: `${'unrelated '.repeat(80)}The booking is confirmed.${' unrelated'.repeat(80)}` }]);
-  const row = index.queryRows('stems:book').results[0];
+  const row = index.queryRows({ concepts: [['book']] }).results[0];
   assert.match(row.snippet, /booking/);
   assert.equal(row.snippet.includes('booked'), false);
 });
 
-test('explicit native stem and token expressions preserve weighted BM25 scores', t => {
+test('unqualified Porter atoms preserve native weighted BM25 scores', t => {
   const docs = [
     { id: 'one', text: 'book book' },
     { id: 'two', text: 'booked padding' },
@@ -68,10 +59,8 @@ test('explicit native stem and token expressions preserve weighted BM25 scores',
   insert.run(2, 'booked padding', 'book pad');
   insert.run(3, 'booking noise padding', 'book nois pad');
   const native = db.prepare('SELECT rowid, bm25(terms,1.0,0.5) AS score FROM terms WHERE terms MATCH ? ORDER BY score, rowid');
-  for (const query of ['{tokens stems}:"book"', 'tokens:"booked" OR stems:"book"']) {
-    const actual = new Map(index.searchRaw(query).results.map(row => [row.id, row.score]));
-    for (const row of native.all(query)) assert.equal(actual.get(docs[row.rowid - 1].id), row.score);
-  }
+  const actual = new Map(index.search({ concepts: [['book']] }).results.map(row => [row.id, row.score]));
+  for (const row of native.all('"book"')) assert.equal(actual.get(docs[row.rowid - 1].id), row.score);
   // Native BM25 saturates weighted term frequency once, rather than adding two
   // independently saturated token/stem scores for an unchanged alias.
   assert.notEqual(native.all('{tokens stems}:"book"')[0].score,
@@ -81,9 +70,9 @@ test('explicit native stem and token expressions preserve weighted BM25 scores',
 test('default keeps exact S5 recall without stemming or index stopword removal', t => {
   const index = createIndex(documents);
   t.after(() => index.close());
-  assert.deepEqual(ids(index.search('booked')), ['past']);
-  assert.deepEqual(ids(index.searchRaw('book')), ['base']);
-  assert.deepEqual(ids(index.searchRaw('the')), ['base', 'progress']);
+  assert.deepEqual(ids(index.search({ concepts: [['booked']] })), ['past']);
+  assert.deepEqual(ids(index.search({ concepts: [['book']] })), ['base']);
+  assert.deepEqual(ids(index.search({ concepts: [['the']] })), ['base', 'progress']);
   assert.throws(() => createIndex(documents, { arm: 'unknown' }), /Invalid SQLite arm/);
 });
 
@@ -100,7 +89,5 @@ test('Porter preserves native ascii identifier token order and duplicate occurre
     { id: 'separate', text: 'foo bar book book' },
     { id: 'reverse', text: 'bar foo book' },
   ]);
-  assert.deepEqual(ids(index.searchRaw('foo_bar')), ['identifier', 'separate']);
-  assert.deepEqual(ids(index.searchRaw('"foo_bar"')), ['identifier', 'separate']);
-  assert.deepEqual(ids(index.searchRaw('stems:"foo bar"')), ['identifier', 'separate']);
+  assert.deepEqual(ids(index.search({ concepts: [['foo_bar']] })), ['identifier', 'reverse', 'separate']);
 });

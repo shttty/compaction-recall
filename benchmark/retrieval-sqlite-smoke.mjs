@@ -75,12 +75,12 @@ for (const entry of corpus.branch) { rows.push({ ...entry, parentId }); parentId
 writeFileSync(sessionPath, rows.map(row => JSON.stringify(row)).join('\n') + '\n', { flag: 'wx', mode: 0o600 });
 const { createEngine } = await import(engineUrl.href);
 const engine = await createEngine(corpus.documents);
-let autoResults, nativeError;
+let autoResults, analysisError;
 try {
   autoResults = await searchAutomatic(engine, question);
-  try { await engine.searchRaw('"'); } catch (error) { nativeError = error.message; }
+  try { await engine.search({ concepts: [['*']] }); } catch (error) { analysisError = { name: error.name, code: error.code, message: error.message }; }
 } finally { await engine.dispose?.(); }
-assert.ok(nativeError, 'Malformed quote must fail in native FTS5');
+assert.deepEqual(analysisError, { name: 'QueryError', code: 'EMPTY_ANALYSIS', message: 'A surface form produced no searchable terms' });
 assert.equal(autoResults.length, 2);
 const expectedIds = [corpus.positions.get('0:2'), corpus.positions.get('0:1')];
 assert.deepEqual(autoResults.map(row => row.id), expectedIds, 'Equal-score matches rank newest first');
@@ -93,9 +93,9 @@ const modelRuntime = await sdk.ModelRuntime.create({
   modelsStore: new InMemoryCodingAgentModelsStore(), allowModelNetwork: false, refreshOnCreate: false
 });
 const requests = [], seenPages = [], checks = [], extensionErrors = [];
-const rawQuery = 'quasar OR nebula';
-const rejectedQuery = 'quasar nebula blue green orchard apple';
-const rejectionError = '本次 6 个关键词，上限 5，请拆开分几次查';
+const recallInput = { concepts: [['quasar'], ['nebula']] };
+const rejectedInput = { concepts: [[' ']] };
+const rejectionError = { name: 'QueryError', code: 'EMPTY_TEXT', message: 'concepts[0][0]: empty text' };
 const text = message => typeof message.content === 'string' ? message.content
   : message.content.filter(block => block.type === 'text').map(block => block.text).join('\n');
 const visibleRows = content => content.split('\n').map(line => line.trim())
@@ -134,7 +134,7 @@ modelRuntime.registerProvider('sqlite-smoke', {
         'Archived matching messages produce distinct normalized snippets');
       assert.ok(!JSON.stringify(context.messages).includes('goldIds'), 'Scorer gold stays out of provider input');
       checks.push('automatic hints in actual provider request contain exactly id,date,role,snippet in newest-first order');
-      args = { query: rawQuery, limit: 1 };
+      args = { ...recallInput, limit: 1 };
     } else {
       const result = context.messages.filter(message => message.role === 'toolResult').at(-1);
       assert.ok(result, 'SDK delivers tool result to provider');
@@ -143,25 +143,25 @@ modelRuntime.registerProvider('sqlite-smoke', {
         assert.equal(page.total, 2); assert.equal(page.returned, 1); assert.equal(page.ids.length, 1);
         assert.equal(page.nextOffset, 1);
         assert.deepEqual(page.ids, expectedIds.slice(0, 1));
-        args = { query: rawQuery, limit: 1, offset: page.nextOffset };
+        args = { ...recallInput, limit: 1, offset: page.nextOffset };
       } else if (turn === 3) {
         const page = readPage(result); seenPages.push(page);
         assert.equal(page.total, 2); assert.equal(page.returned, 1); assert.equal(page.nextOffset, null);
         assert.notEqual(page.ids[0], seenPages[0].ids[0]);
         assert.deepEqual(page.ids, expectedIds.slice(1));
         checks.push('both history_recall pages seen by provider contain exactly id,date,role,snippet in newest-first order');
-        checks.push('raw limit=1 followed provider-visible nextOffset once');
-        args = { query: rejectedQuery, limit: 1 };
+        checks.push('concept limit=1 followed provider-visible nextOffset once');
+        args = { ...rejectedInput, limit: 1 };
       } else if (turn === 4) {
         assert.equal(result.isError, true);
-        assert.equal(text(result), rejectionError, 'Provider sees exact six-keyword rejection');
-        checks.push('six-keyword rejection observed by provider');
-        args = { query: '"', limit: 1 };
+        assert.ok(text(result).includes(rejectionError.message), 'Provider sees author empty-surface rejection');
+        checks.push('author empty-surface rejection observed by provider');
+        args = { concepts: [['*']], limit: 1 };
       } else {
         assert.equal(turn, 5, 'Exactly four provider-selected tool calls');
         assert.equal(result.isError, true);
-        assert.ok(text(result).includes(nativeError), 'Provider sees unchanged native FTS5 error');
-        checks.push('malformed quote native error observed by provider, then completion');
+        assert.ok(text(result).includes(analysisError.message), 'Provider sees author no-searchable-terms error');
+        checks.push('worker analysis error observed by provider, then completion');
       }
     }
     const message = {
@@ -215,21 +215,19 @@ try {
 const events = readFileSync(process.env.COMPACTION_RECALL_TIMING_FILE, 'utf8').trim().split('\n').map(JSON.parse);
 const traces = events.filter(event => event.type === 'history_recall_trace').sort((a, b) => a.callIndex - b.callIndex);
 assert.equal(traces.length, 4);
-const queries = [rawQuery, rawQuery, rejectedQuery, '"'];
-const keywordCounts = [2, 2, 6, 0];
+const inputs = [recallInput, recallInput, rejectedInput, { concepts: [['*']] }];
 for (const [index, event] of traces.entries()) {
   assert.equal(event.toolCallId, `smoke-${index + 1}`);
-  assert.equal(event.query_identical, true);
-  assert.equal(event.model.arguments.query, queries[index]);
-  assert.equal(event.keywordCount, keywordCounts[index]);
-  assert.equal(event.rejected, index === 2);
-  assert.equal(event.execute.query, event.model.arguments.query);
+  assert.equal(event.input_identical, true);
+  assert.deepEqual(event.execute.input, inputs[index]);
+  assert.deepEqual(event.model.arguments, event.execute.params);
+  assert.deepEqual(event.model.arguments.concepts, inputs[index].concepts);
   assert.deepEqual(event.model.textBlocks, [`Offline retrieval step ${index + 1}`]);
   if (index < 2) assert.deepEqual(event.result.ids, seenPages[index].ids);
 }
-assert.equal(traces[2].error, rejectionError);
-assert.equal(traces[3].error, nativeError);
-checks.push('shared trace counts all four calls with raw equality, keyword counts, rejection and native error');
+assert.deepEqual(traces[2].error, rejectionError);
+assert.deepEqual(traces[3].error, analysisError);
+checks.push('shared trace counts all four calls with identical structured inputs and author error name/code/message');
 const memory = events.filter(event => event.type === 'mark' && event.stage === 'index_memory');
 assert.ok(memory.length > 0, 'BackgroundIndex emits index_memory');
 for (const event of memory) {
@@ -241,10 +239,10 @@ const workerQueries = events.filter(event => event.type === 'span' && event.stag
 assert.ok(workerQueries.some(event => event.execution === 'worker_thread' && event.outcome === 'ok'),
   'Successful query executes in worker');
 assert.ok(workerQueries.some(event => event.execution === 'worker_thread' && event.outcome === 'error'),
-  'Native malformed query fails in worker without preventing provider completion');
+  'No-searchable-terms analysis fails in worker without preventing provider completion');
 checks.push('worker query execution and positive index memory fields observed');
 const goldIds = expectedIds;
-const calls = traces.map(event => ({ results: event.result?.ids ?? [], query_identical: event.query_identical, error: event.error }));
+const calls = traces.map(event => ({ results: event.result?.ids ?? [], input_identical: event.input_identical, error: event.error }));
 const metrics = scoreRetrieval({ goldIds, autoResults, calls });
 assert.equal(metrics.callCount, 4); assert.equal(metrics.errorCount, 2); assert.equal(metrics.queryMismatchCount, 0);
 assert.equal(metrics.mrr, 1); assert.equal(metrics['recall@5'], 1); assert.equal(metrics['precision@5'], 0.2);
