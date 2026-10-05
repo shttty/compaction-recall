@@ -75,12 +75,13 @@ for (const entry of corpus.branch) { rows.push({ ...entry, parentId }); parentId
 writeFileSync(sessionPath, rows.map(row => JSON.stringify(row)).join('\n') + '\n', { flag: 'wx', mode: 0o600 });
 const { createEngine } = await import(engineUrl.href);
 const engine = await createEngine(corpus.documents);
-let autoResults, analysisError;
+let autoResults, literalResult;
 try {
   autoResults = await searchAutomatic(engine, question);
-  try { await engine.search({ concepts: [['*']] }); } catch (error) { analysisError = { name: error.name, code: error.code, message: error.message }; }
+  literalResult = await engine.search({ concepts: [['*']] });
 } finally { await engine.dispose?.(); }
-assert.deepEqual(analysisError, { name: 'QueryError', code: 'EMPTY_ANALYSIS', message: 'A surface form produced no searchable terms' });
+assert.equal(literalResult.total, 0);
+assert.deepEqual(literalResult.results, []);
 assert.equal(autoResults.length, 2);
 const expectedIds = [corpus.positions.get('0:2'), corpus.positions.get('0:1')];
 assert.deepEqual(autoResults.map(row => row.id), expectedIds, 'Equal-score matches rank newest first');
@@ -111,8 +112,9 @@ const readPage = message => {
   const match = content.match(/^History recall page: (.+)$/m);
   assert.ok(match, 'Provider sees production recall page');
   const rows = visibleRows(content);
-  assert.equal(rows.length, 1, 'Provider sees one JSON locator row per page');
-  return { ...JSON.parse(match[1]), ids: rows.map(row => row.id) };
+  const details = JSON.parse(match[1]);
+  assert.equal(rows.length, details.returned, 'Provider-visible rows agree with pagination count');
+  return { ...details, ids: rows.map(row => row.id) };
 };
 modelRuntime.registerProvider('sqlite-smoke', {
   api: 'openai-completions', apiKey: 'offline-fake-only', baseUrl: 'http://127.0.0.1:1',
@@ -159,9 +161,12 @@ modelRuntime.registerProvider('sqlite-smoke', {
         args = { concepts: [['*']], limit: 1 };
       } else {
         assert.equal(turn, 5, 'Exactly four provider-selected tool calls');
-        assert.equal(result.isError, true);
-        assert.ok(text(result).includes(analysisError.message), 'Provider sees author no-searchable-terms error');
-        checks.push('worker analysis error observed by provider, then completion');
+        assert.equal(result.isError, false);
+        const page = readPage(result);
+        assert.equal(page.total, 0);
+        assert.equal(page.returned, 0);
+        assert.doesNotMatch(text(result), /history_grep/);
+        checks.push('zero-token literal surface returns an ordinary empty page, then completion');
       }
     }
     const message = {
@@ -226,8 +231,11 @@ for (const [index, event] of traces.entries()) {
   if (index < 2) assert.deepEqual(event.result.ids, seenPages[index].ids);
 }
 assert.deepEqual(traces[2].error, rejectionError);
-assert.deepEqual(traces[3].error, analysisError);
-checks.push('shared trace counts all four calls with identical structured inputs and author error name/code/message');
+assert.deepEqual(traces[3].result.ids, []);
+assert.equal(traces[3].result.total, 0);
+assert.equal(traces[3].result.fallback.ranking, 'rarity');
+assert.deepEqual(traces[3].result.fallback.surfaces, ['*']);
+checks.push('shared trace correlates four calls and records hybrid fallback only on the literal request');
 const memory = events.filter(event => event.type === 'mark' && event.stage === 'index_memory');
 assert.ok(memory.length > 0, 'BackgroundIndex emits index_memory');
 for (const event of memory) {
@@ -239,15 +247,15 @@ const workerQueries = events.filter(event => event.type === 'span' && event.stag
 assert.ok(workerQueries.some(event => event.execution === 'worker_thread' && event.outcome === 'ok'),
   'Successful query executes in worker');
 assert.ok(workerQueries.some(event => event.execution === 'worker_thread' && event.outcome === 'error'),
-  'No-searchable-terms analysis fails in worker without preventing provider completion');
+  'Invalid parameters fail in worker without preventing provider completion');
 checks.push('worker query execution and positive index memory fields observed');
 const goldIds = expectedIds;
 const calls = traces.map(event => ({ results: event.result?.ids ?? [], input_identical: event.input_identical, error: event.error }));
 const metrics = scoreRetrieval({ goldIds, autoResults, calls });
-assert.equal(metrics.callCount, 4); assert.equal(metrics.errorCount, 2); assert.equal(metrics.queryMismatchCount, 0);
+assert.equal(metrics.callCount, 4); assert.equal(metrics.errorCount, 1); assert.equal(metrics.queryMismatchCount, 0);
 assert.equal(metrics.mrr, 1); assert.equal(metrics['recall@5'], 1); assert.equal(metrics['precision@5'], 0.2);
 assert.equal(metrics.locatedGoldTurns, 1); assert.equal(metrics.noCall, false);
-checks.push('scoreRetrieval covers automatic ranking, both pages and both failed calls in execution order');
+checks.push('scoreRetrieval covers automatic ranking, both pages, invalid input and literal empty results in execution order');
 save('report.json', {
   group: 2, stage: 'S5', synthetic: true, liveModel: false, adapterPackage, entry,
   arm: process.env.COMPACTION_RECALL_SQLITE_ARM ?? 'off', autoGate: process.env.COMPACTION_RECALL_AUTO_GATE ?? '210',

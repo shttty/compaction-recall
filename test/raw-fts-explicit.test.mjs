@@ -18,7 +18,6 @@ const invalid = [
   [{ concepts: [['alpha']], must: ['beta'] }, 'UNKNOWN_FIELD'],
   [{ concepts: [['alpha']], prefer: ['beta'] }, 'UNKNOWN_FIELD'],
   [{ concepts: [['alpha']], match: 'some' }, 'INVALID_MODE'],
-  [{ concepts: [['*']] }, 'EMPTY_ANALYSIS'],
 ];
 const ids = result => result.results.map(row=>row.id).sort();
 

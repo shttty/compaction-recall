@@ -5,7 +5,7 @@ export function createQueryCheck(deadlineAt, timeoutMs) {
   if (deadlineAt === undefined) return undefined;
   return () => {
     if (queryNow() >= deadlineAt) throw Object.assign(
-      new Error(`history_recall timed out after ${timeoutMs} ms; narrow the query or use history_grep`),
+      new Error(`history_recall timed out after ${timeoutMs} ms; narrow the query`),
       { name: 'TimeoutError' },
     );
   };

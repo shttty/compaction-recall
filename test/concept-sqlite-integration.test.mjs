@@ -27,8 +27,8 @@ test('Han words and identifiers require co-occurrence, not position; FTS syntax 
   assert.deepEqual(sorted(index.queryRows(query([['backup OR rollback']]))),['literal']);
   assert.deepEqual(sorted(index.queryRows(query([['body:foo']]))),['literal']);
   assert.equal(index.queryRows(query([['absent" OR "backup']])).total,0);
-  assert.throws(()=>index.queryRows(query([['中']])),{name:'QueryError',code:'EMPTY_ANALYSIS'});
-  assert.throws(()=>index.queryRows({concepts:[['backup']],exclude:['C++']}),{name:'QueryError',code:'EMPTY_ANALYSIS'});
+  assert.equal(index.queryRows(query([['中']])).total,0);
+  assert.deepEqual(sorted(index.queryRows({concepts:[['backup']],exclude:['C++']})),['backup','literal']);
 });
 test('exclusions cannot select snippet windows or add positive evidence',t=>{
   const index=createIndex([{id:'hit',text:'needle '+ 'padding '.repeat(250)+'poison'}, {id:'drop',text:'needle poison forbidden'}]);
@@ -49,7 +49,7 @@ test('author parameter/analysis limits and errors survive integrated index, not 
     [{concepts:[['cedar']],exclude:Array(6).fill('willow')},'INVALID_ARRAY'],
     [{concepts:[['x'.repeat(257)]]},'LIMIT_EXCEEDED'],
     [{concepts:[['cedar '.repeat(17)]]},'INVALID_ARRAY'],
-    [{concepts:[['cedar\0']]},'INVALID_TEXT'],[{concepts:[['!!!']]},'EMPTY_ANALYSIS']]) {
+    [{concepts:[['cedar\0']]},'INVALID_TEXT']]) {
     assert.throws(()=>index.queryRows(input),{name:'QueryError',code},JSON.stringify(input));
   }
   assert.equal(index.queryRows(query([['x'.repeat(256)]])).total,0);
@@ -77,7 +77,7 @@ for(const Engine of [BackgroundIndex,SQLiteBackgroundIndex])test(`${Engine.name}
     const found=await index.queryRanked(input,branch,{mode:'manual'});
     assert.deepEqual(sorted(found),['alternative','both']);
     const worker=index.worker;
-    await assert.rejects(index.queryRanked(query([['中']]),branch,{mode:'manual'}),{name:'QueryError',code:'EMPTY_ANALYSIS'});
+    assert.equal((await index.queryRanked(query([['中']]),branch,{mode:'manual'})).total,0);
     await assert.rejects(index.queryRanked({concepts:[['cedar']],query:'legacy'},branch,{mode:'manual'}),{name:'QueryError',code:'UNKNOWN_FIELD'});
     assert.equal(index.worker,worker);assert.equal(index.failed,false);
     assert.deepEqual(sorted(await index.queryRanked(input,branch,{mode:'manual'})),['alternative','both']);

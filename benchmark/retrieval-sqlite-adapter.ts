@@ -9,28 +9,22 @@ import { createRecallTrace } from "../src/recall-trace.mjs";
 import { SQLiteBackgroundIndex } from "./sqlite-background-index.mjs";
 import { PreindexCadence } from "../src/preindex-cadence.mjs";
 import { recallTiming, flushTiming } from "../src/timing.mjs";
-import { displayRows } from "./retrieval-sqlite-page.mjs";
+import { displayRows, SQLITE_LOCATOR_HEADER } from "./retrieval-sqlite-page.mjs";
 
 const descriptions = {
-  history_recall: "Primary lexical lookup of compacted conversation history on the current branch, not semantic search. Use automatic locator hints first, then history_recall to locate related entry ids, history_expand to verify exact details, and history_grep as a supplementary text-search fallback when evidence remains insufficient. Honors branch-local context edits: omitted entries are unavailable and replacements hide originals. Supply concepts as 1..5 groups of 1..4 alternative literal surface forms each; choose alternative wording or synonyms yourself. match defaults to any (one group suffices); all requires every group in the same indexed record. Each surface is analyzed into indexed terms with co-occurrence, not phrase order or adjacency; analyzer branches are OR alternatives and terms within a branch are AND. Strings are literal data, never SQL, FTS syntax or an arbitrary query AST; do not hand-split Han bigrams or write MATCH expressions. Optional exclude contains at most 5 literal surfaces: any matching exclusion removes the whole record, not a ranking penalty; overly broad exclusions can hide useful evidence. Nonempty trimmed surfaces permit at most 256 Unicode codepoints each and 2048 total; invalid text, unknown fields and unsearchable surfaces are rejected, never silently truncated. Backend analysis is limited to 4 branches per surface, 16 atoms per branch, 4096 codepoints per atom, 256 expanded atoms total and 32768 compiled MATCH UTF-16 units. Manual queries have no automatic length gate or extra stemming expansion; the selected tokenizer/lemma normalization aligns terms with the index. Default ranking remains native BM25 with full-content deduplication and time tie breaks. Searches user/assistant text plus assistant tool-call names/arguments, not toolResult bodies, thinking or images. limit defaults to 50 (maximum 50), offset to 0; use nextOffset with the same concepts, match, exclude and unchanged branch. Pages target 16000 Unicode codepoints with the existing oversized-metadata progress exception. Snippets default to 240 weighted units (Han 2, other codepoints 1), configurable by snippetBudget or COMPACTION_RECALL_SNIPPET_BUDGET. Only positive concepts guide snippets. Manual recall retains the configurable cooperative JavaScript deadline (default 5000 ms); native MATCH is non-interruptible, late results are discarded and healthy worker caches are reused. A true zero total suggests checking concept groups, any/all and surface wording; a positive-total empty offset page does not warn. No hit does not prove the information was never mentioned.",
-  history_grep: "Supplementary text-search fallback when automatic locators, history_recall and expanded entries leave insufficient evidence. Search branch-effective user/assistant text and assistant tool-call names/arguments on the current compacted branch, honoring context edits; exclude toolResult bodies, thinking and images. No matches do not prove absence. `pattern` is a case-insensitive JavaScript regular expression (not SQL LIKE); invalid patterns fall back to literal search. Pages matching entries in branch order: limit defaults to 30 (maximum 50), offset defaults to 0. Use nextOffset with the same pattern and unchanged branch; returned counts entries consumed, including explicitly skipped oversized metadata. total counts raw regex matches, totalEntries matching entries; covered counts other matches visible in this page's snippets, omitted counts raw matches not shown anywhere in this response. Each page shows up to 30 representative snippets overall and at most 3 per entry; full output stays within 16000 Unicode codepoints. Clipped-out text is not covered. Read full text with history_expand or use a narrower pattern to find matching context not shown.",
-  history_expand: "Read branch-effective text (honoring context edits) of a compacted history entry by id (from automatic locators, history_recall or history_grep). The requested entry is shown first; output is bounded to 16000 Unicode codepoints. Use offset (default 0), in Unicode codepoints of the requested entry, to continue a long entry; when hasMore is true, pass nextOffset with the same id and before/after values. Neighbor entries (before/after default 2, maximum 20) are included only when the full target is shown and each full neighbor fits. Includes tool-call names/arguments and readable toolResult text; excludes thinking and images. Only the current compacted branch is readable.",
+  history_recall: "Primary lexical lookup of compacted conversation history on the current branch, not semantic search. Use automatic locator hints first, then history_recall to locate entry ids and history_expand to verify exact details. Honors branch-local context edits: omitted entries are unavailable and replacements hide originals. Supply concepts as 1..5 groups of 1..4 alternative literal surface forms each; choose alternative wording or synonyms yourself. match defaults to any (one group suffices); all requires every group in the same indexed record. Fully indexable surfaces use analyzed term co-occurrence, not phrase order or adjacency; analyzer branches are OR alternatives and terms within a branch are AND. Surfaces with zero tokens or lost letter/number/mark characters automatically use case-insensitive literal substring matching of the entire trimmed surface, preserving internal whitespace and punctuation, never regular expressions. This routing is based on tokenizer coverage, not zero hits: normal FTS zero hits are not broadened and errors never trigger fallback. Strings are literal data, never SQL, FTS syntax or an arbitrary query AST; do not hand-split Han bigrams or write MATCH expressions. Optional exclude contains at most 5 literal surfaces: any matching exclusion removes the whole record, not a ranking penalty; overly broad exclusions can hide useful evidence. Nonempty trimmed surfaces permit at most 256 Unicode codepoints each and 2048 total; invalid text and unknown fields are rejected, never silently truncated. Backend analysis is limited to 4 branches per surface, 16 atoms per branch, 4096 codepoints per atom, 256 expanded atoms total and 32768 compiled MATCH UTF-16 units. Manual queries have no automatic length gate or extra stemming expansion; tokenizer/lemma normalization aligns indexed terms. Pure FTS uses native BM25; if any positive or exclusion surface needs literal matching, the entire request ranks by corpus-row surface rarity, taking the maximum matching alternative per positive group and summing groups, then group count and time ties. Both routes deduplicate full content before pagination. Searches user/assistant text plus assistant tool-call names/arguments, not toolResult bodies, thinking or images. limit defaults to 50 (maximum 50), offset to 0; use nextOffset with the same concepts, match, exclude and unchanged branch. Pages target 16000 Unicode codepoints with the existing oversized-metadata progress exception. Snippets default to 240 weighted units (Han 2, other codepoints 1), configurable by snippetBudget or COMPACTION_RECALL_SNIPPET_BUDGET; positive literal evidence is shown, exclusions do not guide snippets. Manual recall retains the configurable cooperative JavaScript deadline (default 5000 ms); native MATCH is non-interruptible, late results are discarded and healthy worker caches are reused. A true zero total suggests checking concept groups, any/all and surface wording; a positive-total empty offset page does not warn. No hit does not prove the information was never mentioned.",
+  history_expand: "Read branch-effective text (honoring context edits) of a compacted history entry by id from automatic locators or history_recall. The requested entry is shown first; output is bounded to 16000 Unicode codepoints. Use offset (default 0), in Unicode codepoints of the requested entry, to continue a long entry; when hasMore is true, pass nextOffset with the same id and before/after values. Neighbor entries (before/after default 2, maximum 20) are included only when the full target is shown and each full neighbor fits. Includes tool-call names/arguments and readable toolResult text; excludes thinking and images. Only the current compacted branch is readable.",
 };
 const parameters = {
   history_recall: Type.Object({
-    concepts: Type.Array(Type.Array(Type.String({ description: "Nonempty literal surface form, at most 256 Unicode codepoints; not FTS syntax" }), { minItems: 1, maxItems: 4 }), { minItems: 1, maxItems: 5, description: "Concept groups; alternatives within each group. All surfaces together are limited to 2048 Unicode codepoints." }),
+    concepts: Type.Array(Type.Array(Type.String({ description: "Nonempty trimmed literal surface, at most 256 Unicode codepoints; fully indexable text uses FTS co-occurrence, otherwise automatic whole-surface case-insensitive literal matching preserves internal whitespace/punctuation; never regex or FTS syntax" }), { minItems: 1, maxItems: 4 }), { minItems: 1, maxItems: 5, description: "Concept groups; alternatives within each group. All surfaces together are limited to 2048 Unicode codepoints. Normal FTS zero hits do not trigger literal fallback." }),
     match: Type.Optional(Type.Union([Type.Literal("any"), Type.Literal("all")], { description: "Default any: one group suffices. all: every group must match the same record; co-occurrence is not phrase matching." })),
-    exclude: Type.Optional(Type.Array(Type.String({ description: "Literal hard exclusion; a match removes the entire record and may hide relevant evidence" }), { maxItems: 5 })),
+    exclude: Type.Optional(Type.Array(Type.String({ description: "Hard exclusion with the same automatic FTS/literal routing; any match removes the entire record and may hide relevant evidence" }), { maxItems: 5 })),
     limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 50, description: "Maximum results on this page (default 50)" })),
     offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Result offset (default 0); use nextOffset from the previous page" })),
   }),
-  history_grep: Type.Object({
-    pattern: Type.String({ description: "Case-insensitive JavaScript regular expression" }),
-    limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 50, description: "Maximum matching entries on this page (default 30)" })),
-    offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Matching-entry offset (default 0); use nextOffset to continue" })),
-  }),
   history_expand: Type.Object({
-    id: Type.String({ description: "Entry id from automatic locators, history_recall or history_grep" }),
+    id: Type.String({ description: "Entry id from automatic locators or history_recall" }),
     before: Type.Optional(Type.Integer({ minimum: 0, maximum: 20, description: "Entries before (default 2)" })),
     after: Type.Optional(Type.Integer({ minimum: 0, maximum: 20, description: "Entries after (default 2)" })),
     offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Unicode codepoint offset within the requested entry (default 0); use nextOffset to continue" })),
@@ -51,7 +45,7 @@ export default function sqliteAdapter(pi: ExtensionAPI) {
   }
 
   // Registration is synchronous: force the production lite branch, then restore the
-  // environment. Only its grep/expand executors survive; no production engine/hooks.
+  // environment. Only its expand executor survives; no production engine/hooks.
   const previousMode = process.env.COMPACTION_RECALL_MODE;
   try {
     process.env.COMPACTION_RECALL_MODE = "lite";
@@ -59,7 +53,7 @@ export default function sqliteAdapter(pi: ExtensionAPI) {
       get(target, property, receiver) {
         if (property === "on") return () => () => { };
         if (property === "registerTool") return (tool: Parameters<ExtensionAPI["registerTool"]>[0]) => {
-          if (tool.name !== "history_grep" && tool.name !== "history_expand") return;
+          if (tool.name !== "history_expand") return;
           const name = tool.name;
           target.registerTool({ ...tool, description: descriptions[name], parameters: parameters[name] });
         };
@@ -106,7 +100,7 @@ export default function sqliteAdapter(pi: ExtensionAPI) {
       const text = user ? locatorText(user) : "";
       const query = input && text === input.prompt ? input.question : text;
       const found = user ? await index.queryRanked(query, branch, { mode: "auto", options: { limit: 5 } }) : { results: [] };
-      locator = formatLocatorRows(displayRows(found.results));
+      locator = formatLocatorRows(displayRows(found.results), SQLITE_LOCATOR_HEADER);
       return { messages: withLocators(event.messages, branch, () => locator) };
     } finally { flushTiming(); }
   });
@@ -121,7 +115,8 @@ export default function sqliteAdapter(pi: ExtensionAPI) {
         const found = await index.queryPage(query, ctx.sessionManager.getBranch(), { limit, offset: requestedOffset });
         const page = found.page;
         const { total, offset, returned, nextOffset } = page.details;
-        trace?.complete(token, { ids: found.ids, total, offset, returned, nextOffset });
+        const fallback = found.fallback ?? page.details.fallback;
+        trace?.complete(token, { ids: found.ids, total, offset, returned, nextOffset, ...(fallback ? { fallback } : {}) });
         return { content: [{ type: "text" as const, text: page.text }], details: page.details };
       } catch (error) {
         trace?.fail(token, error);

@@ -161,10 +161,11 @@ export function locatorRow(candidate, frequency) {
 /**
  * Already-filtered/ranked results: top five first, then the fixed display budget.
  * @param {ReturnType<typeof locatorRow>[]} rows
+ * @param {string} [header]
  * @returns {string | undefined}
  */
-export function formatLocatorRows(rows) {
-  let result = HEADER, count = 0;
+export function formatLocatorRows(rows, header = HEADER) {
+  let result = header, count = 0;
   for (const row of rows.slice(0, MAX_LOCATORS)) {
     const line = safeJSON(row) + "\n";
     if (Array.from(result + line).length > LOCATOR_CHARS) continue;
@@ -294,10 +295,10 @@ function validateRecallPageOptions(options) {
  * @param {ReturnType<typeof locatorRow>[]} rows
  * @param {{ limit?: number; offset?: number }} [options]
  * @param {StageTimer} [timer]
- * @param {{ total?: number; baseOffset?: number }} [bounds]
+ * @param {{ total?: number; baseOffset?: number; header?: string }} [bounds]
  * @returns {{ text: string; details: RecallPageDetails }}
  */
-export function recallPageFromRows(rows, options = {}, timer, { total = rows.length, baseOffset = 0 } = {}) {
+export function recallPageFromRows(rows, options = {}, timer, { total = rows.length, baseOffset = 0, header = HEADER } = {}) {
   validateRecallPageOptions(options);
   const limit = options.limit ?? RECALL_DEFAULT_LIMIT, offset = options.offset ?? 0;
   return measured(timer, "manual_snippets_pagination_render", () => {
@@ -311,7 +312,7 @@ export function recallPageFromRows(rows, options = {}, timer, { total = rows.len
       };
       const empty = total === 0 ? "No lexical locators found. This does not prove absence." : "No locators on this page; offset is beyond the result set.";
       return {
-        text: "History recall page: " + safeJSON(details) + "\n" + HEADER +
+        text: "History recall page: " + safeJSON(details) + "\n" + header +
           (returned ? selected.join("\n") + "\n" : empty), details
       };
     };

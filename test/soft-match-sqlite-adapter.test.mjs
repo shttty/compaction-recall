@@ -5,12 +5,11 @@ import { fileURLToPath } from 'node:url';
 import { mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { sqliteRecallPage } from '../benchmark/retrieval-sqlite-page.mjs';
-import { LOCATOR_TYPE, recallPageFromRows } from '../src/locator.mjs';
+import { LOCATOR_TYPE } from '../src/locator.mjs';
 import { weightedLength } from '../prototype/soft-match-sqlite/index.mjs';
 
 const rows = Array.from({ length: 50 }, (_, i) => ({ id: String(i), date: '2026-10-04', role: 'user', snippet: 'x'.repeat(120) }));
 test('SQLite renderer preserves pagination and budget; warns only for a true zero total', () => {
-  assert.deepEqual(sqliteRecallPage(rows, { limit: 2 }), recallPageFromRows(rows, { limit: 2 }));
   const first = sqliteRecallPage(rows, { limit: 2 });
   const next = sqliteRecallPage(rows, { limit: 2, offset: first.details.nextOffset });
   assert.equal(JSON.parse(next.text.split('\n').find(line => line.startsWith('{'))).id, '2');
@@ -20,7 +19,7 @@ test('SQLite renderer preserves pagination and budget; warns only for a true zer
   assert.ok(budget.details.returned > 0 && budget.details.returned < 50);
   assert.equal(budget.details.nextOffset, budget.details.returned);
   const zero = sqliteRecallPage([], {}, { total: 0, baseOffset: 0 });
-  assert.match(zero.text, /概念分组.*any\/all.*history_grep/);
+  assert.doesNotMatch(zero.text, /history_grep/);
   assert.equal(zero.details.total, 0);
   assert.ok(Array.from(zero.text).length <= 16000);
   const emptyOffset = sqliteRecallPage([], { offset: 50 }, { total: 50, baseOffset: 50 });
@@ -34,6 +33,8 @@ test('SDK concept tool pages, validates strictly, excludes records and remains u
   const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
   assert.deepEqual(loaded.errors, []);
   const extension = loaded.extensions[0];
+  assert.deepEqual([...extension.tools.keys()].sort(), ['history_expand', 'history_recall']);
+  for (const tool of extension.tools.values()) assert.doesNotMatch(JSON.stringify(tool.definition), /history_grep/);
   const recall = extension.tools.get('history_recall').definition;
   const timestamp = '2026-10-04T00:00:00Z';
   const ctx = {
@@ -63,7 +64,7 @@ test('SDK concept tool pages, validates strictly, excludes records and remains u
   assert.doesNotMatch(partial.content[0].text, /未找到匹配项/);
   const zero = await recall.execute('zero', { concepts: [['alpha'], ['nonexistent']], match: 'all' }, undefined, undefined, ctx);
   assert.equal(zero.details.total, 0);
-  assert.match(zero.content[0].text, /未找到匹配项.*history_grep.*零命中不代表历史中不存在相关内容/);
+  assert.equal('fallback' in zero.details, false);
   const emptyOffset = await recall.execute('offset', { concepts: [['alpha']], offset: 2 }, undefined, undefined, ctx);
   assert.equal(emptyOffset.details.total, 2);
   assert.equal(emptyOffset.details.returned, 0);
@@ -82,16 +83,67 @@ test('SDK concept tool pages, validates strictly, excludes records and remains u
     [{ concepts: [[' ']] }, 'EMPTY_TEXT'],
     [{ concepts: [['a'.repeat(257)]] }, 'LIMIT_EXCEEDED'],
     [{ concepts: Array.from({ length: 3 }, () => Array.from({ length: 4 }, () => 'a'.repeat(200))) }, 'LIMIT_EXCEEDED'],
-    [{ concepts: [['x']] }, 'EMPTY_ANALYSIS'],
   ]) await assert.rejects(recall.execute('invalid', params, undefined, undefined, ctx), { name: 'QueryError', code });
   const recovered = await recall.execute('recover', { concepts: [['beta']] }, undefined, undefined, ctx);
   assert.deepEqual(ids(recovered), ['match']);
-  const grep = extension.tools.get('history_grep').definition;
-  const grepped = await grep.execute('grep', { pattern: 'tailneedle' }, undefined, undefined, ctx);
-  assert.match(grepped.content[0].text, /tailneedle/);
+  const single = await recall.execute('single', { concepts: [['x']] }, undefined, undefined, ctx);
+  assert.equal(single.details.total, 0);
+  assert.deepEqual(single.details.fallback, { surfaces: ['x'], scannedDocuments: 2, ranking: 'rarity' });
   const expand = extension.tools.get('history_expand').definition;
   const expanded = await expand.execute('expand', { id: 'match', before: 0, after: 0 }, undefined, undefined, ctx);
   assert.match(expanded.content[0].text, /alpha beta gamma delta epsilon zeta tailneedle/);
+});
+
+test('SDK registered recall routes whole literal surfaces and composes mixed groups before paging', async t => {
+  const previousArm = process.env.COMPACTION_RECALL_SQLITE_ARM;
+  process.env.COMPACTION_RECALL_SQLITE_ARM = 'off';
+  t.after(() => {
+    if (previousArm === undefined) delete process.env.COMPACTION_RECALL_SQLITE_ARM;
+    else process.env.COMPACTION_RECALL_SQLITE_ARM = previousArm;
+  });
+  const { discoverAndLoadExtensions } = await import('@earendil-works/pi-coding-agent');
+  const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
+  assert.deepEqual(loaded.errors, []);
+  const extension = loaded.extensions[0];
+  const timestamp = '2026-10-06T00:00:00Z';
+  const message = (id, content) => ({ type: 'message', id, timestamp, message: { role: 'user', content } });
+  const branch = [
+    message('literal', 'alpha 网 café 7:30 x.*y x  y'),
+    message('other', 'beta 网 café 8:30 xZZy x y'),
+    message('token-only', 'alpha 30 x.*z'),
+    message('live', 'alpha 网 café 7:30 retained'),
+    { type: 'compaction', id: 'compact', timestamp, firstKeptEntryId: 'live', summary: '', tokensBefore: 10 },
+  ];
+  const ctx = { sessionManager: { getSessionId: () => 'literal-fixture', getBranch: () => branch } };
+  t.after(async () => { for (const handler of extension.handlers.get('session_shutdown') ?? []) await handler({ type: 'session_shutdown', reason: 'quit' }, ctx); });
+  const recall = extension.tools.get('history_recall').definition;
+  const execute = params => recall.execute('literal', params, undefined, undefined, ctx);
+  const rowsOf = page => page.content[0].text.split('\n').filter(line => line.startsWith('{')).map(JSON.parse);
+  const ids = page => rowsOf(page).map(row => row.id).sort();
+  for (const [surface, expected] of [['网', ['literal', 'other']], ['CAFÉ', ['literal', 'other']], ['  7:30  ', ['literal']], ['x.*y', ['literal']], [' x  y ', ['literal']]]) {
+    const page = await execute({ concepts: [[surface]] });
+    assert.deepEqual(ids(page), expected);
+    assert.deepEqual(page.details.fallback, { surfaces: [surface.trim()], scannedDocuments: 3, ranking: 'rarity' });
+    for (const row of rowsOf(page)) assert.ok(row.snippet.toLowerCase().includes(surface.trim().toLowerCase()));
+  }
+  assert.deepEqual(ids(await execute({ concepts: [['alpha'], ['网']], match: 'all' })), ['literal']);
+  assert.deepEqual(ids(await execute({ concepts: [['beta'], ['7:30']] })), ['literal', 'other']);
+  assert.deepEqual(ids(await execute({ concepts: [['missing', '7:30']] })), ['literal']);
+  const excluded = await execute({ concepts: [['alpha']], exclude: ['7:30'] });
+  assert.deepEqual(ids(excluded), ['token-only']);
+  assert.deepEqual(excluded.details.fallback, { surfaces: ['7:30'], scannedDocuments: 3, ranking: 'rarity' });
+  const first = await execute({ concepts: [['网']], limit: 1 });
+  const next = await execute({ concepts: [['网']], limit: 1, offset: first.details.nextOffset });
+  assert.equal(first.details.total, 2);
+  assert.equal(next.details.nextOffset, null);
+  assert.deepEqual([...ids(first), ...ids(next)].sort(), ['literal', 'other']);
+  assert.deepEqual(first.details.fallback, next.details.fallback);
+  const pure = await execute({ concepts: [['alpha beta']] });
+  assert.equal(pure.details.total, 0); // Fully representable co-occurrence does not become an OR or substring scan.
+  assert.equal('fallback' in pure.details, false);
+  for (const params of [{ concepts: [['网']], mode: 'literal' }, { concepts: [['网']], pattern: '网' }]) {
+    await assert.rejects(execute(params), { name: 'QueryError', code: 'UNKNOWN_FIELD' });
+  }
 });
 
 test('SDK loads file gate/timeout once; lifecycle rebuilds retain them over later file/environment changes', async t => {
@@ -138,9 +190,11 @@ test('SDK loads file gate/timeout once; lifecycle rebuilds retain them over late
       if (result?.messages) messages = result.messages;
     }
     assert.deepEqual(locatorIds(messages).sort(), length <= 280 ? ['english', 'han', 'joint'] : []);
+    for (const message of messages.filter(message => message.customType === LOCATOR_TYPE)) assert.doesNotMatch(message.content, /history_grep/);
   }
   const unexpanded = await recall.execute('manual-no-stemming', { concepts: [['running']] }, undefined, undefined, ctx);
   assert.equal(unexpanded.details.total, 0);
+  assert.equal('fallback' in unexpanded.details, false);
   const manual = await recall.execute('combined-manual', { concepts: [['runs'], ['南京市']], match: 'all' }, undefined, undefined, ctx);
   assert.equal(manual.details.total, 1);
   const manualRows = manual.content[0].text.split('\n').filter(line => line.startsWith('{')).map(line => JSON.parse(line));
@@ -158,7 +212,7 @@ test('SDK concept traces correlate original model input and extension mutation w
   process.env.COMPACTION_RECALL_TIMING_FILE = tracePath;
   const timestamp = '2026-10-05T00:00:00Z';
   const branch = [
-    { type: 'message', id: 'evidence', timestamp, message: { role: 'user', content: 'alpha evidence' } },
+    { type: 'message', id: 'evidence', timestamp, message: { role: 'user', content: 'alpha evidence 7:30' } },
     { type: 'message', id: 'live', timestamp, message: { role: 'user', content: 'live' } },
     { type: 'compaction', id: 'compact', timestamp, firstKeptEntryId: 'live', summary: '', tokensBefore: 10 },
   ];
@@ -195,12 +249,13 @@ test('SDK concept traces correlate original model input and extension mutation w
   }
   await assert.rejects(recall.execute('invalid', { concepts: [] }, undefined, undefined, ctx), { name: 'QueryError', code: 'INVALID_ARRAY' });
   await recall.execute('after-error', { concepts: [['alpha']] }, undefined, undefined, ctx);
+  const hybrid = await recall.execute('hybrid', { concepts: [['7:30']] }, undefined, undefined, ctx);
   await emit('before_provider_request', { type: 'before_provider_request', payload: { apiKey: 'SECRET_CREDENTIAL', thinking: 'SECRET_REASONING', reasoning_effort: 'high' } });
   await emit('agent_end', { type: 'agent_end', messages: [] });
   const raw = readFileSync(tracePath, 'utf8');
   const events = raw.trim().split('\n').map(JSON.parse);
   const calls = events.filter(event => event.type === 'history_recall_trace');
-  assert.deepEqual(calls.map(call => call.input_identical), [true, false, null, null]);
+  assert.deepEqual(calls.map(call => call.input_identical), [true, false, null, null, null]);
   assert.deepEqual(calls[0].execute.params, { concepts: [['alpha']], match: 'any', exclude: [], limit: 1, offset: 0 });
   assert.deepEqual(calls[1].model.arguments.concepts, [['alpha']]);
   assert.deepEqual(calls[1].execute.input.concepts, [['missing']]);
@@ -210,6 +265,11 @@ test('SDK concept traces correlate original model input and extension mutation w
   assert.equal(calls[2].error.code, 'INVALID_ARRAY');
   assert.match(calls[2].error.message, /concepts/);
   assert.deepEqual(calls[3].result.ids, ['evidence']);
+  assert.equal('fallback' in calls[0].result, false);
+  assert.equal('fallback' in calls[1].result, false);
+  assert.equal('fallback' in calls[3].result, false);
+  assert.deepEqual(calls[4].result.fallback, { surfaces: ['7:30'], scannedDocuments: 1, ranking: 'rarity' });
+  assert.deepEqual(calls[4].result.fallback, hybrid.details.fallback);
   assert.deepEqual(events.find(event => event.type === 'sqlite_provider_evidence'), { type: 'sqlite_provider_evidence', sessionId: 'trace-fixture', locatorPresent: false, locator: null, effort: 'high' });
   assert.doesNotMatch(raw, /SECRET_CREDENTIAL|SECRET_REASONING/);
 });

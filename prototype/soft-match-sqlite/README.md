@@ -1,15 +1,17 @@
 # SQLite FTS5 soft-match 原型
 
-## 当前覆盖契约：literal 概念组手动查询（2026-10-05）
+## 当前覆盖契约：literal fallback 与 rarity（2026-10-06）
 
 本节优先于下文历史接口、切词、候选 arm 和提示词说明。历史评估数字及验证正文保持原文，不代表本轮已重跑。本轮为 SQLite 原型 / benchmark 接入，不是生产发布；不请求 provider 或模型评测。共享 `src/recall-trace.mjs` 仅增加可选结构输入模式，`src/index-worker.mjs` / `src/background-index.mjs` 仅保留自定义引擎错误 code；生产入口、schema、默认字符串 trace 及输出字节契约不变。
 
 - **工具具名字段**：`history_recall({concepts:string[][],match?:'any'|'all',exclude?:string[],limit?,offset?})`。1..5 组，每组 1..4 个替代词面；默认 `any` 组间 OR，`all` 要求各组在同一索引记录命中。组内词面是 OR 替代，每个词面的分析路径外 OR、路径内词项 AND：只要求共现，不要求顺序、相邻或 phrase。词面是 literal 数据，不是 FTS / SQL / 任意 AST；不要求模型手切双字或写原生 MATCH。旧 `query` / `must` / `prefer` / raw 手动入口不兼容。
-- **严格作者编译器**：纯 JS `concept-query-compiler.mjs` 由未修改作者 TypeScript 源码经 Node builtin `stripTypeScriptTypes` 生成，导出 `parseQuery` / `compileFts5` / `QueryError` / `LIMITS`；worker 不加载 TypeScript。参数只剥离 `limit` / `offset`，其他未知键保留给 strict compiler 拒绝。词面 trim 后非空，每个最多 256 Unicode 码点、全部最多 2048；拒绝非法控制字符和孤立 surrogate，不截断。分析最多每词面 4 路径、每路径 16 原子、每原子 4096 码点、累计 256 原子、编译 MATCH 32768 UTF-16 单位；无可搜索词项报 `EMPTY_ANALYSIS`。原始校验、限额和语义不改，MATCH 仍绑定 SQL 参数。
-- **排除与分析**：`exclude` 最多 5 个 literal 词面，任意一个命中就硬排除整条记录，不是排名降权；过宽排除可能隐藏相关证据。查询使用真实基础 tokenizer，过滤 U+E000 位置屏障；`lemma-index` 对齐既有文档 normalize，其余不追加查询词干扩展。现有 arm / stems / jieba 默认及算法不变。snippetTerms 仅来自正向 concepts，不采 exclude。
-- **自动与排名不变**：仅内部 `mode='auto'|'manual'` 分流。auto 仍接受自然语言、机器选词及默认 210 / 配置覆盖加权门槛，gate / cadence / lifecycle 不变；manual 接概念对象，无自动 gate。默认原生 BM25、全文去重、时间 tie-break 及 SQL 页序不变，不新增排名算法。
-- **分页与错误**：`SQLiteBackgroundIndex.queryPage(queryObject,branch,{limit?,offset?})` 返回 `{total,page,ids}`。默认 / 最大 50 条、16000 码点页预算、默认 240 加权 snippet 单位（Han 2 / 其他 1）、nextOffset 和超长元数据进度例外不变。真实 `total===0` 才提示检查概念分组、any/all 和词面；正 total 的 offset 空页不误报。`QueryError` 的 name / code / message 经 worker 保留，native Error / code 保留；错误后健康 worker 不清缓存、不回退。原 cooperative deadline 不变。
-- **工具顺序与 trace**：自动 locator → history_recall → history_expand 核验；证据不足再 history_grep。正常 trace 保存完整原始 params 和完整 model.arguments。SQLite 使用 `inputFields:['concepts','match','exclude']`，生成 `execute.input` / `input_identical`，固定字段键序比较而保留数组顺序，不假称 query 改写；错误为 `{name,code,message}`。生产默认仍 `execute.query` / `query_identical` / 字符串 error；trace off 不新增行为。不记录 thinking 或 provider credentials。
+- **严格作者编译器与路由**：纯 JS `concept-query-compiler.mjs` 仍由未修改作者 TypeScript 源码生成；原 parse 校验、限额、纯 FTS 编译保持不变。非空 trimmed 词面每个最多 256 Unicode 码点、总计 2048，非法文本/未知字段拒绝，不截断。实际 tokenizer spans 必须覆盖词面全部 Unicode Letter/Number/Mark 字符才走 FTS；忽略标点和大小写不等于要求 phrase。零 token 或丢失任一这些字符时，整个 trimmed 词面走 case-insensitive literal substring，包括内部原空白、标点和 regex 元字符；不拆残留词项、不解释 regex。正常 FTS 零命中不会触发扫描，错误不 fallback。
+- **排除与片段**：`exclude` 最多 5 个 literal 词面，同样按覆盖路由；任意命中硬排除整条记录。FTS 仍为路径外 OR、路径内 AND 共现；literal 为整词面子串；任意/all/组内替代语义在混合请求中保持完整。正向 literal 片段必须露出实际 literal 证据；排除不引导片段。UTF-16 命中偏移转为 codepoint 锚点，不新增第二正文缓存或索引。
+- **排名边界**：纯 FTS 保留原生 BM25/SQL 分页；只要任一正向或排除词面需要 literal，整个请求在完整匹配后使用 rarity。每个 surface 权重 `1+log((N+1)/(surfaceDF+1))`；每正向组取命中替代的最大权重，各组相加，同分按命中组数、timestamp、recency、stable rowid。N/DF 按 eligible corpus 行计数，先于 all/exclude/page；live 不计，最终按 content_hash 去重。不是相关性概率、不按出现次数加分、不与 BM25 分数跨路线比较；普通可索引查询不会因零命中或低分进入新路线。
+- **自动与分页**：auto 的机器选词、210/配置 gate、cadence、生命周期及排名算法不变；manual 无自动 gate。默认/最大 50、16000 码点页、240 加权 snippet 单位、nextOffset 和超长元数据进度例外不变。只有真实 total=0 提示检查概念组/any/all/词面，正 total 空 offset 页不误报。hybrid queryRows/queryPage 额外返回 `fallback:{surfaces,scannedDocuments,ranking:'rarity'}`，page.details 同对象；surfaces 含正向和排除 literal，scannedDocuments=N。纯 FTS 不添加 fallback 字段。deadline 覆盖 literal 扫描、DF、排名、去重、片段与分页，native MATCH 仍不可抢占，健康 worker 不清缓存。
+- **工具与 trace**：SQLite 仅注册 `history_recall`、`history_expand`，不注册 grep、不增加 mode/pattern 参数。自动 locator → recall → expand 核验；所有 SQLite 可见提示不再推荐不存在的工具。共享 renderer 仅新增可选 header seam，生产默认 header 与注册不变。SQLite structured trace 保留完整 params/model arguments 与 input_identical；仅 hybrid 成功结果额外记录 fallback，不记录 SQL/内部权重/思考/凭据。生产默认 trace 不变。本轮是原型接入，不是生产发布；历史验证数字不是本轮重跑。
+
+本轮离线验收：`npm run check` 的 338 项 JS 与 28 项 Python 回归通过，另以空临时 profile 实际加载 SDK/worker/SQLite 验证两工具、literal/rarity、自动提示和结构 trace（0 provider 请求）。纯 FTS 的独立合成完整 IDs/score/order 与本轮基线一致；小规模合成工具耗时/内存只记录在授权执行产物目录，不代表大库/线上性能或模型准确率。
 
 后文 `searchRaw`、implicit OR、原生手写 MATCH、自动 Porter/长 Han、mixed index 等接口和说明均为历史设计 / 评估证据，不覆盖本节当前手动概念组协议。
 
@@ -204,13 +206,13 @@ shared `history_recall_trace` 保留 toolCallId、模型 / execute 原始 query 
 根键 `snippetBudget` 与优先环境变量 `COMPACTION_RECALL_SNIPPET_BUDGET` 加载一次：文件接受正安全整数，环境接受严格十进制正安全整数字符串；缺省/非法所选值回退 240 加权单位，非法环境不回取有效文件值。所有有效预算都按 Han 2 / 其他码点 1 计算，自动和手动共用；没有旧 120 码点默认分支或兼容开关。省略号、自动提示整体预算和工具页预算不变。
 
 
-显式 recall 的协作式 JavaScript deadline 从父线程请求起始计时，覆盖必要的索引准备、排队、MATCH 与后处理；自动提示不增加超时。JS 循环/阶段与 MATCH 前后检查，worker 回复及父线程接收再丢弃 late results。到检查点抛 `TimeoutError`，模型收到 `history_recall timed out after N ms; narrow the query or use history_grep`。同步 native MATCH 不可抢占，允许超过名义期限直到 native call 返回检查点；5000 ms 不是硬停止或精确墙钟返回承诺。超时不 terminate/reset worker、不清空索引/惰性跨度缓存、不取消其他排队请求、不回退同步主线程扫描；后续请求正常复用 healthy worker caches。真正 session/tree/shutdown 生命周期仍按公共 seam 处理，与单请求 deadline 不同。
+显式 recall 的协作式 JavaScript deadline 从父线程请求起始计时，覆盖索引准备、排队、MATCH 与后处理（含 literal 扫描/DF/排序/去重/片段/分页）；自动提示不增加超时。到检查点抛 TimeoutError 并丢弃过期结果。同步 native MATCH 不可抢占，允许超过名义期限直到返回检查点；不是硬停止承诺。超时不 terminate/reset worker、不清空索引/惰性跨度缓存、不取消其他排队请求、不回退同步主线程扫描；后续请求复用 healthy worker caches。
 
 中断能力已按当前 **Node 24.18.0 / Bun 1.4.2** 查官方文档、发布标签源码和实际 API：均无公开 interrupt / progress handler。SQLite C 本身有 [sqlite3_interrupt](https://www.sqlite.org/c3ref/interrupt.html) / [progress handler](https://www.sqlite.org/c3ref/progress_handler.html)，但 JS 绑定未提供。Node 的构造参数 timeout 是锁等待 busy timeout，不是执行期限（[版本文档](https://nodejs.org/download/release/v24.18.0/docs/api/sqlite.html#new-databasesyncpath-options)、[绑定源码](https://github.com/nodejs/node/blob/v24.18.0/src/node_sqlite.cc)）；Bun 的 handle 是数组编号而非可传给 FFI 的 sqlite3 指针（[官方文档](https://bun.sh/docs/runtime/sqlite)、[1.4.2 类型声明](https://github.com/oven-sh/bun/blob/bun-v1.4.2/packages/bun-types/sqlite.d.ts)、[原生注册表](https://github.com/oven-sh/bun/blob/bun-v1.4.2/src/jsc/bindings/sqlite/JSSQLStatement.cpp)）。
 
 Node [Worker.terminate](https://nodejs.org/download/release/v24.18.0/docs/api/worker_threads.html#workerterminate) 只承诺尽快停止 JS。历史实证：同步 SQLite 递归聚合运行中 terminate 后 1 / 3 秒仍占 CPU 约 1.001 / 3.002 秒，有限查询仍等 1570 ms 才退出，而纯 JS 循环只需 2.03 ms；Bun 线程终止未实测，不对其作保证。这些实证解释为何当前 deadline 只保证 JS 检查点与过期结果丢弃，不声称中断 native SQL。
 
-当前仅保留一个 worker 线程，不增加宿主进程、跨进程 IPC 或额外 RSS 字段；deadline 不损失现有索引/span 缓存，也不取消同代次其他有效请求。grep / expand 执行器仍独立可用。没有持久化索引或新增模型调用，默认生产 worker 不变。旧授权 run 的 `runs/sqlite/nocap-timeout-20261005.json` 属于历史实验，不是当前协作式 deadline 的证明或历史评测重跑。
+当前仅保留一个 worker 线程，不增加宿主进程、跨进程 IPC 或额外 RSS 字段；deadline 不损失现有索引/span 缓存，也不取消同代次其他有效请求。expand 执行器仍独立可用，SQLite 不注册 grep。没有持久化索引或新增模型调用，默认生产 worker 不变。旧授权 run 属于历史实验，不是当前 deadline/fallback 的验证或历史评测重跑。
 
 
 S4 第 3 步离线验收：本原型三份测试 **34/34**、`npm run check` 类型检查及 **202/202**、Python unittest **28/28** 全部通过。首次预算测试 fixture 未触发分页而断言 nextOffset 错误，已改成真正超预算的长 id fixture；首次 fake-provider 完成断言后未 emit SDK session_shutdown 导致 worker 留存超时，已修成 await extension shutdown 后 dispose，重跑 **0.98 秒正常退出**。没有改公共代码来绕过失败。
