@@ -40,15 +40,14 @@ test('porter-jieba reuses both token channels for English, Han and mixed queries
         assert.deepEqual(ids(combo.searchRaw('stems:ticket')), ['base', 'past', 'present']);
         assert.deepEqual(ids(combo.searchRaw('stems:booking')), []);
         assert.deepEqual(ids(combo.searchRaw('"booked"')), ['past']);
-        assert.deepEqual(ids(han.searchRaw('南京市')), ['city']);
+        assert.deepEqual(ids(han.searchRaw('"南京 京市"')), ['city']);
         assert.deepEqual(ids(han.searchRaw('南京')), ['city', 'split']);
         assert.deepEqual(ids(han.searchRaw('京市')), ['city', 'split']);
         assert.deepEqual(ids(han.searchRaw('stems:南京市')), []);
         assert.deepEqual(han.search('南京市', { automatic: true }).queryTerms, ['南京', '南京市', '京市']);
         assert.deepEqual(ids(mixedIndex.search('booked 南京市', { automatic: true })), ['both', 'english', 'han']);
-        assert.deepEqual(ids(mixedIndex.searchRaw('booked AND 南京市')), ['both']);
-        assert.deepEqual(mixedIndex.missingTerms('booked 南京市'), []);
-        const row = mixedIndex.queryRows('booked AND 南京市').results[0];
+        assert.deepEqual(ids(mixedIndex.searchRaw('stems:book AND "南京 京市"')), ['both']);
+        const row = mixedIndex.queryRows('stems:book AND "南京 京市"').results[0];
         assert.equal(row.snippet, 'booking 南京市');
       } finally { porter.close(); combo.close(); han.close(); mixedIndex.close(); }
       parentPort.postMessage('passed');

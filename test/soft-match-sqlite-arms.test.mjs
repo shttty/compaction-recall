@@ -20,8 +20,8 @@ for (const arm of ['off', 'prefix-all', 'prefix-min4', 'jieba', 'porter', 'porte
       sync = await createEngine(documents, { arm });
       await worker.prepare(branch, { preindexLive: true });
       for (const [mode, query] of [['auto', 'Where booked tickets?'], ['auto', '有声书艺术课程'],
-      ['manual', 'book'], ['manual', 'coffee shop'], ['manual', '"booked tickets"'],
-      ['manual', 'tokens:power OR Sophia'], ['manual', 'NEAR(booked tickets, 3)'], ['manual', '有声书'],
+      ['manual', 'book'], ['manual', 'coffee AND shop'], ['manual', '"booked tickets"'],
+      ['manual', 'tokens:power OR Sophia'], ['manual', 'NEAR(booked tickets, 3)'], ['manual', '"有声 声书"'],
       ['manual', 'the OR power']]) {
         const expected = mode === 'auto' ? await sync.searchAuto(query) : (await sync.searchRaw(query)).results;
         const actual = await worker.queryRanked(query, branch, { mode });
@@ -40,16 +40,17 @@ for (const arm of ['off', 'prefix-all', 'prefix-min4', 'jieba', 'porter', 'porte
   });
 }
 
-test('prefix arm routing expands automatic and raw terms but not user phrases', async () => {
+test('prefix arm routing expands automatic terms while manual MATCH remains literal', async () => {
   const plain = createEngine([{ id: 'a', text: 'alphabet 网关服务' }], { arm: 'off' });
   const all = createEngine([{ id: 'a', text: 'alphabet 网关服务' }], { arm: 'prefix-all' });
   const min4 = createEngine([{ id: 'a', text: 'alphabet 网关服务' }], { arm: 'prefix-min4' });
   try {
     assert.deepEqual(plain.searchAuto('alpha'), []);
     assert.deepEqual(all.searchAuto('alpha').map(row => row.id), ['a']);
-    assert.deepEqual(all.searchRaw('alpha').results.map(row => row.id), ['a']);
+    assert.deepEqual(all.searchRaw('alpha').results, []);
     assert.deepEqual(all.searchRaw('"alpha"').results, []);
     assert.deepEqual(min4.searchRaw('alp').results, []);
-    assert.deepEqual(min4.searchRaw('alpha').results.map(row => row.id), ['a']);
+    assert.deepEqual(min4.searchRaw('alpha').results, []);
+    assert.deepEqual(all.searchRaw('alpha*').results.map(row => row.id), ['a']);
   } finally { plain.dispose(); all.dispose(); min4.dispose(); }
 });

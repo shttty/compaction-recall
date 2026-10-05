@@ -16,21 +16,8 @@ async function inWorker(fn) {
   finally { await worker.terminate(); }
 }
 
-test('single lemma uses verb then noun then adjective first change; native query syntax stays valid', async () => {
-  const result = await inWorker(({ createLemmaNormalizer }) => {
-    const { normalize, expression } = createLemmaNormalizer();
-    return {
-      terms: ['booking', 'leaves', 'sold', 'better', 'attendance', 'booked', 'children', 'attended', 'workshops', 'book_ings', 'book2', '预约'].map(normalize),
-      expressions: ['booking AND sold', '"booking tickets" OR sold', 'booking* OR "booking tickets"*',
-        'NEAR(booking sold, 2)', 'tokens:"booking tickets"', '{tokens}:booking', '"book_ings"', '"'].map(expression),
-    };
-  });
-  assert.deepEqual(result.terms, ['book', 'leave', 'sell', 'good', 'attendance', 'book', 'child', 'attend', 'workshop', 'book_ings', 'book2', '预约']);
-  assert.deepEqual(result.expressions, ['book AND sell', '"book ticket" OR sell', 'booking* OR "book tickets"*',
-    'NEAR(book sell, 2)', 'tokens:"book ticket"', '{tokens}:book', '"book_ings"', '"']);
-});
 
-test('lemma phrase positions, one normalized vocabulary score, and original-form snippets', async () => {
+test('lemma automatic recall and explicit normalized native queries retain original-form snippets', async () => {
   const result = await inWorker((_, { createIndex }) => {
     const documents = [{ id: 'a', text: 'noise '.repeat(40) + 'booking tickets sold better leaves' }, { id: 'b', text: 'book tickets sell good leave' },
     { id: 'c', text: 'booking noise tickets' }, { id: 'd', text: 'booked booking' }];
@@ -38,12 +25,11 @@ test('lemma phrase positions, one normalized vocabulary score, and original-form
     const transformed = createIndex([{ id: 'a', text: 'noise '.repeat(40) + 'book ticket sell good leave' }, { id: 'b', text: 'book ticket sell good leave' },
     { id: 'c', text: 'book noise ticket' }, { id: 'd', text: 'book book' }]);
     try {
-      const queries = ['"booked tickets"', 'sold AND better', 'NEAR(booking tickets, 1)', 'tokens:"booking tickets"', 'booking*'];
+      const queries = ['"book ticket"', 'sell AND good', 'NEAR(book ticket, 1)', 'tokens:"book ticket"', 'booking*'];
       const rows = queries.map(query => index.queryRows(query));
       return {
         rows, actual: index.searchRaw('book'), expected: transformed.searchRaw('book'),
-        automatic: index.search('booked booking', { automatic: true }).queryTerms,
-        missing: index.missingTerms('sold better booked')
+        automatic: index.search('booked booking', { automatic: true }).queryTerms
       };
     } finally { index.close(); transformed.close(); }
   });
@@ -54,7 +40,6 @@ test('lemma phrase positions, one normalized vocabulary score, and original-form
   assert.deepEqual(result.rows[4].results, []);
   assert.deepEqual(result.actual, result.expected);
   assert.deepEqual(result.automatic, ['book']);
-  assert.deepEqual(result.missing, []);
   assert.match(result.rows[0].results.find(r => r.id === 'a').snippet, /booking tickets/);
   assert.match(result.rows[1].results.find(r => r.id === 'a').snippet, /sold better/);
 });
@@ -63,7 +48,7 @@ test('lemma engine preserves original errors and off exact inflection behavior',
   const docs = [{ id: 'a', text: 'booked tickets' }, { id: 'b', text: 'book ticket' }];
   const enabled = await createEngine(docs, { arm: 'lemma-index' }), off = createEngine(docs, { arm: 'off' });
   try {
-    assert.deepEqual((await enabled.searchRaw('"booked tickets"')).results.map(r => r.id).sort(), ['a', 'b']);
+    assert.deepEqual((await enabled.searchRaw('"book ticket"')).results.map(r => r.id).sort(), ['a', 'b']);
     assert.deepEqual(off.searchRaw('"booked tickets"').results.map(r => r.id), ['a']);
     assert.deepEqual(off.searchRaw('book').results.map(r => r.id), ['b']);
     await assert.rejects(() => enabled.searchRaw('"'), /unterminated/);

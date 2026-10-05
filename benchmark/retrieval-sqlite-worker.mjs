@@ -32,12 +32,11 @@ export function createWorkerEngine({ arm = process.env.COMPACTION_RECALL_SQLITE_
       check?.();
       if (mode === 'manual' && options.page) return index.queryPage(query, options, { timer, check });
       const found = measured(timer, 'candidate_collection', () => index.queryRows(query, { mode, timer, check, ...(mode === 'auto' ? options : {}) }));
-      const missingTerms = mode === 'manual' ? index.missingTerms(query, { timer, check }) : [];
       // Materialize full-rank callers here: deadline errors must remain engine
       // errors, not transport failures that would discard a healthy index.
       const results = found.results.map(row => { check?.(); return { ...row }; });
       check?.();
-      return { total: found.total, results, missingTerms };
+      return { ...found, results };
     },
     dispose() { index?.close(); index = undefined; documents = []; },
   };

@@ -1,6 +1,5 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { lex } from '../src/locator.mjs';
 import { createIndex, tokenize } from '../prototype/soft-match-sqlite/index.mjs';
 import { STOPWORDS, tokenizeSpans } from '../prototype/soft-match-sqlite/lexical.mjs';
 import { createWorkerEngine } from '../benchmark/retrieval-sqlite-worker.mjs';
@@ -22,17 +21,9 @@ function corpus(t, documents) {
   return { index, worker };
 }
 
-test('English identifier tokens after stopword filtering equal the local production lexer', () => {
-  for (const sample of [
-    'getUser HTTPServer foo_bar $x $_ $getUser foo$bar',
-    "friend's a I x 2 12 v2 HTTP2Server snake_CASE foo__bar",
-    "friend's 2023/05/23 7pm 3-bedroom a z 1 9",
-    'please tell help about find show recall remember previous earlier history',
-    'getURLValue XMLHttpRequest _private __ $HTTPServer UserID42',
-  ]) {
-    assert.deepEqual(tokenize(sample).filter(term => !STOPWORDS.has(term)),
-      [...lex(sample)].map(({ term }) => term), sample);
-  }
+test('identifier component spans align with the original codepoint ranges', () => {
+  assert.deepEqual(tokenize('getUser HTTPServer foo_bar $x $_ $getUser foo$bar'),
+    ['get', 'user', 'http', 'server', 'foo', 'bar', 'get', 'user', 'foo', 'bar']);
   const text = '🙂 getUser HTTPServer foo_bar $x $_ 𠀀𠀁';
   for (const span of tokenizeSpans(text)) {
     assert.equal(Array.from(text).slice(span.start, span.end).join('').toLowerCase(), span.term);
@@ -45,21 +36,22 @@ test('identifier components retrieve their original documents through sync and w
     doc('snake', 'foo_bar', 2), doc('dollar', '$x $_', 3),
   ]);
   for (const [query, expected] of [['user', 'camel'], ['http', 'acronym'], ['server', 'acronym'],
-  ['foo', 'snake'], ['bar', 'snake'], ['$x', 'dollar'], ['$_', 'dollar']]) {
+  ['foo', 'snake'], ['bar', 'snake']]) {
     assert.deepEqual(ids(index.search(query, { automatic: true })), [expected], query);
     assert.deepEqual(ids(worker.query(query, { mode: 'auto' })), [expected], query);
   }
-  for (const query of ['x', '2', 's']) assert.deepEqual(ids(index.search(query, { automatic: true })), []);
+  for (const query of ['x', '2', 's', '$x', '$_']) {
+    assert.deepEqual(ids(index.search(query, { automatic: true })), []);
+    assert.deepEqual(ids(worker.query(query, { mode: 'auto' })), []);
+  }
 });
 
-test('Chinese stopwords remain indexed but automatic queries filter bigrams and full words', t => {
+test('Chinese stopwords remain indexed as bigrams while automatic selection filters stopwords', t => {
   const { index, worker } = corpus(t, [doc('stop', '我们 为什么', 0)]);
-  assert.ok(tokenize('为什么').includes('为什么'), 'approved segmenter emits the full three-Han word');
-  for (const query of ['我们', '为什么']) {
+  for (const [query, native] of [['我们', '我们'], ['为什么', '"为什 什么"']]) {
     assert.ok(STOPWORDS.has(query));
-    assert.deepEqual(index.missingTerms(query), []);
-    assert.deepEqual(ids(index.searchRaw(query)), ['stop']);
-    assert.deepEqual(ids(worker.query(query, { mode: 'manual' })), ['stop']);
+    assert.deepEqual(ids(index.searchRaw(native)), ['stop']);
+    assert.deepEqual(ids(worker.query(native, { mode: 'manual' })), ['stop']);
     const auto = index.search(query, { automatic: true });
     assert.ok(!auto.queryTerms.includes(query));
     if (query === '我们') {
@@ -77,7 +69,6 @@ test('latest duplicate ids replace earlier text, and latest empty text shadows a
     assert.deepEqual(ids(index.searchRaw(query)), expected);
     assert.deepEqual(ids(worker.query(query, { mode: 'manual' })), expected);
   }
-  assert.deepEqual(index.missingTerms('obsolete'), ['obsolete']);
 });
 
 test('normalized content duplicates retain score/time representatives before total, limit and pagination', t => {
@@ -130,17 +121,16 @@ test('exact BM25 ties use source time rather than distinct-term count', t => {
     doc('older-two', 'alpha beta ' + 'padding '.repeat(47), 0),
     doc('newer-one', 'alpha ' + 'padding '.repeat(4), 1),
   ]);
-  const found = index.searchRaw('alpha beta');
+  const found = index.searchRaw('alpha OR beta');
   assert.equal(found.results[0].score, found.results[1].score);
   assert.deepEqual(ids(found), ['newer-one', 'older-two']);
-  assert.deepEqual(ids(worker.query('alpha beta', { mode: 'manual' })), ['newer-one', 'older-two']);
+  assert.deepEqual(ids(worker.query('alpha OR beta', { mode: 'manual' })), ['newer-one', 'older-two']);
 });
 
 test('apostrophe single-letter fragments are absent from the index', t => {
   const { index, worker } = corpus(t, [doc('friend', "friend's", 0)]);
   assert.deepEqual(ids(index.searchRaw('friend')), ['friend']);
   assert.deepEqual(ids(index.searchRaw('s')), []);
-  assert.deepEqual(index.missingTerms('s'), ['s']);
   assert.deepEqual(ids(worker.query('s', { mode: 'manual' })), []);
 });
 
@@ -152,12 +142,11 @@ test('empty documents do not change native BM25 corpus scores', t => {
   assert.deepEqual(padded.worker.query('aurora', { mode: 'manual' }), baseline.worker.query('aurora', { mode: 'manual' }));
 });
 
-test('native quoted dollar tokens match, while bare dollar syntax still errors', t => {
+test('native quoted single-letter dollar fragments stay unindexed, while bare dollar syntax errors', t => {
   const { index, worker } = corpus(t, [doc('dollar', '$x $_', 0)]);
   for (const query of ['"$x"', '"$_"']) {
-    assert.deepEqual(ids(index.searchRaw(query)), ['dollar']);
-    assert.deepEqual(ids(worker.query(query, { mode: 'manual' })), ['dollar']);
-    assert.deepEqual(index.missingTerms(query), []);
+    assert.deepEqual(ids(index.searchRaw(query)), []);
+    assert.deepEqual(ids(worker.query(query, { mode: 'manual' })), []);
   }
   assert.throws(() => index.searchRaw('$x'), /syntax error/);
   assert.throws(() => worker.query('$x', { mode: 'manual' }), /syntax error/);
@@ -175,30 +164,6 @@ test('actual display projection strips scores from retrieved rows and rendered p
   assert.ok(page.text.includes('"id":"visible"'));
 });
 
-test('missing 17k terms are bounded to forty codepoints, ten words and an omitted count', t => {
-  const { worker } = corpus(t, [doc('present', 'aurora', 0)]);
-  const long = 'x'.repeat(17000);
-  const found = worker.query(long, { mode: 'manual' });
-  assert.deepEqual(found.missingTerms, [long]);
-  const page = sqliteRecallPage(found.results, {}, found.missingTerms);
-  assert.ok(Array.from(page.text).length <= 16000);
-  assert.ok(page.text.includes('x'.repeat(40) + '…'));
-  assert.ok(!page.text.includes('x'.repeat(41)));
-  const words = Array.from({ length: 13 }, (_, i) => `missing${String(i).padStart(2, '0')}`);
-  const many = sqliteRecallPage([], {}, words);
-  for (const word of words.slice(0, 10)) assert.ok(many.text.includes(word));
-  for (const word of words.slice(10)) assert.ok(!many.text.includes(word));
-  assert.match(many.text, /省略\s*3/);
-  const astral = sqliteRecallPage([], {}, ['𠀀'.repeat(45)]);
-  assert.ok(astral.text.includes('𠀀'.repeat(40) + '…'));
-  assert.ok(!astral.text.includes('𠀀'.repeat(41)));
-  const rows = Array.from({ length: 50 }, (_, i) => ({ id: String(i), date: '2026-10-04', role: 'user', snippet: 'z'.repeat(400) }));
-  const budgeted = sqliteRecallPage(rows, { limit: 50 }, [long, ...words]);
-  assert.ok(Array.from(budgeted.text).length <= 16000);
-  assert.ok(budgeted.details.returned > 0);
-  assert.equal(budgeted.details.total, 50);
-  assert.equal(budgeted.details.nextOffset, budgeted.details.hasMore ? budgeted.details.returned : null);
-});
 
 test('real background worker transports aligned aliases, deduped totals and internal ranks', async () => {
   const texts = ['getUser aurora red', 'HTTPServer aurora blue', 'getUser aurora red'];

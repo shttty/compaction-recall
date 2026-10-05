@@ -1,15 +1,17 @@
 import { DatabaseSync } from 'node:sqlite';
 import { createHash } from 'node:crypto';
-import { prefixExpression, queryOperands } from './query.mjs';
+import { queryOperands } from './query.mjs';
 import { createTokenizer } from './arms.mjs';
 import { STOPWORDS } from './lexical.mjs';
 import { createJsStemmer } from './porter-js.mjs';
-import { createStemmer, porterExpression, porterTerm } from './porter.mjs';
+import { createStemmer, porterTerm } from './porter.mjs';
 import { createInflections } from './inflect.mjs';
 import { createLemmaNormalizer } from './lemma.mjs';
 import { selectFts5Range } from '../../benchmark/fts5-snippet.mjs';
 import { measured } from '../../src/timing.mjs';
 import { sqliteRecallPage } from '../../benchmark/retrieval-sqlite-page.mjs';
+import { createHanPhraseTrial } from './han-phrase-trial.mjs';
+import { requireExplicitOperators } from './explicit-query.mjs';
 export { STOPWORDS, tokenize, tokenizeSpans } from './lexical.mjs';
 const HAN = /\p{Script=Han}/u;
 
@@ -36,106 +38,19 @@ export function extractText(content) {
     .join('\n');
 }
 
-// Recognize FTS5 operands, not document terms. Keep native implicit-AND grouping
-// when replacing its connectors; SQLite remains responsible for syntax errors.
-export function implicitOr(query, check) {
-  const tokens = [];
-  for (const match of query.matchAll(/"(?:[^"]|"")*"|[A-Za-z0-9_\x1a\u0080-\uffff]+|[^ \t\r\n]/g)) {
-    check?.();
-    tokens.push({ text: match[0], start: match.index, end: match.index + match[0].length });
-  }
-  // Do not turn an unterminated quote into another error or a valid expression.
-  if (tokens.some(token => token.text === '"')) return query;
-  const text = i => tokens[i]?.text;
-  const isString = i => tokens[i] && /^["A-Za-z0-9_\x1a\u0080-\uffff]/.test(text(i)) &&
-    !['AND', 'OR', 'NOT'].includes(text(i));
-  const closes = new Map();
-  const delimiters = [];
-  for (let i = 0; i < tokens.length; i++) {
-    check?.();
-    if (text(i) === '(' || text(i) === '{') delimiters.push(i);
-    else if ((text(i) === ')' && text(delimiters.at(-1)) === '(') ||
-      (text(i) === '}' && text(delimiters.at(-1)) === '{')) {
-      closes.set(delimiters.pop(), i);
-    }
-  }
-  function operand(start, end) {
-    let i = start;
-    if (text(i) === '-') i++;
-    const columnEnd = text(i) === '{' ? closes.get(i) : isString(i) ? i : undefined;
-    if (columnEnd !== undefined && text(columnEnd + 1) === ':') i = columnEnd + 2;
-    else if (i !== start || text(i) === '{') return;
-    const anchored = text(i) === '^';
-    if (anchored) i++;
-    if (!anchored && text(i) === '(') {
-      const close = closes.get(i) ?? end;
-      return { next: Math.min(close + 1, end), inner: [i + 1, close] };
-    }
-    if (!anchored && text(i) === 'NEAR' && text(i + 1) === '(') {
-      // The spaces inside NEAR separate proximity phrases, not boolean queries.
-      i = Math.min((closes.get(i + 1) ?? end) + 1, end);
-    } else {
-      if (!isString(i)) return;
-      i++;
-      if (text(i) === '*') i++;
-      while (text(i) === '+' && isString(i + 1)) {
-        check?.();
-        i += 2;
-        if (text(i) === '*') i++;
-      }
-    }
-    return { next: i, start: tokens[start].start, end: tokens[i - 1].end };
-  }
-  const inserts = [];
-  const scopes = [[0, tokens.length]];
-  while (scopes.length) {
-    check?.();
-    const [start, end] = scopes.pop();
-    let run = [];
-    const flush = () => {
-      if (run.length > 1) {
-        inserts.push({ at: run[0].start, text: '(' });
-        for (let i = 1; i < run.length; i++) {
-          check?.();
-          inserts.push({ at: run[i].start, text: run[i - 1].end === run[i].start ? ' OR ' : 'OR ' });
-        }
-        inserts.push({ at: run.at(-1).end, text: ')' });
-      }
-      run = [];
-    };
-    for (let i = start; i < end;) {
-      check?.();
-      const found = operand(i, end);
-      if (!found) {
-        flush();
-        // Even malformed column lists stay opaque; do not OR their names.
-        i = text(i) === '{' ? Math.min((closes.get(i) ?? end) + 1, end) : i + 1;
-      } else if (found.inner) {
-        flush();
-        scopes.push(found.inner);
-        i = found.next;
-      } else {
-        run.push(found);
-        i = found.next;
-      }
-    }
-    flush();
-  }
-  if (!inserts.length) return query;
-  inserts.sort((a, b) => { check?.(); return a.at - b.at; });
-  let rewritten = '', offset = 0;
-  for (const insert of inserts) {
-    check?.();
-    rewritten += query.slice(offset, insert.at) + insert.text;
-    offset = insert.at;
-  }
-  return rewritten + query.slice(offset);
-}
 
 export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBudget, timer: buildTimer } = {}) {
+  // Temporary RSM-ZHMEM switch: 1 = raw bigrams; porter = bigrams + stems.
+  const bigramOnly = process.env.COMPACTION_RECALL_SQLITE_BIGRAM_ONLY;
+  if (bigramOnly === '1') arm = 'off';
+  else if (bigramOnly === 'porter') arm = 'porter';
+  const trialMode = process.env.COMPACTION_RECALL_SQLITE_HAN_PHRASE_TRIAL;
+  if (trialMode !== undefined) arm = 'porter'; // Retain the existing dictionary trial selection.
+  const trial = createHanPhraseTrial(trialMode ?? (['jieba', 'porter-jieba'].includes(arm) ? 'jieba' : 'off'));
   autoGate = parseAutoGate(autoGate);
   const budget = Number.isSafeInteger(snippetBudget) && snippetBudget > 0 ? snippetBudget : 240;
-  const { tokenize, tokenizeSpans } = createTokenizer(arm);
+  const { tokenize, tokenizeSpans } = trial.tokenizer;
+  const automaticTokenizer = ['jieba', 'porter-jieba'].includes(arm) ? trial.automaticTokenizer : createTokenizer(arm);
   const porter = arm === 'porter' || arm === 'porter-jieba' || arm === 'porter-js';
   const lemma = arm === 'lemma-index' ? createLemmaNormalizer() : undefined;
   // Latest id wins before the empty check, so a latest empty edit hides older text.
@@ -150,16 +65,17 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
   });
   const corpus = [...byId.values()].filter(document => document.text !== '');
   const db = new DatabaseSync(':memory:');
-  let match, count, vocabulary, stem, inflections;
+  let match, count, stem, inflections, rankedSql, nativeParse;
   try {
     db.exec(`
       PRAGMA temp_store = MEMORY;
       CREATE VIRTUAL TABLE terms USING fts5(
         tokens, ${porter ? 'stems,' : ''} content='', columnsize=1, detail=full,
-        tokenize="ascii tokenchars '_$'"
+        tokenize='ascii'
       );
       CREATE VIRTUAL TABLE vocabulary USING fts5vocab(terms, '${porter ? 'col' : 'row'}');
       CREATE TABLE messages(rowid INTEGER PRIMARY KEY, content_hash BLOB NOT NULL, timestamp TEXT NOT NULL, recency INTEGER NOT NULL);
+      CREATE VIRTUAL TABLE manual_syntax USING fts5(tokens, ${porter ? 'stems,' : ''} content='', tokenize='ascii');
       BEGIN;
     `);
     if (arm === 'porter' || arm === 'porter-jieba') stem = createStemmer(db);
@@ -168,6 +84,11 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
       ? 'INSERT INTO terms(rowid, tokens, stems) VALUES (?, ?, ?)'
       : 'INSERT INTO terms(rowid, tokens) VALUES (?, ?)');
     const insertMessage = db.prepare('INSERT INTO messages VALUES (?, ?, ?, ?)');
+    let insertLongWord;
+    if (trial?.jieba) {
+      db.exec('CREATE TABLE han_rank(rowid INTEGER NOT NULL, term TEXT NOT NULL, PRIMARY KEY(rowid, term)) WITHOUT ROWID');
+      insertLongWord = db.prepare('INSERT INTO han_rank VALUES (?, ?)');
+    }
     corpus.forEach((document, i) => {
       const tokens = tokenize(document.text);
       if (lemma) for (let at = 0; at < tokens.length; at++) tokens[at] = lemma.normalize(tokens[at]);
@@ -175,6 +96,7 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
       else insert.run(i + 1, tokens.join(' '));
       const hash = createHash('sha256').update(document.text.replace(/\s+/g, ' ').trim()).digest();
       insertMessage.run(i + 1, hash, document.timestamp, document.recency);
+      if (insertLongWord) for (const word of trial.longWords(document.text)) insertLongWord.run(i + 1, word);
     });
     db.exec('COMMIT');
     if (arm === 'inflect-wink') inflections = createInflections(db.prepare('SELECT term FROM vocabulary').all().map(row => row.term));
@@ -182,12 +104,13 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
     const scored = `SELECT terms.rowid, bm25(terms${stem ? `, 1.0, ${arm === 'porter-js' ? '1.0' : '0.5'}` : ''}) AS score,
       messages.content_hash, messages.timestamp, messages.recency
       FROM terms JOIN messages ON messages.rowid = terms.rowid WHERE terms MATCH ?`;
-    match = db.prepare(`WITH hits AS MATERIALIZED (${scored}), ranked AS (
+    rankedSql = `WITH hits AS MATERIALIZED (${scored}), ranked AS (
       SELECT *, row_number() OVER (PARTITION BY content_hash ORDER BY score, timestamp DESC, recency DESC, rowid DESC) AS representative FROM hits
-    ) SELECT rowid, score FROM ranked WHERE representative = 1
+    )`;
+    match = db.prepare(`${rankedSql} SELECT rowid, score FROM ranked WHERE representative = 1
       ORDER BY score, timestamp DESC, recency DESC, rowid DESC LIMIT ? OFFSET ?`);
     count = db.prepare('SELECT count(DISTINCT content_hash) AS total FROM terms JOIN messages ON messages.rowid = terms.rowid WHERE terms MATCH ?');
-    vocabulary = db.prepare(stem ? 'SELECT 1 FROM vocabulary WHERE term = ? AND col = ?' : 'SELECT 1 FROM vocabulary WHERE term = ?');
+    nativeParse = db.prepare('SELECT rowid FROM manual_syntax WHERE manual_syntax MATCH ?');
   } catch (error) { db.close(); throw error; }
 
   function compileOperands(operands, check) {
@@ -276,7 +199,7 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
     const text = extractText(query);
     if (automatic && weightedLength(text) > autoGate) return { skipped: true, total: 0, results: [], queryTerms: [] };
     if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) throw new RangeError('limit must be a non-negative safe integer');
-    const queryTerms = [...new Set(tokenize(text).filter(term => !STOPWORDS.has(term)).map(term => lemma ? lemma.normalize(term) : term))];
+    const queryTerms = [...new Set(automaticTokenizer.tokenize(text).filter(term => !STOPWORDS.has(term)).map(term => lemma ? lemma.normalize(term) : term))];
     if (!queryTerms.length) return { skipped: false, total: 0, results: [], queryTerms };
     const terms = queryTerms.map(term => ({
       term,
@@ -292,20 +215,10 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
   }
   function rawRows(query, timer, check, options) {
     check?.();
-    const prepared = measured(timer, 'expression_rewrite', () => {
-      const effective = prefixExpression(query, arm, check);
-      const grouped = implicitOr(effective, check);
-      const porter = stem ? porterExpression(grouped, stem, check) : undefined;
-      const expression = lemma ? lemma.expression(grouped) : inflections ? inflections.expression(grouped) : porter?.expression ?? grouped;
-      const actual = porter?.operands ?? queryOperands(expression, check);
-      const snippets = actual.flatMap(operand => {
-        check?.();
-        return operand.prefix ? [operand] : tokenize(operand.term).map(term => ({ ...operand, term, prefix: false }));
-      });
-      return { expression, actual, snippets };
-    });
+    measured(timer, 'manual_query_validation', () => requireExplicitOperators(query, nativeParse, check));
+    const snippets = queryOperands(query, check);
     check?.();
-    return collect(prepared.expression, prepared.snippets, timer, check, options);
+    return collect(query, snippets, timer, check, options);
   }
   const ranks = rows => rows.map(({ id, score }) => ({ id, score }));
   return {
@@ -319,27 +232,7 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
     expansionTerms(query) {
       const text = extractText(query);
       if (weightedLength(text) > autoGate) return [];
-      return [...new Set(tokenize(text).filter(term => !STOPWORDS.has(term)))].map(term => ({ term, variants: inflections ? inflections.expand(term) : [term] }));
-    },
-    missingTerms(query, { timer = buildTimer, check } = {}) {
-      return measured(timer, 'missing_terms', () => {
-        check?.();
-        const effective = prefixExpression(query, arm, check);
-        const grouped = implicitOr(effective, check);
-        const terms = (stem ? porterExpression(effective, stem, check).operands : queryOperands(lemma ? lemma.expression(grouped) : inflections ? inflections.expression(grouped) : grouped, check)).filter(({ prefix }) => !prefix);
-        const missing = new Set();
-        for (const operand of terms) {
-          check?.();
-          const columns = operand.columns ?? ['tokens', 'stems'];
-          const available = !stem ? vocabulary.get(operand.term) : columns.some(column => {
-            const term = column === 'stems' && operand.stem ? stem(operand.term) : operand.term;
-            return term !== undefined && (column === 'stems' && operand.stem ? term.split(' ') : [term]).every(value => { check?.(); return vocabulary.get(value, column); });
-          });
-          if (!available) missing.add(operand.term);
-        }
-        check?.();
-        return [...missing];
-      });
+      return [...new Set(automaticTokenizer.tokenize(text).filter(term => !STOPWORDS.has(term)))].map(term => ({ term, variants: inflections ? inflections.expand(term) : [term] }));
     },
     queryRows(query, { mode = 'manual', timer = buildTimer, check, limit, offset = 0 } = {}) {
       return mode === 'auto' ? automaticRows(query, true, timer, limit, offset) : rawRows(query, timer, check, { limit, offset });
@@ -349,13 +242,20 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
       if (!Number.isInteger(limit) || limit < 1 || limit > 50) throw new RangeError('limit must be an integer from 1 to 50');
       if (!Number.isSafeInteger(offset) || offset < 0) throw new RangeError('offset must be a nonnegative safe integer');
       const found = rawRows(query, timer, check, { limit, offset });
-      const missingTerms = this.missingTerms(query, { timer, check });
-      const page = sqliteRecallPage(found.results, options, missingTerms, { total: found.total, baseOffset: offset });
+      const page = sqliteRecallPage(found.results, options, { total: found.total, baseOffset: offset });
+      // The former compiler supplied original long words. Raw MATCH cannot
+      // recover them: do not guess or silently present a replacement ranking.
+      if (trial.jieba) page.details.jiebaRankingPending = true;
       check?.();
       const ids = found.results.slice(0, page.details.returned).map(row => row.id);
-      return { total: found.total, page, ids, missingTerms };
+      return { total: found.total, page, ids };
     },
     search(query, { automatic = false, limit = 20 } = {}) {
+      if (!Number.isSafeInteger(limit) || limit < 0) throw new RangeError('limit must be a non-negative safe integer');
+      if (!automatic) {
+        const found = rawRows(query, buildTimer, undefined, { limit });
+        return { ...found, results: ranks(found.results) };
+      }
       const found = automaticRows(query, automatic, buildTimer, limit);
       if (found.skipped) return found;
       return { ...found, results: ranks(found.results) };

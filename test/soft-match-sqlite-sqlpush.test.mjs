@@ -50,11 +50,10 @@ test('actual engine SQL pages materialize and render only the requested candidat
   worker.commit(Array.from({ length: 30 }, (_, i) => ({ ...msg(i, ''), sourcePosition: i, message: { role: 'user', content: `needle row${String(i).padStart(2, '0')}` } })), { eligibleCount: 30 });
   const stages = [], materialized = [];
   const timer = { run(stage, work) { stages.push(stage); const result = work(); if (stage === 'candidate_materialization') materialized.push(result.length); return result; } };
-  const result = worker.query('needle ghost', { mode: 'manual', options: { page: true, limit: 2, offset: 7 }, timer });
+  const result = worker.query('needle OR ghost', { mode: 'manual', options: { page: true, limit: 2, offset: 7 }, timer });
   assert.equal(result.total, 30);
   assert.deepEqual(result.ids, ['m22', 'm21']);
   assert.deepEqual(visibleRows(result.page).map(row => row.id), result.ids);
-  assert.deepEqual(result.missingTerms, ['ghost']);
   assert.deepEqual(materialized, [2]);
   assert.equal(stages.filter(stage => stage === 'snippet_render').length, 2);
   const automatic = worker.query('needle', { mode: 'auto', options: { limit: 5 } });
@@ -99,7 +98,6 @@ test('worker-thread projection applies omit/replacement before dedupe/count/page
     const absent = await index.queryRanked('temporary OR liveOnly', changed, { mode: 'manual', options: { page: true, limit: 2 } });
     assert.equal(absent.total, 0);
     assert.deepEqual(absent.ids, []);
-    assert.deepEqual(absent.missingTerms, ['temporary', 'liveonly']);
     await pages(original, reverse);
     await pages(changed, reverse.filter(id => id !== records[3].id && id !== records[4].id));
   } finally { await index.dispose(); }

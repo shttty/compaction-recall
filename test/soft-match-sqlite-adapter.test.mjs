@@ -9,19 +9,24 @@ import { LOCATOR_TYPE, recallPageFromRows } from '../src/locator.mjs';
 import { weightedLength } from '../prototype/soft-match-sqlite/index.mjs';
 
 const rows = Array.from({ length: 50 }, (_, i) => ({ id: String(i), date: '2026-10-04', role: 'user', snippet: 'x'.repeat(120) }));
-test('missing vocabulary line preserves production pagination and the response budget', () => {
+test('SQLite renderer preserves pagination and budget; warns only for a true zero total', () => {
   assert.deepEqual(sqliteRecallPage(rows, { limit: 2 }), recallPageFromRows(rows, { limit: 2 }));
-  const first = sqliteRecallPage(rows, { limit: 2 }, ['未知词', 'missing']);
-  assert.match(first.text, /^History recall page: .*\n未入索引：未知词、missing\n/);
-  assert.equal(first.details.total, 50);
-  assert.equal(first.details.returned, 2);
-  const next = sqliteRecallPage(rows, { limit: 2, offset: first.details.nextOffset }, ['未知词']);
+  const first = sqliteRecallPage(rows, { limit: 2 });
+  const next = sqliteRecallPage(rows, { limit: 2, offset: first.details.nextOffset });
   assert.equal(JSON.parse(next.text.split('\n').find(line => line.startsWith('{'))).id, '2');
-  const budget = sqliteRecallPage(rows.map(row => ({ ...row, id: row.id.padStart(200, 'x') })), {}, ['z'.repeat(10000)]);
+  const budget = sqliteRecallPage(rows.map(row => ({ ...row, id: row.id.padStart(200, 'x') })));
   assert.ok(Array.from(budget.text).length <= 16000);
   assert.equal(budget.details.total, 50);
   assert.ok(budget.details.returned > 0 && budget.details.returned < 50);
   assert.equal(budget.details.nextOffset, budget.details.returned);
+  const zero = sqliteRecallPage([], {}, { total: 0, baseOffset: 0 });
+  assert.match(zero.text, /未找到匹配项。请检查参数格式、显式运算符以及查询切词是否与索引规则一致；必要时改写查询或使用 history_grep。零命中不代表历史中不存在相关内容。/);
+  assert.equal(zero.details.total, 0);
+  assert.ok(Array.from(zero.text).length <= 16000);
+  const emptyOffset = sqliteRecallPage([], { offset: 50 }, { total: 50, baseOffset: 50 });
+  assert.equal(emptyOffset.details.total, 50);
+  assert.equal(emptyOffset.details.returned, 0);
+  assert.doesNotMatch(emptyOffset.text, /未找到匹配项/);
 });
 
 test('SDK adapter searches beyond old word/codepoint caps and preserves raw native errors', async t => {
@@ -41,17 +46,24 @@ test('SDK adapter searches beyond old word/codepoint caps and preserves raw nati
     }
   };
   t.after(async () => { for (const handler of extension.handlers.get('session_shutdown') ?? []) await handler({ type: 'session_shutdown', reason: 'quit' }, ctx); });
-  const many = Array.from({ length: 1000 }, (_, i) => `missing${i}`).join(' ') + ' tailneedle';
+  const many = [...Array.from({ length: 1000 }, (_, i) => `missing${i}`), 'tailneedle'].join(' OR ');
   assert.ok(many.length > 4000);
   const uncapped = await recall.execute('uncapped', { query: many }, undefined, undefined, ctx);
   assert.equal(uncapped.details.total, 1);
   assert.match(uncapped.content[0].text, /tailneedle/);
-  const six = await recall.execute('six', { query: 'alpha beta gamma delta epsilon zeta' }, undefined, undefined, ctx);
+  const six = await recall.execute('six', { query: 'alpha AND beta AND gamma AND delta AND epsilon AND zeta' }, undefined, undefined, ctx);
   assert.equal(six.details.total, 1);
-  assert.doesNotMatch(six.content[0].text, /未入索引/);
-  const partial = await recall.execute('partial', { query: 'alpha nonexistent' }, undefined, undefined, ctx);
+  const partial = await recall.execute('partial', { query: 'alpha OR nonexistent' }, undefined, undefined, ctx);
   assert.equal(partial.details.total, 1);
-  assert.match(partial.content[0].text, /未入索引：nonexistent/);
+  assert.doesNotMatch(partial.content[0].text, /未找到匹配项/);
+  const zero = await recall.execute('zero', { query: 'alpha AND nonexistent' }, undefined, undefined, ctx);
+  assert.equal(zero.details.total, 0);
+  assert.match(zero.content[0].text, /未找到匹配项.*history_grep.*零命中不代表历史中不存在相关内容/);
+  const emptyOffset = await recall.execute('offset', { query: 'alpha', offset: 1 }, undefined, undefined, ctx);
+  assert.equal(emptyOffset.details.total, 1);
+  assert.equal(emptyOffset.details.returned, 0);
+  assert.doesNotMatch(emptyOffset.content[0].text, /未找到匹配项/);
+  await assert.rejects(recall.execute('implicit', { query: 'alpha beta' }, undefined, undefined, ctx));
   await assert.rejects(recall.execute('native', { query: '"' }, undefined, undefined, ctx), { message: 'unterminated string' });
   const recovered = await recall.execute('recover', { query: 'beta' }, undefined, undefined, ctx);
   assert.equal(recovered.details.total, 1);
@@ -90,7 +102,7 @@ test('SDK loads file gate/timeout once; lifecycle rebuilds retain them over late
   process.env.COMPACTION_RECALL_AUTO_GATE = '1';
   process.env.COMPACTION_RECALL_QUERY_TIMEOUT_MS = '1';
   for (const handler of extension.handlers.get('session_tree') ?? []) await handler({ type: 'session_tree' }, ctx);
-  const base = 'running 南京市 😀𠀀𠀁';
+  const base = 'Where did we discuss running near 南京市? 😀𠀀𠀁';
   const padded = length => base + ' '.repeat(length - weightedLength(base));
   const locatorIds = messages => messages.filter(message => message.customType === LOCATOR_TYPE)
     .flatMap(message => message.content.split('\n').filter(line => line.startsWith('{')).map(line => JSON.parse(line).id));
@@ -102,10 +114,15 @@ test('SDK loads file gate/timeout once; lifecycle rebuilds retain them over late
     }
     assert.deepEqual(locatorIds(messages).sort(), length <= 280 ? ['english', 'han', 'joint'] : []);
   }
-  const manual = await recall.execute('combined-manual', { query: 'running AND 南京市' + ' '.repeat(281) }, undefined, undefined, ctx);
+  for (const query of ['running', '南京市', 'running AND 南京市']) {
+    const raw = await recall.execute('raw-no-expansion', { query }, undefined, undefined, ctx);
+    assert.equal(raw.details.total, 0);
+    assert.match(raw.content[0].text, /未找到匹配项/);
+  }
+  const manual = await recall.execute('combined-manual', { query: 'stems:run AND "南京 京市"' + ' '.repeat(281) }, undefined, undefined, ctx);
   assert.equal(manual.details.total, 1);
   const manualRows = manual.content[0].text.split('\n').filter(line => line.startsWith('{')).map(line => JSON.parse(line));
   assert.deepEqual(manualRows.map(row => row.id), ['joint']);
   assert.match(manualRows[0].snippet, /runs 南京市/);
-  assert.doesNotMatch(manual.content[0].text, /未入索引/);
+  assert.doesNotMatch(manual.content[0].text, /未找到匹配项/);
 });

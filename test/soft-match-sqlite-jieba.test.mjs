@@ -83,10 +83,8 @@ test('native Jieba search segmentation is lazy, cached once per worker, and pres
       { term: '𠀀𠀁', start: 8, end: 10 },
       { term: '𠀀𠀁𠀂', start: 8, end: 11 },
       { term: '𠀁𠀂', start: 9, end: 11 },
-      { term: 'getuser', start: 12, end: 19 },
       { term: 'get', start: 12, end: 15 },
       { term: 'user', start: 15, end: 19 },
-      { term: 'foo_bar', start: 20, end: 27 },
       { term: 'foo', start: 20, end: 23 },
       { term: 'bar', start: 24, end: 27 },
     ]);

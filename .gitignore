@@ -1,4 +1,5 @@
-node_modules/
+# Dependencies, including local node_modules symlinks
+node_modules
 coverage/
 *.tsbuildinfo
 *.log

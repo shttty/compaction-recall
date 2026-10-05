@@ -64,7 +64,7 @@ for (const gate of [210, 280]) {
         const automatic = index.search(query, { automatic: true });
         assert.equal(automatic.skipped, length > gate, `${kind} ${length}`);
         assert.deepEqual(ids(automatic.results), length > gate ? [] : ['match']);
-        assert.deepEqual(ids(index.search(query).results), ['match']);
+        assert.deepEqual(ids(index.search('alpha' + ' '.repeat(length - 5)).results), ['match']);
         assert.deepEqual(ids(index.searchRaw('网关' + ' '.repeat(length - 4)).results), ['match']);
         assert.equal(index.expansionTerms(query).some(({ term }) => term === (kind === 'Han' ? '网关' : 'alpha')), length <= gate);
       }

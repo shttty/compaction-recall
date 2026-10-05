@@ -22,7 +22,6 @@ test('JS Porter shares native Porter query semantics and keeps Han outside stems
   for (const query of ['booked', 'book', 'booking', 'booked AND tickets', 'booked NOT tickets',
     '"booked"', 'tokens:booked', 'stems:book', 'stems:预约', 'NEAR(booked tickets, 2)', '"booked tickets"']) {
     assert.deepEqual(js.searchRaw(query).results.map(r => r.id).sort(), native.searchRaw(query).results.map(r => r.id).sort(), query);
-    assert.deepEqual(js.missingTerms(query), native.missingTerms(query), query);
   }
   assert.deepEqual(js.searchRaw('stems:预约').results, []);
 });
@@ -35,8 +34,8 @@ test('JS Porter applies native BM25 column weights 1/1 rather than the old 1/0.5
   const insert = db.prepare('INSERT INTO terms(rowid,tokens,stems) VALUES (?,?,?)');
   insert.run(1, 'book book', 'book book'); insert.run(2, 'booked padding', 'book pad'); insert.run(3, 'booking noise padding', 'book nois pad');
   const native = db.prepare('SELECT rowid,bm25(terms,1.0,1.0) AS score FROM terms WHERE terms MATCH ?');
-  for (const [query, expression] of [['book', '{tokens stems}:"book"'], ['booked', '(tokens:"booked" OR stems:"book")']]) {
+  for (const query of ['{tokens stems}:"book"', 'tokens:"booked" OR stems:"book"']) {
     const actual = new Map(js.searchRaw(query).results.map(r => [r.id, r.score]));
-    for (const row of native.all(expression)) assert.equal(actual.get(docs[row.rowid - 1].id), row.score);
+    for (const row of native.all(query)) assert.equal(actual.get(docs[row.rowid - 1].id), row.score);
   }
 });

@@ -16,23 +16,10 @@ const engineModule = new URL('../benchmark/retrieval-sqlite-worker.mjs', import.
 test('MATCH term extraction preserves literal Han and phrase constituents, ignoring grammar', () => {
   assert.deepEqual(queryTerms('{tokens}:NEAR("Alpha beta" 强迫性性行为, 10) NOT absent'),
     ['alpha', 'beta', '强迫性性行为', 'absent']);
-  assert.deepEqual(queryTerms('tokens:foo_bar OR "AND OR" OR 42'), ['foo_bar', 'and', 'or', '42']);
+  assert.deepEqual(queryTerms('tokens:foo_bar OR "AND OR" OR 42'), ['foo', 'bar', 'and', 'or', '42']);
   assert.deepEqual(queryTerms('tokens:^"one two"*'), ['one', 'two']);
 });
 
-test('vocabulary diagnostics mean absent bare terms, not absent phrase/Boolean matches', t => {
-  const index = createIndex([{ id: 'a', text: 'alpha beta foo_bar 网关 强迫性性行为 42' }]);
-  t.after(() => index.close());
-  assert.deepEqual(index.missingTerms('ALPHA OR absent OR 网关 OR absent'), ['absent']);
-  assert.deepEqual(index.missingTerms('tokens:NEAR(alpha beta, 10) NOT "absent ghost"'), ['absent', 'ghost']);
-  assert.deepEqual(index.missingTerms('"beta alpha"'), []);
-  assert.deepEqual(index.searchRaw('"beta alpha"').results, []);
-  assert.deepEqual(index.missingTerms('ghost* OR "missing phra"*'), ['missing']);
-  assert.deepEqual(index.missingTerms('tokens:^"alpha absent"'), ['absent']);
-  assert.deepEqual(index.missingTerms('tokens:^"missing phra"*'), ['missing']);
-  assert.deepEqual(index.missingTerms('强迫性性行为'), ['强迫性性行为']);
-  assert.deepEqual(index.missingTerms('42'), []);
-});
 
 test('worker preserves complete synchronous ranks/scores, query gate and native failures', t => {
   const entries = Array.from({ length: 65 }, (_, i) => entry(String(i).padStart(2, '0'),
@@ -41,7 +28,7 @@ test('worker preserves complete synchronous ranks/scores, query gate and native 
   const sync = createIndex(entries.map(e => ({ id: e.id, text: e.message.content })));
   t.after(() => { worker.dispose(); sync.close(); });
   worker.commit(entries, { eligibleCount: entries.length, append: false });
-  for (const query of ['alpha beta', '网关 OR 重启', 'tokens:alpha NOT padding', 'NEAR(alpha beta, 3)', '"alpha alpha"', 'foo*', 'absent']) {
+  for (const query of ['alpha OR beta', '网关 OR 重启', 'tokens:alpha NOT padding', 'NEAR(alpha beta, 3)', '"alpha alpha"', 'foo*', 'absent']) {
     const found = worker.query(query, { mode: 'manual', options: { limit: 1, offset: 8 } });
     const expected = sync.searchRaw(query);
     assert.deepEqual(ranks(found.results), expected.results, query);
@@ -57,7 +44,7 @@ test('worker preserves complete synchronous ranks/scores, query gate and native 
   assert.deepEqual(ranks(worker.query('alpha', { mode: 'manual' }).results), sync.searchRaw('alpha').results);
 });
 
-test('live entries never affect ranks/vocabulary; activation and edits replace searchable text', t => {
+test('live entries never affect ranks; activation and edits replace searchable text', t => {
   const worker = createWorkerEngine();
   t.after(() => worker.dispose());
   const entries = [entry('a', 'alpha alpha', 0), entry('b', 'alpha beta', 2), entry('live', 'liveonly alpha', 9)];
@@ -65,16 +52,16 @@ test('live entries never affect ranks/vocabulary; activation and edits replace s
   const baseline = worker.query('alpha', { mode: 'manual' });
   worker.commit([...entries, entry('live2', 'alpha '.repeat(1000), 10)], { eligibleCount: 3, append: true });
   assert.deepEqual(worker.query('alpha', { mode: 'manual' }), baseline);
-  assert.deepEqual(worker.query('liveonly', { mode: 'manual' }).missingTerms, ['liveonly']);
+  assert.equal(worker.query('liveonly', { mode: 'manual' }).total, 0);
   worker.commit(entries, { eligibleCount: 10, append: true });
   assert.deepEqual(worker.query('liveonly', { mode: 'manual' }).results.map(row => row.id), ['live']);
   worker.commit([entry('a', 'replacement', 0), entries[1], entries[2]], { eligibleCount: 3, append: false });
   assert.deepEqual(worker.query('alpha', { mode: 'manual' }).results.map(row => row.id), ['b']);
   assert.deepEqual(worker.query('replacement', { mode: 'manual' }).results.map(row => row.id), ['a']);
-  assert.deepEqual(worker.query('liveonly', { mode: 'manual' }).missingTerms, ['liveonly']);
+  assert.equal(worker.query('liveonly', { mode: 'manual' }).total, 0);
 });
 
-test('aligned spans retain codepoint positions and whole identifiers', t => {
+test('aligned component spans retain codepoint positions and anchor original identifiers', t => {
   const text = '🙂𠀀𠀁 foo_BAR foo_barista 中华人民共和国 ' + 'noise '.repeat(40) + '🙂 NeedleID foo_BAR';
   const spans = prototypeSpans(text);
   for (const span of spans) assert.equal(Array.from(text).slice(span.start, span.end).join('').toLowerCase(), span.term);
@@ -82,26 +69,24 @@ test('aligned spans retain codepoint positions and whole identifiers', t => {
   const worker = createWorkerEngine();
   t.after(() => worker.dispose());
   worker.commit([entry('a', text, 0)], { eligibleCount: 1 });
-  const raw = worker.query('NeedleID foo_BAR', { mode: 'manual' }).results[0];
+  const raw = worker.query('"needle id" AND "foo bar"', { mode: 'manual' }).results[0];
   assert.ok(raw.snippet.includes('NeedleID foo_BAR'));
   assert.ok(weightedLength(raw.snippet.replace(/^…|…$/gu, '')) <= 240);
   assert.deepEqual(worker.query('bar', { mode: 'manual' }).results.map(row => row.id), ['a']);
-  assert.ok(worker.query('foo_b*', { mode: 'manual' }).results[0].snippet.includes('foo_BAR'));
+  assert.ok(worker.query('bar*', { mode: 'manual' }).results[0].snippet.includes('foo_BAR'));
   assert.ok(worker.query('where NeedleID', { mode: 'auto' }).results[0].snippet.includes('NeedleID'));
-  const hanQuery = worker.query('中华人民共和国 OR NeedleID', { mode: 'manual' });
-  assert.deepEqual(hanQuery.missingTerms, ['中华人民共和国']);
+  const hanQuery = worker.query('"中华 华人 人民 民共 共和 和国" OR "needle id"', { mode: 'manual' });
   assert.deepEqual(hanQuery.results.map(row => row.id), ['a']);
 });
 
-test('BackgroundIndex transports full SQLite ranks and vocabulary extras, survives malformed MATCH', async () => {
+test('BackgroundIndex transports full SQLite ranks and survives malformed MATCH', async () => {
   const index = new BackgroundIndex({ engineModule });
   const branch = initialBranch(Array.from({ length: 55 }, (_, i) => msg(i, `alpha beta 网关 row${String(i).padStart(2, '0')}`)));
   try {
     await index.prepare(branch, { preindexLive: true });
-    const found = await index.queryRanked('alpha absent', branch, { mode: 'manual', options: { limit: 1, offset: 10 } });
+    const found = await index.queryRanked('alpha OR absent', branch, { mode: 'manual', options: { limit: 1, offset: 10 } });
     assert.equal(found.total, 55);
     assert.equal(found.results.length, 55);
-    assert.deepEqual(found.missingTerms, ['absent']);
     assert.deepEqual(found.results.map(row => row.id), branch.slice(0, 55).map(e => e.id).reverse());
     await assert.rejects(index.queryRanked('"', branch, { mode: 'manual' }), /unterminated string/);
     assert.equal((await index.queryRanked('网关', branch, { mode: 'auto' })).total, 55);
