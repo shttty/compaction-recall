@@ -2,69 +2,108 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-Pi 压缩长对话后，摘要可能丢掉名字、数字和原话。compaction-recall 让模型搜索当前分支被压缩掉的原始消息，再展开证据核实。
+一个让 AI agent 从已压缩对话中找回细节的扩展。
 
-**0.1.0 目前是本地发布准备；本任务没有发布 npm 包或 release tag。** 默认 `full` 使用原生 Node worker 内的 **SQLite FTS5 内存索引**，不接管 Pi 压缩，不持久化索引、不生成 db/WAL/SHM 文件、不额外调用模型。`lite` 只有正则 grep 和展开工具，没有 worker 或自动提示。
+摘要可能丢掉名字、数字和原话。compaction-recall 让模型搜索当前分支的原始消息，再展开相关证据，不替换 agent 自身的压缩机制。
 
-## 要求与本地使用
+- **本地内存检索**：SQLite FTS5 在 Node worker 中运行，不持久化索引，不需要 embedding 服务，也不额外调用模型。
+- **支持中英文**：使用英文词干和汉字双字索引，可选 jieba 长词排名，在已有命中中优先返回相关记录。
+- **两种模式**：`full` 提供自动历史提示和三个工具；`lite` 只保留 grep 与原文展开，不启动索引或 worker。
 
-需要 **Node.js >=24.18.0**；已核对宿主 **Pi SDK 1.0.0**。SDK 与 `typebox` 由宿主提供、维持 peer；唯一生产 npm 依赖是 `@node-rs/jieba`，仅在 worker 加载。
+## 安装
 
-检出源码后安装锁定依赖，再临时加载一个入口，不改 Pi profile：
+目前支持 Pi，其他 agent 适配计划中。
+
+### Pi
+
+需要 [Pi](https://github.com/badlogic/pi-mono) 和 **Node.js >=24.18.0**，已在 **Pi SDK 1.0.0** 上测试。
+
+从 Git 安装：
 
 ```sh
+pi install git:github.com/shttty/pi-context-recall
+```
+
+也可以从源码临时加载，不加入 Pi 的持久配置：
+
+```sh
+git clone https://github.com/shttty/pi-context-recall.git
+cd pi-context-recall
 npm ci --ignore-scripts
 pi -e ./src/index.ts
 ```
 
-也可以 `pi -e /absolute/path/to/compaction-recall`。Pi 不替本地目录安装依赖，应先安装；Pi 管理的 npm/git 包会安装声明的依赖。`pi install` 会改 settings，本任务未执行。`src/index.ts` 和替代入口 `src/recall-extension.ts` 只选一个，不要重复注册。
+Pi 会为其管理的 Git 包安装依赖；本地源码目录需要自行安装。
 
-## 工具与配置
+配置文件位于 Pi profile 的 agent 插件目录：`$PI_CODING_AGENT_DIR/extensions/compaction-recall.json`（默认：`~/.pi/agent/extensions/compaction-recall.json`）。**配置文件不会自动生成**，需要调整时手动创建；不创建则使用默认值或环境变量。
 
-压缩后，`full` 在回答前给模型几条词面定位提示，由模型决定是否继续取证：
+## 工具
 
-- `history_recall({concepts, match?, exclude?, limit?, offset?})`：1–5 个概念组，每组 1–4 个替代词面。默认 `any` 组间 OR；`all` 要求每组在同一记录命中。一个词面分析出的词项要求共现，不要求短语顺序。例如 `{"concepts":[["bicycle","bike"],["repair","service"]],"match":"all"}`。
-- `history_expand({id, before?, after?, offset?})`：读取当前分支编辑生效后的原文，长条目可翻页。
-- `history_grep({pattern, limit?, offset?})`：证据不足时独立使用 JavaScript 正则搜索。recall 不暗中切换为字面扫描或 grep。
+`full` 模式会在回答前附上简短的历史定位提示，由模型决定是否继续搜索或展开。
 
-FTS 决定候选。生产固定已测的英文 Porter＋纯汉字双字策略。worker 默认启用 jieba，仅利用既有词典长词表加一项 SQL 排名信号：正向、纯汉字、至少三字词面的不同命中数优先，其次 BM25 和原时间/recency/rowid ties，**先排序再分页**。exclude 不加分，候选不扩大。自动选词不变；已测纯双字自动词项通常不具有中文长词加分。不承诺语义或同义词扩展。
+| 工具 | 作用 |
+|---|---|
+| `history_recall` | 用概念组、替代词和排除词检索已压缩历史。 |
+| `history_expand` | 按 ID 读取原始条目，可包含相邻条目并翻页。 |
+| `history_grep` | 独立使用 JavaScript 正则表达式搜索历史。 |
 
-部分 token 损失继续按分析词项搜 FTS，并返回短 warning；零 token 保留 compiler 错误。正常零命中仍是零结果。recall 每页默认最多 50 条、目标预算 16,000 Unicode 码点，续页必须用返回的 `nextOffset`。
+## 配置
 
-可选 agent 级文件 `<agent-dir>/extensions/compaction-recall.json`（默认 agent 目录 `~/.pi/agent`）：
+未填项用默认值，环境变量优先于配置文件，修改后重载。
 
-```json
-{
-  "mode": "full",
-  "jieba": true,
-  "autoGate": 280,
-  "snippetBudget": 240,
-  "recallTimeoutMs": 5000,
-  "trace": false,
-  "preindex": { "userCycles": 10, "toolRounds": 10 }
-}
-```
+| 配置项 | 默认值 | 说明 | 环境变量覆盖 |
+|---|---|---|---|
+| `mode` | `"full"` | `full` 提供自动提示和三个工具；`lite` 只保留 grep/expand。 | `COMPACTION_RECALL_MODE`（`full`/`lite`） |
+| `jieba` | `true` | 按中文长词命中重排已有 FTS 候选，先排序再分页。 | `COMPACTION_RECALL_JIEBA`（`on`/`off`） |
+| `autoGate` | `280` | 用户消息超过此长度时，按长任务指示处理，跳过自动召回以避免带入无关历史；模型仍可主动调用工具查询（汉字计 2，其余码点计 1）。 | `COMPACTION_RECALL_AUTO_GATE` |
+| `snippetBudget` | `240` | 控制自动提示和 `history_recall` 每条结果展示的原文片段长度，越大允许展示的片段越长（汉字计 2，其余码点计 1）。 | `COMPACTION_RECALL_SNIPPET_BUDGET` |
+| `recallTimeoutMs` | `5000` | 主动 recall 超时门槛，单位毫秒，不能抢占 native MATCH。 | `COMPACTION_RECALL_QUERY_TIMEOUT_MS` |
+| `preindex.userCycles` | `10` | 完成多少轮用户交互后预热，范围 `1`–`100`，两个预热门槛满足任一即触发。 | `COMPACTION_RECALL_PREINDEX_TURNS` |
+| `preindex.toolRounds` | `10` | 完成多少批工具调用后预热，范围 `1`–`100`，同批并行调用只计一次。 | `COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS` |
+| `trace` | `false` | 记录带内容的 recall 诊断，需同时指定计时文件，日志应私密保存。 | 仅文件配置 |
+| `COMPACTION_RECALL_TIMING_FILE` | 未设置 | JSONL 计时日志路径，不设则不记录计时。 | 仅环境变量 |
 
-自动门槛和片段预算中 Han 码点权重 2，其他码点 1。自动查询过长时跳过提示，主动 recall 不受这个门槛限制。超时是协作式：native MATCH 不可抢占，但过期结果会丢弃，健康 worker 缓存不清空。
 
-```sh
-COMPACTION_RECALL_MODE=lite pi -e ./src/index.ts
-COMPACTION_RECALL_JIEBA=off pi -e ./src/index.ts
-```
-
-环境覆盖还包括 `COMPACTION_RECALL_AUTO_GATE`、`COMPACTION_RECALL_SNIPPET_BUDGET`、`COMPACTION_RECALL_QUERY_TIMEOUT_MS` 及原预热节奏变量。配置只在扩展加载时读取，改后需重载。`PI_CODING_AGENT_DIR` 选 agent 目录，不跟随 cwd 或 SDK 的 `agentDir` 选项。生产不读旧 SQLite trial/arm 变量。完整规则见仓库的 [PLUGIN 说明](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md)。
+检索、预热和 trace 配置只对 `full` 模式生效。细节见 [配置与行为参考](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md)。
 
 ## 范围与隐私
 
-只搜**当前分支**的已压缩用户/助手正文及助手工具调用名/输入。thinking、图片、工具结果正文和压缩摘要不入搜索；可读工具结果仍可按 id 展开。最新 context edit 生效：省略条目不可见，替换内容遮住原文。不跨 session 或被放弃的分支。
+- 只搜索**当前分支**的已压缩历史，不跨会话或被放弃的分支。
+- 索引用户/助手正文及助手工具调用名和参数，不索引思考内容、图片、工具结果正文或压缩摘要；可读的工具结果仍可按 ID 展开。
+- 遵循分支内的上下文编辑：省略的条目不可见，替换内容会遮住原文。
+- 提示和工具结果会进入模型上下文，可能发送给模型服务商；`lite` 只关闭自动提示，不阻止主动检索的历史被发送。
 
-提示和工具结果可能发送给模型 provider。`lite` 不注入隐藏提示，但不是“历史永不发送”的隐私开关。查不到不证明不存在。worker 失败直接暴露错误，不切换检索算法；shutdown 等待 worker。可选计时只写显式指定的文件；文件配置 `trace: true` 会记录带内容的结构化输入，应按敏感文件处理。
+查不到不代表从未提到，重要信息应展开原文核实。诊断 trace 可能包含对话内容，不应公开上传。
 
-## 冻结评测与历史性能
+## 评测
 
-[0.1 benchmark 索引](https://github.com/shttty/pi-context-recall/tree/main/benchmark/archive/release-0.1.0) 公开来源、处理、固定输入hash、runner与非正文指标，并按用户授权保留 **16 道冻结中文题面译文**。英文原题、参考、模型回答、裁判理由和检索摘录留外部。LME 原题可按上游ID提取；逐字复现翻译历史、修订参考、本地派生SWE题集及冻结输出需匹配hash的外部资产，不能称只凭链接可复现96份答案。SWE最新机器严格结果仍为 **7/8**，sw08人工认可独立。benchmark不入npm。
+评测使用 [LongMemEval](https://huggingface.co/datasets/xiaowu0162/longmemeval) 的部分题目，以及基于 [SWE-chat](https://huggingface.co/datasets/SALT-NLP/SWE-chat) 代码会话构造的回忆题。仓库包含 16 道中文题面译文、来源标识、处理说明、结果指标和复现脚本；原始语料及其他完整评测输入需另行获取。
 
-更早的 JS 版本结果仍在 [BENCHMARK_RESULTS](doc/BENCHMARK_RESULTS.md)，旧内存/耗时表在仓库 [PERFORMANCE](https://github.com/shttty/pi-context-recall/blob/main/archive/doc/PERFORMANCE.md)。它们是**历史记录，不是本次 SQLite 生产版本的测量**，不能当作当前内存/延迟承诺；小样本单轮评分也不证明稳定准确率。旧 JS 运行时与原说明保留在 git 归档，不进包。
+答题模型：`gpt-6-luna`（high）；判题模型：`gpt-6-luna`（xhigh）。表中为答对题数 / 总题数，DEV8 和 HARD8 各 8 题。
+
+### 历史最佳
+
+| 模式 | DEV8 | HARD8 | 峰值合计 |
+|---|---:|---:|---:|
+| Pi 原生 | 2/8 | 0/8 | 2/16 |
+| lite | 2/8 | 0/8 | 2/16 |
+| full | 8/8 | 3/8 | 11/16 |
+
+DEV8、HARD8 分别列示历史峰值，可来自不同轮次；峰值合计为两组最高分相加，不代表同一轮 16 题实测。不逐题拼接答案。lite 目前只有一轮正式模式的完整记录。
+
+### 随机测试
+
+2026-10-06 在固定英文 LongMemEval_M 题集上单轮实测，非重新随机抽题，也未从多轮结果中择优。三组使用相同题目、参考答案和原生 Pi 压缩快照；原生基线仅使用压缩后保留的上下文，不提供历史检索工具。
+
+| 模式 | DEV8 | HARD8 | 合计 |
+|---|---:|---:|---:|
+| Pi 原生 | 0/8 | 0/8 | 0/16 |
+| lite | 2/8 | 0/8 | 2/16 |
+| full | 7/8 | 3/8 | 10/16 |
+
+这是小规模开发集成绩，不代表完整 LongMemEval 跑分或稳定召回准确率。
+
+运行命令和输入要求见 [benchmark 指南](https://github.com/shttty/pi-context-recall/blob/main/benchmark/INDEX.md)。
 
 ## 开发
 
@@ -74,8 +113,8 @@ npm run check
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'
 ```
 
-检查使用离线合成 fixture 与隔离 agent 目录。真实评测需要显式外部配置和另行授权。
+测试使用合成数据与隔离的 agent 目录。真实评测需要外部数据和模型服务配置，可能产生模型 API 费用。
 
 ## 许可
 
-MIT。数据/软件归属、SWE-chat 数据库许可与单条内容权利区别见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。benchmark 仅入 git；完整历史、凭据、profile、provider wire 不打包。
+[MIT](LICENSE)。第三方软件与数据集的归属说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
