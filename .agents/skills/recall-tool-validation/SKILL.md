@@ -23,7 +23,7 @@ Check the relevant public behavior rather than retired implementation helpers: b
 Use the maintained three-mode smoke with an explicit candidate directory and a fresh external output directory:
 
 ```sh
-node benchmark/coding-recall/e2e/lme-zh-smoke.mjs \
+node benchmark/smoke.mjs \
   --three-arms "$CANDIDATE_ROOT" "$NEW_SMOKE_OUT"
 ```
 

@@ -1,6 +1,6 @@
 # 如何运行 benchmark
 
-当前维护入口是 `benchmark/coding-recall/e2e/lme-zh-run.py`：固定英文 LME16 的 Pi 原生 / lite / full 对比，以及 SWE-chat 派生回忆题。脚本名保留 `lme-zh`，当前 LME 数据集为 `LME16-English`。benchmark 随源码提供，不进入 npm 包。
+当前维护入口是 `benchmark/run.py`：固定英文 LME16 的 Pi 原生 / lite / full 对比，以及 SWE-chat 派生回忆题。当前 LME 数据集为 `LME16-English`。`runner/` 管准备、调度与持久化，`judging/` 管判分契约与执行，`sdk/` 管实际Pi SDK及证据观察；实现索引见 [benchmark目录](../benchmark/INDEX.md)。benchmark 随源码提供，不进入 npm 包。
 
 离线测试只验证产品与接线；真实答题和判分需要另行授权，会产生模型费用。下面的运行示例不是模型调用授权。
 
@@ -12,14 +12,14 @@
 npm ci --ignore-scripts
 npm run check
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'
-python3 benchmark/coding-recall/e2e/lme-zh-run.py --help
-python3 benchmark/coding-recall/e2e/lme-zh-report.py --help
+python3 benchmark/run.py --help
+python3 benchmark/report.py --help
 ```
 
 真实 SDK / worker 检查使用隔离合成 profile 和阻断网络，不调用真实模型；输出必须是不存在的外部目录：
 
 ```sh
-node benchmark/coding-recall/e2e/lme-zh-smoke.mjs \
+node benchmark/smoke.mjs \
   --three-arms "$CANDIDATE_ROOT" "$NEW_SMOKE_OUT"
 ```
 
@@ -71,7 +71,7 @@ runner 的准备阶段是唯一清单 owner：由实际源码/锁定依赖、题
 准备只确定性生成并核对源码/依赖、题面/reference、模型配置和snapshot清单，不打开profile、不启动SDK或provider：
 
 ```sh
-python3 benchmark/coding-recall/e2e/lme-zh-run.py \
+python3 benchmark/run.py \
   --config "$CONFIG" --data-root "$DATA_ROOT" \
   --snapshot-source "$SNAPSHOT_SOURCE" --output "$OUT" \
   --arm all --stage prepare
@@ -84,7 +84,7 @@ python3 benchmark/coding-recall/e2e/lme-zh-run.py \
 ```sh
 systemd-run --user --scope \
   -p MemoryMax=14G -p MemorySwapMax=0 \
-  python3 benchmark/coding-recall/e2e/lme-zh-run.py \
+  python3 benchmark/run.py \
     --config "$CONFIG" --data-root "$DATA_ROOT" \
     --snapshot-source "$SNAPSHOT_SOURCE" --output "$OUT" \
     --arm all --workers 8 --stage flow
@@ -108,7 +108,7 @@ SWE使用同一个真实入口和编排，不保留空壳转发CLI：
 ```sh
 systemd-run --user --scope \
   -p MemoryMax=14G -p MemorySwapMax=0 \
-  python3 benchmark/coding-recall/e2e/lme-zh-run.py \
+  python3 benchmark/run.py \
     --dataset SWE-chat --config "$CONFIG" --data-root "$SWE_DATA_ROOT" \
     --output "$SWE_OUT" --arm pi-full --stage flow
 ```
@@ -124,7 +124,7 @@ systemd-run --user --scope \
 `--arm all` 的各arm结果位于输出目录下的对应arm目录；单arm使用指定输出。`manifest.json` 保存冻结身份与终态；结果、attempt和会话按内容hash绑定，报告只读取已有产物。需要单独生成离线报告时：
 
 ```sh
-python3 benchmark/coding-recall/e2e/lme-zh-report.py --run "$ARM_OUT"
+python3 benchmark/report.py --run "$ARM_OUT"
 ```
 
 恢复使用同一条入口、同一配置/题面/源码/快照和输出目录；已完成阶段复用，不重复模型调用。身份改变、未知在途标记、完成证据缺失或篡改会拒绝恢复。不要删除账本或改旧manifest强制重放；更换输入或代码建立新轮次。

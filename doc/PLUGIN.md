@@ -2,6 +2,8 @@
 
 本文说明 compaction-recall 的完整配置、检索行为和使用限制。安装与快速介绍见 [README](../README.zh-CN.md)。目前支持 Pi；插件不替换宿主的压缩机制，不持久化索引，也不额外调用模型。
 
+公开入口仍为 `src/index.ts`，替代兼容入口仍为 `src/recall-extension.ts`；每次只加载一个。两者只负责导出或装配：`tools/` 分别拥有 recall/grep/expand 的描述、schema与执行，`extension/` 拥有单次配置读取、索引生命周期/预热、自动context以及共享分支/计时操作。`history/`（分支投影与定位）、`search/`（查询与SQLite检索）、`worker/`（后台调度与纯mjs worker）、`observability/`（timing/trace）保留现有分工；配置、trace、index和cadence不重复创建，没有新增转发入口或TS worker loader。评测源码职责和命令见 [benchmark索引](../benchmark/INDEX.md) 与 [运行指南](benchmark.md)。
+
 ## 选择模式
 
 | 行为 | `full`（默认） | `lite` |
