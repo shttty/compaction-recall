@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parents[1] / 'benchmark/coding-recall/e2e'
-spec = importlib.util.spec_from_file_location('capacity_retry_runner', HERE / 'round2-run.py')
+spec = importlib.util.spec_from_file_location('capacity_retry_runner', HERE / 'phases.py')
 runner = importlib.util.module_from_spec(spec)
 sys.path.insert(0, str(HERE))
 try:
@@ -27,8 +27,8 @@ class CapacityRetry(unittest.TestCase):
                 patch.object(runner.common, 'durable_phase', side_effect=lambda d, n, i, operation: operation()), \
                 patch.object(runner.time, 'sleep'):
             result = runner.answer_one(Path(directory), {}, {},
-                                       {'fingerprint': 'synthetic', 'preflight': {'test': {'sha256': 'synthetic'}}},
-                                       {'id': 'synthetic'}, 'test', stop_retry=runner.common.capacity_error)
+                                       {'fingerprint': 'synthetic', 'toolEvidence': {'test': {'sha256': 'synthetic'}}},
+                                       {'id': 'synthetic'}, 'test', command_factory=lambda *args: [], stop_retry=runner.common.capacity_error)
             return attempts.call_count, result
 
     def test_capacity_rejection_is_not_retried(self):

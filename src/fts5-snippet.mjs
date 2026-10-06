@@ -158,16 +158,3 @@ export function selectFts5Range(chars, hits, budget = 120, { sentenceBonus = tru
   }
   return { start: bestStart, end, score: bestScore };
 }
-
-/** Select a codepoint window from caller-provided {term,start,end} hits. */
-export function selectFts5Window(text, hits, budget = 120, options = {}) {
-  const chars = Array.from(text);
-  const { start, end, score } = selectFts5Range(chars, hits, budget, options);
-  const snippet = `${start > 0 ? '…' : ''}${chars.slice(start, end).join('')}${end < chars.length ? '…' : ''}`;
-  options.check?.();
-  return { start, end, score, snippet };
-}
-
-export function fts5Snippet(text, hits, budget = 120, options = {}) {
-  return selectFts5Window(text, hits, budget, options).snippet;
-}

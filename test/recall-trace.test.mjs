@@ -21,7 +21,7 @@ const message = (id, args) => ({ role: 'assistant', content: [
 ] });
 const result = { ids: ['b', 'a'], total: 8, offset: 2, returned: 2, nextOffset: 4 };
 
-test('disabled trace leaves timing bytes untouched; missing destination warns once', () => {
+test('disabled trace leaves timing bytes untouched and a missing destination keeps tracing disabled', () => {
   const f = fixture();
   try {
     const timer = new StageTiming(() => 0);
@@ -32,7 +32,6 @@ test('disabled trace leaves timing bytes untouched; missing destination warns on
     assert.deepEqual(readFileSync(f.path), bytes);
     assert.deepEqual(warnings, []);
     assert.equal(createRecallTrace({ enabled: true, path: '', warn: text => warnings.push(text) }), undefined);
-    assert.deepEqual(warnings, ['compaction-recall: trace enabled without COMPACTION_RECALL_TIMING_FILE; trace disabled']);
   } finally { f.close(); }
 });
 

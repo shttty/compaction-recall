@@ -20,12 +20,11 @@ export function createStemmer(db) {
 
 const quote = text => `"${text.replaceAll('"', '""')}"`;
 
-export function porterTerm(term, stem, prefix = false) {
-  const suffix = prefix ? '*' : '';
-  const base = quote(term) + suffix;
+export function porterTerm(term, stem) {
+  const base = quote(term);
   const alias = stem(term);
   if (!alias) return `tokens : ${base}`;
   if (alias === term) return `{tokens stems} : ${base}`;
   // Different aliases are separate native phrases: their BM25 evidence adds.
-  return `(tokens : ${base} OR stems : ${quote(alias)}${suffix})`;
+  return `(tokens : ${base} OR stems : ${quote(alias)})`;
 }

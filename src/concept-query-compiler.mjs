@@ -26,7 +26,7 @@
 
 
 
-export const LIMITS = Object.freeze({
+const LIMITS = Object.freeze({
   groups: 5,
   alternatives: 4,
   exclusions: 5,
@@ -39,7 +39,7 @@ export const LIMITS = Object.freeze({
   matchCodeUnits: 32768,
 });
 
-export class QueryError extends Error {
+class QueryError extends Error {
            code        ;
   constructor(code        , message        ) {
     super(message);
@@ -90,7 +90,7 @@ function join(op              , values                   )         {
 }
 
 /** FTS5 expression quoting, not SQL quoting. */
-export function quoteFts5Atom(value        )         {
+function quoteFts5Atom(value        )         {
   const atom = text(value, "atom", LIMITS.atomCodePoints);
   return `"${atom.replace(/"/g, '""')}"`;
 }

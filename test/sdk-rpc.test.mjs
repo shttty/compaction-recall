@@ -41,17 +41,13 @@ function fixture(t) {
   writeFileSync(path.join(profile, 'auth.json'), JSON.stringify({
     'synthetic-offline': { type: 'api_key', key: 'synthetic-not-a-real-key' },
   }));
-  // These are only prerequisite files. No helper import or dataset evaluation occurs.
-  writeFileSync(path.join(root, 'helper.py'), 'raise RuntimeError("must not import")\n');
-  writeFileSync(path.join(root, 'data.json'), '[]');
   writeFileSync(path.join(personal, 'settings.json'), '{"defaultProvider":"must-not-use"}');
   const phase = { provider: 'synthetic-offline', model: 'fixture-model', effort: 'off', profile };
   const config = {
-    sdk_path: sdkDirectory(), helper_path: path.join(root, 'helper.py'),
-    data_path: path.join(root, 'data.json'), candidate_repo: root, output_dir: output,
+    sdk_path: sdkDirectory(), output_dir: output,
     system_prompt: 'Offline SDK boundary fixture.',
-    protocol: { segments: 4, reserve_tokens: 1024, overhead_tokens: 128 },
-    ...Object.fromEntries(['compression', 'answer', 'judge'].map(name => [name, { ...phase }])),
+    protocol: { reserve_tokens: 1024, overhead_tokens: 128 },
+    ...Object.fromEntries(['answer', 'judge'].map(name => [name, { ...phase }])),
   };
   const configPath = path.join(root, 'config.json');
   const guard = path.join(root, 'network-guard.mjs');
@@ -94,7 +90,7 @@ test('describe uses real SDK descriptors for all phases without network or profi
   const f = fixture(t);
   const before = f.hashFiles(f.profile);
   const personal = f.hashFiles(f.personal);
-  for (const phase of ['compression', 'answer', 'judge']) {
+  for (const phase of ['answer', 'judge']) {
     const result = f.run('--phase', phase, '--describe');
     assert.equal(result.status, 0, result.stderr);
     assert.deepEqual(JSON.parse(result.stdout), {

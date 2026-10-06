@@ -1,190 +1,142 @@
 # 如何运行 benchmark
 
-本文介绍当前 Pi 原生、`lite`、`full` 的 LME16 答题对比，以及离线检查、结果读取和性能诊断。所有命令从仓库根目录执行；benchmark 工具只随源码提供，不包含在 npm 包中。
+当前维护入口是 `benchmark/coding-recall/e2e/lme-zh-run.py`：固定英文 LME16 的 Pi 原生 / lite / full 对比，以及 SWE-chat 派生回忆题。脚本名保留 `lme-zh`，当前 LME 数据集为 `LME16-English`。benchmark 随源码提供，不进入 npm 包。
 
-**先区分两件事：**离线测试检查插件与评测接线是否工作，不产生模型准确率；真实答题与判分会调用模型服务，产生费用。
+离线测试只验证产品与接线；真实答题和判分需要另行授权，会产生模型费用。下面的运行示例不是模型调用授权。
 
 ## 1. 环境与离线检查
 
-需要 Node.js >=24.18.0、Python 3 和已安装的项目依赖。真实 LME16 runner 还要求 Linux cgroup v2、可用的 systemd 用户服务，以及一个 14 GiB 内存、禁用 swap 的共享运行范围。
+需要 Node.js >=24.18.0、Python 3 和项目锁定依赖。真实运行要求 Linux cgroup v2、systemd 用户服务，以及一个共享的 14 GiB、零 swap 运行范围。
 
 ```sh
 npm ci --ignore-scripts
 npm run check
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'
-```
-
-检查实际命令行选项，不发起答题请求：
-
-```sh
 python3 benchmark/coding-recall/e2e/lme-zh-run.py --help
 python3 benchmark/coding-recall/e2e/lme-zh-report.py --help
 ```
 
-脚本名保留 `lme-zh`，但当前正式三模式对比使用 `--language en`。
-
-## 2. 准备题集和压缩快照
-
-LME16 使用 [LongMemEval_M](https://huggingface.co/datasets/xiaowu0162/longmemeval) 的固定 DEV8 和 HARD8，各 8 题。它不是完整 LongMemEval，也不是每次重新随机抽题。固定题号、数据来源和处理说明见 [输入资料说明](../benchmark/data/release-0.1.0/INDEX.md)。
-
-当前三模式 runner 是**已有冻结输入的重跑入口**，不是通用的数据下载、翻译或首次压缩工具。公开仓库提供来源、题号、hash 和中文题面译文，不提供完整历史、参考答案或已生成的压缩快照。仅有公开元数据不能从零复现这轮测试。
-
-一次重跑需要以下配套材料，放在仓库之外：
-
-| 输入 | 内容 |
-|---|---|
-| `DATA_ROOT` | 题集根目录，含 `data/index.json`，以及 `data/dev8/<id>/`、`data/hard8/<id>/` 下的 `question.json`、`corpus.json`、`answer.json`、`judge.json`。 |
-| `SNAPSHOT_SOURCE` | 完整英文原生轮次的目录，含 `manifest.json` 及其引用的会话文件；每题有三次真实 Pi 压缩。 |
-| `CONFIG` | 答题及压缩身份等外部配置。即使复用快照，压缩配置仍参与身份校验。 |
-| `LUNA_CONFIG`、`SOL_CONFIG` | 两位裁判的外部配置文件，模型、服务商和推理强度须与输入清单一致。标签是 runner 的固定名称，不是凭据。 |
-| `CANDIDATE` | 冻结候选清单：完整 Git commit、归档路径及 SHA-256、解包目录、文件 hash；当前正式模式的 `configuration` 为 `{}`。 |
-| `PINS` | 对应候选的运行时清单；`sqlite.entry` 必须为 `src/index.ts`，绑定源码、依赖、Node 版本和 SDK。 |
-| `PREFLIGHT` | 配套的输入审计 JSON，包含 `identity.selected`、`inputs`、`models`、`referenceRevision`。 |
-
-这些清单必须描述磁盘上的真实材料；不要把旧绝对路径替换成新路径后就当作同一次运行，也不要编造 hash 来绕过检查。现有 `lme-zh-preflight.py` 面向历史中文资产，`evaluate.py pin` 也不是这组三模式所需全部清单的通用生成器。缺少配套材料时，需要先准备新的输入批次；本教程不以空清单或合成快照替代真实输入。
-
-三组必须复用相同题面、参考答案和快照。参考答案只交给裁判，不能出现在答题输入中。更换题集、参考、模型、候选代码或快照，应建立新轮次，不能覆盖旧结果。
-
-## 3. 配置模型
-
-以下展示外部配置文件的结构；路径和模型必须替换成与本次输入批次匹配的值。文件不是插件的 `compaction-recall.json`。
-
-```json
-{
-  "sdk_path": "/absolute/candidate/node_modules/@earendil-works/pi-coding-agent",
-  "helper_path": "/absolute/repository/benchmark/lme-helper.py",
-  "data_path": "/absolute/lme16/data/index.json",
-  "output_dir": "/absolute/new-results",
-  "candidate_repo": "/absolute/candidate",
-  "system_prompt": "You are a helpful assistant.",
-  "protocol": { "segments": 4, "reserve_tokens": 16384, "overhead_tokens": 4096 },
-  "compression": { "provider": "your-provider", "model": "your-compression-model", "effort": "high", "profile": "/absolute/benchmark-profile" },
-  "answer": { "provider": "your-provider", "model": "your-answer-model", "effort": "high", "profile": "/absolute/benchmark-profile" },
-  "judge": { "provider": "your-provider", "model": "your-judge-model", "effort": "xhigh", "profile": "/absolute/benchmark-profile" }
-}
-```
-
-使用专门的评测 profile，事先配置好 Pi SDK 可读取的 `models.json` 和 `auth.json`。配置只保存 profile 路径，不把凭据复制到仓库或日志里。裁判配置采用同样结构，分别设置 `judge`；不要在已开始的轮次中改模型。
-
-输出目录不得覆盖或包含源码、配置、profile、数据和快照目录。候选代码应来自指定 commit 的完整归档，安装锁定依赖后记录运行时 hash；不要直接用仍在编辑的工作区作为真实答题候选。
-
-## 4. 检查三模式接线
-
-准备好候选及依赖后，可以先跑阻断网络的 SDK 检查。`CANDIDATE_ROOT` 是候选解包目录，`SMOKE_OUT` 必须是不存在的新目录：
+真实 SDK / worker 检查使用隔离合成 profile 和阻断网络，不调用真实模型；输出必须是不存在的外部目录：
 
 ```sh
 node benchmark/coding-recall/e2e/lme-zh-smoke.mjs \
-  --three-arms "$CANDIDATE_ROOT" "$SMOKE_OUT"
+  --three-arms "$CANDIDATE_ROOT" "$NEW_SMOKE_OUT"
 ```
 
-此检查使用合成会话和隔离 profile，验证工具注册、实际工具执行及自动提示，不是模型跑分。
+`CANDIDATE_ROOT` 是包含 `src/index.ts`、package 元数据及已安装锁定依赖的源码目录。检查会加载实际入口、执行真实工具并验证 0/2/3 工具集及仅 full 自动提示，不是静态源码断言。
 
-| 模式 | `--arm` | 工具 | 自动提示 |
-|---|---|---|---|
-| Pi 原生 | `pi-native` | 无 | 无 |
-| lite | `pi-lite` | grep / expand | 无 |
-| full | `pi-full` | recall / grep / expand | 有 |
+## 2. 提供输入，不再手工拼配套清单
 
-lite / full 均加载候选的正式 `src/index.ts`，runner 在隔离配置中选择模式。不要用旧 grep-only 包装器代替本轮 lite，也不要用历史原型代替本轮 full。
+LME16 使用 [LongMemEval_M](https://huggingface.co/datasets/xiaowu0162/longmemeval) 的固定 DEV8 和 HARD8，各8题；不是完整 LongMemEval 或新随机抽样。来源和冻结题号见 [输入资料](../benchmark/data/release-0.1.0/INDEX.md)。公开元数据和中文题面不能重建被外置的原文、reference 或 native snapshot。
 
-## 5. 运行 LME16
+| 调用者输入 | 用途 |
+|---|---|
+| `--config` | 一份非凭据模型配置；含答题、两位裁判、profile 路径和可选预算。 |
+| `--data-root` | 外部题集、参考答案及其源材料。 |
+| `--snapshot-source` | LME16 完整英文原生轮次的目录，含 `manifest.json` 和逐题原生快照引用。SWE 可直接使用题集中的快照绑定。 |
+| `--output` | 新的外部结果目录，或身份完全一致的已有结果目录供恢复。 |
+| `--source-root` | 被测源码和锁定依赖所在目录；省略时使用当前仓库。 |
 
-在 Bash 中设置下面的变量。所有路径都指向上面已经准备好的材料；`OUT` 是新结果根目录，`COMMIT` 是完整 40 位提交 ID，`ARCHIVE_SHA256` 是对应归档的 64 位 SHA-256。
+LME题集保留 `data/dev8/<id>/`、`data/hard8/<id>/` 下的 `question.json`、`corpus.json`、`answer.json`、`judge.json`；快照复用已有原生压缩，不新增压缩。SWE使用外部 `freeze.json`、`questions.json`、`gold.json`，题目带实际 snapshot 路径和hash；这些题来自本地 SWE-chat 会话派生，不是上游现成QA。
+
+runner 的准备阶段是唯一清单 owner：由实际源码/锁定依赖、题面/reference、模型配置和已有快照生成并冻结候选与输入绑定。**不再提供 `CANDIDATE`、`PINS`、`PREFLIGHT`、两份裁判配置或手工 archive/commit hash，不再依赖历史中文 preflight。** 原冻结材料和历史指标仍保持原值，不用新代码重写旧fingerprint。
+
+显式源码目录提供的是实际被测字节；Git提交只作来源信息，不能把未提交运行时代码冒称为提交中的字节。准备阶段冻结副本和hash，后续阶段核对同一身份。三模式共享一次候选冻结和相同题面/reference/snapshot；gold只给裁判，不混入答题请求。
+
+## 3. 一份模型配置
+
+例如外部 `models.json`：
+
+```json
+{
+  "answer": { "provider": "your-provider", "model": "your-answer-model", "effort": "high" },
+  "judges": {
+    "luna": { "provider": "your-provider", "model": "your-first-judge", "effort": "xhigh" },
+    "sol": { "provider": "your-provider", "model": "your-second-judge", "effort": "medium" }
+  },
+  "profiles": {
+    "answer": "/absolute/benchmark-profile",
+    "luna": "/absolute/benchmark-profile",
+    "sol": "/absolute/benchmark-profile"
+  },
+  "protocol": { "reserve_tokens": 16384, "overhead_tokens": 4096 },
+  "system_prompt": "You are a helpful assistant."
+}
+```
+
+所有模型、服务商和effort显式给出；`luna` / `sol` 是两位独立裁判的角色名，不是固定模型默认值。profile 可以引用同一专用评测目录，事先准备 SDK 可读的模型/凭据文件；配置仅保存路径，不复制凭据内容。SDK 校验真实 model/effort，不选隐式个人默认，也不钳制不支持的effort。
+
+## 4. 准备及运行
+
+准备只确定性生成并核对源码/依赖、题面/reference、模型配置和snapshot清单，不打开profile、不启动SDK或provider：
 
 ```sh
-export DATA_ROOT="/absolute/lme16"
-export SNAPSHOT_SOURCE="/absolute/native-snapshot-run"
-export CONFIG="/absolute/config/answer.json"
-export LUNA_CONFIG="/absolute/config/judge-luna.json"
-export SOL_CONFIG="/absolute/config/judge-sol.json"
-export CANDIDATE="/absolute/frozen/candidate.json"
-export PINS="/absolute/frozen/pins.json"
-export PREFLIGHT="/absolute/frozen/input-preflight.json"
-export COMMIT="<full-40-character-commit>"
-export ARCHIVE_SHA256="<64-character-archive-sha256>"
-export TASK_ID="lme16-comparison"
-export OUT="/absolute/new-results/lme16-comparison"
-export STAGE=preflight
+python3 benchmark/coding-recall/e2e/lme-zh-run.py \
+  --config "$CONFIG" --data-root "$DATA_ROOT" \
+  --snapshot-source "$SNAPSHOT_SOURCE" --output "$OUT" \
+  --arm all --stage prepare
 ```
 
-用下面同一条命令执行不同阶段。三组顺序运行，共用一个资源范围，不要启动三套各 8 路的并行池：
+随后使用相同输入和输出目录，改阶段即可。三模式由同一个runner顺序执行，不再用 shell 循环拼三套参数、配置和gate：
+
+`pilot` / `all` / `flow` 在共享资源范围中首先执行可恢复的实际SDK序列化预检，停在网络发送前；通过后才发答题请求。此前也可用第1节的隔离三arm smoke检查生产接线。
 
 ```sh
 systemd-run --user --scope \
   -p MemoryMax=14G -p MemorySwapMax=0 \
-  bash -c '
-set -euo pipefail
-for arm in pi-native pi-lite pi-full; do
-  PYTHONDONTWRITEBYTECODE=1 python3 benchmark/coding-recall/e2e/lme-zh-run.py \
-    --config "$CONFIG" --luna-config "$LUNA_CONFIG" --sol-config "$SOL_CONFIG" \
-    --data-root "$DATA_ROOT" --snapshot-source "$SNAPSHOT_SOURCE" \
-    --candidate "$CANDIDATE" --pins "$PINS" --preflight "$PREFLIGHT" \
-    --commit "$COMMIT" --archive-sha256 "$ARCHIVE_SHA256" --task "$TASK_ID" \
-    --output "$OUT/$arm" --language en --arm "$arm" --workers 8 \
-    --english-answer-soft-estimate --stage "$STAGE"
-done'
+  python3 benchmark/coding-recall/e2e/lme-zh-run.py \
+    --config "$CONFIG" --data-root "$DATA_ROOT" \
+    --snapshot-source "$SNAPSHOT_SOURCE" --output "$OUT" \
+    --arm all --workers 8 --stage flow
 ```
 
-| `STAGE` | 会做什么 | 模型调用 |
-|---|---|---|
-| `preflight` | 核对输入、候选、快照、SDK 模型描述和序列化工具。 | 不发送答题或判分请求。 |
-| `pilot` | 每组先答首题，并由两位裁判判分。 | 有费用；首题计入该组 16 题，不另做一份答卷。 |
-| `all` | 复用已完成首题，继续其余题目及正确/错误判分。 | 有费用；不额外做 1–10 分评分。 |
-| `flow` | 完整答题和正确/错误判分，再做独立的 1–10 分评分。 | 有费用；比 `all` 多一套评分请求。 |
+| 选项 | 含义 |
+|---|---|
+| `--arm pi-native` | 无扩展、历史工具或自动locator。 |
+| `--arm pi-lite` | 正式生产入口，正式mode=lite，grep/expand，无自动提示。 |
+| `--arm pi-full` | 正式生产入口，正式mode=full及产品默认。默认只运行full。 |
+| `--arm all` | 在同一共享范围顺序运行三模式，全局最多8个在途会话。 |
+| `--stage prepare` | 冻结输入/候选及模型身份；不打开profile或调用SDK/provider。 |
+| `--stage pilot` | 每arm首题和两位strict裁判；首题计入题集，不另跑答卷。 |
+| `--stage all` | 复用首题，完成答题和strict判分。 |
+| `--stage flow` | 再对相同答案做独立1–10评分和报告；不替代strict。 |
 
-建议先 `preflight`，通过后改成 `pilot`；确认首题链路正常，再改成 `all`。每次只修改 `STAGE`，重用相同的其他参数和输出目录。当前正式模式要求 `--workers 8`，资源上限由 runner 实际检查，不是仅供参考的建议。
+最多8个并发会话，`--workers` 可选1–8；资源边界实际检查，不是口头约定。字符估算仅诊断；实际provider容量拒绝停止新调度，不靠重试绕过。有限普通provider重试保留各次证据；未知在途状态拒绝重放。
 
-示例中的 `--english-answer-soft-estimate` 将字符数估算仅用于诊断，不提高实际上下文或输出预算；服务商拒绝容量时停止调度新题，不靠重试绕过。每组的答题过程可能包含多次模型和工具调用，不能把 16 道题理解为只有 16 次 API 请求。
-
-## 6. 查看结果与续跑
-
-只做 `all` 时，运行离线报告器生成汇总。下面命令读取本轮已有结果并写入报告，不调用模型：
+SWE使用同一个真实入口和编排，不保留空壳转发CLI：
 
 ```sh
-for arm in pi-native pi-lite pi-full; do
-  python3 benchmark/coding-recall/e2e/lme-zh-report.py --run "$OUT/$arm"
-done
+systemd-run --user --scope \
+  -p MemoryMax=14G -p MemorySwapMax=0 \
+  python3 benchmark/coding-recall/e2e/lme-zh-run.py \
+    --dataset SWE-chat --config "$CONFIG" --data-root "$SWE_DATA_ROOT" \
+    --output "$SWE_OUT" --arm pi-full --stage flow
 ```
 
-| 产物 | 用途 |
-|---|---|
-| `manifest.json` | 输入身份、选题、候选、模型、完成状态与失败记录。 |
-| `progress.json`、`resource.json` | 当前进度、实际并发及共享 cgroup 内存观测。 |
-| `answer-ledger.json` | 已保存的答卷索引。 |
-| `results/<arm>/<id>/result.json` | 单题答案、调用及会话绑定。 |
-| `judge-v2/<judge>/<arm>/<id>/result.json` | 单题正确/错误判分及原始裁判结果。 |
-| `REPORT.md`、`aggregate.json` | 本组 DEV8、HARD8、合计及失败统计。 |
-| `grade-1to10/` | 仅在额外运行细分评分时生成，不替代正确/错误判分。 |
+## 5. 报告、失败与恢复
 
-比较时固定一个判题口径，分别展示 DEV8、HARD8 和合计。缺失、服务商错误、判分失败不等于答错；人工复核应单独保存，不覆盖原始裁判。跨轮次取峰值时须说明，不能把拼接值称作同一轮实测。
+完成的答卷和两套原始判分持久化，strict与1–10独立。错误、缺答案、判分失败不等于答错或0分。人工复核另列，不覆盖机器判分；历史峰值不能冒称当前轮次。
 
-中断后先检查进度和失败记录，再以相同参数、相同输出目录续跑。runner 会核对输入和代码身份，复用已完成记录；身份变化、未知的在途状态或缺失的完成证据会拒绝恢复。不要删除账本来强制重放，也不要改旧 manifest 来迁就新配置。
+`completed` 只包含答题成功且两份strict判分成功的题；独立1–10阶段同样要求两位裁判结果成功。全部所选题完成才是 `complete`；部分成功为 `partial`，没有成功完成的题为 `failed`，这些失败终态令CLI非零退出。`flow` 遇到答题/strict失败只保存报告，不继续1–10请求；1–10失败时总报告显示该阶段的失败终态，并单列 `answerStrictState`。
 
-会话、答案、裁判理由、工具摘录和实际请求可能含完整语料，留在私有结果目录；公开时只输出必要指标、来源与 hash。
+每位裁判及子集报告都明确 `selected / scored / failed / pending`。accuracy和均分只用scored记录；例如 `selected=16, scored=1, failed=15` 的 `1/1` 不是16题满分。
 
-## 7. SWE-chat 与检索指标
-
-SWE-chat 回忆题使用单独的 `benchmark/coding-recall/e2e/run-swechat.py`。这些题是从 [SWE-chat](https://huggingface.co/datasets/SALT-NLP/SWE-chat) 会话派生的本地 QA，不是上游自带题集；需要完整的外部题集、原生快照和工具定义清单，仅下载上游数据不能还原。
+`--arm all` 的各arm结果位于输出目录下的对应arm目录；单arm使用指定输出。`manifest.json` 保存冻结身份与终态；结果、attempt和会话按内容hash绑定，报告只读取已有产物。需要单独生成离线报告时：
 
 ```sh
-python3 benchmark/coding-recall/e2e/run-swechat.py --help
+python3 benchmark/coding-recall/e2e/lme-zh-report.py --run "$ARM_OUT"
 ```
 
-如果要测的是检索排序、证据覆盖或查询行为，而非最终答题正确率，使用 `retrieval-group1.mjs` / `retrieval-group2.py`；输入接口和指标见 [检索评测接口](../benchmark/methods/RETRIEVAL_CONTRACT.md)。不要把合成检索夹具当作真实压缩会话答题成绩。
+恢复使用同一条入口、同一配置/题面/源码/快照和输出目录；已完成阶段复用，不重复模型调用。身份改变、未知在途标记、完成证据缺失或篡改会拒绝恢复。不要删除账本或改旧manifest强制重放；更换输入或代码建立新轮次。
 
-## 8. 性能与计时口径
+复用任何answer/judge结果都必须同时有匹配identity、`state=complete`和result hash的完成凭证，且session hash不变。丢失凭证、inflight、identity/hash漂移会明确拒绝恢复，不因结果文件存在而隐式重放provider。
 
-计时日志的开启方法见 [配置与行为参考](PLUGIN.md)。性能对照使用相同语料、分支、查询及运行环境，分别测无插件基线、冷索引和热索引；答题正确率不是性能指标。
+容量拒绝保留 `capacity-blocked` 及已完成/失败/未开始的阶段证据，不将缺判分的半成品加入completed。该终态在同目录重入时只校验证据并重写报告，不重发已完成或容量拒绝请求，也不启动新的provider请求；需要新的调用应另建轮次，不删除凭证或覆盖旧产物。
 
-| 指标 | 如何理解 |
-|---|---|
-| 索引构建/重建时间 | 后台工作耗时，不是每次请求都支付的开销。 |
-| `critical_path_index_wait` | 请求实际等待索引就绪的时间；冷启动等待不能从用户可见延迟里扣掉。 |
-| `auto_context_total` | 自动提示处理的完整等待时间。 |
-| `tool_history_recall_total` 等 | 工具调用从开始到返回的总耗时。 |
-| `worker_roundtrip_*` / `worker_*` | 前者包含队列、传输和执行，后者是 worker 内部执行；不能重复相加。 |
-| `index_memory` | 进程 RSS、主线程堆、worker 堆等不同观测，不是互斥项，也不是纯索引大小。 |
+原题/reference/答案/裁判理由/摘录/会话/实际wire留在外部私有目录；公开仅投影必要指标与来源hash。历史资料的代码路径和CLI对应记录时的提交，不是当前可执行入口。
 
-阶段耗时可能嵌套或重叠，父阶段不能再加子阶段。RSS 包含整个进程与原生分配，SQLite 内存不一定反映在 JavaScript 堆中；额外内存需要和等条件基线比较，不能把总 RSS 当作插件净开销。
+## 6. 性能与计时
 
-答题墙钟包含模型请求和工具往返，不是服务商 TTFT。使用 token 统计时区分输入、输出和缓存字段；未记录的延迟、费用或内存留作未知，不用估计补齐。
+开启计时见 [配置与行为参考](PLUGIN.md)。用相同语料、分支、查询和环境比较无插件、冷索引、热索引；模型答题正确率不是性能指标。保留实际索引等待、worker构建/查询、context与工具调用阶段；不再维护旧JS索引/原型策略的平行模拟评测框架。
+
+阶段耗时可能嵌套，不能加总父子阶段；RSS包含进程和原生内存，不能当作插件净开销或把主/worker RSS相加。答题wall不等于服务商TTFT；token统计区分输入、输出和cache，未知指标保持未知。

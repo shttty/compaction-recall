@@ -7,13 +7,12 @@ import { measured } from './timing.mjs';
 import { sqliteRecallPage } from './sqlite-page.mjs';
 import { createHanRanking } from './han-ranking.mjs';
 import { compileFts5, parseQuery } from './concept-query-compiler.mjs';
-export { STOPWORDS, tokenize, tokenizeSpans } from './sqlite-lexical.mjs';
 const HAN = /\p{Script=Han}/u;
 const meaningful = /[\p{L}\p{N}\p{M}]/u;
 const safeQueryData = value => JSON.stringify(value).replace(/[<>&\u2028\u2029]/g,
   point => `\\u${point.charCodeAt(0).toString(16).padStart(4, '0')}`);
 
-export function weightedLength(text) {
+function weightedLength(text) {
   let length = 0;
   for (const point of text) length += HAN.test(point) ? 2 : 1;
   return length;
@@ -27,7 +26,7 @@ export function parseAutoGate(value = 280) {
   return gate;
 }
 
-export function extractText(content) {
+function extractText(content) {
   if (typeof content === 'string') return content;
   if (!Array.isArray(content)) return '';
   return content
@@ -37,7 +36,7 @@ export function extractText(content) {
 }
 
 
-export function createIndex(documents, { jieba = true, autoGate = 280, snippetBudget, timer: buildTimer } = {}) {
+export function createIndex(documents, { jieba = true, autoGate = 280, snippetBudget } = {}) {
   const ranking = createHanRanking(jieba);
   autoGate = parseAutoGate(autoGate);
   const budget = Number.isSafeInteger(snippetBudget) && snippetBudget > 0 ? snippetBudget : 240;
@@ -95,7 +94,7 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
   } catch (error) { db.close(); throw error; }
 
   function compileOperands(operands, check) {
-    const raw = new Map(), stems = new Map(), rawPrefixes = [], stemPrefixes = [], widths = new Set(), cache = new Map();
+    const raw = new Map(), stems = new Map(), widths = new Set(), cache = new Map();
     const add = (map, term, index) => {
       if (!map.has(term)) map.set(term, []);
       map.get(term).push(index);
@@ -103,20 +102,14 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     for (let i = 0; i < operands.length; i++) {
       check?.();
       const operand = operands[i];
-      if (!operand.columns || operand.columns.includes('tokens')) {
-        if (operand.prefix) rawPrefixes.push([operand.term, i]);
-        else add(raw, operand.term, i);
-      }
-      if (operand.columns && !operand.columns.includes('stems')) continue;
+      add(raw, operand.term, i);
       const alias = operand.stem ? stem(operand.term) : operand.term;
       if (alias === undefined) continue;
-      if (operand.prefix) stemPrefixes.push([alias, i]);
-      else { add(stems, alias, i); widths.add(alias.split(' ').length); }
+      add(stems, alias, i); widths.add(alias.split(' ').length);
     }
     return value => {
       if (cache.has(value)) return cache.get(value);
       const matched = new Set(raw.get(value));
-      for (const [prefix, i] of rawPrefixes) if (value.startsWith(prefix)) matched.add(i);
       const alias = stem(value);
       if (alias !== undefined) {
         const pieces = alias.split(' ');
@@ -124,7 +117,6 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
           const key = width === 1 ? pieces[at] : pieces.slice(at, at + width).join(' ');
           for (const i of stems.get(key) ?? []) matched.add(i);
         }
-        for (const [prefix, i] of stemPrefixes) if (` ${alias}`.includes(` ${prefix}`)) matched.add(i);
       }
       const terms = [...matched].sort((a, b) => a - b).map(i => operands[i].term);
       cache.set(value, terms);
@@ -132,8 +124,6 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     };
   }
   function materialize(native, snippetTerms, timer, check) {
-    const exact = new Set(snippetTerms.filter(term => !term.prefix).map(({ term }) => term));
-    const prefixes = [...new Set(snippetTerms.filter(term => term.prefix).map(({ term }) => term))];
     let snippetMatch;
     const results = measured(timer, 'candidate_materialization', () => native.map(({ rowid, score }) => {
         const document = corpus[rowid - 1];
@@ -144,17 +134,13 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
             check?.();
           if (rendered !== undefined) return rendered;
           const hits = measured(timer, 'snippet_hits', () => {
-            snippetMatch ??= stem ? compileOperands(snippetTerms, check) : undefined;
+            snippetMatch ??= compileOperands(snippetTerms, check);
             document.spans ??= tokenizeSpans(document.text);
             const found = [];
         for (let at = 0; at < document.spans.length; at++) {
           if ((at & 255) === 0) check?.();
           const span = document.spans[at];
-              if (stem) for (const term of snippetMatch(span.term)) found.push({ ...span, term });
-              else {
-                if (exact.has(span.term)) found.push(span);
-                for (const term of prefixes) if (span.term.startsWith(term)) found.push({ ...span, term });
-      }
+              for (const term of snippetMatch(span.term)) found.push({ ...span, term });
       }
             return found;
     });
@@ -187,17 +173,16 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     check?.(); // SQLite is synchronous and cannot check a deadline inside MATCH.
     return { total, results: materialize(native, snippetTerms, timer, check) };
   }
-  function automaticRows(query, automatic, timer, limit, offset = 0) {
+  function automaticRows(query, timer, limit, offset = 0) {
     const text = extractText(query);
-    if (automatic && weightedLength(text) > autoGate) return { skipped: true, total: 0, results: [], queryTerms: [] };
+    if (weightedLength(text) > autoGate) return { skipped: true, total: 0, results: [], queryTerms: [] };
     if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) throw new RangeError('limit must be a non-negative safe integer');
     const queryTerms = [...new Set(tokenizeAutomatic(text).filter(term => !STOPWORDS.has(term)))];
     if (!queryTerms.length) return { skipped: false, total: 0, results: [], queryTerms };
-    const terms = queryTerms.map(term => ({ term, prefix: false, stem: true }));
+    const terms = queryTerms.map(term => ({ term, stem: true }));
     const expression = terms.map(({ term }) => porterTerm(term, stem)).join(' OR ');
-    const expanded = terms;
     const longWords = ranking.jieba ? queryTerms.filter(term => /^\p{Script=Han}{3,}$/u.test(term)) : [];
-    const found = collect(expression, expanded, timer, undefined, { limit, offset }, longWords);
+    const found = collect(expression, terms, timer, undefined, { limit, offset }, longWords);
     return { skipped: false, ...found, queryTerms };
   }
   function conceptRows(query, timer, check, options) {
@@ -221,23 +206,17 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     }
     // Only positive terms select snippets; exclusions remain in MATCH alone.
     const terms = new Set(normalized.concepts.flatMap(group => group.flatMap(surface => analyses.get(surface).terms)));
-    const snippets = [...terms].map(term => ({ term, prefix: false }));
+    const snippets = [...terms].map(term => ({ term }));
     check?.();
     const longWords = ranking.jieba ? [...new Set(normalized.concepts.flat().filter(surface => /^\p{Script=Han}{3,}$/u.test(surface)))] : [];
     return { ...collect(plan.match, snippets, timer, check, options, longWords), warnings };
   }
-  const ranks = rows => rows.map(({ id, score }) => ({ id, score }));
   return {
     size: corpus.length,
-    stats() {
-      const pageSize = db.prepare('PRAGMA page_size').get().page_size;
-      const pageCount = db.prepare('PRAGMA page_count').get().page_count;
-      return { documents: corpus.length, contentGroups: db.prepare('SELECT count(DISTINCT content_hash) AS groups FROM messages').get().groups, pageSize, pageCount, storageBytes: pageSize * pageCount };
+    queryRows(query, { mode = 'manual', timer, check, limit, offset = 0 } = {}) {
+      return mode === 'auto' ? automaticRows(query, timer, limit, offset) : conceptRows(query, timer, check, { limit, offset });
     },
-    queryRows(query, { mode = 'manual', timer = buildTimer, check, limit, offset = 0 } = {}) {
-      return mode === 'auto' ? automaticRows(query, true, timer, limit, offset) : conceptRows(query, timer, check, { limit, offset });
-    },
-    queryPage(query, options = {}, { timer = buildTimer, check } = {}) {
+    queryPage(query, options = {}, { timer, check } = {}) {
       const limit = options.limit ?? 50, offset = options.offset ?? 0;
       if (!Number.isInteger(limit) || limit < 1 || limit > 50) throw new RangeError('limit must be an integer from 1 to 50');
       if (!Number.isSafeInteger(offset) || offset < 0) throw new RangeError('offset must be a nonnegative safe integer');
@@ -246,16 +225,6 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
       check?.();
       const ids = found.results.slice(0, page.details.returned).map(row => row.id);
       return { total: found.total, page, ids };
-    },
-    search(query, { automatic = false, limit = 20 } = {}) {
-      if (!Number.isSafeInteger(limit) || limit < 0) throw new RangeError('limit must be a non-negative safe integer');
-      if (!automatic) {
-        const found = conceptRows(query, buildTimer, undefined, { limit });
-        return { ...found, results: ranks(found.results) };
-      }
-      const found = automaticRows(query, automatic, buildTimer, limit);
-      if (found.skipped) return found;
-      return { ...found, results: ranks(found.results) };
     },
     close() { db.close(); },
   };

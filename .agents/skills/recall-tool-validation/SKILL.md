@@ -1,64 +1,38 @@
 ---
 name: recall-tool-validation
-description: Validate compaction-recall logic and recall/expand/grep tool use with offline fixtures or a fresh blind native solver on existing real benchmark histories. Use for project-level retrieval workflow checks, not claims about model accuracy or actual Pi runtime evaluation.
+description: Use when validating compaction-recall tools or runners. Exercise the maintained production entry and isolated SDK flow.
 ---
 
 # Recall tool validation
 
-Work from the compaction-recall repository root. Preserve its current branch and uncommitted work. Do not install into a profile, switch production retrieval, download data, call external model APIs, or run a larger paid benchmark merely because this skill was invoked.
+Work from the repository root and preserve unrelated changes. Use [the benchmark guide](../../../doc/benchmark.md) for current inputs and CLI options; [the plugin reference](../../../doc/PLUGIN.md) defines production behavior.
 
-## Choose the requested stage
+## Offline behavior
 
-- **Mechanical logic/tool checks:** run `npm run check`. The [blind adapter regression](../../../test/blind-harness.test.mjs) checks oracle-field removal and calls the actual registered context hook and tools. Passing fixtures does not establish blind model behavior.
-- **Blind tool-use simulation:** only when requested and a fresh native solver can be created. Use `single` for one full-M history or `stacked` for an existing multi-history corpus. The orchestrator must provide explicit external `--data` and `--runs` paths; do not discover inputs in a sibling tree or automatically download missing data.
-- **Evaluation:** only after the requested solver answers have been submitted. Review evidence, tool choices and final answers separately from retrieval speed.
-- **Runner offline validation:** run `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'`. The [benchmark guide](../../../doc/benchmark.md) documents offline tests and the isolated three-arm SDK smoke. `benchmark/evaluate.py --help`, `pin --help` and `run --help` need no private config. Real operations require an explicit external `--config` with no provider/model defaults; they need separate authorization. Test fixtures are not benchmark scores.
-
-Native subagents here simulate reasoning and tool use. They do not reproduce the actual Pi model/provider/context runtime. Local filesystem blindness is an instruction/interface boundary, not a secure sandbox; disclose that limitation.
-
-## Orchestrator / solver separation
-
-The orchestrator may prepare and inspect the harness. An agent that has seen reference answers, gold labels, benchmark reports or prior solutions must not serve as a blind solver.
-
-Create fresh solver context without inherited conversation (`fork_turns: none` when supported). Prefer a fresh solver per question, so earlier answers do not leak into later cases. Give it only:
-
-1. Repository path, scenario, a new run label and assigned question ID
-2. The [solver protocol](../../../doc/BLIND_PROTOCOL.md), which contains no reference answers
-3. The commands it may execute
-
-Do not supply suspected answer strings, evidence locations, past scores or successful search terms. If a fresh context cannot be created, stop the model stage and report **mechanical checks complete; blind solver not run**. Do not substitute yourself or reuse a contaminated worker.
-
-## Harness and commands
-
-The [CLI](../../../benchmark/blind-harness.mjs) wraps the [adapter](../../../benchmark/blind-harness-core.mjs), which invokes the real production `context` hook and `history_recall`, `history_expand`, `history_grep` execute functions. No oracle-aware retriever or replacement tool is allowed.
-
-Example for one assigned question, with a unique run label:
-`DATA` and `RUNS` below are explicitly assigned external paths; the solver must not inspect the corpus directly.
-
+Run focused tests while changing a behavior, then the complete offline suites:
 
 ```sh
-node benchmark/blind-harness.mjs --data "$DATA" --runs "$RUNS" single start 577d4d32 RUN
-node benchmark/blind-harness.mjs --data "$DATA" --runs "$RUNS" single tool 577d4d32 RUN history_recall '{"query":"keywords chosen by the solver","limit":50,"offset":0}'
-node benchmark/blind-harness.mjs --data "$DATA" --runs "$RUNS" single tool 577d4d32 RUN history_expand '{"id":"returned-entry-id","before":0,"after":0}'
-node benchmark/blind-harness.mjs --data "$DATA" --runs "$RUNS" single tool 577d4d32 RUN history_grep '{"pattern":"solver-chosen fallback pattern"}'
-node benchmark/blind-harness.mjs --data "$DATA" --runs "$RUNS" single answer 577d4d32 RUN '{"answer":"solver answer","evidenceIds":[],"uncertainty":"if any"}'
+npm run check
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'
 ```
 
-Replace `single` with `stacked` to query all ten artificial histories. The stacked IDs are 577d4d32, 778164c6, 51b23612, ceb54acb, 3d86fd0a, 15745da0, gpt4_65aabe59, 982b5123, e47becba, 118b2229. Question wording and question date come from `start`; neither caller nor solver should rewrite the actual question. The solver may reformulate tool queries.
+Check the relevant public behavior rather than retired implementation helpers: branch/context-edit visibility, full/lite registration, recall/grep/expand output, worker lifecycle and failures, timing, and configuration. Remove tests only when their behavior is retired or its coverage has moved to the current implementation.
 
-Search scope is normal user/assistant text plus assistant tool-call names/arguments; auto/recall/grep exclude toolResult bodies, thinking and images. Expand can read toolResult text and tool inputs by id.
+## Actual SDK and runner wiring
 
-The workflow is automatic hints → recall as needed → expand to verify → grep when evidence remains insufficient. This is guidance, not a requirement to invoke every tool. Automatic useful IDs may be expanded immediately. Automatic hints remain capped at five; manual recall defaults/maxes at fifty per page. Continue using returned nextOffset when hasMore is true, rather than assuming offset + limit; keep the query/branch unchanged across pages. Record abstention/uncertainty rather than forcing an answer. Set a bounded per-question tool/time budget appropriate to the requested run; stop and report exhaustion without treating it as evidence of absence.
-
-## Evaluate after answers, without backflow
-
-Only the orchestrator may run the [evaluator](../../../benchmark/blind-evaluate.mjs), after every selected answer is submitted:
+Use the maintained three-mode smoke with an explicit candidate directory and a fresh external output directory:
 
 ```sh
-node benchmark/blind-evaluate.mjs --data "$DATA" --runs "$RUNS" RUN 577d4d32
-# Omit IDs only when all ten have submitted answers.
+node benchmark/coding-recall/e2e/lme-zh-smoke.mjs \
+  --three-arms "$CANDIDATE_ROOT" "$NEW_SMOKE_OUT"
 ```
 
-The evaluator refuses unfinished cases and produces a reference/solver comparison plus recall/expand/grep counts. It does not automatically judge semantic correctness. Manually review supported answer content, evidence IDs, date handling, fallback use and unjustified assumptions. Do not send gold feedback back into the same run and call it blind.
+The candidate must provide the package source and the locked host dependencies needed by benchmark preparation. The smoke uses synthetic profiles and blocks network access. Verify actual registered/serialized tools, automatic content only in full, real tool/worker execution, shared candidate preparation, and resume without repeating SDK work. For package checks, exercise extracted package bytes; keep host test resources separate from tarball contents.
 
-Logs are in the explicitly supplied external `RUNS/RUN/`. Report completed/skipped/blocked stages, scenario and sample size, tool counts, failure modes and limits. Distinguish mechanical checks, blind solver traces, reference comparison and genuine Pi/provider evaluation. Frozen provenance and metrics are indexed in [the input reference](../../../benchmark/data/release-0.1.0/INDEX.md); a directory/config migration never relabels or resumes them.
+Runner regressions must cross the real prepare/run/answer/judge/report paths with only the provider boundary replaced. Check completed-phase reuse, identity-change rejection, unknown-inflight handling, failure-versus-wrong-answer accounting, and separate correctness/partial-credit verdicts. Do not replace the runner itself with a stand-in.
+
+## Live evaluations
+
+Run real LME16 or SWE-chat evaluations only when explicitly authorized. Use a fresh external result directory, explicit model/profile paths, frozen candidate and input identities, and the guide's resource limits. Keep references and prior solutions out of solver requests; pass them only to judges. Do not read, print or copy profile credentials.
+
+Report offline checks, SDK wiring and live model accuracy separately. Fixture success is not an accuracy result. Preserve original evidence and independently label manual review or historical peak selection; a directory/config migration does not validate or relabel old scores.

@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import { afterEach } from 'node:test';
 import test from 'node:test';
 import register from '../src/index.ts';
-import legacyRegister from '../src/recall-extension.ts';
 import { compactedEntries, entryText, MAX_EXPAND_CHARS } from '../src/history.mjs';
 import { RECALL_PAGE_CHARS } from '../src/locator.mjs';
 
@@ -38,10 +37,6 @@ function harness(initial) {
     }
   };
 }
-
-test('package and historical entry share one factory', () => {
-  assert.equal(register, legacyRegister);
-});
 
 test('no compaction, latest boundary, repeated compaction and missing boundary', () => {
   const a = msg('a', 'old'), b = msg('b', 'retained tail'), c = msg('c', 'live');

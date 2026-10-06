@@ -1,27 +1,34 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { StageTiming } from '../src/timing.mjs';
-import { registerStageEvents } from '../benchmark/pi-stage-events.mjs';
-import { CompactionIndex } from '../archive/js-runtime/inverted-index.mjs';
-import { buildRecallPage, buildLocator } from '../archive/js-runtime/locator.mjs';
+import { SQLiteBackgroundIndex } from '../src/sqlite-background-index.mjs';
 import { initialBranch, extendedBranch, msg } from './corpus.mjs';
 import { chmodSync, mkdtempSync, writeFileSync, readFileSync, statSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
-test('timed index preserves response parity and distinguishes cold build, warm query and update', () => {
- let t = 0; const timing = new StageTiming(() => ++t), index = new CompactionIndex(timing);
- const records = [msg('a', 'quasar rare keyword'), msg('b', 'quasar other')], branch = initialBranch(records);
- assert.equal(index.query('quasar', branch), buildLocator('quasar', branch));
- assert.deepEqual(index.recall('quasar', branch), buildRecallPage('quasar', branch));
- const next = extendedBranch(records, [msg('c', 'quasar new')]);
- assert.equal(index.query('quasar', next), buildLocator('quasar', next));
- const stages = timing.events.map(x => x.stage);
- for (const stage of ['index_build_tokenize_postings', 'index_update_tokenize_postings', 'query_tokenization', 'postings_search', 'candidate_materialization', 'deduplicate', 'mechanical_rank', 'manual_snippets_pagination_render', 'auto_render_budget']) assert.ok(stages.includes(stage), stage);
- assert.equal(stages.filter(x => x === 'index_build_tokenize_postings').length, 1);
- assert.ok(timing.events.filter(x => x.type === 'span').every(x => x.durationMs >= 0));
- assert.ok(!JSON.stringify(timing.events).includes('rare keyword'));
+test('timed SQLite queries preserve cold/warm/update visibility and worker parent spans without content', async () => {
+ const timing = new StageTiming(), index = new SQLiteBackgroundIndex({ timer: timing });
+ const records = [msg('a', 'quasar privatefixture'), msg('b', 'quasar other')], branch = initialBranch(records);
+ try {
+  const first = await timing.runAsync('lookup', () => index.queryPage({ concepts: [['quasar']] }, branch));
+  assert.deepEqual([...first.ids].sort(), ['ma', 'mb']);
+  const worker = index.worker;
+  const commits = timing.events.filter(event => event.stage === 'worker_commit').length;
+  assert.deepEqual((await index.queryPage({ concepts: [['quasar']] }, branch)).ids, first.ids);
+  assert.equal(index.worker, worker);
+  assert.equal(timing.events.filter(event => event.stage === 'worker_commit').length, commits);
+  const next = extendedBranch(records, [msg('c', 'quasar new')]);
+  assert.deepEqual((await index.queryPage({ concepts: [['quasar']] }, next)).ids.sort(), ['ma', 'mb', 'mc']);
+  const spans = new Map(timing.events.filter(event => event.type === 'span').map(event => [event.id, event]));
+  for (const event of timing.events.filter(event => event.type === 'span' && ['worker_batch', 'worker_commit', 'worker_query'].includes(event.stage))) {
+   assert.equal(event.execution, 'worker_thread');
+   assert.equal(spans.get(event.parentId).stage, `worker_roundtrip_${event.stage.slice(7)}`);
+  }
+  assert.ok(timing.events.filter(event => event.type === 'span').every(event => event.durationMs >= 0));
+  assert.doesNotMatch(JSON.stringify(timing.events), /quasar|privatefixture/);
+ } finally { await index.dispose(); }
 });
 test('nested spans retain inclusive parent relation without false parallel nesting', async () => {
  const t = new StageTiming();
@@ -30,20 +37,8 @@ test('nested spans retain inclusive parent relation without false parallel nesti
  assert.equal(byStage.toolA.parentId, null); assert.equal(byStage.toolB.parentId, null);
  assert.equal(byStage.innerA.parentId, byStage.toolA.id); assert.equal(byStage.innerB.parentId, byStage.toolB.id);
 });
-test('mock SDK event trace separates headers, thinking, visible text and model response end', () => {
- let now = 0; const t = new StageTiming(() => now), hooks = {}; registerStageEvents({ on: (name, fn) => hooks[name] = fn }, t);
- hooks.before_provider_request({ payload: { secret: 'DO_NOT_LOG' } }); now = 20; hooks.after_provider_response({ headers: { secret: 'DO_NOT_LOG' } });
- now = 30; hooks.message_update({ assistantMessageEvent: { type: 'thinking_delta', delta: 'DO_NOT_LOG' } });
- now = 50; hooks.message_update({ assistantMessageEvent: { type: 'text_delta', delta: 'DO_NOT_LOG' } });
- now = 60; hooks.message_update({ assistantMessageEvent: { type: 'text_delta' } });
- now = 80; hooks.message_end({ message: { role: 'assistant', content: 'DO_NOT_LOG' } });
- assert.equal(t.events.filter(e => e.stage === 'first_visible_text_delta').length, 1);
- assert.equal(t.events.find(e => e.stage === 'first_visible_text_delta').sinceRequestMs, 50);
- assert.equal(t.events.find(e => e.stage === 'assistant_response_end').sinceRequestMs, 80);
- assert.ok(!JSON.stringify(t.events).includes('DO_NOT_LOG'));
-});
 
-test('disabled timing reads no clock, writes nothing and registers no observer', () => {
+test('disabled timing reads no clock and writes nothing', () => {
  execFileSync(process.execPath, ['--input-type=module', '-e', `
     import assert from 'node:assert/strict';
     import fs from 'node:fs';
@@ -60,10 +55,9 @@ test('disabled timing reads no clock, writes nothing and registers no observer',
     for (const key of ['writeSync', 'appendFileSync', 'writeFileSync', 'fchmodSync']) fs[key] = () => { writes++; throw Error('filesystem used'); };
     syncBuiltinESMExports();
     const { recallTiming, measured, flushTiming } = await import(${JSON.stringify(new URL('../src/timing.mjs', import.meta.url).href)});
-    const { registerStageEvents } = await import(${JSON.stringify(new URL('../benchmark/pi-stage-events.mjs', import.meta.url).href)});
     assert.equal(recallTiming, undefined);
     assert.equal(measured(recallTiming, 'disabled', () => 42), 42);
-    flushTiming(); registerStageEvents({ on() { throw Error('observer registered'); } });
+    flushTiming();
     assert.equal(clocks, 0); assert.equal(writes, 0);
   `], { env: { ...process.env, COMPACTION_RECALL_TIMING_FILE: '' } });
 });

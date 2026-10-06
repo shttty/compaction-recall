@@ -11957,33 +11957,15 @@
       "kind": "code-or-source-metadata"
     },
     {
-      "path": "benchmark/coding-recall/e2e/lme-grade-report.py",
-      "sha256": "ddf347831902dbffa6635352b10851b21c1ab1f159d47f463b2087e5909043fe",
-      "bytes": 51469,
-      "kind": "code-or-source-metadata"
-    },
-    {
       "path": "benchmark/coding-recall/e2e/lme-grade-run.py",
-      "sha256": "fc7835925ec96daf4909ffcdee768feaed51f8e7b7def74804ab5711d38335f2",
-      "bytes": 22990,
-      "kind": "code-or-source-metadata"
-    },
-    {
-      "path": "benchmark/coding-recall/e2e/lme-run.py",
-      "sha256": "7484ce7ed0c3b421a8e8de628f689ee40e86f1f58f77f34d747449f40243c039",
-      "bytes": 14073,
-      "kind": "code-or-source-metadata"
-    },
-    {
-      "path": "benchmark/coding-recall/e2e/lme-zh-preflight.py",
-      "sha256": "47cdef1a390476fc240f14df2f8dbc63c589d458834239ad33772b6631f39b9f",
-      "bytes": 10042,
+      "sha256": "483be98c17e91a2bf3cfea04d31d94fea2629265873f440e434be7a3ffdf1534",
+      "bytes": 8903,
       "kind": "code-or-source-metadata"
     },
     {
       "path": "benchmark/coding-recall/e2e/lme-zh-report.py",
-      "sha256": "77f1c82a8ed13928852ae8d3718715ed62be247df8eff652a47c149771981926",
-      "bytes": 41525,
+      "sha256": "114bd681fe5425aa0a7bffc6a255c973d4df2f68fb0c6aff1523a1793f430cc7",
+      "bytes": 7300,
       "kind": "code-or-source-metadata"
     },
     {
@@ -11994,44 +11976,20 @@
     },
     {
       "path": "benchmark/coding-recall/e2e/lme-zh-run.py",
-      "sha256": "a92f6773c7272bb2b760c6c70cb9f3eb82044affc6711192fead68327176a4f1",
-      "bytes": 44447,
-      "kind": "code-or-source-metadata"
-    },
-    {
-      "path": "benchmark/coding-recall/e2e/omp-rpc.py",
-      "sha256": "5377fcc3c6782e1ccd3a24a2f285026daa47c386b73e258455dca35636654408",
-      "bytes": 20538,
-      "kind": "code-or-source-metadata"
-    },
-    {
-      "path": "benchmark/coding-recall/e2e/pi-rpc.mjs",
-      "sha256": "914eb9486dbd9383c28fb76e51613d5052418a50744a66e5c937f955b2f0ec95",
-      "bytes": 1238,
+      "sha256": "5dac43347e027ac697a8bb268606e7ac485046de53e188850a659c6b990dc4c1",
+      "bytes": 22301,
       "kind": "code-or-source-metadata"
     },
     {
       "path": "benchmark/coding-recall/e2e/plugin.mjs",
-      "sha256": "3ec60a0e5fc1a4a4617b256bd5ac4beab8761388d58a4fcda25bfaddd235b956",
-      "bytes": 2188,
+      "sha256": "672497a598842bae156773a2e367037462a540c7655c7bbda7e5465f980da022",
+      "bytes": 1762,
       "kind": "code-or-source-metadata"
     },
     {
       "path": "benchmark/coding-recall/e2e/rejudge-v2.py",
-      "sha256": "4b2b625e71bb46c37ac47ce357ae0be7b2cdf89bd747651090af04ce68e5881f",
-      "bytes": 12613,
-      "kind": "code-or-source-metadata"
-    },
-    {
-      "path": "benchmark/coding-recall/e2e/report.py",
-      "sha256": "05d11fa223ae4e0afd88d28cf6f1ee7103ce7ace1301d9edbdaa40eda23f6fc9",
-      "bytes": 17612,
-      "kind": "code-or-source-metadata"
-    },
-    {
-      "path": "benchmark/coding-recall/e2e/round2-run.py",
-      "sha256": "a84cddab54395a58b4d4137bbe9016a2ff92a72b5303d99d6f4d82e56c5e126e",
-      "bytes": 22138,
+      "sha256": "6f22100143f87cce920a93205381927907402d9291f10b511a470ea8cb7ce4c8",
+      "bytes": 5476,
       "kind": "code-or-source-metadata"
     },
     {
@@ -12047,27 +12005,9 @@
       "kind": "code-or-source-metadata"
     },
     {
-      "path": "benchmark/coding-recall/e2e/run-swechat.py",
-      "sha256": "c48390b0a9d2611f18fad57e62633f780cd2c73d4fc852447af4548aff474d91",
-      "bytes": 14319,
-      "kind": "code-or-source-metadata"
-    },
-    {
       "path": "benchmark/coding-recall/e2e/run.py",
-      "sha256": "99d525b7c3493b6ceae19f66d364bedff18a6faa8d17d0f7cd5ae1fe058ffc0e",
-      "bytes": 33708,
-      "kind": "code-or-source-metadata"
-    },
-    {
-      "path": "benchmark/evaluate.py",
-      "sha256": "415177e8245fa50aa37d9ba39b2798c149caa41f01fae0bf88866d59dc4be1f0",
-      "bytes": 48716,
-      "kind": "code-or-source-metadata"
-    },
-    {
-      "path": "benchmark/evaluation-config.py",
-      "sha256": "ce124b0e185fad773537a5b46dee4b799e0f42880725c2cc646d4bce5731a2f7",
-      "bytes": 5922,
+      "sha256": "2e43c0570483ad2e1de647804558361ae1d14e17738eff6e0777a2264268d1f2",
+      "bytes": 8494,
       "kind": "code-or-source-metadata"
     },
     {
@@ -12078,8 +12018,8 @@
     },
     {
       "path": "benchmark/lme-helper.py",
-      "sha256": "6ac0cdc25b14847cf55077884150826c60d66ac41954c52277fc97c6c8147f25",
-      "bytes": 6954,
+      "sha256": "e81fd1be7e92d23fbaf14e0217957b95acfb348ca5c2cc1adfa1267167028879",
+      "bytes": 291,
       "kind": "code-or-source-metadata"
     },
     {
@@ -12096,14 +12036,26 @@
     },
     {
       "path": "benchmark/retrieval-score-answers.py",
-      "sha256": "5d92760b87c54a72f73153c33e3ffc4975d564dbeb7a75ab9643f2b838e72acd",
-      "bytes": 16703,
+      "sha256": "ded96e76ad9712b9bcabe4119cc3fc46dca9d6e2de3cd15be3f49cb7624bf385",
+      "bytes": 2110,
       "kind": "code-or-source-metadata"
     },
     {
       "path": "benchmark/sdk-rpc.mjs",
-      "sha256": "1fe03b128ce89a0f4b84b8bcf98b190ad9b10fc72928642d638225cd4f0b5f6a",
-      "bytes": 13657,
+      "sha256": "4adc8d7c71b4dc6242aafb7908dcb4e699116e61c3c0d5ff85640a84588a93bf",
+      "bytes": 12184,
+      "kind": "code-or-source-metadata"
+    },
+    {
+      "path": "benchmark/coding-recall/e2e/prepare.py",
+      "sha256": "c499c831a15f581d79afed42444fcc20e5e53bd6d72dfbe843f924ceb3b71a39",
+      "bytes": 18083,
+      "kind": "code-or-source-metadata"
+    },
+    {
+      "path": "benchmark/coding-recall/e2e/phases.py",
+      "sha256": "7472fc36d79d44693edbdaad8241c6c6c94bab7613819f1af3b08fd23b826eee",
+      "bytes": 7330,
       "kind": "code-or-source-metadata"
     },
     {
@@ -12228,8 +12180,8 @@
     },
     {
       "path": "benchmark/coding-recall/e2e/lme-zh-smoke.mjs",
-      "sha256": "6f82c8612226cad950a295f67ef9fb17d0c780a655d17c2616a52d7e047d6b47",
-      "bytes": 6339,
+      "sha256": "c5ac751475534e1c6dd37e89de75310ed9f4c1fd66892c9aff125ca1cf9d38dc",
+      "bytes": 15878,
       "kind": "current-production-offline-smoke"
     }
   ],

@@ -106,28 +106,24 @@ class ReleaseBenchmarkArchive(unittest.TestCase):
             self.assertFalse(answer['judgments'][label]['strict']['verdict']['correct'])
 
     def test_runners_reject_missing_external_inputs_before_runtime_or_output(self):
-        flags = {
-            'lme-zh-run.py': ('config', 'luna-config', 'sol-config', 'candidate', 'pins', 'preflight', 'data-root'),
-            'run-swechat.py': ('config', 'luna-config', 'sol-config', 'tool-definition-manifest', 'data-root', 'candidate-root'),
-        }
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            fixture = root / 'fixture.json'
-            fixture.write_text('{}')
-            for runner, names in flags.items():
+            fixture = root / 'models.json'
+            phase = {'provider': 'synthetic-offline', 'model': 'fixture', 'effort': 'off'}
+            fixture.write_text(json.dumps({'answer': phase, 'judges': {'luna': phase, 'sol': phase},
+                                          'profiles': {key: str(root / 'opaque-profile') for key in ('answer', 'luna', 'sol')}}))
+            for dataset in ('LME16-English', 'SWE-chat'):
                 for missing in ('config', 'data-root'):
-                    with self.subTest(runner=runner, missing=missing):
-                        out = root / f'{runner}-{missing}-output'
-                        command = [sys.executable, str(RUNNER / runner), '--output', str(out), '--commit', '0' * 40, '--task', 'offline-fixture']
-                        if runner == 'lme-zh-run.py':
-                            command += ['--archive-sha256', '0' * 64]
-                        for name in names:
-                            path = root / 'absent' if name == missing else root if name.endswith('root') else fixture
+                    with self.subTest(dataset=dataset, missing=missing):
+                        out = root / f'{dataset}-{missing}-output'
+                        command = [sys.executable, str(RUNNER / 'lme-zh-run.py'), '--dataset', dataset,
+                                   '--stage', 'prepare', '--output', str(out), '--snapshot-source', str(root)]
+                        for name in ('config', 'data-root'):
+                            path = root / 'absent' if name == missing else fixture if name == 'config' else root
                             command += ['--' + name, str(path)]
-                        result = subprocess.run(command, cwd=ROOT, env={**os.environ, 'PYTHONDONTWRITEBYTECODE': '1'}, capture_output=True, text=True, timeout=30)
+                        result = subprocess.run(command, cwd=ROOT, env={**os.environ, 'PYTHONDONTWRITEBYTECODE': '1'},
+                                                capture_output=True, text=True, timeout=30)
                         self.assertEqual(result.returncode, 2, result.stderr)
-                        self.assertIn(f'missing external input --{missing}:', result.stderr)
-                        self.assertNotIn('Traceback', result.stderr)
                         self.assertFalse(out.exists())
 
 

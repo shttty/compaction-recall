@@ -117,17 +117,10 @@ test('changed descriptions, oracle fields, and preflight schema drift fail close
   assert.deepEqual(stderr, Array(mutations.length + 1).fill('ROUND2_TOOL_EVIDENCE_VALIDATION_FAILED\n'));
 });
 
-test('two-tool fallback schema preserves native parameters and rejects omitted or hidden extra tools', t => {
-  const directory = mkdtempSync(join(tmpdir(), 'fallback-tools-'));
-  const nativeTools = fixtures().filter(tool => tool.name !== 'history_grep');
-  nativeTools.find(tool => tool.name === 'history_recall').parameters = {
-    type: 'object', properties: {
-      concepts: { type: 'array', items: { type: 'array', items: { type: 'string' } } },
-      match: { enum: ['any', 'all'] }, exclude: { type: 'array', items: { type: 'string' } },
-      limit: { type: 'integer' }, offset: { type: 'integer' },
-    }, required: ['concepts'],
-  };
-  const options = { evidencePath: join(directory, 'tools.json'), expectedTools: ['history_expand', 'history_recall'] };
+test('lite evidence rejects omitted, extra, and hidden registered tools', t => {
+  const directory = mkdtempSync(join(tmpdir(), 'lite-tools-'));
+  const nativeTools = fixtures().filter(tool => tool.name !== 'history_recall');
+  const options = { evidencePath: join(directory, 'tools.json'), expectedTools: ['history_expand', 'history_grep'] };
   const { tools, observe } = capture(t, options, nativeTools);
   observe({ payload: { tools: serialized(tools, true) } });
   const evidence = JSON.parse(readFileSync(options.evidencePath, 'utf8'));
@@ -135,7 +128,7 @@ test('two-tool fallback schema preserves native parameters and rejects omitted o
   assert.deepEqual(evidence.serialized, evidence.registered);
   interceptExit(t);
   assert.throws(() => observe({ payload: { tools: serialized(tools.slice(1)) } }), /intercepted exit 2/);
-  assert.throws(() => observe({ payload: { tools: serialized([...tools, fixtures()[2]]) } }), /intercepted exit 2/);
-  const hidden = capture(t, { ...options, evidencePath: join(directory, 'hidden.json') }, [...nativeTools, fixtures()[2]]);
+  assert.throws(() => observe({ payload: { tools: serialized([...tools, fixtures()[0]]) } }), /intercepted exit 2/);
+  const hidden = capture(t, { ...options, evidencePath: join(directory, 'hidden.json') }, [...nativeTools, fixtures()[0]]);
   assert.throws(() => hidden.observe({ payload: { tools: serialized(nativeTools) } }), /intercepted exit 2/);
 });

@@ -12,12 +12,11 @@ test('optional trace paths are answer-only and reject output escapes including s
   t.after(() => rmSync(home, { recursive: true, force: true }));
   const output = path.join(home, 'output'), profile = path.join(home, 'profile');
   mkdirSync(output); mkdirSync(profile);
-  writeFileSync(path.join(home, 'helper.py'), ''); writeFileSync(path.join(home, 'data.json'), '[]');
+  writeFileSync(path.join(home, 'data.json'), '[]');
   const phase = { provider: 'unused', model: 'unused', effort: 'off', profile };
   const config = {
     sdk_path: path.join(root, 'node_modules/@earendil-works/pi-coding-agent'), output_dir: output,
-    helper_path: path.join(home, 'helper.py'), data_path: path.join(home, 'data.json'), candidate_repo: root,
-    system_prompt: '', protocol: { segments: 4, reserve_tokens: 100, overhead_tokens: 0 }, compression: phase, answer: phase, judge: phase
+    system_prompt: '', protocol: { reserve_tokens: 100, overhead_tokens: 0 }, answer: phase, judge: phase
   };
   // Provider resolution is deliberately absent: invalid paths must fail before SDK initialization.
   writeFileSync(path.join(profile, 'models.json'), JSON.stringify({ providers: { unused: { models: [{ id: 'unused' }] } } }));
@@ -25,7 +24,7 @@ test('optional trace paths are answer-only and reject output escapes including s
   const filename = path.join(home, 'config.json'); writeFileSync(filename, JSON.stringify(config));
   const recall = path.join(home, 'recall.json'); writeFileSync(recall, '{"trace":true}');
   const run = (...args) => spawnSync(process.execPath, [path.join(root, 'benchmark/sdk-rpc.mjs'), '--config', filename, ...args], { encoding: 'utf8' });
-  for (const phase of ['compression', 'judge']) {
+  for (const phase of ['judge']) {
     const result = run('--phase', phase, '--recall-config', recall);
     assert.notEqual(result.status, 0); assert.match(result.stderr, /answer-only/);
   }

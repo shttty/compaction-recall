@@ -6,17 +6,17 @@ import { findPackageJSON } from 'node:module';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 
-const HELP = `Usage: node benchmark/sdk-rpc.mjs --config PATH --phase compression|answer|judge --describe
+const HELP = `Usage: node benchmark/sdk-rpc.mjs --config PATH --phase answer|judge --describe
        node benchmark/sdk-rpc.mjs --config PATH --phase PHASE --session PATH
-         [--arm native|grep|production] [--plugin-dir PATH --wrapper PATH]
-         [--recall-config PATH --timing-file PATH --retrieval-input PATH] (answer only)
+         [--arm native|production] [--plugin-dir PATH]
+         [--recall-config PATH --timing-file PATH] (answer only)
 
 Uses the explicitly configured Pi SDK and read-only phase profile. No default model,
 provider, effort, personal configuration, or model-catalog network access.
 Supported SDK: @earendil-works/pi-coding-agent 1.0.0 (native runtime-host RPC API).
 `;
-const PHASES = ['compression', 'answer', 'judge'];
-const ROOT_KEYS = ['sdk_path', 'helper_path', 'data_path', 'output_dir', 'candidate_repo', 'system_prompt', 'protocol', ...PHASES];
+const PHASES = ['answer', 'judge'];
+const ROOT_KEYS = ['sdk_path', 'output_dir', 'system_prompt', 'protocol', ...PHASES];
 function object(value, label, keys) {
  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`${label} must be an object`);
  if (keys && Object.keys(value).some(key => !keys.includes(key))) throw new Error(`${label} contains unknown fields`);
@@ -57,20 +57,18 @@ function isolatedEnvironment(home) {
  });
 }
 
-export async function main({ keepRecentTokens, appendSystemPrompt = '', configureModelRuntime } = {}) {
+export async function main({ appendSystemPrompt = '', configureModelRuntime } = {}) {
  const { values } = parseArgs({
   options: {
    help: { type: 'boolean' }, config: { type: 'string' }, phase: { type: 'string' },
    describe: { type: 'boolean' }, session: { type: 'string' }, arm: { type: 'string' },
-   'plugin-dir': { type: 'string' }, wrapper: { type: 'string' },
+   'plugin-dir': { type: 'string' },
    'recall-config': { type: 'string' }, 'timing-file': { type: 'string' },
-   'retrieval-input': { type: 'string' },
   }, strict: true, allowPositionals: false
  });
  if (values.help) { process.stdout.write(HELP); return; }
  const configPath = path.resolve(text(values.config, '--config'));
- if (!PHASES.includes(values.phase)) throw new Error('--phase must be compression, answer, or judge');
- if (keepRecentTokens !== undefined && (values.phase !== 'compression' || !Number.isSafeInteger(keepRecentTokens) || keepRecentTokens < 0)) throw new Error('Explicit keepRecentTokens is compression-only and must be a nonnegative integer');
+ if (!PHASES.includes(values.phase)) throw new Error('--phase must be answer or judge');
  if (typeof appendSystemPrompt !== 'string' || (appendSystemPrompt && values.phase !== 'answer')) throw new Error('Appended system prompt is answer-only text');
  if (configureModelRuntime !== undefined && typeof configureModelRuntime !== 'function') throw new Error('Model runtime callback must be a function');
  const config = object(json(configPath), 'config', ROOT_KEYS);
@@ -78,11 +76,10 @@ export async function main({ keepRecentTokens, appendSystemPrompt = '', configur
  const resolveConfigPath = key => path.resolve(base, text(config[key], key));
  const sdkPath = realpathSync(resolveConfigPath('sdk_path'));
  const output = realpathSync(resolveConfigPath('output_dir'));
- for (const key of ['helper_path', 'data_path', 'candidate_repo']) statSync(resolveConfigPath(key));
  if (typeof config.system_prompt !== 'string') throw new Error('system_prompt must be a string');
- const protocol = object(config.protocol, 'protocol', ['segments', 'reserve_tokens', 'overhead_tokens']);
- for (const key of ['segments', 'reserve_tokens', 'overhead_tokens']) {
-  if (!Number.isSafeInteger(protocol[key]) || protocol[key] < (key === 'segments' ? 1 : 0)) throw new Error(`Invalid protocol.${key}`);
+ const protocol = object(config.protocol, 'protocol', ['reserve_tokens', 'overhead_tokens']);
+ for (const key of ['reserve_tokens', 'overhead_tokens']) {
+  if (!Number.isSafeInteger(protocol[key]) || protocol[key] < 0) throw new Error(`Invalid protocol.${key}`);
  }
  for (const name of PHASES) {
   const phase = object(config[name], name, ['provider', 'model', 'effort', 'profile']);
@@ -102,30 +99,22 @@ export async function main({ keepRecentTokens, appendSystemPrompt = '', configur
   throw new Error('Unsupported SDK: requires @earendil-works/pi-coding-agent 1.0.0');
  }
  const arm = values.arm ?? 'native';
- if (!['native', 'grep', 'production'].includes(arm)) throw new Error('Unknown --arm');
- if (values.phase !== 'answer' && (arm !== 'native' || values['plugin-dir'] || values.wrapper)) throw new Error('Compression and judge cannot load extensions');
- if (values.phase !== 'answer' && (values['recall-config'] || values['timing-file'] || values['retrieval-input'])) throw new Error('Recall config, timing file and retrieval input are answer-only');
+ if (!['native', 'production'].includes(arm)) throw new Error('Unknown --arm');
+ if (values.phase !== 'answer' && (arm !== 'native' || values['plugin-dir'])) throw new Error('Judge cannot load extensions');
+ if (values.phase !== 'answer' && (values['recall-config'] || values['timing-file'])) throw new Error('Recall config and timing file are answer-only');
  const recallConfig = values['recall-config'] ? realpathSync(values['recall-config']) : undefined;
  if (recallConfig && !statSync(recallConfig).isFile()) throw new Error('Recall config must be a file');
  const timingFile = values['timing-file'] ? containedTarget(values['timing-file'], output) : undefined;
- const retrievalInput = values['retrieval-input'] ? immutableFile(values['retrieval-input']) : undefined;
  if (!values.describe && values.phase === 'answer' && !values.arm) throw new Error('Answer requires explicit --arm');
- if (arm === 'native' && (values['plugin-dir'] || values.wrapper)) throw new Error('Native arm cannot load extensions');
- if (arm === 'production' && values.wrapper) throw new Error('Production arm cannot load a grep wrapper');
+ if (arm === 'native' && values['plugin-dir']) throw new Error('Native arm cannot load extensions');
  const extensionPaths = [];
- let recallExtension;
  if (!values.describe && arm !== 'native') {
   const plugin = realpathSync(text(values['plugin-dir'], '--plugin-dir'));
   const entries = json(path.join(plugin, 'package.json')).pi?.extensions;
   if (!Array.isArray(entries) || entries.length !== 1 || typeof entries[0] !== 'string') throw new Error('Pinned package must declare exactly one pi.extensions entry');
   const entry = immutableFile(path.resolve(plugin, entries[0]));
   if (!inside(entry, plugin)) throw new Error('Pinned extension escapes package');
-  if (arm === 'production') extensionPaths.push(entry);
-  else {
-   recallExtension = immutableFile(path.join(path.dirname(entry), 'recall-extension.ts'));
-   if (!inside(recallExtension, plugin)) throw new Error('Recall extension escapes package');
-   extensionPaths.push(immutableFile(text(values.wrapper, '--wrapper')));
-  }
+  extensionPaths.push(entry);
  }
  const sessionPath = values.describe ? undefined : containedTarget(text(values.session, '--session'), output);
  // No temporary directory or SDK import is needed by --help. Describe is read-only.
@@ -133,8 +122,6 @@ export async function main({ keepRecentTokens, appendSystemPrompt = '', configur
  if (!values.describe) process.on('exit', () => rmSync(home, { recursive: true, force: true }));
  isolatedEnvironment(home);
  if (timingFile) process.env.COMPACTION_RECALL_TIMING_FILE = timingFile;
- if (retrievalInput) process.env.PI_RETRIEVAL_INPUT_FILE = retrievalInput;
- if (recallExtension) process.env.PI_RECALL_EXTENSION = recallExtension;
  const load = relative => import(pathToFileURL(path.join(sdkPath, relative)).href);
  const sdk = await load('dist/index.js');
  const { ReadOnlyAuthStorage } = await load('dist/core/auth-storage.js');
@@ -172,7 +159,7 @@ export async function main({ keepRecentTokens, appendSystemPrompt = '', configur
  }
  process.chdir(cwd);
  const settingsManager = sdk.SettingsManager.inMemory({
-  compaction: { enabled: false, reserveTokens: protocol.reserve_tokens, ...(keepRecentTokens === undefined ? {} : { keepRecentTokens }) },
+  compaction: { enabled: false, reserveTokens: protocol.reserve_tokens },
   cacheWarming: 'off', retry: { enabled: false }, packages: [],
  });
  const resourceLoader = new sdk.DefaultResourceLoader({
@@ -192,7 +179,7 @@ export async function main({ keepRecentTokens, appendSystemPrompt = '', configur
   noTools: arm === 'native' ? 'all' : 'builtin',
  });
  if (result.modelFallbackMessage || result.session.model?.id !== model.id || result.session.thinkingLevel !== phase.effort) throw new Error('SDK changed configured model or effort');
- // Benchmark RPC uses get_state/compact/prompt on this one explicit session. Refuse
+ // Benchmark RPC uses get_state/prompt on this one explicit session. Refuse
  // runtime replacement rather than letting RPC new/switch escape its output target.
  const runtime = new sdk.AgentSessionRuntime(result.session, services, async () => {
   throw new Error('Benchmark runtime replacement is not supported; start a new explicit session');

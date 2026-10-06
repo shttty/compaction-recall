@@ -72,3 +72,28 @@ test('formal automatic default gate is 280 weighted units; Porter aliases do not
     assert.equal(await host.auto('不存在'), undefined);
   } finally { await host.close(); }
 });
+
+test('released worker keeps manual literals separate from automatic Porter aliases and bounds Unicode snippets', async () => {
+  const { SQLiteBackgroundIndex } = await import('../src/sqlite-background-index.mjs');
+  const index = new SQLiteBackgroundIndex({ snippetBudget: 12, jieba: false });
+  const records = [msg('booked', 'booked tickets'), msg('booking', 'booking records'), msg('base', 'book unrelated'),
+    msg('han', '甲'.repeat(100) + '答案' + '乙'.repeat(100)),
+    msg('astral', '😀'.repeat(100) + 'needle' + '😀'.repeat(100)), msg('tail', 'retained')];
+  const current = [...records, { type: 'compaction', id: 'c', timestamp, firstKeptEntryId: 'tail' }];
+  try {
+    assert.deepEqual((await index.queryPage({ concepts: [['booked']] }, current)).ids, ['booked']);
+    assert.deepEqual((await index.queryRanked('booked', current)).results.map(row => row.id).sort(), ['base', 'booked', 'booking']);
+    for (const term of ['答案', 'needle']) {
+      const page = await index.queryPage({ concepts: [[term]] }, current);
+      const row = page.page.text.split('\n').filter(line => line.startsWith('{')).map(JSON.parse)[0];
+      assert.ok(row.snippet.includes(term));
+      const body = row.snippet.replace(/^…|…$/g, '');
+      let weight = 0;
+      for (const point of body) {
+        assert.ok(!/[\ud800-\udfff]/u.test(point));
+        weight += /\p{Script=Han}/u.test(point) ? 2 : 1;
+      }
+      assert.ok(weight <= 12);
+    }
+  } finally { await index.dispose(); }
+});
