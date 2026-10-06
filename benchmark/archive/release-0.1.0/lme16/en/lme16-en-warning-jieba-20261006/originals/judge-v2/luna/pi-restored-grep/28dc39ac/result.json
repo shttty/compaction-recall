@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "28dc39ac",
+  "inputSha256": "6ddbadbd67c393cb7d8ac7901462fd76b7ed4f1209fa254c484545d0d8cdc343",
+  "originalResultSha256": "75ae4d0e782f37cefbebed3154fdf396d6e4f50c93dbd0e6db8de2abea2f4be7",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": null,
+    "hedged": true,
+    "guess": false,
+    "reason": "The response gives two conditional totals without selecting one, so there is no explicit final answer to quote and it does not match the required 145 hours."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":null,\"hedged\":true,\"guess\":false,\"reason\":\"The response gives two conditional totals without selecting one, so there is no explicit final answer to quote and it does not match the required 145 hours.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 632.1297199465334,
+    "firstVisibleTextFromSpawnMs": 16582.00405095704,
+    "firstThinkingFromSpawnMs": 14968.947032932192,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 16054.013465996832,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 16701.67572889477
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/28dc39ac/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1250,
+    "output": 263,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 205,
+    "totalTokens": 1513,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 16.767221519025043,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/28dc39ac/attempts/01/judge-session.jsonl",
+  "sessionSha256": "59def533ddfff4e48de17d2aac7e80666b6a230a9846a6583ee62638b7b0008d",
+  "identity": "1c2922ad7fabafe3834aaac9b3ba2dda4d080b7f1330cb9df92ec45324a5302b",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/28dc39ac/attempts/01/judge-session.jsonl",
+      "sessionSha256": "59def533ddfff4e48de17d2aac7e80666b6a230a9846a6583ee62638b7b0008d",
+      "seconds": 16.767221519025043
+    }
+  ]
+}

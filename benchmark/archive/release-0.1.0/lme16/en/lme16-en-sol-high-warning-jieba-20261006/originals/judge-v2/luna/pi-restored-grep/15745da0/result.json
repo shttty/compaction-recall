@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "15745da0",
+  "inputSha256": "76bc3e0d9214f18ad50d229e0f4cd5fdd146245ee1473d4ba750bd6e032100dc",
+  "originalResultSha256": "6c301648b0e35c415d1a34c4b01776c7f599b579128a936b3dbc22ba43307241",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "So, as of today, May 30, you’ve been collecting for **about three months and ten days**, starting around February 2023.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The selected conclusion gives about three months and ten days, which does not match the reference answer of three months."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"So, as of today, May 30, you’ve been collecting for **about three months and ten days**, starting around February 2023.\",\"hedged\":false,\"guess\":false,\"reason\":\"The selected conclusion gives about three months and ten days, which does not match the reference answer of three months.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 712.8632238600403,
+    "firstVisibleTextFromSpawnMs": 21842.20554190688,
+    "firstThinkingFromSpawnMs": 7534.373841015622,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 21393.840044969693,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 22122.353683924302
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/15745da0/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1167,
+    "output": 1073,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 995,
+    "totalTokens": 2240,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 22.1798202812206,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/15745da0/attempts/01/judge-session.jsonl",
+  "sessionSha256": "d7ee458e5f8055c04dfcc3dff268e25cc9d2e0c0c6d7fb71aa98e8880d92b137",
+  "identity": "06c1bcea947646e9b49f76e61f5168a94b87d9514830910f23acafad49cf8e05",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/15745da0/attempts/01/judge-session.jsonl",
+      "sessionSha256": "d7ee458e5f8055c04dfcc3dff268e25cc9d2e0c0c6d7fb71aa98e8880d92b137",
+      "seconds": 22.1798202812206
+    }
+  ]
+}

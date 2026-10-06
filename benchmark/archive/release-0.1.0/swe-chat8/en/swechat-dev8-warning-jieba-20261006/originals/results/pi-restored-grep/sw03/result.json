@@ -1,0 +1,111 @@
+{
+  "question_id": "sw03",
+  "arm": "pi-restored-grep",
+  "outcome": "answered",
+  "answer": "1. Encrypted RPC responses received a **45-second** timeout.\n2. The **socket setup and Noise handshake** retained their existing **15-second** limit.",
+  "tool_calls": [
+    "history_expand"
+  ],
+  "toolErrors": 0,
+  "toolResults": [
+    {
+      "toolName": "history_expand",
+      "toolCallId": "call_exx1pDr0d5UuLcwKQ6TuTEhr|fc_04abafbd62ccd2a6016ac4656e287087d0b8a481a605cc05a6",
+      "isError": false,
+      "arguments": {
+        "id": "e019e9e4",
+        "before": 2,
+        "after": 3,
+        "offset": 0
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "--- [e019e9e4] 2026-08-18T22:47:07.961Z assistant (requested)\nFixed and deployed as `d69aeca`.\n\nRoot causes:\n\n- Browser relay timed out after 15 seconds, while runner requests can take 30 seconds.\n- A transient SQLCipher disk I/O fault caused `500` responses.\n\nChanges:\n\n- Setup and Noise handshake remain limited to 15 seconds.\n- Encrypted RPC responses now allow 45 seconds.\n- Transient SQLCipher disk faults receive two short retries.\n- Wrong keys and persistent faults still fail closed.\n\nValidation passed:\n\n- Backend: 1,416 tests.\n- Frontend: 237 tests.\n- Production health: `200`.\n- Post-upgrade logs: 163 successful requests and no `500` responses.\n\nRefresh once, then retry the model query.\n--- [56099325] 2026-08-18T22:46:55.817Z toolResult\nLocal STE profile ste-response-v1 passed. 0 errors and 0 warnings.\nThis automated result is not ASD-STE100 certification.\n--- [9912906a] 2026-08-18T22:46:55.811Z assistant\nTool call \"check_ste\"\nArguments {\"technical_terms\":[\"SQLCipher\",\"Noise handshake\",\"RPC\",\"sidecar\",\"runner\"],\"text\":\"Fixed and deployed as `d69aeca`.\\n\\nRoot causes:\\n- Browser relay responses timed out after 15 seconds, but runner work can validly take 30 seconds.\\n- One transient SQLCipher disk I/O fault caused tenant database requests to return `500`.\\n\\nChanges:\\n- Socket setup and Noise handshake remain limited to 15 seconds.\\n- Accepted encrypted RPC responses now allow 45 seconds.\\n- Exact transient SQLCipher disk I/O faults receive two short retries.\\n- Wrong keys, persistent faults, and other database errors still fail closed.\\n\\nManaged runner artifact `546849bc6bb7e451f9da4cfd9e2545a4c749823542340274d5068eab5da096e8` is active. Runner and sidecar are running. Production health returns `200`.\\n\\nValidation passed with 1,416 backend tests and 237 frontend tests. Post-upgrade runner logs show 163 requests, all successful, with no `500` responses.\\n\\nRefresh the page once, then retry the model query.\"}\n--- [def77d71] 2026-08-18T22:48:50.544Z assistant\nOne production check remained incomplete: a real query beyond 15 seconds with concurrent Workspace Inspector requests. I will complete that check now.\nTool call \"bash\"\nArguments {\"command\":\"rg -n 'All files|Workspace Inspector|workspace inspector|Inspector|Files' frontend/src/pages/Session.tsx frontend/src/components -g '*.tsx' | head -100\",\"timeout\":30}\n--- [41d3c8e3] 2026-08-18T22:48:50.634Z toolResult\nfrontend/src/pages/Session.tsx:16:import WorkspaceInspector from \"../components/WorkspaceInspector\";\nfrontend/src/pages/Session.tsx:78:function storedInspectorWidth(): number {\nfrontend/src/pages/Session.tsx:110:  const [inspectorWidth, setInspectorWidth] = useState(storedInspectorWidth);\nfrontend/src/pages/Session.tsx:112:  const isDesktopInspectorVisible = useMediaQuery(DESKTOP_INSPECTOR_QUERY);\nfrontend/src/pages/Session.tsx:505:  const beginInspectorResize = useCallback(\nfrontend/src/pages/Session.tsx:518:        setInspectorWidth(nextWidth);\nfrontend/src/pages/Session.tsx:656:        {workspaceId && transport && isDesktopInspectorVisible && (\nfrontend/src/pages/Session.tsx:661:              onPointerDown={beginInspectorResize}\nfrontend/src/pages/Session.tsx:664:            <WorkspaceInspector\nfrontend/src/pages/Session.tsx:687:            <WorkspaceInspector\nfrontend/src/components/WorkspaceInspector.tsx:19:type InspectorTab = \"files\" | \"changes\";\nfrontend/src/components/WorkspaceInspector.tsx:22:interface WorkspaceInspectorProps {\nfrontend/src/components/WorkspaceInspector.tsx:99:function countFiles(nodes: WorkspaceFileNode[]): number {\nfrontend/src/components/WorkspaceInspector.tsx:102:    return total + countFiles(node.children);\nfrontend/src/components/WorkspaceInspector.tsx:550:export default function WorkspaceInspector({\nfrontend/src/components/WorkspaceInspector.tsx:557:}: WorkspaceInspectorProps) {\nfrontend/src/components/WorkspaceInspector.tsx:558:  const [tab, setTab] = useState<InspectorTab>(\"files\");\nfrontend/src/components/WorkspaceInspector.tsx:559:  const [files, setFiles] = useState<WorkspaceFileNode[]>([]);\nfrontend/src/components/WorkspaceInspector.tsx:577:      setFiles(treeResponse.files);\nfrontend/src/components/WorkspaceInspector.tsx:662:          All files <span className=\"text-gray-500\">{countFiles(files)}</span>\nfrontend/src/components/CloudRunnerSection.tsx:50:    title: \"AWS BYOC: EBS plus S3 Files\",\nfrontend/src/components/CloudRunnerSection.tsx:56:      \"Repos, worktrees, Pi config, sessions, and artifacts use S3 Files or local POSIX storage.\",\nfrontend/src/components/CloudRunnerSection.tsx:94:  aws_ebs_s3_files: \"AWS EBS plus S3 Files\",\nfrontend/src/components/CloudRunnerSection.tsx:97:  s3_files_mount: \"S3 Files mount\",\nfrontend/src/components/CloudRunnerSection.tsx:98:  s3_files_or_local_posix: \"S3 Files or local POSIX\",\nfrontend/src/components/CloudRunnerSection.tsx:547:                  \"S3 Files ready\",\nfrontend/src/components/__tests__/WorkspaceInspector.test.tsx:102:import WorkspaceInspector from \"../WorkspaceInspector\";\nfrontend/src/components/__tests__/WorkspaceInspector.test.tsx:149:describe(\"WorkspaceInspector terminal\", () => {\nfrontend/src/components/__tests__/WorkspaceInspector.test.tsx:172:      <WorkspaceInspector\nfrontend/src/components/__tests__/WorkspaceInspector.test.tsx:195:      <WorkspaceInspector\nfrontend/src/components/__tests__/WorkspaceInspector.test.tsx:223:      <WorkspaceInspector\nfrontend/src/components/__tests__/WorkspaceInspector.test.tsx:263:      <WorkspaceInspector\nfrontend/src/components/__tests__/WorkspaceInspector.test.tsx:300:      <WorkspaceInspector\n\n--- [a42e39d3] 2026-08-18T22:48:56.182Z assistant\nTool call \"read\"\nArguments {\"limit\":95,\"offset\":620,\"path\":\"frontend/src/components/WorkspaceInspector.tsx\"}\n[page offset=0 returned=637 total=637 nextOffset=637 hasMore=false]"
+        }
+      ],
+      "details": {
+        "from": "9912906a",
+        "to": "a42e39d3",
+        "offset": 0,
+        "total": 637,
+        "returned": 637,
+        "nextOffset": 637,
+        "hasMore": false
+      }
+    }
+  ],
+  "answerWallMs": 13081.877927994356,
+  "timing": {
+    "startupToRpcReadyMs": 1863.229848910123,
+    "firstVisibleTextFromSpawnMs": 11380.679331021383,
+    "firstThinkingFromSpawnMs": 9422.741862013936,
+    "firstToolDeltaFromSpawnMs": 9564.17877995409,
+    "promptToCompleteMs": 10802.227347157896,
+    "providerTTFTMs": null,
+    "modelTurns": 2,
+    "toolBatches": 1,
+    "toolCalls": 1,
+    "userMessages": 1,
+    "processWallMs": 12729.3664959725
+  },
+  "tokens": {
+    "input": 34816,
+    "output": 138,
+    "cacheRead": 32256,
+    "cacheWrite": 0
+  },
+  "modelCalls": 2,
+  "providerError": null,
+  "rc": 0,
+  "error": null,
+  "snapshotSha256": "394df82ad9afd98fb686402f6b154367bb28d78eca67e8e353d2bf5d1388547a",
+  "sessionSha256": "2cff20ce5ca578c5f437023a41fe4e3d826ddb53fd42732480c86e66b59aae66",
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/results/pi-restored-grep/sw03/attempts/01/session.jsonl",
+  "metadata": {
+    "caseId": "019ffa52-e03f-7134-befa-04021cfdfc2c",
+    "subset": "dev8",
+    "language": "en",
+    "type": "old-final-state",
+    "overlap": null
+  },
+  "snapshotPath": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/snapshots/019ffa52-e03f-7134-befa-04021cfdfc2c.jsonl",
+  "providerTimeout": false,
+  "rpcOutcome": "completed",
+  "toolTimeoutErrors": 0,
+  "toolsEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/results/pi-restored-grep/sw03/attempts/01/tools.json",
+    "sha256": "09694a8323ede087f6ecca246a2d6fa0c742e1f6ad71aaa2ce1e2390271a6e45"
+  },
+  "identity": "def070753ae2df6478d71119d8b634e1eb6dc7ba656f0b4bc40e8f7bcb1ae826",
+  "attempts": [
+    {
+      "outcome": "answered",
+      "providerTimeout": false,
+      "toolTimeoutErrors": 0,
+      "rc": 0,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/results/pi-restored-grep/sw03/attempts/01/session.jsonl",
+      "sessionSha256": "2cff20ce5ca578c5f437023a41fe4e3d826ddb53fd42732480c86e66b59aae66",
+      "answerWallMs": 13081.877927994356,
+      "tokens": {
+        "input": 34816,
+        "output": 138,
+        "cacheRead": 32256,
+        "cacheWrite": 0
+      },
+      "attempt": 1
+    }
+  ],
+  "totalAttemptWallMs": 13081.877927994356,
+  "totalAttemptTokens": {
+    "input": 34816,
+    "output": 138,
+    "cacheRead": 32256,
+    "cacheWrite": 0
+  },
+  "timeoutErrors": {
+    "tool": 0,
+    "provider": 0
+  },
+  "recoveredProviderRetries": 0
+}

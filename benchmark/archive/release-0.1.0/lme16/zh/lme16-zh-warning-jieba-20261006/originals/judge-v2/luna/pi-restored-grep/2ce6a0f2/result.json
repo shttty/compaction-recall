@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "2ce6a0f2",
+  "inputSha256": "37197473a4775e11c1b2313305b7f5453d0cc477b49aa9cbb9c0f5ba93a5bf85",
+  "originalResultSha256": "a81c515cdcf4bada7b9ba17763958d1b4e225c718f580f0ca1d6404bb08325a0",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "其中有几场只说是“最近”参加、没有具体日期；因此，若严格按日期明确落在过去一个月内计算，能确认的是 **4 场**。",
+    "hedged": true,
+    "guess": false,
+    "reason": "答案先列出至少8场，随后给出严格按日期确认的4场，留下了有条件的不同计数，因此属于未消除的条件性回答。"
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"其中有几场只说是“最近”参加、没有具体日期；因此，若严格按日期明确落在过去一个月内计算，能确认的是 **4 场**。\",\"hedged\":true,\"guess\":false,\"reason\":\"答案先列出至少8场，随后给出严格按日期确认的4场，留下了有条件的不同计数，因此属于未消除的条件性回答。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 628.5202330909669,
+    "firstVisibleTextFromSpawnMs": 38506.51175016537,
+    "firstThinkingFromSpawnMs": 11963.405458955094,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 38121.78702396341,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 38765.86624397896
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/2ce6a0f2/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1328,
+    "output": 1605,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 1501,
+    "totalTokens": 2933,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 38.836100429994985,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/2ce6a0f2/attempts/01/judge-session.jsonl",
+  "sessionSha256": "be1eac8d3a882b773c6a7eec7cab409667056213cfc2faf22a03ee7a74e9628e",
+  "identity": "07209d5601acc0a2b954866cc949683f9e28d62da5a8f8b150cfc5e485d61cff",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/2ce6a0f2/attempts/01/judge-session.jsonl",
+      "sessionSha256": "be1eac8d3a882b773c6a7eec7cab409667056213cfc2faf22a03ee7a74e9628e",
+      "seconds": 38.836100429994985
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "51b23612",
+  "inputSha256": "b355ad5a971827ed69e16fadec43db8fb1248edb616d6c300124557deedc5f4d",
+  "originalResultSha256": "03cea33ca2ce42cff1db68b4a9f0316e7b51ddbb9071e2338ac9c6ad8f7f2b01",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "The cartoon I mentioned was **“Nu, pogodi!” (Ну, погоди!)**, usually translated as **“Well, Just You Wait!”**",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response clearly identifies Nu, pogodi! as the cartoon; the subsequent correction of its characterization does not change that selected answer."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"The cartoon I mentioned was **“Nu, pogodi!” (Ну, погоди!)**, usually translated as **“Well, Just You Wait!”**\",\"hedged\":false,\"guess\":false,\"reason\":\"The response clearly identifies Nu, pogodi! as the cartoon; the subsequent correction of its characterization does not change that selected answer.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 652.4765128269792,
+    "firstVisibleTextFromSpawnMs": 5260.25727391243,
+    "firstThinkingFromSpawnMs": 4245.491374982521,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 4795.982579002157,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 5464.088683016598
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/51b23612/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1239,
+    "output": 141,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 57,
+    "totalTokens": 1380,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 5.508545916993171,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/51b23612/attempts/01/judge-session.jsonl",
+  "sessionSha256": "071cd1a8260f59ddf26ff87578377d7ce18b39d84ddd22accec71cd2bbdf42be",
+  "identity": "c6b29bbc33abba83d963cea862e75e22ec5f53e68f280de2ce6dbfbdad99d377",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/51b23612/attempts/01/judge-session.jsonl",
+      "sessionSha256": "071cd1a8260f59ddf26ff87578377d7ce18b39d84ddd22accec71cd2bbdf42be",
+      "seconds": 5.508545916993171
+    }
+  ]
+}

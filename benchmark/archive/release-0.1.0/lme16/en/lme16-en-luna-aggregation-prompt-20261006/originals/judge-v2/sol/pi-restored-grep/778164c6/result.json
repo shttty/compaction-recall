@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "778164c6",
+  "inputSha256": "d4d5e5381b06f87dee34c390b21d1ee4fa6affea8f27dd6b92b5a4a392ebbae5",
+  "originalResultSha256": "7e47b9141fc4266430314a35a5cdbc72f90c5d9f4b8a5f1feaebb9add109d301",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "The fruit-containing dish I mentioned was **grilled snapper with mango salsa**.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The selected answer identifies Grilled Snapper with Mango Salsa, matching the fruit-and-snapper clue; the Escovitch Fish clarification is permitted and does not introduce an alternative answer."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"The fruit-containing dish I mentioned was **grilled snapper with mango salsa**.\",\"hedged\":false,\"guess\":false,\"reason\":\"The selected answer identifies Grilled Snapper with Mango Salsa, matching the fruit-and-snapper clue; the Escovitch Fish clarification is permitted and does not introduce an alternative answer.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 626.9064210355282,
+    "firstVisibleTextFromSpawnMs": 3516.8792770709842,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 4401.792408199981,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 5044.2180330865085
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/778164c6/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1346,
+    "output": 78,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1424,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 5.09023785404861,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+  "sessionSha256": "7d92f9e7f21af14eb14b98afb487a903edaf3b001d177fe3f94404f2247130d9",
+  "identity": "957431da461fc339718ce2b449c09b8f3e1dc44ae4b65dc4b6dccdde8c7a7060",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+      "sessionSha256": "7d92f9e7f21af14eb14b98afb487a903edaf3b001d177fe3f94404f2247130d9",
+      "seconds": 5.09023785404861
+    }
+  ]
+}

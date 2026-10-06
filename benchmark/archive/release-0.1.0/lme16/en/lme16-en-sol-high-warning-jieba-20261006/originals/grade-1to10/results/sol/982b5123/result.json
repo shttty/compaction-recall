@@ -1,0 +1,68 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "982b5123",
+  "inputSha256": "4115fbee1d6423856a8c56a1a46bd4142b2808c1fae76b5b43ec225d062c492f",
+  "originalResultSha256": "1e99dfb1bdd08c471d44322413a0680626224588a4920f826903caee27a775e4",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "score": 9,
+    "reason": "正确回答了五个月前，但额外推断为约2022年12月，所提供的信息无法支持这一具体日期。"
+  },
+  "rawVerdict": "{\"score\":9,\"reason\":\"正确回答了五个月前，但额外推断为约2022年12月，所提供的信息无法支持这一具体日期。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 655.9139830060303,
+    "firstVisibleTextFromSpawnMs": 5955.664789071307,
+    "firstThinkingFromSpawnMs": 5173.570407088846,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5436.777947936207,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 6108.273692894727
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/grade-1to10/results/sol/982b5123/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 754,
+    "output": 94,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 52,
+    "totalTokens": 848,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 6.141497248783708,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/grade-1to10/results/sol/982b5123/attempts/01/judge-session.jsonl",
+  "sessionSha256": "4724df6b35ea59f01db9cbff053d823886db062d6ab4301b916bbe450d8f1e10",
+  "identity": "12886aeadd917a7f68e4aca7093e2f5dee91a5d97bf6c6e781bd430901d85d0d",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/grade-1to10/results/sol/982b5123/attempts/01/result.json"
+    }
+  ],
+  "supplementFingerprint": "9b94c4455d8bb254d2e10562c7059277a85daaf287f3f4b157bfe35a02ab9922"
+}

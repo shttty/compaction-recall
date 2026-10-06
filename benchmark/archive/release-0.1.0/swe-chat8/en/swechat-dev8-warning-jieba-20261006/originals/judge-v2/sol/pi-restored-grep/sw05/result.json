@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw05",
+  "inputSha256": "fd33004a130c99c8e0d50b0dd4282937367b535d04aa25be0e67541de96b7d09",
+  "originalResultSha256": "22ab98782a6063235c25ab6f13c15c380e638c8d9dc8213021b6cbf6f67c0c59",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "1. **Bundle location:** `/Users/user/projects/yinshi/desktop/release/mac-arm64/Yinshi.app`\n2. **Authentication checks still incomplete:** Interactive account sign-in had not yet been tested end to end. Post-sign-in local behavior—including profile switching and persistence after relaunch—also remained unverified. The app had launched and displayed its sign-in screen, but that did not confirm the authentication flow worked.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The bundle path and incomplete interactive sign-in match, but the answer substitutes profile switching and relaunch persistence for the required incomplete post-authentication workspace flow, adding checks not supported by the reference."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"1. **Bundle location:** `/Users/user/projects/yinshi/desktop/release/mac-arm64/Yinshi.app`\\n2. **Authentication checks still incomplete:** Interactive account sign-in had not yet been tested end to end. Post-sign-in local behavior—including profile switching and persistence after relaunch—also remained unverified. The app had launched and displayed its sign-in screen, but that did not confirm the authentication flow worked.\",\"hedged\":false,\"guess\":false,\"reason\":\"The bundle path and incomplete interactive sign-in match, but the answer substitutes profile switching and relaunch persistence for the required incomplete post-authentication workspace flow, adding checks not supported by the reference.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 626.1913748458028,
+    "firstVisibleTextFromSpawnMs": 5238.267422886565,
+    "firstThinkingFromSpawnMs": 4555.914154974744,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 6239.77076378651,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 6897.6449319161475
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/sw05/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1266,
+    "output": 199,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 50,
+    "totalTokens": 1465,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 6.942226260900497,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/sw05/attempts/01/judge-session.jsonl",
+  "sessionSha256": "c16b737127a4bcc90eacd73de9b93ecf6f5eaaa94ca6c8fafbc0b8a1e3cf976a",
+  "identity": "1e9ecba66e82c506577bff6686080b8cb744d0afc382a58493a123459601eaa1",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/sw05/attempts/01/judge-session.jsonl",
+      "sessionSha256": "c16b737127a4bcc90eacd73de9b93ecf6f5eaaa94ca6c8fafbc0b8a1e3cf976a",
+      "seconds": 6.942226260900497
+    }
+  ]
+}

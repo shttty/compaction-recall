@@ -1,0 +1,87 @@
+{
+  "method": "Read-only SHA-256 equality during archive construction; not execution of a test suite or runner",
+  "sourceAndNativeSnapshotChecks": [
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/public-sessions/swe-chat/transcripts1/019ff006-9273-7e80-9303-0b30d84e3102.jsonl",
+      "sha256": "a1a60f5daecd281cdd0f2193cb45acb7287baa054d38da2903592c000293312d",
+      "copied": false
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/snapshots/019ff006-9273-7e80-9303-0b30d84e3102.jsonl",
+      "sha256": "73ff100dc4f50457cf0fcfc883b8b3b3a488ea9551e64bc292f27762215c1fdc",
+      "copied": false
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/public-sessions/swe-chat/transcripts1/019ffa52-e03f-7134-befa-04021cfdfc2c.jsonl",
+      "sha256": "9ad270b15e8442dc6a310a1006635859238ae60f57dfd6b83cc34f9d9aba2331",
+      "copied": false
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/snapshots/019ffa52-e03f-7134-befa-04021cfdfc2c.jsonl",
+      "sha256": "394df82ad9afd98fb686402f6b154367bb28d78eca67e8e353d2bf5d1388547a",
+      "copied": false
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/public-sessions/swe-chat/transcripts1/019f4e6f-89f2-7f82-9bf9-a4790d571aa6.jsonl",
+      "sha256": "4f91f464430a12508190029b99561717c81a2e929bef46c3c8438d4deb5d05ab",
+      "copied": false
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/snapshots/019f4e6f-89f2-7f82-9bf9-a4790d571aa6.jsonl",
+      "sha256": "0ef5d20101f4d9e15d16c65ca1ef217c9d2ee06400489f0ce56f4768a76619f7",
+      "copied": false
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/public-sessions/swe-chat/transcripts1/019ff614-16b1-7bfc-bdb4-3ee5e2bca1c5.jsonl",
+      "sha256": "c672c39adc1d7d2988a9c2cd6d8504b2249951013c82accdec2dee56c023aa7d",
+      "copied": false
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/snapshots/019ff614-16b1-7bfc-bdb4-3ee5e2bca1c5.jsonl",
+      "sha256": "5a555bb231487d685aa25dcab62317aa7dceb8197173e52a8a892a1fdb2f4f04",
+      "copied": false
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/public-sessions/swe-chat/transcripts1/019ff614-1925-7910-9d9f-ba84c0ff8172.jsonl",
+      "sha256": "a2517bd2ff1298d3bc87870d381f8b0c3eb429c13b23a522d1c8383ece285872",
+      "copied": false
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/snapshots/019ff614-1925-7910-9d9f-ba84c0ff8172.jsonl",
+      "sha256": "bf3a3300e9fc81e1c581eda66511279c235c00f34aec78b26f371a3246f4b317",
+      "copied": false
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/public-sessions/swe-chat/transcripts/019eca64-8c2c-7b00-90c6-3aa49738c497.jsonl",
+      "sha256": "9174f34cc1a8fd61a829cd5f46f39fa2b34b784d120318b4dbfba8d89fe400aa",
+      "copied": false
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/snapshots/019eca64-8c2c-7b00-90c6-3aa49738c497.jsonl",
+      "sha256": "cb02792c8b4dc3433431e887522277a0f5c8f7d8a6af1cc4c6b9b43aacee0745",
+      "copied": false
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/questions.json",
+      "sha256": "eb63a117acc13289821bec028ef0f67f75f6cb9516b6f503465a9ac65b3ea12a",
+      "copied": true
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/gold.json",
+      "sha256": "c972eef28fe9bdd1ecd56369f7b5ee972f46301d9b224fb158683525f0a16af3",
+      "copied": true
+    },
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/blind-packet.json",
+      "sha256": "db647e09fedfd5bda1e0a19c2fc8f05808eca4a2d49838f3cc9fd1855747bd30",
+      "copied": true
+    }
+  ],
+  "originalArtifactCount": 756,
+  "copiedOriginalsChecked": "Every copied original was read back byte-identical and bound to its source SHA-256",
+  "limitations": [
+    "No full corpus/session files copied",
+    "No paid/provider/model calls",
+    "No validator/test/build run; integrator performs final checks"
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_731e37d7",
+  "inputSha256": "73893dd9c46ab75b087d797242c79870de4bed27be6899a82e7d868599694871",
+  "originalResultSha256": "3cb0105ecacc44af9507f7ac78da1255949c0ea94f0e17df050ae516edbd0743",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "score": 10,
+    "reason": "模型正确列出各项费用并算出总额720美元，同时明确说明若排除日期晚于提问日期的数字营销工作坊，四个月内的已知费用为220美元，与参考答案一致。"
+  },
+  "rawVerdict": "{\"score\":10,\"reason\":\"模型正确列出各项费用并算出总额720美元，同时明确说明若排除日期晚于提问日期的数字营销工作坊，四个月内的已知费用为220美元，与参考答案一致。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 646.6314590070397,
+    "firstVisibleTextFromSpawnMs": 5942.186489934102,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5444.929674034938,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 6107.227582950145
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/grade-1to10/results/sol/gpt4_731e37d7/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1018,
+    "output": 115,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 54,
+    "totalTokens": 1133,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 6.129596242913976,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/grade-1to10/results/sol/gpt4_731e37d7/attempts/01/judge-session.jsonl",
+  "sessionSha256": "ace4e9d12d88ae7a6d21a478a1b6ca0b849892a7c4ec1ef1c9cc40d828aab321",
+  "identity": "c00e32c6b4c57ad6b9c4d6ddf91c0a3e8f061faaa22f067221d7aeb3cfae9198",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/grade-1to10/results/sol/gpt4_731e37d7/attempts/01/result.json"
+    }
+  ],
+  "supplementFingerprint": "97afea7d99a0e4fc69b9ccefde9b5afafecb41ecf893e486b0127280619e59d4"
+}

@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_15e38248",
+  "inputSha256": "5e849f1d0a77c7cb5dd4356173791cb76e4c793bb6373c83993cc9648dcd7841",
+  "originalResultSha256": "9ddf2e9bb489f9cd9dd3cb9ad37aedeba4e280394b912721ec238be17a609f5b",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "Based on what you’ve mentioned, **3 pieces of furniture**:\n\n- **Bought:** a wooden coffee table from West Elm  \n- **Assembled:** an IKEA bookshelf for your home office  \n- **Fixed:** the wobbly leg on your kitchen table  \n- **Sold:** you haven’t mentioned selling any furniture.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The selected answer gives a count of 3, but the reference answer requires 4."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"Based on what you’ve mentioned, **3 pieces of furniture**:\\n\\n- **Bought:** a wooden coffee table from West Elm  \\n- **Assembled:** an IKEA bookshelf for your home office  \\n- **Fixed:** the wobbly leg on your kitchen table  \\n- **Sold:** you haven’t mentioned selling any furniture.\",\"hedged\":false,\"guess\":false,\"reason\":\"The selected answer gives a count of 3, but the reference answer requires 4.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 630.6864258367568,
+    "firstVisibleTextFromSpawnMs": 10254.085626918823,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 10353.703642031178,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 10999.860506970435
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/gpt4_15e38248/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1201,
+    "output": 432,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 314,
+    "totalTokens": 1633,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 11.048606307944283,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/gpt4_15e38248/attempts/01/judge-session.jsonl",
+  "sessionSha256": "53692dfed9f86bfa98a215e60fa09d070202a39fbede1d489a545f57131ed29f",
+  "identity": "1b5faf6a84f05adc1793dc4e09400d7a7caae98d57aa71da15de04ac7ccbec4a",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/gpt4_15e38248/attempts/01/judge-session.jsonl",
+      "sessionSha256": "53692dfed9f86bfa98a215e60fa09d070202a39fbede1d489a545f57131ed29f",
+      "seconds": 11.048606307944283
+    }
+  ]
+}

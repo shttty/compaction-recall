@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "577d4d32",
+  "inputSha256": "ea75031faaae88fbac5324ca2afd94f3fc8974b4ab3b966c70c7b96cf9f941f2",
+  "originalResultSha256": "50300383171a99bcc1d3511053093cd086974f25c8b4d02924f30b5fc4d601b8",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "1. You mentioned setting a boundary to stop checking work emails and messages by **7 pm**.\n2. You said this helps you relax and keep work separate from your personal time.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response gives 7 pm as the stopping time, matching the reference; the additional explanation does not alter the answer."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"1. You mentioned setting a boundary to stop checking work emails and messages by **7 pm**.\\n2. You said this helps you relax and keep work separate from your personal time.\",\"hedged\":false,\"guess\":false,\"reason\":\"The response gives 7 pm as the stopping time, matching the reference; the additional explanation does not alter the answer.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 640.9122741315514,
+    "firstVisibleTextFromSpawnMs": 10694.352670107037,
+    "firstThinkingFromSpawnMs": 6198.729162104428,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 10650.341521017253,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 11306.846168125048
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/577d4d32/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1157,
+    "output": 454,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 366,
+    "totalTokens": 1611,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 11.34958532312885,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/577d4d32/attempts/01/judge-session.jsonl",
+  "sessionSha256": "a49ecf9a9e36a37d35d70370f2a988e21ffd6868fcd29b7340885c653cdd74b2",
+  "identity": "052220725f8d130d5d9f3681a0c29b34e4d3592f78ee5db21fc78b6552028c60",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/577d4d32/attempts/01/judge-session.jsonl",
+      "sessionSha256": "a49ecf9a9e36a37d35d70370f2a988e21ffd6868fcd29b7340885c653cdd74b2",
+      "seconds": 11.34958532312885
+    }
+  ]
+}

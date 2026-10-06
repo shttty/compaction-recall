@@ -1,0 +1,50 @@
+[
+  {
+    "id": "sw01",
+    "question": "If the cloud provider fails to delete a restore candidate during cleanup, what information must remain stored, and for what purpose?",
+    "question_date": "2026-08-12T22:35:21.485Z",
+    "history": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/author-input/019ff006-9273-7e80-9303-0b30d84e3102.json"
+  },
+  {
+    "id": "sw02",
+    "question": "During the managed-backup review, which persisted operation status was missing from the exported type contract, and what change was planned to address the mismatch?",
+    "question_date": "2026-08-12T22:35:21.485Z",
+    "history": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/author-input/019ff006-9273-7e80-9303-0b30d84e3102.json"
+  },
+  {
+    "id": "sw03",
+    "question": "For the timeout fix that preceded the runner keep-alive change, what timeout was assigned to encrypted RPC responses, and which setup steps kept their old limit?",
+    "question_date": "2026-08-20T03:09:43.659Z",
+    "history": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/author-input/019ffa52-e03f-7134-befa-04021cfdfc2c.json"
+  },
+  {
+    "id": "sw04",
+    "question": "How was the model picker supposed to remember my selection across refreshes and new worktrees, and how were existing browsers without a saved preference handled?",
+    "question_date": "2026-08-20T03:09:43.659Z",
+    "history": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/author-input/019ffa52-e03f-7134-befa-04021cfdfc2c.json"
+  },
+  {
+    "id": "sw05",
+    "question": "Where was the locally smoke-tested Apple Silicon desktop app bundle, and what authentication checks were still incomplete at that point?",
+    "question_date": "2026-07-12T17:06:38.817Z",
+    "history": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/author-input/019f4e6f-89f2-7f82-9bf9-a4790d571aa6.json"
+  },
+  {
+    "id": "sw06",
+    "question": "After the packaged desktop app sign-in button stopped responding, what two distinct causes were found as the investigation progressed?",
+    "question_date": "2026-07-12T17:06:38.817Z",
+    "history": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/author-input/019f4e6f-89f2-7f82-9bf9-a4790d571aa6.json"
+  },
+  {
+    "id": "sw07",
+    "question": "Why could review remain stuck at Finalizing output after the reviewers finished, and what shutdown change addressed it?",
+    "question_date": "2026-06-25T16:36:40.535Z",
+    "history": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/author-input/019eca64-8c2c-7b00-90c6-3aa49738c497.json"
+  },
+  {
+    "id": "sw08",
+    "question": "What exact commit was verified for the user’s installed Entire executable after the review shutdown fix was pushed?",
+    "question_date": "2026-06-25T16:36:40.535Z",
+    "history": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/author-input/019eca64-8c2c-7b00-90c6-3aa49738c497.json"
+  }
+]

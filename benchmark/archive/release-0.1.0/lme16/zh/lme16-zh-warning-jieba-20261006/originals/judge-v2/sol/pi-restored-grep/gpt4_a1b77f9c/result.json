@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_a1b77f9c",
+  "inputSha256": "56971b0f25207f6f306c9fec6595537e112cdd4e8e6780f5b9f1de02579cc74e",
+  "originalResultSha256": "4ff444c31816b2ed84ba70bf3ab692eb84b6a182db5ca629639298b118aaf45f",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "所以，前两本合计约 **6周**；三本的总时长还要加上《力量》的聆听时间。",
+    "hedged": false,
+    "guess": false,
+    "reason": "回答未给出三本总共8周的所需答案，而只给出前两本约6周并称《力量》的完成时间未记录。"
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"所以，前两本合计约 **6周**；三本的总时长还要加上《力量》的聆听时间。\",\"hedged\":false,\"guess\":false,\"reason\":\"回答未给出三本总共8周的所需答案，而只给出前两本约6周并称《力量》的完成时间未记录。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 638.816688908264,
+    "firstVisibleTextFromSpawnMs": 2820.5472270492464,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 3942.3760510981083,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 4596.696977037936
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/gpt4_a1b77f9c/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1303,
+    "output": 90,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1393,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 4.652572696097195,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/gpt4_a1b77f9c/attempts/01/judge-session.jsonl",
+  "sessionSha256": "4553bd0e8ec48a64dbbdd9c94d9089154dc637884006f1659bda18b96e5714ad",
+  "identity": "c653d8bb71013a1d621ac6177f4be937e7dd4aae895543343dcdccf60b1ccfe2",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/gpt4_a1b77f9c/attempts/01/judge-session.jsonl",
+      "sessionSha256": "4553bd0e8ec48a64dbbdd9c94d9089154dc637884006f1659bda18b96e5714ad",
+      "seconds": 4.652572696097195
+    }
+  ]
+}

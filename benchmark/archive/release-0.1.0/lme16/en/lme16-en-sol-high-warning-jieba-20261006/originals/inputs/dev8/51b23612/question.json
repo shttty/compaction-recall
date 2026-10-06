@@ -1,0 +1,14 @@
+{
+ "question_id": "51b23612",
+ "question_type": "single-session-assistant",
+ "question": "I was going through our previous conversation about political propaganda and humor, and I was wondering if you could remind me of that Soviet cartoon you mentioned that mocked Western culture?",
+ "question_date": "2023/05/30 (Tue) 23:50",
+ "split": "dev8",
+ "selection": {
+  "question_type": "single-session-assistant",
+  "rationale": "frozen original DEV8 ID; individual LongMemEval M history",
+  "annotatedEvidenceSegments": [
+   2
+  ]
+ }
+}

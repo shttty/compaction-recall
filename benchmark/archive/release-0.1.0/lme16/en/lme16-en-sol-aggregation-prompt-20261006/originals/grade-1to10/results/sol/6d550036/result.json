@@ -1,0 +1,68 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "6d550036",
+  "inputSha256": "91826b48b166bf2d500d44c4e2052ed96a764fa0e24df4e617702b0e36428c41",
+  "originalResultSha256": "f3a580277d3c9c92570a55e5b4da592410710b81383d4c8875fca6f05eda6e05",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "score": 10,
+    "reason": "模型明确回答领导过或正在领导的项目数量为2，与参考答案一致，且没有明显错误的附加信息。"
+  },
+  "rawVerdict": "{\"score\":10,\"reason\":\"模型明确回答领导过或正在领导的项目数量为2，与参考答案一致，且没有明显错误的附加信息。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 635.8501489739865,
+    "firstVisibleTextFromSpawnMs": 2901.31094888784,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 3083.458059001714,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 3734.835742972791
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/grade-1to10/results/sol/6d550036/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 856,
+    "output": 39,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 895,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 3.759196005994454,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/grade-1to10/results/sol/6d550036/attempts/01/judge-session.jsonl",
+  "sessionSha256": "d25bfeb8ff01dcb8c9c161cc500377fc44943c61045e91313f77f3099f96f3af",
+  "identity": "ac3cc03f9784248192c427fba75e6b406ccbe2fb9b2faa8f727ebd6f67c0d7b7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/grade-1to10/results/sol/6d550036/attempts/01/result.json"
+    }
+  ],
+  "supplementFingerprint": "97afea7d99a0e4fc69b9ccefde9b5afafecb41ecf893e486b0127280619e59d4"
+}

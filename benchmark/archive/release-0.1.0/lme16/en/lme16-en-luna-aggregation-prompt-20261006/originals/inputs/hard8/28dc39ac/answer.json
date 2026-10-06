@@ -1,0 +1,6 @@
+{
+ "question_id": "28dc39ac",
+ "answer": "145 hours (The Last of Us Part II 25 hours on normal + 30 hours on hard, Celeste 10 hours, Hyper Light Drifter 5 hours, Assassin's Creed Odyssey 70 hours, Overwatch 5 hours)",
+ "original_answer": "140 hours",
+ "revision": "2026-10-04: the original LongMemEval_M history also states 'I spent 5 hours playing Overwatch on Saturday' (haystack session 413, dated 2023-05-28, before the question date), which the original 140-hour reference omits. The vague 'around 5 gaming sessions in the past month, 2-3 hours each' remark (session 461) is not counted."
+}

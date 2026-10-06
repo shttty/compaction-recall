@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "2ce6a0f2",
+  "inputSha256": "2dbdd2d89b270a973c34f6f2beaa061abe2609871e4d436fbc7564098a1360ab",
+  "originalResultSha256": "2ebbe964ed7fcf0d9a6cb0d4db7803935e7f4a4a4588bdf41cb63c6426fd38ba",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "You attended **three clearly art-related events in the past month**:\n\n- **February 10:** “Women in Art” exhibition\n- **February 24:** Guided tour at the History Museum, which sparked your interest in ancient history and art\n- **Last weekend:** Guided tour at the Modern Art Museum focused on Frida Kahlo and Diego Rivera\n\nThe book readings and literary events you mentioned are separate from this count.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The model explicitly selects a count of three events, whereas the reference requires exactly four."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"You attended **three clearly art-related events in the past month**:\\n\\n- **February 10:** “Women in Art” exhibition\\n- **February 24:** Guided tour at the History Museum, which sparked your interest in ancient history and art\\n- **Last weekend:** Guided tour at the Modern Art Museum focused on Frida Kahlo and Diego Rivera\\n\\nThe book readings and literary events you mentioned are separate from this count.\",\"hedged\":false,\"guess\":false,\"reason\":\"The model explicitly selects a count of three events, whereas the reference requires exactly four.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 625.0787901226431,
+    "firstVisibleTextFromSpawnMs": 3074.6669061481953,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 6695.390962995589,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 7336.083751171827
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/2ce6a0f2/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1208,
+    "output": 130,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1338,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 7.403687556972727,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/2ce6a0f2/attempts/01/judge-session.jsonl",
+  "sessionSha256": "066ae2757a13dedd63712293f5b1e400ea8a24cb367fc9935d0d9c6d76a2cf65",
+  "identity": "03eff358901dbc1d33e2055be1ef8e23ab25f87e5cdf0bd54a1b9c7ead26c654",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/2ce6a0f2/attempts/01/judge-session.jsonl",
+      "sessionSha256": "066ae2757a13dedd63712293f5b1e400ea8a24cb367fc9935d0d9c6d76a2cf65",
+      "seconds": 7.403687556972727
+    }
+  ]
+}

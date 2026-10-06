@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "6d550036",
+  "inputSha256": "a4fb5869202fe24c3f9088435aabe58827e488001daef9a2df3cb9442dd8cc8d",
+  "originalResultSha256": "0fe5bfb3ba0787c3ef5c772b95f5c234981aea61917ccb69297d4f5986397e99",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "From what you’ve mentioned, you **led one project**: a Marketing Research class project involving a market analysis for a new product launch.\n\nYou’re also **currently working on one project** analyzing customer data with clustering, but you haven’t said whether you’re leading it. So that’s **two projects mentioned**, with leadership confirmed for one.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The answer confirms leadership for only one project, whereas the reference requires two projects led or currently being led; counting two projects mentioned does not match the required leadership count."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"From what you’ve mentioned, you **led one project**: a Marketing Research class project involving a market analysis for a new product launch.\\n\\nYou’re also **currently working on one project** analyzing customer data with clustering, but you haven’t said whether you’re leading it. So that’s **two projects mentioned**, with leadership confirmed for one.\",\"hedged\":false,\"guess\":false,\"reason\":\"The answer confirms leadership for only one project, whereas the reference requires two projects led or currently being led; counting two projects mentioned does not match the required leadership count.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 676.5402869787067,
+    "firstVisibleTextFromSpawnMs": 3226.3748231343925,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5101.240871008486,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 5793.410977115855
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/6d550036/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1189,
+    "output": 128,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1317,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 5.86375545989722,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/6d550036/attempts/01/judge-session.jsonl",
+  "sessionSha256": "d94c583b774a192037a0a684ed0d544d87a77376f01261dee7939e1f95dba387",
+  "identity": "d7c7127ca68019684f82ebaef8792eb42e805fc771ecc07aad290e98b62c4be0",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/6d550036/attempts/01/judge-session.jsonl",
+      "sessionSha256": "d94c583b774a192037a0a684ed0d544d87a77376f01261dee7939e1f95dba387",
+      "seconds": 5.86375545989722
+    }
+  ]
+}

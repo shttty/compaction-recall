@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_731e37d7",
+  "inputSha256": "98929878d0ffba238ccf4316174a16583550ea3a42d184289397def74ec4daee",
+  "originalResultSha256": "5ded458d27a3a15a8aaa04570380dac2cd1ec0bbf408a309cded11f23b5f16b0",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "I can confirm **$220** in workshop fees from the past four months: **$200** for the two-day writing workshop in November and **$20** for the mindfulness workshop on December 12.\n\nYou also mentioned a three-day entrepreneurship workshop in January, but didn’t say what it cost, so the full total is **$220 plus that workshop’s fee**. I haven’t included the digital-marketing workshop dated March 15–16, since that’s after February 26.",
+    "hedged": false,
+    "guess": false,
+    "reason": "Although excluding the future digital-marketing workshop permits $220, the response changes its full total to $220 plus an additional entrepreneurship workshop fee, which does not match the reference."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"I can confirm **$220** in workshop fees from the past four months: **$200** for the two-day writing workshop in November and **$20** for the mindfulness workshop on December 12.\\n\\nYou also mentioned a three-day entrepreneurship workshop in January, but didn’t say what it cost, so the full total is **$220 plus that workshop’s fee**. I haven’t included the digital-marketing workshop dated March 15–16, since that’s after February 26.\",\"hedged\":false,\"guess\":false,\"reason\":\"Although excluding the future digital-marketing workshop permits $220, the response changes its full total to $220 plus an additional entrepreneurship workshop fee, which does not match the reference.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 632.7975019812584,
+    "firstVisibleTextFromSpawnMs": 7120.935407932848,
+    "firstThinkingFromSpawnMs": 5530.632966896519,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 7577.666535042226,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 8226.084124995396
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_731e37d7/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1296,
+    "output": 237,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 74,
+    "totalTokens": 1533,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 8.280405330937356,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_731e37d7/attempts/01/judge-session.jsonl",
+  "sessionSha256": "144df482ff632ccca0c2e843981d920154a958ec000190f906c7ec29c0c9ebbd",
+  "identity": "0f11249d9ab336c22ef76925ccf0164745ceef09af309ad604537fa43d819d4c",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_731e37d7/attempts/01/judge-session.jsonl",
+      "sessionSha256": "144df482ff632ccca0c2e843981d920154a958ec000190f906c7ec29c0c9ebbd",
+      "seconds": 8.280405330937356
+    }
+  ]
+}

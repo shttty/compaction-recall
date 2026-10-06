@@ -1,0 +1,66 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw04",
+  "inputSha256": "98e822431aba21ea264eb9ae690a3bdc7929fec4133ca8b050cacb0bc762c2c0",
+  "originalResultSha256": "33ed50b581ddfe262383f37226bb138af37bcc4dd7a473378ed0129d24fc311b",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "score": 10,
+    "reason": "完整准确地说明了按登录用户保存到 localStorage、仅在显式模型更改成功后更新、跨刷新和新工作树沿用，以及无偏好浏览器从当前持久化会话一次性初始化且不覆盖已有偏好的机制。"
+  },
+  "rawVerdict": "{\"score\":10,\"reason\":\"完整准确地说明了按登录用户保存到 localStorage、仅在显式模型更改成功后更新、跨刷新和新工作树沿用，以及无偏好浏览器从当前持久化会话一次性初始化且不覆盖已有偏好的机制。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 621.4520679786801,
+    "firstVisibleTextFromSpawnMs": 5343.735493952408,
+    "firstThinkingFromSpawnMs": 4623.195754829794,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5038.492274936289,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 5675.525548867881
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/grade-1to10/results/sol/sw04/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 923,
+    "output": 130,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 60,
+    "totalTokens": 1053,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 5.720008130185306,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/grade-1to10/results/sol/sw04/attempts/01/judge-session.jsonl",
+  "sessionSha256": "0ac64c1daa146e48fb944d859b03d4feb5688543d6f4a2c42465a7f82e6744c8",
+  "identity": "7bf75a3ec97211d901f79d0c936063296c34358b1329f902eba38ea701a2405e",
+  "attempts": [
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/grade-1to10/results/sol/sw04/attempts/01/result.json",
+      "status": "graded"
+    }
+  ]
+}

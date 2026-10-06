@@ -1,0 +1,14 @@
+{
+ "question_id": "3d86fd0a",
+ "question_type": "single-session-user",
+ "question": "Where did I meet Sophia?",
+ "question_date": "2023/05/30 (Tue) 23:14",
+ "split": "dev8",
+ "selection": {
+  "question_type": "single-session-user",
+  "rationale": "frozen original DEV8 ID; individual LongMemEval M history",
+  "annotatedEvidenceSegments": [
+   2
+  ]
+ }
+}

@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "778164c6",
+  "inputSha256": "814a785665cc020641291c44502d963ed87f522349c152268f505b2d76d45344",
+  "originalResultSha256": "d38c9ccff383c122849e37d025c78e1a4f4dcf08e9cd166bbe29850a65eb0e43",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "So, **the one with fruit was Grilled Snapper with Mango Salsa**. I described it as popular across the Caribbean, rather than specifically Jamaican. You may be combining that with the Escovitch Fish recommendation.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response explicitly selects Grilled Snapper with Mango Salsa and mentions Escovitch Fish only to clarify the Jamaican clue, as permitted by the reference."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"So, **the one with fruit was Grilled Snapper with Mango Salsa**. I described it as popular across the Caribbean, rather than specifically Jamaican. You may be combining that with the Escovitch Fish recommendation.\",\"hedged\":false,\"guess\":false,\"reason\":\"The response explicitly selects Grilled Snapper with Mango Salsa and mentions Escovitch Fish only to clarify the Jamaican clue, as permitted by the reference.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 621.7694669030607,
+    "firstVisibleTextFromSpawnMs": 2652.941297972575,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 4005.631416104734,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 4642.954429844394
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/778164c6/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1389,
+    "output": 98,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1487,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 4.68892476009205,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+  "sessionSha256": "e925648098c9f83cfda1a2c583cf95633df1d1829dc45e0787902b9bec117be8",
+  "identity": "e35a8e36e763ebe40bfeb7dc96932ad1f9ff21230d324793e97f869a44fad351",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+      "sessionSha256": "e925648098c9f83cfda1a2c583cf95633df1d1829dc45e0787902b9bec117be8",
+      "seconds": 4.68892476009205
+    }
+  ]
+}

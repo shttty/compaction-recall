@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_7fce9456",
+  "inputSha256": "abc92e4532ec6f8cb51c8a45e636edec10aceabfbbd6e905d75eea7ed43b887b",
+  "originalResultSha256": "685ad913d83a5e7714dc74194dcad8ff84e54536edd57cc0d42efc4dab0e0c28",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "根据你提到的记录，出价前你看过 **两套房**：2月10日看了一套一居室公寓，2月22日看了布鲁克赛德社区的三居室联排别墅。你在2月25日对联排别墅提出了报价。",
+    "hedged": false,
+    "guess": false,
+    "reason": "The answer gives a definite count of two properties, but the reference requires four."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"根据你提到的记录，出价前你看过 **两套房**：2月10日看了一套一居室公寓，2月22日看了布鲁克赛德社区的三居室联排别墅。你在2月25日对联排别墅提出了报价。\",\"hedged\":false,\"guess\":false,\"reason\":\"The answer gives a definite count of two properties, but the reference requires four.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 635.6553910300136,
+    "firstVisibleTextFromSpawnMs": 12716.448711929843,
+    "firstThinkingFromSpawnMs": 11420.432535931468,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 17061.365753179416,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 17712.629517074674
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/gpt4_7fce9456/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1286,
+    "output": 325,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 212,
+    "totalTokens": 1611,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 17.763471006881446,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/gpt4_7fce9456/attempts/01/judge-session.jsonl",
+  "sessionSha256": "04e29c24da0c811b15e80fa7561fac3d628e2b468f393a371e9b77f2d9b452fa",
+  "identity": "32de3c0e19c8ada4dd47d83f90b06721a637f4449af1b15077bf892720c8c65e",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/gpt4_7fce9456/attempts/01/judge-session.jsonl",
+      "sessionSha256": "04e29c24da0c811b15e80fa7561fac3d628e2b468f393a371e9b77f2d9b452fa",
+      "seconds": 17.763471006881446
+    }
+  ]
+}

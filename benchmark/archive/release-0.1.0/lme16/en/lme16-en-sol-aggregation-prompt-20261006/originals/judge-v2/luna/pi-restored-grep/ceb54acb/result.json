@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "ceb54acb",
+  "inputSha256": "f3462ec6e90f5e81d4d4120a400da6927bbbfa27ed6f1cb1b6299b6f96240154",
+  "originalResultSha256": "fbc3bb90cbbf84d42d7efe4ddb2d983b4eaf65021da3ddd7ab9110393f4b727e",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "After suggesting **“sexual compulsions,”** I offered these four alternatives:\n\n1. **Sexual fixations** — a strong preoccupation with sexual thoughts or behaviors.\n2. **Problematic sexual behaviors** — behaviors that cause difficulties in someone’s life.\n3. **Sexual impulsivity** — emphasizing impulsive behavior and difficulty controlling urges.\n4. **Compulsive sexuality** — emphasizing repetitive sexual behaviors that feel difficult to stop.\n\nThese were wording suggestions, not interchangeable clinical diagnoses.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The answer lists all four alternatives from the reference, with no unselected alternatives or unsupported guess."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"After suggesting **“sexual compulsions,”** I offered these four alternatives:\\n\\n1. **Sexual fixations** — a strong preoccupation with sexual thoughts or behaviors.\\n2. **Problematic sexual behaviors** — behaviors that cause difficulties in someone’s life.\\n3. **Sexual impulsivity** — emphasizing impulsive behavior and difficulty controlling urges.\\n4. **Compulsive sexuality** — emphasizing repetitive sexual behaviors that feel difficult to stop.\\n\\nThese were wording suggestions, not interchangeable clinical diagnoses.\",\"hedged\":false,\"guess\":false,\"reason\":\"The answer lists all four alternatives from the reference, with no unselected alternatives or unsupported guess.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 631.1427128966898,
+    "firstVisibleTextFromSpawnMs": 9720.017773099244,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 9704.835194163024,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 10367.71997390315
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/ceb54acb/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1270,
+    "output": 414,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 264,
+    "totalTokens": 1684,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 10.417427976848558,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/ceb54acb/attempts/01/judge-session.jsonl",
+  "sessionSha256": "9c6a35425efb0db8c0aa384bf2ffd59649f4755df98763a3f597cdf65723e653",
+  "identity": "60e6ec12e1530e4f5a7d0726c3f9ebf08ff3fb4409fa077e9124186facd87b90",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/ceb54acb/attempts/01/judge-session.jsonl",
+      "sessionSha256": "9c6a35425efb0db8c0aa384bf2ffd59649f4755df98763a3f597cdf65723e653",
+      "seconds": 10.417427976848558
+    }
+  ]
+}

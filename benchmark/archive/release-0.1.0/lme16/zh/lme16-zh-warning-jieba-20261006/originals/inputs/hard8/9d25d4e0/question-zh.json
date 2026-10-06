@@ -1,0 +1,13 @@
+{
+ "question_id": "9d25d4e0",
+ "split": "hard8",
+ "question_en": "How many pieces of jewelry did I acquire in the last two months?",
+ "question": "我在过去两个月里获得了多少件珠宝？",
+ "question_date": "2023/05/30 (Tue) 23:48",
+ "provenance": {
+  "model": "deepseek-flash",
+  "edited_by_review": false,
+  "machine_output": null,
+  "frozen_at": "2026-10-03T18:47+08:00"
+ }
+}

@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw07",
+  "inputSha256": "6cd5878de913d5e3fd41738e5792b26d069574c4104678fa220a76cea2e393dd",
+  "originalResultSha256": "cc1da467e8afd6d3cb069d430b14827e904409a8dcff80fe9779d51a315bc00c",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "**Answer:** The review could remain at “Finalizing output…” because TUI shutdown had no timeout: the quit send or the subsequent wait could stall even after reviewer work was done. The fix made the send asynchronous, added bounded waits, and calls Bubble Tea’s `Program.Kill()` as a fallback. That prevents post-run shutdown from waiting indefinitely; local retesting required rebuilding the installed binary with the fix.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The selected answer matches the reference's TUI shutdown cause and asynchronous quit, bounded waiting, and force-kill fix; the rebuilding detail does not conflict with that answer."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"**Answer:** The review could remain at “Finalizing output…” because TUI shutdown had no timeout: the quit send or the subsequent wait could stall even after reviewer work was done. The fix made the send asynchronous, added bounded waits, and calls Bubble Tea’s `Program.Kill()` as a fallback. That prevents post-run shutdown from waiting indefinitely; local retesting required rebuilding the installed binary with the fix.\",\"hedged\":false,\"guess\":false,\"reason\":\"The selected answer matches the reference's TUI shutdown cause and asynchronous quit, bounded waiting, and force-kill fix; the rebuilding detail does not conflict with that answer.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 643.8296770211309,
+    "firstVisibleTextFromSpawnMs": 3017.159851966426,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5253.368310863152,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 5912.794067990035
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/sw07/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1358,
+    "output": 141,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1499,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 5.956152479164302,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/sw07/attempts/01/judge-session.jsonl",
+  "sessionSha256": "be42e2b4c8d309cce81793a307bf965479faa15618c3df177cd41ae021de47ce",
+  "identity": "e89148ffd506d043619af11278187e747300fb64aaebef7f4c5d7cb22b5feaac",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/sw07/attempts/01/judge-session.jsonl",
+      "sessionSha256": "be42e2b4c8d309cce81793a307bf965479faa15618c3df177cd41ae021de47ce",
+      "seconds": 5.956152479164302
+    }
+  ]
+}

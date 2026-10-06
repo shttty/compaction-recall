@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "778164c6",
+  "inputSha256": "d4d5e5381b06f87dee34c390b21d1ee4fa6affea8f27dd6b92b5a4a392ebbae5",
+  "originalResultSha256": "7e47b9141fc4266430314a35a5cdbc72f90c5d9f4b8a5f1feaebb9add109d301",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "The fruit-containing dish I mentioned was **grilled snapper with mango salsa**.",
+    "hedged": false,
+    "guess": false,
+    "reason": "It identifies Grilled Snapper with Mango Salsa as the dish matching the snapper-and-fruit clue; the clarification about Escovitch Fish distinguishes the Jamaican recommendation rather than offering it as an alternative."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"The fruit-containing dish I mentioned was **grilled snapper with mango salsa**.\",\"hedged\":false,\"guess\":false,\"reason\":\"It identifies Grilled Snapper with Mango Salsa as the dish matching the snapper-and-fruit clue; the clarification about Escovitch Fish distinguishes the Jamaican recommendation rather than offering it as an alternative.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 625.7407881785184,
+    "firstVisibleTextFromSpawnMs": 12503.702150192112,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 12539.154421072453,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 13196.591195184737
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/778164c6/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1347,
+    "output": 414,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 331,
+    "totalTokens": 1761,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 13.233612240059301,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+  "sessionSha256": "8a2320fac24952c6835ec9d96be937170957c7633d95bab430586a27e6b8dc64",
+  "identity": "89bcaa699887ce632a4ab93a74c55538632c282952d53109f0fe28988e84e1c5",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+      "sessionSha256": "8a2320fac24952c6835ec9d96be937170957c7633d95bab430586a27e6b8dc64",
+      "seconds": 13.233612240059301
+    }
+  ]
+}

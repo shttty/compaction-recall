@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "3d86fd0a",
+  "inputSha256": "31a43bccbfcbcbe11c77179e0a41b7b48d05affc4400a639f19d100906916676",
+  "originalResultSha256": "1b23fe0660949de66bd858c60831db58f32da79ad774ca77f9c2ab242173bd57",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "Sophia 是在你们城里的一家咖啡馆认识的。",
+    "hedged": false,
+    "guess": false,
+    "reason": "回答说明是在城里的一家咖啡馆遇见 Sophia，与参考答案一致。"
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"Sophia 是在你们城里的一家咖啡馆认识的。\",\"hedged\":false,\"guess\":false,\"reason\":\"回答说明是在城里的一家咖啡馆遇见 Sophia，与参考答案一致。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 637.2324398253113,
+    "firstVisibleTextFromSpawnMs": 10478.199574863538,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 10012.21265993081,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 10664.947382872924
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/3d86fd0a/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1139,
+    "output": 99,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 36,
+    "totalTokens": 1238,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 10.720430043060333,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/3d86fd0a/attempts/01/judge-session.jsonl",
+  "sessionSha256": "c6c2cb0fae47a9763cc98efdcb67839340d2e3f6f90bd2dbfd023850afbd14c3",
+  "identity": "5502d234270b4b811dc9e803531f246d61e1981d20fbb1c84a341e542147d09c",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/3d86fd0a/attempts/01/judge-session.jsonl",
+      "sessionSha256": "c6c2cb0fae47a9763cc98efdcb67839340d2e3f6f90bd2dbfd023850afbd14c3",
+      "seconds": 10.720430043060333
+    }
+  ]
+}

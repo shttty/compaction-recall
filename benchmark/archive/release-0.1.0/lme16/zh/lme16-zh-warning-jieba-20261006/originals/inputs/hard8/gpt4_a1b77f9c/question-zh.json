@@ -1,0 +1,13 @@
+{
+ "question_id": "gpt4_a1b77f9c",
+ "split": "hard8",
+ "question_en": "How many weeks in total do I spent on reading 'The Nightingale' and listening to 'Sapiens: A Brief History of Humankind' and 'The Power'?",
+ "question": "我读《夜莺》和听《人类简史》和《力量》总共花了多少周？",
+ "question_date": "2022/04/30 (Sat) 06:31",
+ "provenance": {
+  "model": "deepseek-flash",
+  "edited_by_review": true,
+  "machine_output": "我读《夜莺》和听《人类简史》和《权力》总共花了多少周？",
+  "frozen_at": "2026-10-03T18:47+08:00"
+ }
+}

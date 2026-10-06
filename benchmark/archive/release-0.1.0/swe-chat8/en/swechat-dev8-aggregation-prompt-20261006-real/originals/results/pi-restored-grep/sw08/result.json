@@ -1,0 +1,111 @@
+{
+  "question_id": "sw08",
+  "arm": "pi-restored-grep",
+  "outcome": "answered",
+  "answer": "The verified shutdown-fix commit was **`9ae87932b`**. At that time, the installed `/Users/dip/.local/bin/entire` had **not** yet been rebuilt to include it.",
+  "tool_calls": [
+    "history_expand"
+  ],
+  "toolErrors": 0,
+  "toolResults": [
+    {
+      "toolName": "history_expand",
+      "toolCallId": "call_PVRtQEhndzxcYdam6Uchp8gL|fc_01d6c6ed64c85357016ac474d7b51c87d0b40916a98fba742b",
+      "isError": false,
+      "arguments": {
+        "id": "094ba0e4",
+        "before": 2,
+        "after": 3,
+        "offset": 0
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "--- [094ba0e4] 2026-06-25T14:19:00.024Z assistant (requested)\nFound and fixed the hang path.\n\nDiagnosis:\n- Live process was `entire review` PID `13889` in `/Users/dip/Repositories/entire.io-3`.\n- It had no child reviewer/judge processes left, so it was stuck in the parent TUI finalization path.\n- It has since exited; I did not kill it.\n\nFix pushed:\n- `9ae87932b review: bound TUI post-run shutdown`\n\nChange:\n- `TUISink.PostRunComplete()` no longer waits forever.\n- It now sends the quit message asynchronously, waits briefly, then force-kills the Bubble Tea program if shutdown stalls.\n- Added regression test for a TUI that never consumes the post-run quit.\n\nVerified:\n- `go build ./...`\n- `go test ./...`\n- `go test -race ./cmd/entire/cli/review/`\n- `golangci-lint run ./...` → 0 issues\n\nNote: your installed `/Users/dip/.local/bin/entire` still needs to be rebuilt/updated to include `9ae87932b`.\n--- [e8ddab4b] 2026-06-25T14:18:33.868Z toolResult\n  PID  PPID  PGID STAT ELAPSED COMMAND\n## review-profiles...origin/review-profiles\n?? .pi/extensions/entire.ts\n9ae87932b (HEAD -> review-profiles, origin/review-profiles) review: bound TUI post-run shutdown\n9368a31ca review: render buffered TTY output against terminal\n29c8570ab review: dedupe token sessions across reviewers\n51c922661 trail: hydrate selected text for line findings\n\n--- [3006c125] 2026-06-25T14:18:33.821Z assistant\nPushed. The existing stuck process is still running; I’ll confirm its PID/status.\nTool call \"bash\"\nArguments {\"command\":\"ps -o pid,ppid,pgid,stat,etime,command -p 13889 || true\\ngit -C /Users/dip/Repositories/cli status -sb && git -C /Users/dip/Repositories/cli log --oneline --decorate --max-count=4\",\"timeout\":120}\n--- [6589cdd1] 2026-06-25T14:52:04.617Z user\nMerge latest main and resolve conflicts (don't regress)\n--- [fe3be1bf] 2026-06-25T14:52:14.725Z assistant\nI’ll fetch the latest `origin/main`, merge it into `review-profiles`, resolve conflicts without dropping the recent review fixes, run the full verification suite, and push.\nTool call \"bash\"\nArguments {\"command\":\"cd /Users/dip/Repositories/cli && git status -sb && git branch --show-current && git fetch origin main review-profiles\",\"timeout\":120}\n--- [1a2fa975] 2026-06-25T14:52:15.842Z toolResult\n## review-profiles...origin/review-profiles\n?? .pi/extensions/entire.ts\nreview-profiles\nFrom https://github.com/entireio/cli\n * branch                main       -> FETCH_HEAD\n * branch                review-profiles -> FETCH_HEAD\n   41e4523cf..0c84783a0  main       -> origin/main\n\n[page offset=0 returned=839 total=839 nextOffset=839 hasMore=false]"
+        }
+      ],
+      "details": {
+        "from": "3006c125",
+        "to": "1a2fa975",
+        "offset": 0,
+        "total": 839,
+        "returned": 839,
+        "nextOffset": 839,
+        "hasMore": false
+      }
+    }
+  ],
+  "answerWallMs": 9899.66873708181,
+  "timing": {
+    "startupToRpcReadyMs": 1455.652564065531,
+    "firstVisibleTextFromSpawnMs": 8631.372441072017,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": 5508.875526953489,
+    "promptToCompleteMs": 8239.38904888928,
+    "providerTTFTMs": null,
+    "modelTurns": 2,
+    "toolBatches": 1,
+    "toolCalls": 1,
+    "userMessages": 1,
+    "processWallMs": 9758.994071977213
+  },
+  "tokens": {
+    "input": 28026,
+    "output": 83,
+    "cacheRead": 25088,
+    "cacheWrite": 0
+  },
+  "modelCalls": 2,
+  "providerError": null,
+  "rc": 0,
+  "error": null,
+  "snapshotSha256": "cb02792c8b4dc3433431e887522277a0f5c8f7d8a6af1cc4c6b9b43aacee0745",
+  "sessionSha256": "83cd6ceb1becd9d8bb36394e7ea58fe4cf547850b3c416a62584a3fd6fc3cdec",
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/results/pi-restored-grep/sw08/attempts/01/session.jsonl",
+  "metadata": {
+    "caseId": "019eca64-8c2c-7b00-90c6-3aa49738c497",
+    "subset": "dev8",
+    "language": "en",
+    "type": "no-answer",
+    "overlap": null
+  },
+  "snapshotPath": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/snapshots/019eca64-8c2c-7b00-90c6-3aa49738c497.jsonl",
+  "providerTimeout": false,
+  "rpcOutcome": "completed",
+  "toolTimeoutErrors": 0,
+  "toolsEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/results/pi-restored-grep/sw08/attempts/01/tools.json",
+    "sha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51"
+  },
+  "identity": "62ec5072862c800ab86417295bf0d9d2be02e187e9e4260382d959eb29e1bc67",
+  "attempts": [
+    {
+      "outcome": "answered",
+      "providerTimeout": false,
+      "toolTimeoutErrors": 0,
+      "rc": 0,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/results/pi-restored-grep/sw08/attempts/01/session.jsonl",
+      "sessionSha256": "83cd6ceb1becd9d8bb36394e7ea58fe4cf547850b3c416a62584a3fd6fc3cdec",
+      "answerWallMs": 9899.66873708181,
+      "tokens": {
+        "input": 28026,
+        "output": 83,
+        "cacheRead": 25088,
+        "cacheWrite": 0
+      },
+      "attempt": 1
+    }
+  ],
+  "totalAttemptWallMs": 9899.66873708181,
+  "totalAttemptTokens": {
+    "input": 28026,
+    "output": 83,
+    "cacheRead": 25088,
+    "cacheWrite": 0
+  },
+  "timeoutErrors": {
+    "tool": 0,
+    "provider": 0
+  },
+  "recoveredProviderRetries": 0
+}

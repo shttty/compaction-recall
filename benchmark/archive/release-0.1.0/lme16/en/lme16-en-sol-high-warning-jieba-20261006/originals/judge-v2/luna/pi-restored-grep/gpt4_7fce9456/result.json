@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_7fce9456",
+  "inputSha256": "6617b2342a7b569c50a0631c6f22af2f476685885b5b761f86521b05f97a7b55",
+  "originalResultSha256": "a323d7b8569974c379c9f3f957b091804a36d24fb5cb338e715f9827fa6ced50",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "So, you viewed **three other properties before the Brookside townhouse**, or **four including it**.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response says only three properties were viewed before the townhouse; the reference requires four properties before making the offer."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"So, you viewed **three other properties before the Brookside townhouse**, or **four including it**.\",\"hedged\":false,\"guess\":false,\"reason\":\"The response says only three properties were viewed before the townhouse; the reference requires four properties before making the offer.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 633.7686388287693,
+    "firstVisibleTextFromSpawnMs": 13069.165151799098,
+    "firstThinkingFromSpawnMs": 10201.775068882853,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 12543.009514920413,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 13192.343572853133
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/gpt4_7fce9456/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1351,
+    "output": 553,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 484,
+    "totalTokens": 1904,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 13.246107819024473,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/gpt4_7fce9456/attempts/01/judge-session.jsonl",
+  "sessionSha256": "addbdc779b338859d839b432cc2b519f6e38c21929edf65cb72e4e5b72b8c21b",
+  "identity": "397d37a218088e1ce2d64d0ab877ba8696df1b4304626eaf3ee0b412c4db0238",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/gpt4_7fce9456/attempts/01/judge-session.jsonl",
+      "sessionSha256": "addbdc779b338859d839b432cc2b519f6e38c21929edf65cb72e4e5b72b8c21b",
+      "seconds": 13.246107819024473
+    }
+  ]
+}

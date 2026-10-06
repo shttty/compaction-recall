@@ -1,0 +1,13 @@
+{
+ "question_id": "3d86fd0a",
+ "split": "dev8",
+ "question_en": "Where did I meet Sophia?",
+ "question": "我是在哪里遇见Sophia的？",
+ "question_date": "2023/05/30 (Tue) 23:14",
+ "provenance": {
+  "model": "deepseek-flash",
+  "edited_by_review": true,
+  "machine_output": "我是在哪里遇见索菲亚的？",
+  "frozen_at": "2026-10-03T18:47+08:00"
+ }
+}

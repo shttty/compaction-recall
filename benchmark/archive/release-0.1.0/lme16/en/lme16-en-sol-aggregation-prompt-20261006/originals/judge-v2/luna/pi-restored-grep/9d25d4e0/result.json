@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "9d25d4e0",
+  "inputSha256": "72b097b993b5882a107faee890587d977009b867061c6005489616f263d00f79",
+  "originalResultSha256": "854c4e6628491c420c0e22e2104ae420eb60264ea7ee18a54dfd65ad7344daef",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "You mentioned acquiring **3 new jewelry items for your own collection in the last two months**, counting a pair of earrings as one item:\n\n1. **Silver necklace with a small pendant** — acquired on **April 15**.\n2. **Engagement ring** — received **about a month before your May conversations**, so roughly **April**.\n3. **Pair of emerald earrings** — bought at a **flea market the weekend before May 26**.\n\nThat totals **3 acquisitions**, or **4 individual pieces** if you count each earring separately. I haven’t included the necklace you bought for your sister or older jewelry you mentioned cleaning or repairing.",
+    "hedged": true,
+    "guess": false,
+    "reason": "The answer gives 3 items but also offers 4 individual pieces as a conditional alternative, so it leaves the count hedged."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"You mentioned acquiring **3 new jewelry items for your own collection in the last two months**, counting a pair of earrings as one item:\\n\\n1. **Silver necklace with a small pendant** — acquired on **April 15**.\\n2. **Engagement ring** — received **about a month before your May conversations**, so roughly **April**.\\n3. **Pair of emerald earrings** — bought at a **flea market the weekend before May 26**.\\n\\nThat totals **3 acquisitions**, or **4 individual pieces** if you count each earring separately. I haven’t included the necklace you bought for your sister or older jewelry you mentioned cleaning or repairing.\",\"hedged\":true,\"guess\":false,\"reason\":\"The answer gives 3 items but also offers 4 individual pieces as a conditional alternative, so it leaves the count hedged.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 636.4484617952257,
+    "firstVisibleTextFromSpawnMs": 13264.820587821305,
+    "firstThinkingFromSpawnMs": 6753.643395844847,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 13561.146176885813,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 14213.251108769327
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/9d25d4e0/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1262,
+    "output": 629,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 437,
+    "totalTokens": 1891,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 14.275284942938015,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/9d25d4e0/attempts/01/judge-session.jsonl",
+  "sessionSha256": "8d9b84e0e9762f9b8f0973da063fbe1d6ce42235ea953b6df5a1e331e90be4e6",
+  "identity": "ebcf81115bc6f8b927125166450189b841bd831ac22f962b36ca8e603a834bc9",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/9d25d4e0/attempts/01/judge-session.jsonl",
+      "sessionSha256": "8d9b84e0e9762f9b8f0973da063fbe1d6ce42235ea953b6df5a1e331e90be4e6",
+      "seconds": 14.275284942938015
+    }
+  ]
+}

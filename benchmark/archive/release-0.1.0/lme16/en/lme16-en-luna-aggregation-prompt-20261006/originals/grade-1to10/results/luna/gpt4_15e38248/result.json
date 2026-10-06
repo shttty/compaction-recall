@@ -1,0 +1,68 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_15e38248",
+  "inputSha256": "042ae40dc0186507278b4022400b99a3a05cf2c08d31b7a1fc1ba55b68db396a",
+  "originalResultSha256": "3bab54078d9957320a3d9bbf3c40d041b16d40afbe18c4a242baf4e1303f4ed4",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "score": 6,
+    "reason": "列出了三件家具，但参考答案为四件，计数相差一件。"
+  },
+  "rawVerdict": "{\"score\":6,\"reason\":\"列出了三件家具，但参考答案为四件，计数相差一件。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 635.5238331016153,
+    "firstVisibleTextFromSpawnMs": 7941.4380139205605,
+    "firstThinkingFromSpawnMs": 7825.569526059553,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 7342.917200177908,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 7994.047329062596
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/grade-1to10/results/luna/gpt4_15e38248/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 764,
+    "output": 84,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 51,
+    "totalTokens": 848,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 8.032943710917607,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/grade-1to10/results/luna/gpt4_15e38248/attempts/01/judge-session.jsonl",
+  "sessionSha256": "d31b0e4063b2d7c836fea2c1c0ac643853efa06fb8b963f3eec4ba939a691090",
+  "identity": "2bcd378b7093a14de673a329336cd72a7a0dc8b7714890afcaf0114bf5c461a1",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/grade-1to10/results/luna/gpt4_15e38248/attempts/01/result.json"
+    }
+  ],
+  "supplementFingerprint": "be18a689c48e4a42f5273591e4b9c8bdb51de157e1fde4258e2c9299a000b7c9"
+}

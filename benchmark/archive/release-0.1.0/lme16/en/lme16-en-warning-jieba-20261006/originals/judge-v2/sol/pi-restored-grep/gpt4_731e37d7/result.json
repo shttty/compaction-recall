@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_731e37d7",
+  "inputSha256": "cd17176e47da0ca62b8bfaeaed44e5f91a5e50ee49d6f0653763099e9fc2c326",
+  "originalResultSha256": "4de3f8ddc810c807e0c9297ab1ae0db1a878d81ec1fd6d0739639ea463461dff",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "**Total documented spending:** $200 + $20 + $500 = **$720**.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response clearly selects $720, matching the reference total; the caveat about unspecified costs does not select a conflicting total or present the answer as a guess."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"**Total documented spending:** $200 + $20 + $500 = **$720**.\",\"hedged\":false,\"guess\":false,\"reason\":\"The response clearly selects $720, matching the reference total; the caveat about unspecified costs does not select a conflicting total or present the answer as a guess.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 629.9185859970748,
+    "firstVisibleTextFromSpawnMs": 5792.970834998414,
+    "firstThinkingFromSpawnMs": 5008.220365969464,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5458.960891934112,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 6104.477821849287
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/gpt4_731e37d7/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1279,
+    "output": 146,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 69,
+    "totalTokens": 1425,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 6.157259172992781,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/gpt4_731e37d7/attempts/01/judge-session.jsonl",
+  "sessionSha256": "acc89eeb2b50feecca47a0bb20e785e6399feffbea72d5f683c6180d194e8c27",
+  "identity": "2e546f2783716f2da6d59ecba507c39fc0e1559319f649bfe8a7fa28e2e74b11",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/gpt4_731e37d7/attempts/01/judge-session.jsonl",
+      "sessionSha256": "acc89eeb2b50feecca47a0bb20e785e6399feffbea72d5f683c6180d194e8c27",
+      "seconds": 6.157259172992781
+    }
+  ]
+}

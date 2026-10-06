@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_a1b77f9c",
+  "inputSha256": "e8d8ed1ce56460b5d17f1cf79b568dcede03c929b246f151a6626c0882dd56f8",
+  "originalResultSha256": "43aa349c77e73f84985a41237c4cf4d09b7d1632188794044a8aa14329843e65",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "Adding those periods gives **about 8 weeks and 2 days total**—roughly **8.3 weeks**.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The selected total is 8 weeks and 2 days (8.3 weeks), not the required exact total of 8 weeks; it adds an extra two days for The Nightingale."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"Adding those periods gives **about 8 weeks and 2 days total**—roughly **8.3 weeks**.\",\"hedged\":false,\"guess\":false,\"reason\":\"The selected total is 8 weeks and 2 days (8.3 weeks), not the required exact total of 8 weeks; it adds an extra two days for The Nightingale.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 621.9639738555998,
+    "firstVisibleTextFromSpawnMs": 3521.835102001205,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5927.1271280013025,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 6564.627657877281
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_a1b77f9c/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1372,
+    "output": 87,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1459,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 6.6233664059545845,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_a1b77f9c/attempts/01/judge-session.jsonl",
+  "sessionSha256": "6e6ad4c9b8fef888883b61dea12088ea70598572f7b1f15f9af16088095db171",
+  "identity": "503d3a9dcecb93d017aca68b25de8204ed9d306c4962031aa2badf18bade9572",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_a1b77f9c/attempts/01/judge-session.jsonl",
+      "sessionSha256": "6e6ad4c9b8fef888883b61dea12088ea70598572f7b1f15f9af16088095db171",
+      "seconds": 6.6233664059545845
+    }
+  ]
+}

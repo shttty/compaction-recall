@@ -1,0 +1,68 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "3d86fd0a",
+  "inputSha256": "d7c6517f663c9093c3176d9241b7acfdc60dca93a4d6a206cce2cf94393f577a",
+  "originalResultSha256": "2ef02895e6841bcf5950cccaa15a5283e784f12528024a53eef398c014df1b66",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "score": 10,
+    "reason": "准确回答是在城里的咖啡店，没有错误或多余信息。"
+  },
+  "rawVerdict": "{\"score\":10,\"reason\":\"准确回答是在城里的咖啡店，没有错误或多余信息。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 858.4670720156282,
+    "firstVisibleTextFromSpawnMs": 6358.740621013567,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5870.05055998452,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 6744.109127204865
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/grade-1to10/results/luna/3d86fd0a/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 688,
+    "output": 45,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 15,
+    "totalTokens": 733,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 6.847689376911148,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/grade-1to10/results/luna/3d86fd0a/attempts/01/judge-session.jsonl",
+  "sessionSha256": "2388270f86c7117b40731accd33287cd83b4ef4247c1a1d89b550ef49fdb66c4",
+  "identity": "d4462eff47e6474f8b99d7ce54528bc908018a23b81104234e83e931a552fd12",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/grade-1to10/results/luna/3d86fd0a/attempts/01/result.json"
+    }
+  ],
+  "supplementFingerprint": "be18a689c48e4a42f5273591e4b9c8bdb51de157e1fde4258e2c9299a000b7c9"
+}

@@ -1,0 +1,68 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_7fce9456",
+  "inputSha256": "727aa4f0a23032077bed9d9fefee15b51a443da8e6aad1111043c69902851200",
+  "originalResultSha256": "a323d7b8569974c379c9f3f957b091804a36d24fb5cb338e715f9827fa6ced50",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "score": 6,
+    "reason": "答案虽提到四套并正确列出三套此前看过的房产，但漏掉了需要翻修厨房的平房，误将Brookside联排别墅计入四套，并称此前只看过三套。"
+  },
+  "rawVerdict": "{\"score\":6,\"reason\":\"答案虽提到四套并正确列出三套此前看过的房产，但漏掉了需要翻修厨房的平房，误将Brookside联排别墅计入四套，并称此前只看过三套。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 635.2848738897592,
+    "firstVisibleTextFromSpawnMs": 4459.909759927541,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5164.41967478022,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 5831.272941082716
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/grade-1to10/results/sol/gpt4_7fce9456/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 910,
+    "output": 117,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 51,
+    "totalTokens": 1027,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 5.8636841049883515,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/grade-1to10/results/sol/gpt4_7fce9456/attempts/01/judge-session.jsonl",
+  "sessionSha256": "38c03d5f0ad5ed87e6599592d6f0ebca17a943f9919c7c3a22d107b241b6677c",
+  "identity": "3e660b81822c30b80cd19c165127157b8f31f8165b0b2c267caac2ae2fba5f58",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/grade-1to10/results/sol/gpt4_7fce9456/attempts/01/result.json"
+    }
+  ],
+  "supplementFingerprint": "9b94c4455d8bb254d2e10562c7059277a85daaf287f3f4b157bfe35a02ab9922"
+}

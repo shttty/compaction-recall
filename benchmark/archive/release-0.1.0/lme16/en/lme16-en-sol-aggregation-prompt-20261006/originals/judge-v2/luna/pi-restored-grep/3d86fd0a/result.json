@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "3d86fd0a",
+  "inputSha256": "3d471b9c6d1b32e4e0759eaada9fbd12751843bc679618cb0c8f7879e6e92435",
+  "originalResultSha256": "fc58c46a4e35adc0194dcd297d2a313cdce23e577f94ae191ab5ca2df7a7a6e5",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "You met Sophia at **a coffee shop in the city**.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The selected answer matches the reference, and the response gives no alternatives or unsupported guess."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"You met Sophia at **a coffee shop in the city**.\",\"hedged\":false,\"guess\":false,\"reason\":\"The selected answer matches the reference, and the response gives no alternatives or unsupported guess.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 627.15058401227,
+    "firstVisibleTextFromSpawnMs": 8832.505512051284,
+    "firstThinkingFromSpawnMs": 8709.756862837821,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 8340.824611950666,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 8983.561764005572
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/3d86fd0a/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1145,
+    "output": 270,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 214,
+    "totalTokens": 1415,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 9.03400198998861,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/3d86fd0a/attempts/01/judge-session.jsonl",
+  "sessionSha256": "a437116e0a45cfef75e029666d5f756d7174babedfb5acdb243c69c87c008042",
+  "identity": "356ccf49aa3c23c2693da1a768e4fc550bd5f6b01b95aaa8668c7eb1cb479533",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/3d86fd0a/attempts/01/judge-session.jsonl",
+      "sessionSha256": "a437116e0a45cfef75e029666d5f756d7174babedfb5acdb243c69c87c008042",
+      "seconds": 9.03400198998861
+    }
+  ]
+}

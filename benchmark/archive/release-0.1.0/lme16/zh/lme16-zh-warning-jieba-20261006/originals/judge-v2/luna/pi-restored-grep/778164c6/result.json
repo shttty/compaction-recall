@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "778164c6",
+  "inputSha256": "ac7950dfb4f3a9e41c57fd451fa2fe62d55bf4232de259f74306222543286324",
+  "originalResultSha256": "15031a0c32480e6531e2606da99d31c0b2c38d22f22236ed49a2cc13bb26c930",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "你可能想的是**烤鲷鱼配芒果莎莎酱**。不过，之前提到它是加勒比地区常见的做法，并没有特别说它是牙买加菜；牙买加那道菜叫 **Escovitch 鱼**，通常是炸鱼配醋腌蔬菜。",
+    "hedged": true,
+    "guess": false,
+    "reason": "The response gives the matching fruit dish but then names Escovitch fish as the Jamaican dish, leaving conflicting answers instead of selecting the required one."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"你可能想的是**烤鲷鱼配芒果莎莎酱**。不过，之前提到它是加勒比地区常见的做法，并没有特别说它是牙买加菜；牙买加那道菜叫 **Escovitch 鱼**，通常是炸鱼配醋腌蔬菜。\",\"hedged\":true,\"guess\":false,\"reason\":\"The response gives the matching fruit dish but then names Escovitch fish as the Jamaican dish, leaving conflicting answers instead of selecting the required one.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 625.4909040872008,
+    "firstVisibleTextFromSpawnMs": 16231.590480078012,
+    "firstThinkingFromSpawnMs": 7034.56879616715,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 16052.188739879057,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 16693.24730313383
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/778164c6/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1229,
+    "output": 771,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 642,
+    "totalTokens": 2000,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 16.742276903009042,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+  "sessionSha256": "9826f920bc11b956003c9ec521def98ced9df6d8991b021af9a592a7dcca69fd",
+  "identity": "c308d496515b89df28fad7c4d8bac0fcd081691fba90da58cad9f9776ff3e800",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+      "sessionSha256": "9826f920bc11b956003c9ec521def98ced9df6d8991b021af9a592a7dcca69fd",
+      "seconds": 16.742276903009042
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw06",
+  "inputSha256": "b288bba394d3bcbdd8c3297a669d4224b4331e2a68b1f65a2add4c653f5a1b1e",
+  "originalResultSha256": "eb5039978155d12c259633c656133d27ec029d0eedfbeaa35f927216c84e6ad1",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "1. **The button initially appeared inert because Electron could not load the ESM preload script in its sandbox.** That left `window.yinshiDesktop` undefined, so the renderer couldn’t send the sign-in request. Bundling the preload as CommonJS fixed this.\n2. **Once sign-in reached the backend, the hosted server returned 404 for the desktop authorization endpoint.** Production was running an older backend; deploying the current backend resolved that separate issue.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The answer identifies both causes: the ESM preload prevented the renderer from reaching sign-in IPC, and the stale production backend returned a 404."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"1. **The button initially appeared inert because Electron could not load the ESM preload script in its sandbox.** That left `window.yinshiDesktop` undefined, so the renderer couldn’t send the sign-in request. Bundling the preload as CommonJS fixed this.\\n2. **Once sign-in reached the backend, the hosted server returned 404 for the desktop authorization endpoint.** Production was running an older backend; deploying the current backend resolved that separate issue.\",\"hedged\":false,\"guess\":false,\"reason\":\"The answer identifies both causes: the ESM preload prevented the renderer from reaching sign-in IPC, and the stale production backend returned a 404.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 644.0898978617042,
+    "firstVisibleTextFromSpawnMs": 12073.84519977495,
+    "firstThinkingFromSpawnMs": 7564.262895844877,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 12365.653562825173,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 13025.321663822979
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/judge-v2/luna/pi-restored-grep/sw06/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1279,
+    "output": 552,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 403,
+    "totalTokens": 1831,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 13.076779002090916,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/judge-v2/luna/pi-restored-grep/sw06/attempts/01/judge-session.jsonl",
+  "sessionSha256": "e097486781dbaa16dcf83366fdda4ea3d65ec44fe2e4a4a3bf83172fce682770",
+  "identity": "f4701cdba2c96fc2d323d86dc7a74b5681f8f85bbbaf702a652861d2bc1f6b42",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/judge-v2/luna/pi-restored-grep/sw06/attempts/01/judge-session.jsonl",
+      "sessionSha256": "e097486781dbaa16dcf83366fdda4ea3d65ec44fe2e4a4a3bf83172fce682770",
+      "seconds": 13.076779002090916
+    }
+  ]
+}

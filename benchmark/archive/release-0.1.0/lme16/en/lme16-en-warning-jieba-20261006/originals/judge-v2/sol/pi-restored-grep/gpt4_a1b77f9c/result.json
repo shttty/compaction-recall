@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_a1b77f9c",
+  "inputSha256": "deb9bdf7f5b3d8ae15e5515b9b732bdb6687b7f63766d97ad8cfe3d61f26560d",
+  "originalResultSha256": "8f26f946fac3ba280d5e8de753a2d83fe5efeee76dea3d2bb79e62985762653f",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "That’s **about 8 weeks total** across the three books. This is calendar time from start to finish—or, for *The Power*, from starting to Mar 20—not the number of weeks you spent actively reading or listening.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The selected answer gives 8 weeks total, with the matching breakdown of 2, 4, and 2 weeks; the calendar-time clarification does not select a different total."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"That’s **about 8 weeks total** across the three books. This is calendar time from start to finish—or, for *The Power*, from starting to Mar 20—not the number of weeks you spent actively reading or listening.\",\"hedged\":false,\"guess\":false,\"reason\":\"The selected answer gives 8 weeks total, with the matching breakdown of 2, 4, and 2 weeks; the calendar-time clarification does not select a different total.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 619.0005680546165,
+    "firstVisibleTextFromSpawnMs": 6250.29912404716,
+    "firstThinkingFromSpawnMs": 5313.495309092104,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 6034.209401812404,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 6668.743095127866
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/gpt4_a1b77f9c/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1298,
+    "output": 156,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 47,
+    "totalTokens": 1454,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 6.731649775058031,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/gpt4_a1b77f9c/attempts/01/judge-session.jsonl",
+  "sessionSha256": "3b6f4a1cb9243bd2d7a7b2416f7950e743af1e7cc63c4ff07f11562b9f8b0d22",
+  "identity": "7377d58aa941864a4deff4de54d06f592e8a4ef3e6b56fab2eb03738e2dab265",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/gpt4_a1b77f9c/attempts/01/judge-session.jsonl",
+      "sessionSha256": "3b6f4a1cb9243bd2d7a7b2416f7950e743af1e7cc63c4ff07f11562b9f8b0d22",
+      "seconds": 6.731649775058031
+    }
+  ]
+}

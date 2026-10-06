@@ -1,0 +1,68 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "28dc39ac",
+  "inputSha256": "4a7def4d3a1273de3c74d3659f9db68fb4fa55eda89842c31938aa704a743504",
+  "originalResultSha256": "8261536f4b55de6d61ba0f920d23be6df4cc7614be7a59fe14f1e1cf9830a68b",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "score": 6,
+    "reason": "列出了大部分相关游戏并给出接近正确的估算，但漏掉《Hyper Light Drifter》的5小时，还把总时长说成不确定的范围，未明确答出145小时。"
+  },
+  "rawVerdict": "{\"score\": 6, \"reason\": \"列出了大部分相关游戏并给出接近正确的估算，但漏掉《Hyper Light Drifter》的5小时，还把总时长说成不确定的范围，未明确答出145小时。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 641.3714091759175,
+    "firstVisibleTextFromSpawnMs": 7653.630904154852,
+    "firstThinkingFromSpawnMs": 7568.956035189331,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 7202.411910053343,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 7859.3589970842
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/grade-1to10/results/luna/28dc39ac/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 958,
+    "output": 222,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 160,
+    "totalTokens": 1180,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 7.894370418973267,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/grade-1to10/results/luna/28dc39ac/attempts/01/judge-session.jsonl",
+  "sessionSha256": "dbb3e05ffde056bcf2d21ca60740db283867ccf8e3fb642f54f9bb1a8007bc52",
+  "identity": "6349c720c2f2f461e69f5abf3a26cf89a175a3ebee4d249072ff3dea894a829c",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/grade-1to10/results/luna/28dc39ac/attempts/01/result.json"
+    }
+  ],
+  "supplementFingerprint": "0e09654a2ec38f95eecd15f2a10778aefc5ab448bacc821077667af60f424712"
+}

@@ -1,0 +1,14 @@
+{
+ "question_id": "ceb54acb",
+ "question_type": "single-session-assistant",
+ "question": "In our previous chat, you suggested 'sexual compulsions' and a few other options for alternative terms for certain behaviors. Can you remind me what the other four options were?",
+ "question_date": "2023/05/30 (Tue) 23:22",
+ "split": "dev8",
+ "selection": {
+  "question_type": "single-session-assistant",
+  "rationale": "frozen original DEV8 ID; individual LongMemEval M history",
+  "annotatedEvidenceSegments": [
+   3
+  ]
+ }
+}

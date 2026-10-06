@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "577d4d32",
+  "inputSha256": "6d70c5c5919c29e74e6ab75676951cfd31c0ad134af6527fbb9fbf9532c51589",
+  "originalResultSha256": "199b086f63a81cfd260fd4a5e548a40401ec27bcf3afb7782aa1586fcb853776",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "You stop checking work emails and messages by **7 pm**. You set that boundary to separate work from personal life, and said it helps you relax and switch off in the evenings.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The answer clearly gives 7 pm, matching the reference, with no alternative or unsupported guess."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"You stop checking work emails and messages by **7 pm**. You set that boundary to separate work from personal life, and said it helps you relax and switch off in the evenings.\",\"hedged\":false,\"guess\":false,\"reason\":\"The answer clearly gives 7 pm, matching the reference, with no alternative or unsupported guess.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 639.921705937013,
+    "firstVisibleTextFromSpawnMs": 6326.378280064091,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 6747.1281418111175,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 7402.590461075306
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/577d4d32/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1157,
+    "output": 217,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 135,
+    "totalTokens": 1374,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 7.450338076101616,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/577d4d32/attempts/01/judge-session.jsonl",
+  "sessionSha256": "a59cacd0d003a13b18d07a0d1845865cf0b6dab93f2de33da8a5cb06639be287",
+  "identity": "95ce0718e504b771e531c1de6d3f968366586ae6582ac12a962f96f931e797de",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/577d4d32/attempts/01/judge-session.jsonl",
+      "sessionSha256": "a59cacd0d003a13b18d07a0d1845865cf0b6dab93f2de33da8a5cb06639be287",
+      "seconds": 7.450338076101616
+    }
+  ]
+}

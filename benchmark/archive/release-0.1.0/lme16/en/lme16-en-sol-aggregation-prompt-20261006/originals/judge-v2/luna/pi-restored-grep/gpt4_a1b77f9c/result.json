@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_a1b77f9c",
+  "inputSha256": "81546a4c65684411a12536965af24b2cca2c4b674e4e32dafb278f2e02c87dd3",
+  "originalResultSha256": "2c263c9ad098339fe2d953a9325f94d6d0beeb858d3da2deba72032876af00bd",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "Using your original start and finish dates, you spent **8 weeks in total**:\n\n| Book | Started | Finished | Time spent |\n|---|---|---|---|\n| *The Nightingale* | January 1, 2022 | January 15, 2022 | 14 days = **2 weeks** |\n| *Sapiens: A Brief History of Humankind* | February 1, 2022 | March 1, 2022 | 28 days = **4 weeks** |\n| *The Power* | March 6, 2022 | March 20, 2022 | 14 days = **2 weeks** |\n\n**Total: 2 + 4 + 2 = 8 weeks.**\n\nOne note: you also later mentioned starting *The Nightingale* on February 27 and finishing it on March 1. If that was a separate reread, it would add **2 days**, making the total **8 weeks and 2 days**.",
+    "hedged": true,
+    "guess": false,
+    "reason": "The main total matches the reference, but the conditional reread note introduces an alternative total, so the response is hedged and incorrect under the evaluation rules."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"Using your original start and finish dates, you spent **8 weeks in total**:\\n\\n| Book | Started | Finished | Time spent |\\n|---|---|---|---|\\n| *The Nightingale* | January 1, 2022 | January 15, 2022 | 14 days = **2 weeks** |\\n| *Sapiens: A Brief History of Humankind* | February 1, 2022 | March 1, 2022 | 28 days = **4 weeks** |\\n| *The Power* | March 6, 2022 | March 20, 2022 | 14 days = **2 weeks** |\\n\\n**Total: 2 + 4 + 2 = 8 weeks.**\\n\\nOne note: you also later mentioned starting *The Nightingale* on February 27 and finishing it on March 1. If that was a separate reread, it would add **2 days**, making the total **8 weeks and 2 days**.\",\"hedged\":true,\"guess\":false,\"reason\":\"The main total matches the reference, but the conditional reread note introduces an alternative total, so the response is hedged and incorrect under the evaluation rules.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 635.7232788577676,
+    "firstVisibleTextFromSpawnMs": 16697.00400182046,
+    "firstThinkingFromSpawnMs": 7430.015968857333,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 19903.671290026978,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 20554.948794888332
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/gpt4_a1b77f9c/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1401,
+    "output": 985,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 710,
+    "totalTokens": 2386,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 20.60914382711053,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/gpt4_a1b77f9c/attempts/01/judge-session.jsonl",
+  "sessionSha256": "8daa5fc240126c87ebc2c08939411ec5ae58831290034054cea287cbb1d04141",
+  "identity": "17f6c070c9a78ee19bf940647a4046de90e67f3ee11338fa1ce45d6c71171ab8",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/gpt4_a1b77f9c/attempts/01/judge-session.jsonl",
+      "sessionSha256": "8daa5fc240126c87ebc2c08939411ec5ae58831290034054cea287cbb1d04141",
+      "seconds": 20.60914382711053
+    }
+  ]
+}

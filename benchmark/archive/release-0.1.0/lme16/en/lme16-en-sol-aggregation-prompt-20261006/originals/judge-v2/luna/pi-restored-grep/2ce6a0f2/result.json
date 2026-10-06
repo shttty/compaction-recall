@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "2ce6a0f2",
+  "inputSha256": "6d211fd0dd3c3b7d4cfe39cc524354230a786c1c13ed34c70cd6de18cf56b408",
+  "originalResultSha256": "0c636d7d1c6f953e9570da6fe5b0d55308a67e1116035c3534ba5572c4fca109",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "**The total is 8**, assuming the two events described only as “recently” fall within the past month.",
+    "hedged": true,
+    "guess": false,
+    "reason": "The answer gives a conditional total of 8, which does not match the reference count of 4."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"**The total is 8**, assuming the two events described only as “recently” fall within the past month.\",\"hedged\":true,\"guess\":false,\"reason\":\"The answer gives a conditional total of 8, which does not match the reference count of 4.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 631.20634900406,
+    "firstVisibleTextFromSpawnMs": 10049.271650845185,
+    "firstThinkingFromSpawnMs": 6612.464926904067,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 9869.57564111799,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 10516.395787941292
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/2ce6a0f2/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1408,
+    "output": 436,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 365,
+    "totalTokens": 1844,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 10.58180332207121,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/2ce6a0f2/attempts/01/judge-session.jsonl",
+  "sessionSha256": "96be61492af70b02c3cfdf86d1a55163a6e9a16837b14c04cf8aaf3837187e20",
+  "identity": "26feb9fbbde93472f74dc61511cac1a82e9fa22905f79deb47be43f9ccd99165",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/2ce6a0f2/attempts/01/judge-session.jsonl",
+      "sessionSha256": "96be61492af70b02c3cfdf86d1a55163a6e9a16837b14c04cf8aaf3837187e20",
+      "seconds": 10.58180332207121
+    }
+  ]
+}

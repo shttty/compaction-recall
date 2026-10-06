@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_731e37d7",
+  "inputSha256": "9491958216e076459912bf45f825de667bd2c4c40a35b9c6e71cd0929917540a",
+  "originalResultSha256": "3cb0105ecacc44af9507f7ac78da1255949c0ea94f0e17df050ae516edbd0743",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "However, today is **February 26, 2023**, so March 15–16 falls outside the last four months, despite your describing that workshop as already attended. **Strictly within the four-month window, the confirmed subtotal is $220.** If the March date was a mistake and that workshop occurred recently, the subtotal is **$720**, plus any workshop costs you haven’t specified.",
+    "hedged": true,
+    "guess": false,
+    "reason": "The response leaves $220 and a conditional $720 as alternative totals rather than selecting one resolved answer; conditional alternatives are incorrect under the evaluation rules."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"However, today is **February 26, 2023**, so March 15–16 falls outside the last four months, despite your describing that workshop as already attended. **Strictly within the four-month window, the confirmed subtotal is $220.** If the March date was a mistake and that workshop occurred recently, the subtotal is **$720**, plus any workshop costs you haven’t specified.\",\"hedged\":true,\"guess\":false,\"reason\":\"The response leaves $220 and a conditional $720 as alternative totals rather than selecting one resolved answer; conditional alternatives are incorrect under the evaluation rules.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 629.6965919900686,
+    "firstVisibleTextFromSpawnMs": 5140.097322873771,
+    "firstThinkingFromSpawnMs": 4480.164768872783,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 6057.525899959728,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 6702.748636947945
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_731e37d7/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1460,
+    "output": 173,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 37,
+    "totalTokens": 1633,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 6.76392005989328,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_731e37d7/attempts/01/judge-session.jsonl",
+  "sessionSha256": "4ca25de3e8201d13209ad410ca2d9b476baccb66464717a9983b2e53f313482b",
+  "identity": "c4f97db19a34e853b27c8f7d4bf0ee78cdb2a86f57f0c4c8152de702640e47c0",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_731e37d7/attempts/01/judge-session.jsonl",
+      "sessionSha256": "4ca25de3e8201d13209ad410ca2d9b476baccb66464717a9983b2e53f313482b",
+      "seconds": 6.76392005989328
+    }
+  ]
+}

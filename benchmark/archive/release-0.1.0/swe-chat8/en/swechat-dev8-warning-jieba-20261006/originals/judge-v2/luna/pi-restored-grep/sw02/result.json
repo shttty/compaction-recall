@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw02",
+  "inputSha256": "d03564e729054b1fb977158c1bc29b1292807496ee56b4f8c2ac19da962c75f9",
+  "originalResultSha256": "d3ff98e941159b0bcde0bbbddcbdc9680a09ac39517797b2ed6dfe32ec0c9949",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "**Relevant information:** The database/catalog persisted a `\"deleted\"` archive status, but the exported `ArchiveStatus` type did not include it.\n\n**Reasoning:** That mismatch meant the type contract did not represent all persisted statuses. The planned fix was to add `\"deleted\"` to `ArchiveStatus` and add a regression test checking that the exported type includes it.",
+    "hedged": false,
+    "guess": false,
+    "reason": "It identifies the missing `deleted` status and the type update, but substitutes a regression test checking the type for the specified runtime check of exported status values."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"**Relevant information:** The database/catalog persisted a `\\\"deleted\\\"` archive status, but the exported `ArchiveStatus` type did not include it.\\n\\n**Reasoning:** That mismatch meant the type contract did not represent all persisted statuses. The planned fix was to add `\\\"deleted\\\"` to `ArchiveStatus` and add a regression test checking that the exported type includes it.\",\"hedged\":false,\"guess\":false,\"reason\":\"It identifies the missing `deleted` status and the type update, but substitutes a regression test checking the type for the specified runtime check of exported status values.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 1077.8343759011477,
+    "firstVisibleTextFromSpawnMs": 15266.941478010267,
+    "firstThinkingFromSpawnMs": 8433.645417913795,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 14599.899053107947,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 15693.292842945084
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/sw02/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1264,
+    "output": 692,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 557,
+    "totalTokens": 1956,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 15.921540657058358,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/sw02/attempts/01/judge-session.jsonl",
+  "sessionSha256": "c2d07d85ced1fc7d4f2c351c94b29fdd82c3c8cf8bdebb5ac37fe7fee81f6c21",
+  "identity": "a5c2f22ac9f3953a3640f24af0470ee45c2e88dd9b47d3e8caabd77f7e167d7a",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/sw02/attempts/01/judge-session.jsonl",
+      "sessionSha256": "c2d07d85ced1fc7d4f2c351c94b29fdd82c3c8cf8bdebb5ac37fe7fee81f6c21",
+      "seconds": 15.921540657058358
+    }
+  ]
+}

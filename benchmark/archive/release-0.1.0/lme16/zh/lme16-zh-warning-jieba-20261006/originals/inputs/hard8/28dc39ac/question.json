@@ -1,0 +1,18 @@
+{
+ "question_id": "28dc39ac",
+ "question_type": "multi-session",
+ "question": "How many hours have I spent playing games in total?",
+ "question_date": "2023/05/30 (Tue) 22:11",
+ "split": "hard8",
+ "selection": {
+  "question_type": "multi-session",
+  "score": 125,
+  "evidenceSegments": [
+   1,
+   2,
+   3
+  ],
+  "distractorCues": [],
+  "rationale": "Explicit LongMemEval has_answer turns map to separate evidence in segments [1, 2, 3]; multi-session"
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "question_id": "51b23612",
+ "split": "dev8",
+ "question_en": "I was going through our previous conversation about political propaganda and humor, and I was wondering if you could remind me of that Soviet cartoon you mentioned that mocked Western culture?",
+ "question": "我在翻我们之前聊政治宣传和幽默的那段对话，想问问你能不能帮我回忆一下你提到的那个讽刺西方文化的苏联动画片？",
+ "question_date": "2023/05/30 (Tue) 23:50",
+ "provenance": {
+  "model": "deepseek-flash",
+  "edited_by_review": true,
+  "machine_output": "我之前翻我们之前聊政治宣传和幽默的那段对话，想问问你能不能帮我回忆一下你提到的那个讽刺西方文化的苏联动画片？",
+  "frozen_at": "2026-10-03T18:47+08:00"
+ }
+}

@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "6d550036",
+  "inputSha256": "e72b682345f17db20447b4c6343d49536482361f64ab1461cf42575df3798d95",
+  "originalResultSha256": "80dd1af2116b2eb19259d6573d8ea7d515f94bdfeb01771fddba3010b7969d0b",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "**So, that’s approximately six projects if you mean projects you’ve led or are currently working on. Strictly counting confirmed project-leadership roles, I can verify one.**",
+    "hedged": true,
+    "guess": false,
+    "reason": "The response gives conditional alternatives (approximately six or one) instead of selecting a single count; neither matches the reference answer of 2."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"**So, that’s approximately six projects if you mean projects you’ve led or are currently working on. Strictly counting confirmed project-leadership roles, I can verify one.**\",\"hedged\":true,\"guess\":false,\"reason\":\"The response gives conditional alternatives (approximately six or one) instead of selecting a single count; neither matches the reference answer of 2.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 676.2198759242892,
+    "firstVisibleTextFromSpawnMs": 11974.836244946346,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 11521.121769910678,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 12212.947085034102
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/6d550036/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1233,
+    "output": 406,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 315,
+    "totalTokens": 1639,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 12.305830175988376,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/6d550036/attempts/01/judge-session.jsonl",
+  "sessionSha256": "827dde84492986ab7a44250fb8228b623a88b447ae1df31a8c3b9f04dc62fd03",
+  "identity": "778d260366b0d427db2877efff081dd80591b5f4697823d7ea009d45ca6acef4",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/6d550036/attempts/01/judge-session.jsonl",
+      "sessionSha256": "827dde84492986ab7a44250fb8228b623a88b447ae1df31a8c3b9f04dc62fd03",
+      "seconds": 12.305830175988376
+    }
+  ]
+}

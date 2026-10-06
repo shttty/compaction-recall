@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "51b23612",
+  "inputSha256": "79ff4f6f7a63ff6ef6fb73e6dd7687ed85c733ec75c8eae2d28700e68a6c390e",
+  "originalResultSha256": "7ba488ba012a2402a45e22912bd064feed41ff4702213e29578b4f6ead8da443",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "The cartoon I mentioned was **_Nu, pogodi!_ (Ну, погоди!), usually translated as “Well, Just You Wait!”**",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response clearly selects Nu, pogodi!, matching the reference; the subsequent correction of its characterization does not change the identified cartoon."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"The cartoon I mentioned was **_Nu, pogodi!_ (Ну, погоди!), usually translated as “Well, Just You Wait!”**\",\"hedged\":false,\"guess\":false,\"reason\":\"The response clearly selects Nu, pogodi!, matching the reference; the subsequent correction of its characterization does not change the identified cartoon.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 651.5909139998257,
+    "firstVisibleTextFromSpawnMs": 3376.95642397739,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 4779.277293011546,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 5446.370629826561
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/51b23612/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1240,
+    "output": 81,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1321,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 5.503515467979014,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/51b23612/attempts/01/judge-session.jsonl",
+  "sessionSha256": "eba13c265fb5231d9d9f4677ba6dd3fccf512eefce3e1f328072526f9bcca051",
+  "identity": "632bef20695968a8cf3002aa0f7c1ccd8736b2c8287f03867df83209b31f9de4",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/51b23612/attempts/01/judge-session.jsonl",
+      "sessionSha256": "eba13c265fb5231d9d9f4677ba6dd3fccf512eefce3e1f328072526f9bcca051",
+      "seconds": 5.503515467979014
+    }
+  ]
+}

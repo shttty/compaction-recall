@@ -1,0 +1,68 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "778164c6",
+  "inputSha256": "021633b71bde1ca6bda2e3829270650c3771dc13421a508dc763468f2cb7ca76",
+  "originalResultSha256": "d86371153a529bebf969edb026f2b679620f3fc535382cb3c774f5470e9b4d6c",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "score": 10,
+    "reason": "准确指出了烤鲷鱼配芒果莎莎酱，并正确解释其与牙买加菜 Escovitch Fish 的区别，与参考答案一致且无错误附加信息。"
+  },
+  "rawVerdict": "{\"score\":10,\"reason\":\"准确指出了烤鲷鱼配芒果莎莎酱，并正确解释其与牙买加菜 Escovitch Fish 的区别，与参考答案一致且无错误附加信息。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 637.3922461643815,
+    "firstVisibleTextFromSpawnMs": 2710.4610060341656,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 3012.223214842379,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 3665.1693279854953
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/grade-1to10/results/sol/778164c6/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 942,
+    "output": 54,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 996,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 3.6952865680214018,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/grade-1to10/results/sol/778164c6/attempts/01/judge-session.jsonl",
+  "sessionSha256": "3034f76c172b5f8234cf499dcb22936aded91b053a175f2975939445b817bcd6",
+  "identity": "39af801f9ece5d44399a8a9801d6001359f86ea7c921795e0912e38dce86e051",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/grade-1to10/results/sol/778164c6/attempts/01/result.json"
+    }
+  ],
+  "supplementFingerprint": "97afea7d99a0e4fc69b9ccefde9b5afafecb41ecf893e486b0127280619e59d4"
+}

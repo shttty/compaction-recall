@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_a1b77f9c",
+  "inputSha256": "deb9bdf7f5b3d8ae15e5515b9b732bdb6687b7f63766d97ad8cfe3d61f26560d",
+  "originalResultSha256": "8f26f946fac3ba280d5e8de753a2d83fe5efeee76dea3d2bb79e62985762653f",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "Using the dates you mentioned:\n\n- *The Nightingale*: Jan 1–15 — **2 weeks**\n- *Sapiens*: Feb 1–Mar 1 — **4 weeks**\n- *The Power*: started Mar 6; by Mar 20, about **2 weeks** had elapsed\n\nThat’s **about 8 weeks total** across the three books. This is calendar time from start to finish—or, for *The Power*, from starting to Mar 20—not the number of weeks you spent actively reading or listening.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The selected answer gives the same 2-, 4-, and 2-week durations and an approximately 8-week total as the reference; it offers no competing answer or unsupported guess."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"Using the dates you mentioned:\\n\\n- *The Nightingale*: Jan 1–15 — **2 weeks**\\n- *Sapiens*: Feb 1–Mar 1 — **4 weeks**\\n- *The Power*: started Mar 6; by Mar 20, about **2 weeks** had elapsed\\n\\nThat’s **about 8 weeks total** across the three books. This is calendar time from start to finish—or, for *The Power*, from starting to Mar 20—not the number of weeks you spent actively reading or listening.\",\"hedged\":false,\"guess\":false,\"reason\":\"The selected answer gives the same 2-, 4-, and 2-week durations and an approximately 8-week total as the reference; it offers no competing answer or unsupported guess.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 640.4512329027057,
+    "firstVisibleTextFromSpawnMs": 23680.499186972156,
+    "firstThinkingFromSpawnMs": 19848.84781506844,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 24587.53486094065,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 25243.47528698854
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/gpt4_a1b77f9c/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1299,
+    "output": 957,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 777,
+    "totalTokens": 2256,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 25.29964973521419,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/gpt4_a1b77f9c/attempts/01/judge-session.jsonl",
+  "sessionSha256": "536066940cd6e6d37014cbee87ebb180069b3977576af91b156c72e50468f745",
+  "identity": "cddab3a45d64f5a3668767eeb055a9778c5177b6f790adb8c166b4443e8200ce",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/gpt4_a1b77f9c/attempts/01/judge-session.jsonl",
+      "sessionSha256": "536066940cd6e6d37014cbee87ebb180069b3977576af91b156c72e50468f745",
+      "seconds": 25.29964973521419
+    }
+  ]
+}

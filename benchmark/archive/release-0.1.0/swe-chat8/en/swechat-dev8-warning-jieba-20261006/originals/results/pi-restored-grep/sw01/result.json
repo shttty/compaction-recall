@@ -1,0 +1,82 @@
+{
+  "question_id": "sw01",
+  "arm": "pi-restored-grep",
+  "outcome": "answered",
+  "answer": "1. **Keep the candidate’s runner ID and Sprite/provider ID** recorded on the restore operation, bound to its exact restore job.\n2. **Purpose:** those durable IDs let recovery retry deletion or reconcile the leftover candidate later. Clearing them after a failed provider deletion would leave an orphan that the system can no longer identify.",
+  "tool_calls": [],
+  "toolErrors": 0,
+  "toolResults": [],
+  "answerWallMs": 26090.129508869722,
+  "timing": {
+    "startupToRpcReadyMs": 1945.3521051909775,
+    "firstVisibleTextFromSpawnMs": 24758.131860988215,
+    "firstThinkingFromSpawnMs": 20774.627274135128,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 23495.426221983507,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 25472.532567102462
+  },
+  "tokens": {
+    "input": 27660,
+    "output": 202,
+    "cacheRead": 1536,
+    "cacheWrite": 0
+  },
+  "modelCalls": 1,
+  "providerError": null,
+  "rc": 0,
+  "error": null,
+  "snapshotSha256": "73ff100dc4f50457cf0fcfc883b8b3b3a488ea9551e64bc292f27762215c1fdc",
+  "sessionSha256": "daa1bddba609d9f8e0fef94b5171a49850fb140e24773d5e62a89fd9d65bdc58",
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/results/pi-restored-grep/sw01/attempts/01/session.jsonl",
+  "metadata": {
+    "caseId": "019ff006-9273-7e80-9303-0b30d84e3102",
+    "subset": "dev8",
+    "language": "en",
+    "type": "decision-reason",
+    "overlap": null
+  },
+  "snapshotPath": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/snapshots/019ff006-9273-7e80-9303-0b30d84e3102.jsonl",
+  "providerTimeout": false,
+  "rpcOutcome": "completed",
+  "toolTimeoutErrors": 0,
+  "toolsEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/results/pi-restored-grep/sw01/attempts/01/tools.json",
+    "sha256": "09694a8323ede087f6ecca246a2d6fa0c742e1f6ad71aaa2ce1e2390271a6e45"
+  },
+  "identity": "8241fac0d4f67ef8a1cc9f48735de816453d08d27b9358414a7ee35861d00010",
+  "attempts": [
+    {
+      "outcome": "answered",
+      "providerTimeout": false,
+      "toolTimeoutErrors": 0,
+      "rc": 0,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/results/pi-restored-grep/sw01/attempts/01/session.jsonl",
+      "sessionSha256": "daa1bddba609d9f8e0fef94b5171a49850fb140e24773d5e62a89fd9d65bdc58",
+      "answerWallMs": 26090.129508869722,
+      "tokens": {
+        "input": 27660,
+        "output": 202,
+        "cacheRead": 1536,
+        "cacheWrite": 0
+      },
+      "attempt": 1
+    }
+  ],
+  "totalAttemptWallMs": 26090.129508869722,
+  "totalAttemptTokens": {
+    "input": 27660,
+    "output": 202,
+    "cacheRead": 1536,
+    "cacheWrite": 0
+  },
+  "timeoutErrors": {
+    "tool": 0,
+    "provider": 0
+  },
+  "recoveredProviderRetries": 0
+}

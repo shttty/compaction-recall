@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw05",
+  "inputSha256": "fd33004a130c99c8e0d50b0dd4282937367b535d04aa25be0e67541de96b7d09",
+  "originalResultSha256": "22ab98782a6063235c25ab6f13c15c380e638c8d9dc8213021b6cbf6f67c0c59",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "1. **Bundle location:** `/Users/user/projects/yinshi/desktop/release/mac-arm64/Yinshi.app`\n2. **Authentication checks still incomplete:** Interactive account sign-in had not yet been tested end to end. Post-sign-in local behavior—including profile switching and persistence after relaunch—also remained unverified. The app had launched and displayed its sign-in screen, but that did not confirm the authentication flow worked.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The answer identifies the Apple Silicon bundle within the Yinshi project and states that interactive sign-in and post-authentication behavior were still unverified."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"1. **Bundle location:** `/Users/user/projects/yinshi/desktop/release/mac-arm64/Yinshi.app`\\n2. **Authentication checks still incomplete:** Interactive account sign-in had not yet been tested end to end. Post-sign-in local behavior—including profile switching and persistence after relaunch—also remained unverified. The app had launched and displayed its sign-in screen, but that did not confirm the authentication flow worked.\",\"hedged\":false,\"guess\":false,\"reason\":\"The answer identifies the Apple Silicon bundle within the Yinshi project and states that interactive sign-in and post-authentication behavior were still unverified.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 654.7735030762851,
+    "firstVisibleTextFromSpawnMs": 8653.548169881105,
+    "firstThinkingFromSpawnMs": 7151.074171066284,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 8995.854899985716,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 9666.245224885643
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/sw05/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1265,
+    "output": 382,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 243,
+    "totalTokens": 1647,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 9.716631187824532,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/sw05/attempts/01/judge-session.jsonl",
+  "sessionSha256": "b0a16c6074a04910f4468c19563fa8be4bf3a235e90f3fdd4a1b167c44d13c02",
+  "identity": "294393be5db3063645e1a94c604ae2a0fde0a4f34cfb3356fcb63c343e714211",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/sw05/attempts/01/judge-session.jsonl",
+      "sessionSha256": "b0a16c6074a04910f4468c19563fa8be4bf3a235e90f3fdd4a1b167c44d13c02",
+      "seconds": 9.716631187824532
+    }
+  ]
+}

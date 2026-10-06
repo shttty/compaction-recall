@@ -1,0 +1,13 @@
+{
+ "question_id": "28dc39ac",
+ "split": "hard8",
+ "question_en": "How many hours have I spent playing games in total?",
+ "question": "我总共花了多少小时玩游戏？",
+ "question_date": "2023/05/30 (Tue) 22:11",
+ "provenance": {
+  "model": "deepseek-flash",
+  "edited_by_review": false,
+  "machine_output": null,
+  "frozen_at": "2026-10-03T18:47+08:00"
+ }
+}

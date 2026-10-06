@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "51b23612",
+  "inputSha256": "ab0e59d66e38e9ba4290dcdca523f74042fec1c527619ce0fc926591e3067ae9",
+  "originalResultSha256": "76a3fcdfd5528c03fd13632554690685d0d05e7345be1603f7dfce19293acf86",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "I mentioned **“Nu, pogodi!”** (“Just You Wait!”), but I should correct my earlier description: it’s a popular Soviet comedy cartoon series about a wolf chasing a hare, not a well-known example of propaganda mocking Western culture. My earlier claim that it portrayed the Soviet Union as superior was inaccurate.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response clearly identifies “Nu, pogodi!” as the cartoon; the added correction does not change that answer."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"I mentioned **“Nu, pogodi!”** (“Just You Wait!”), but I should correct my earlier description: it’s a popular Soviet comedy cartoon series about a wolf chasing a hare, not a well-known example of propaganda mocking Western culture. My earlier claim that it portrayed the Soviet Union as superior was inaccurate.\",\"hedged\":false,\"guess\":false,\"reason\":\"The response clearly identifies “Nu, pogodi!” as the cartoon; the added correction does not change that answer.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 624.8898929916322,
+    "firstVisibleTextFromSpawnMs": 25654.6062650159,
+    "firstThinkingFromSpawnMs": 20100.99949897267,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 25265.96489502117,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 25906.8469889462
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/51b23612/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1208,
+    "output": 537,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 424,
+    "totalTokens": 1745,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 25.94998720404692,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/51b23612/attempts/01/judge-session.jsonl",
+  "sessionSha256": "c8cde0d734997cc1150754edc5510c68b2e6a328430f04c8f7aa8f803d2652b8",
+  "identity": "31adb2d16c7651cbd3fb35725e8acc3ed495c2878196b5fb0fb89f150c8d82d5",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/51b23612/attempts/01/judge-session.jsonl",
+      "sessionSha256": "c8cde0d734997cc1150754edc5510c68b2e6a328430f04c8f7aa8f803d2652b8",
+      "seconds": 25.94998720404692
+    }
+  ]
+}

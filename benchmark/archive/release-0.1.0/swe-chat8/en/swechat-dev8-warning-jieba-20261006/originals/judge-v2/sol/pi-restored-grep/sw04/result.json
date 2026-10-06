@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw04",
+  "inputSha256": "aa83efaea1ff90969b1ad52e0d107e254b9b8ea4aac4abcc535a90c0564f6946",
+  "originalResultSha256": "fe7a059f9e01c8b61366166038f0838c82135bf42ea4e247cb0d27145707eb73",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "1. **Each session keeps its own model** in the backend, so reopening an older session preserves that session’s model.\n2. **The browser remembers your last successfully selected model** in per-user browser storage. A selection is saved only after the model change succeeds—not while it is pending or if it fails.\n3. **New worktrees and sessions without an existing session use that remembered model.** Opening an older session does not change the remembered choice.\n4. **Existing browsers without a saved preference get a one-time initialization:** the current session’s model seeds the preference. If there is no preference to initialize, the app keeps its existing default.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The answer describes persistent per-user browser storage, saving only successful selections, reuse for new worktrees and sessions, and one-time seeding from the current session without overwriting the preference when older sessions are opened."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"1. **Each session keeps its own model** in the backend, so reopening an older session preserves that session’s model.\\n2. **The browser remembers your last successfully selected model** in per-user browser storage. A selection is saved only after the model change succeeds—not while it is pending or if it fails.\\n3. **New worktrees and sessions without an existing session use that remembered model.** Opening an older session does not change the remembered choice.\\n4. **Existing browsers without a saved preference get a one-time initialization:** the current session’s model seeds the preference. If there is no preference to initialize, the app keeps its existing default.\",\"hedged\":false,\"guess\":false,\"reason\":\"The answer describes persistent per-user browser storage, saving only successful selections, reuse for new worktrees and sessions, and one-time seeding from the current session without overwriting the preference when older sessions are opened.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 678.0926131177694,
+    "firstVisibleTextFromSpawnMs": 6621.904747094959,
+    "firstThinkingFromSpawnMs": 5414.0741331502795,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 7693.013347918168,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 8386.611177120358
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/sw04/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1343,
+    "output": 261,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 59,
+    "totalTokens": 1604,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 8.46208371897228,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/sw04/attempts/01/judge-session.jsonl",
+  "sessionSha256": "384a335be8aabc42ef81493ec0975ce8b5433fffcf4571dbce60677a45fa938e",
+  "identity": "67f4fd4b2073064be241bec04a8353339b5e5b8e7851c387e3c40073ec64c4ff",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/sw04/attempts/01/judge-session.jsonl",
+      "sessionSha256": "384a335be8aabc42ef81493ec0975ce8b5433fffcf4571dbce60677a45fa938e",
+      "seconds": 8.46208371897228
+    }
+  ]
+}

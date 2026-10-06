@@ -1,0 +1,14 @@
+{
+ "question_id": "778164c6",
+ "question_type": "single-session-assistant",
+ "question": "I was looking back at our previous conversation about Caribbean dishes and I was wondering, what was the name of that Jamaican dish you recommended I try with snapper that has fruit in it?",
+ "question_date": "2023/05/30 (Tue) 23:58",
+ "split": "dev8",
+ "selection": {
+  "question_type": "single-session-assistant",
+  "rationale": "frozen original DEV8 ID; individual LongMemEval M history",
+  "annotatedEvidenceSegments": [
+   1
+  ]
+ }
+}

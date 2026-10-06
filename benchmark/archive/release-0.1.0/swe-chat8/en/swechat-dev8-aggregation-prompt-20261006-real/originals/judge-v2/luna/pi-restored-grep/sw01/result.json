@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw01",
+  "inputSha256": "54cfc821d028e58fe8be18816df0425d63b8b6fdb4eec72c9e700cb4fbf1b285",
+  "originalResultSha256": "4ede8fae5c6d71a4f8f0ef4f656e49e0695083b9af61f4f5f473ec791ed2ad64",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "1. Keep the restore operation’s **candidate runner ID and candidate Sprite ID** stored when provider deletion fails.\n2. Retain them so recovery can retry cleanup against the **exact candidate** later, rather than losing track of a potentially orphaned Sprite.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The answer preserves both required IDs when deletion fails and explains they are needed to retry cleanup against the same candidate."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"1. Keep the restore operation’s **candidate runner ID and candidate Sprite ID** stored when provider deletion fails.\\n2. Retain them so recovery can retry cleanup against the **exact candidate** later, rather than losing track of a potentially orphaned Sprite.\",\"hedged\":false,\"guess\":false,\"reason\":\"The answer preserves both required IDs when deletion fails and explains they are needed to retry cleanup against the same candidate.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 798.0694191064686,
+    "firstVisibleTextFromSpawnMs": 5411.858662031591,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5300.723221153021,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 6114.392354153097
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/judge-v2/luna/pi-restored-grep/sw01/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1220,
+    "output": 174,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 74,
+    "totalTokens": 1394,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 6.173757518175989,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/judge-v2/luna/pi-restored-grep/sw01/attempts/01/judge-session.jsonl",
+  "sessionSha256": "223042c92cc5e63d92931ec199651a672f1fed4ba1bac2099632c5e4df6e7106",
+  "identity": "74218ea0bdb50217b94b777d5d6457aba0fe47e02484f6d271f46d4ee33fa681",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/judge-v2/luna/pi-restored-grep/sw01/attempts/01/judge-session.jsonl",
+      "sessionSha256": "223042c92cc5e63d92931ec199651a672f1fed4ba1bac2099632c5e4df6e7106",
+      "seconds": 6.173757518175989
+    }
+  ]
+}

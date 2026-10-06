@@ -1,0 +1,13 @@
+{
+ "question_id": "577d4d32",
+ "split": "dev8",
+ "question_en": "What time do I stop checking work emails and messages?",
+ "question": "我每天几点之后就不再看工作邮件和消息？",
+ "question_date": "2023/05/30 (Tue) 23:18",
+ "provenance": {
+  "model": "deepseek-flash",
+  "edited_by_review": true,
+  "machine_output": "我什么时候可以不用再看工作邮件和消息了？",
+  "frozen_at": "2026-10-03T18:47+08:00"
+ }
+}

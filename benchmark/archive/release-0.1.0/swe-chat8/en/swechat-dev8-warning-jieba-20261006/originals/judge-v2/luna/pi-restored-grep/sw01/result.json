@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw01",
+  "inputSha256": "8333e5e113232a8f56cc7fd8d5f70b298ebf87f82c4accd25d924e3c995c5d43",
+  "originalResultSha256": "5c6b44da243956412d9ff665ba4ae991909d478dffdf90a6e8a327e187715ce5",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "1. **Keep the candidate’s runner ID and Sprite/provider ID** recorded on the restore operation, bound to its exact restore job.\n2. **Purpose:** those durable IDs let recovery retry deletion or reconcile the leftover candidate later. Clearing them after a failed provider deletion would leave an orphan that the system can no longer identify.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The answer identifies the durable runner and Sprite/provider IDs and explains that they must be retained so cleanup can retry deletion or reconcile the candidate."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"1. **Keep the candidate’s runner ID and Sprite/provider ID** recorded on the restore operation, bound to its exact restore job.\\n2. **Purpose:** those durable IDs let recovery retry deletion or reconcile the leftover candidate later. Clearing them after a failed provider deletion would leave an orphan that the system can no longer identify.\",\"hedged\":false,\"guess\":false,\"reason\":\"The answer identifies the durable runner and Sprite/provider IDs and explains that they must be retained so cleanup can retry deletion or reconcile the candidate.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 994.1492879297584,
+    "firstVisibleTextFromSpawnMs": 5734.158277977258,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5866.803732002154,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 6877.274887869135
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/sw01/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1234,
+    "output": 223,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 104,
+    "totalTokens": 1457,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 6.967538730008528,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/sw01/attempts/01/judge-session.jsonl",
+  "sessionSha256": "359e32d83a5d4a405c55e3a80f04c7ed34902517e8b2d441587b7279140b7ae8",
+  "identity": "64df700675caa162e34da93aa38b38d13080b41b7dd62968dc4f01c081289a10",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/sw01/attempts/01/judge-session.jsonl",
+      "sessionSha256": "359e32d83a5d4a405c55e3a80f04c7ed34902517e8b2d441587b7279140b7ae8",
+      "seconds": 6.967538730008528
+    }
+  ]
+}

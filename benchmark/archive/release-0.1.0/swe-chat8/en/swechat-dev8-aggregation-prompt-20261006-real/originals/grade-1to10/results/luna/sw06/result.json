@@ -1,0 +1,66 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw06",
+  "inputSha256": "609682094e3bc0dc9d358dd42d2322392afeae71ad9b523333db939be423c37d",
+  "originalResultSha256": "eb5039978155d12c259633c656133d27ec029d0eedfbeaa35f927216c84e6ad1",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "score": 10,
+    "reason": "准确指出 ESM preload 导致 `window.yinshiDesktop` 不可用，以及修复后因生产后端过旧而返回 404。"
+  },
+  "rawVerdict": "{\"score\":10,\"reason\":\"准确指出 ESM preload 导致 `window.yinshiDesktop` 不可用，以及修复后因生产后端过旧而返回 404。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 644.1358539741486,
+    "firstVisibleTextFromSpawnMs": 7819.072196027264,
+    "firstThinkingFromSpawnMs": 7616.720093181357,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 7263.489587930962,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 7923.221803968772
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/grade-1to10/results/luna/sw06/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 836,
+    "output": 118,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 73,
+    "totalTokens": 954,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 7.978808429092169,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/grade-1to10/results/luna/sw06/attempts/01/judge-session.jsonl",
+  "sessionSha256": "bd0016b28c3f1367b0874c7169caa0a59ca9b654db16e91b1b2d37857658cedc",
+  "identity": "3e2a27b4f335f46851f6b858e82eba88d3a593ae96b18df0dfcfbfa24d64c2f5",
+  "attempts": [
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-aggregation-prompt-20261006/real/grade-1to10/results/luna/sw06/attempts/01/result.json",
+      "status": "graded"
+    }
+  ]
+}

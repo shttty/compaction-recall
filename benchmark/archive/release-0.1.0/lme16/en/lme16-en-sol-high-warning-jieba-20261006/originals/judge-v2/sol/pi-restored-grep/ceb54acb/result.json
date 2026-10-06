@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "ceb54acb",
+  "inputSha256": "589e18bc89c4f3fa5fc8d99d97ae929dcc81d7080840d78b6c8b87b1ebbeba4a",
+  "originalResultSha256": "8341e8118fcac8e04f71af58e611c45ff8eb8af754fe18350559c6dec979acc5",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "1. **Sexual fixations**\n2. **Problematic sexual behaviors**\n3. **Sexual impulsivity**\n4. **Compulsive sexuality**",
+    "hedged": false,
+    "guess": false,
+    "reason": "The selected four-item list matches all four reference terms exactly, with no extra alternatives, hedging, or unsupported guess."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"1. **Sexual fixations**\\n2. **Problematic sexual behaviors**\\n3. **Sexual impulsivity**\\n4. **Compulsive sexuality**\",\"hedged\":false,\"guess\":false,\"reason\":\"The selected four-item list matches all four reference terms exactly, with no extra alternatives, hedging, or unsupported guess.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 636.2740620970726,
+    "firstVisibleTextFromSpawnMs": 3609.731910051778,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 4687.246066052467,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 5339.141139993444
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/ceb54acb/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1240,
+    "output": 86,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1326,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 5.383111779112369,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/ceb54acb/attempts/01/judge-session.jsonl",
+  "sessionSha256": "05abc66b4c0df0e5e776f88eca03e4abd7636218fa1f1eec10a34cf1c5066143",
+  "identity": "e30db957605a0f4a7c2f4c8a66354327e0d7eee914c0a3570bc37f20d14e7c98",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/ceb54acb/attempts/01/judge-session.jsonl",
+      "sessionSha256": "05abc66b4c0df0e5e776f88eca03e4abd7636218fa1f1eec10a34cf1c5066143",
+      "seconds": 5.383111779112369
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw08",
+  "inputSha256": "3e7bf652ecbe8fa3a4c9ad4f7dfcc28f087c699073d0672cdf923d1747365eb6",
+  "originalResultSha256": "23876e1ccf7c72e1fca26cd3c914304f8c5d129cf8a89a929477ffa9ecd6ea91",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "The installed executable at `/Users/dip/.local/bin/entire` was observed at **`9368a31ca+dirty`**. It had **not** been updated to include the shutdown fix, commit **`9ae87932b`**.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response supplies the earlier installed-binary observation rather than stating that no exact post-push installed-executable commit was verified, as the reference requires."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"The installed executable at `/Users/dip/.local/bin/entire` was observed at **`9368a31ca+dirty`**. It had **not** been updated to include the shutdown fix, commit **`9ae87932b`**.\",\"hedged\":false,\"guess\":false,\"reason\":\"The response supplies the earlier installed-binary observation rather than stating that no exact post-push installed-executable commit was verified, as the reference requires.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 645.1633619144559,
+    "firstVisibleTextFromSpawnMs": 5991.086018970236,
+    "firstThinkingFromSpawnMs": 5143.515498843044,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5960.799071006477,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 6621.617317898199
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/sw08/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1249,
+    "output": 176,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 66,
+    "totalTokens": 1425,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 6.6746091928798705,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/sw08/attempts/01/judge-session.jsonl",
+  "sessionSha256": "32a8bd14be86bec09741fd33a49c130eb1665fc97eb1344224814f94b28b13f1",
+  "identity": "884de1d4665e4e75b41032e4d3387f2f0a2715daaf8d74c51165f7bcfbab7074",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/sw08/attempts/01/judge-session.jsonl",
+      "sessionSha256": "32a8bd14be86bec09741fd33a49c130eb1665fc97eb1344224814f94b28b13f1",
+      "seconds": 6.6746091928798705
+    }
+  ]
+}

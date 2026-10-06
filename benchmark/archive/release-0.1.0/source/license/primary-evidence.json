@@ -1,0 +1,75 @@
+{
+  "retrievedAt": "2026-10-06T04:39:52.962230+00:00",
+  "documents": [
+    {
+      "file": "source/license/longmemeval-original-card.txt",
+      "url": "https://huggingface.co/datasets/xiaowu0162/longmemeval/resolve/2ec2a557f339b6c0369619b1ed5793734cc87533/README.md",
+      "sha256": "1d4f44d4fa4c7d29f32ab77db3e5a5e25b670bd78d7c442ba18792ed00ee104d",
+      "bytes": 468,
+      "retrievedAt": "2026-10-06T04:39:48.286670+00:00"
+    },
+    {
+      "file": "source/license/longmemeval-cleaned-card.txt",
+      "url": "https://huggingface.co/datasets/xiaowu0162/longmemeval-cleaned/resolve/98d7416c24c778c2fee6e6f3006e7a073259d48f/README.md",
+      "sha256": "fe31783d4e5d132681a25e4192e85def8edd214094939879f5283818c0a4a3e0",
+      "bytes": 626,
+      "retrievedAt": "2026-10-06T04:39:49.415414+00:00"
+    },
+    {
+      "file": "source/license/LongMemEval-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/xiaowu0162/LongMemEval/9e0b455f4ef0e2ab8f2e582289761153549043fc/LICENSE",
+      "sha256": "d3c4b9aa54759df6ded337978a6f3b55b75615e5e4525c3b82d7e2627d4b9732",
+      "bytes": 1062,
+      "retrievedAt": "2026-10-06T04:39:50.020132+00:00"
+    },
+    {
+      "file": "source/license/swe-chat-card.txt",
+      "url": "https://huggingface.co/datasets/SALT-NLP/SWE-chat/resolve/202b071f18e03c79df5a7287565ce2ebc5ee7756/README.md",
+      "sha256": "9b7868e91f3ffb1d3d49a37f80293e36b93b01c160e63efa8e1bdd7f0f5c926c",
+      "bytes": 43392,
+      "retrievedAt": "2026-10-06T04:39:50.834490+00:00"
+    }
+  ],
+  "longMemEval": {
+    "originalDataset": "xiaowu0162/longmemeval",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533",
+    "softwareRevision": "9e0b455f4ef0e2ab8f2e582289761153549043fc",
+    "datasetLicense": "mit",
+    "datasetIdentity": {
+      "type": "file",
+      "oid": "30d32a8bb1f809a35fa3f97d7db2652726d0b64e",
+      "size": 2745274681,
+      "lfs": {
+        "oid": "fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9",
+        "size": 2745274681,
+        "pointerSize": 135
+      },
+      "xetHash": "43b7e8e7c398010b76b165ad52daa8e7849f6f0d8b8bbc56f4f4dbb027872848",
+      "path": "longmemeval_m"
+    },
+    "identityEvidenceUrl": "https://huggingface.co/api/datasets/xiaowu0162/longmemeval/tree/2ec2a557f339b6c0369619b1ed5793734cc87533",
+    "localSourcePointer": "/home/rinne/workspace/lme-bench/README.md line39",
+    "cleanedDatasetRevision": "98d7416c24c778c2fee6e6f3006e7a073259d48f",
+    "cleanedDatasetNotUsed": true
+  },
+  "sweChat": {
+    "dataset": "SALT-NLP/SWE-chat",
+    "observedRevision": "202b071f18e03c79df5a7287565ce2ebc5ee7756",
+    "cardLicense": "odc-by",
+    "gated": "auto",
+    "metadataUrl": "https://huggingface.co/api/datasets/SALT-NLP/SWE-chat/revision/202b071f18e03c79df5a7287565ce2ebc5ee7756",
+    "sourceUrlEvidence": "Existing local sessions.parquet viewer_url_hf column/footer identifies https://huggingface.co/datasets/SALT-NLP/SWE-chat/blob/main/; original parquet not copied.",
+    "selectedFilesConfirmedInPinnedDataset": [
+      "transcripts1/019ff006-9273-7e80-9303-0b30d84e3102.jsonl",
+      "transcripts1/019ffa52-e03f-7134-befa-04021cfdfc2c.jsonl",
+      "transcripts1/019f4e6f-89f2-7f82-9bf9-a4790d571aa6.jsonl",
+      "transcripts1/019ff614-16b1-7bfc-bdb4-3ee5e2bca1c5.jsonl",
+      "transcripts1/019ff614-1925-7910-9d9f-ba84c0ff8172.jsonl",
+      "transcripts/019eca64-8c2c-7b00-90c6-3aa49738c497.jsonl"
+    ],
+    "localDownloadRevisionVerified": false,
+    "contentRightsGap": "ODC-By licenses Database rights, not copyright/privacy/personality rights in individual Contents (preamble, sections2.2a/2.4). No separate license for quoted transcript contents or local authored derivatives is asserted.",
+    "licenseTextUrl": "https://opendatacommons.org/licenses/by/1-0/",
+    "failedAttempt": "Anonymous raw/main/README.md returned HTTP401; pinned resolve URL succeeded without credentials."
+  }
+}

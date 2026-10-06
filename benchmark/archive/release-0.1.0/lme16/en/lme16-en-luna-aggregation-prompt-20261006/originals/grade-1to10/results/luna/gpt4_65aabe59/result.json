@@ -1,0 +1,68 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_65aabe59",
+  "inputSha256": "e102a40a1fd40198d602b7dd3aa99841b2e2b8ae09c531394f4b472247d0aa9b",
+  "originalResultSha256": "12f070dd7e4ac5a68a9713ee0017dc405ac5300ce14084cae95ee61376106729",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "score": 10,
+    "reason": "明确回答智能恒温器先设置，且补充信息与该顺序一致。"
+  },
+  "rawVerdict": "{\"score\":10,\"reason\":\"明确回答智能恒温器先设置，且补充信息与该顺序一致。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 870.1782601419836,
+    "firstVisibleTextFromSpawnMs": 5379.6802391298115,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 4562.771955970675,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 5448.554492089897
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/grade-1to10/results/luna/gpt4_65aabe59/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 717,
+    "output": 88,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 55,
+    "totalTokens": 805,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 5.5370832700282335,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/grade-1to10/results/luna/gpt4_65aabe59/attempts/01/judge-session.jsonl",
+  "sessionSha256": "2923587918f32ff70dea967094111d72f595214277367d2375dd091468d753e7",
+  "identity": "20b9a487bdaeaa479e480dd9fbdfc2713b80318cfe3a702e4d9f6e6f64095d85",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/grade-1to10/results/luna/gpt4_65aabe59/attempts/01/result.json"
+    }
+  ],
+  "supplementFingerprint": "be18a689c48e4a42f5273591e4b9c8bdb51de157e1fde4258e2c9299a000b7c9"
+}

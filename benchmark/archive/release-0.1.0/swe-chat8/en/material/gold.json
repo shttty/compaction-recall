@@ -1,0 +1,314 @@
+{
+  "sw01": {
+    "answer": "The restore candidate’s durable identity must remain stored: its runner ID and Sprite ID. Do not clear these when provider deletion fails, so cleanup can locate the same candidate and retry.",
+    "answerable": true,
+    "required": [
+      {
+        "entryId": "53ca5b1a",
+        "timestamp": "2026-08-12T22:25:03.467Z",
+        "role": "assistant",
+        "startCodepoint": 36,
+        "endCodepoint": 97,
+        "quote": "Candidate IDs must stay durable when provider deletion fails."
+      },
+      {
+        "entryId": "53ca5b1a",
+        "timestamp": "2026-08-12T22:25:03.467Z",
+        "role": "assistant",
+        "startCodepoint": 298,
+        "endCodepoint": 364,
+        "quote": "A provider deletion failure must preserve candidate IDs for retry."
+      },
+      {
+        "entryId": "53ca5b1a",
+        "timestamp": "2026-08-12T22:25:03.467Z",
+        "role": "assistant",
+        "startCodepoint": 1253,
+        "endCodepoint": 1344,
+        "quote": "candidate_runner_id=\\\"runner-candidate\\\",\\n        candidate_sprite_id=\\\"sprite-candidate\\\""
+      }
+    ],
+    "compactionId": "947cacd7",
+    "firstKeptEntryId": "3555f453",
+    "source": "019ff006-9273-7e80-9303-0b30d84e3102",
+    "family": "019ff006-9273-7e80-9303-0b30d84e3102"
+  },
+  "sw02": {
+    "answer": "The persisted archive status `deleted` was missing from the exported ArchiveStatus type contract. The planned change was to add a runtime check of the exported status values and update the ArchiveStatus alias to include `deleted`, aligning the contract with persisted catalog tombstones.",
+    "answerable": true,
+    "required": [
+      {
+        "entryId": "55e2c991",
+        "timestamp": "2026-08-12T21:28:35.788Z",
+        "role": "assistant",
+        "startCodepoint": 0,
+        "endCodepoint": 120,
+        "quote": "Type contract still omits persisted `deleted`. I will add a runtime check for exported status values, then update alias."
+      },
+      {
+        "entryId": "25458b2d",
+        "timestamp": "2026-08-12T15:32:24.978Z",
+        "role": "assistant",
+        "startCodepoint": 49,
+        "endCodepoint": 155,
+        "quote": "ArchiveStatus = Literal[\\n    \\\"creating\\\", \\\"uploaded\\\", \\\"ready\\\", \\\"failed\\\", \\\"deleting\\\", \\\"deleted\\\""
+      },
+      {
+        "entryId": "0c8a2de0",
+        "timestamp": "2026-08-12T21:29:13.837Z",
+        "role": "assistant",
+        "startCodepoint": 251,
+        "endCodepoint": 306,
+        "quote": "test_archive_status_contract_includes_deleted_tombstone"
+      },
+      {
+        "entryId": "0c8a2de0",
+        "timestamp": "2026-08-12T21:29:13.837Z",
+        "role": "assistant",
+        "startCodepoint": 329,
+        "endCodepoint": 396,
+        "quote": "Exported archive status values must match persisted catalog values."
+      }
+    ],
+    "compactionId": "947cacd7",
+    "firstKeptEntryId": "3555f453",
+    "source": "019ff006-9273-7e80-9303-0b30d84e3102",
+    "family": "019ff006-9273-7e80-9303-0b30d84e3102"
+  },
+  "sw03": {
+    "answer": "Encrypted RPC responses were allowed 45 seconds. Socket setup and the Noise handshake retained their 15-second limits.",
+    "answerable": true,
+    "required": [
+      {
+        "entryId": "c92b808a",
+        "timestamp": "2026-08-18T22:23:15.931Z",
+        "role": "assistant",
+        "startCodepoint": 643,
+        "endCodepoint": 761,
+        "quote": "now keeps 15 seconds for socket setup and Noise handshake but permits 45 seconds for accepted encrypted RPC responses."
+      },
+      {
+        "entryId": "e019e9e4",
+        "timestamp": "2026-08-18T22:47:07.961Z",
+        "role": "assistant",
+        "startCodepoint": 211,
+        "endCodepoint": 266,
+        "quote": "Setup and Noise handshake remain limited to 15 seconds."
+      },
+      {
+        "entryId": "e019e9e4",
+        "timestamp": "2026-08-18T22:47:07.961Z",
+        "role": "assistant",
+        "startCodepoint": 269,
+        "endCodepoint": 314,
+        "quote": "Encrypted RPC responses now allow 45 seconds."
+      }
+    ],
+    "compactionId": "2f659070",
+    "firstKeptEntryId": "c244d098",
+    "source": "019ffa52-e03f-7134-befa-04021cfdfc2c",
+    "family": "019ffa52-e03f-7134-befa-04021cfdfc2c"
+  },
+  "sw04": {
+    "answer": "Save the last successfully confirmed explicit model selection as a signed-in-user-scoped browser/localStorage preference. Refreshes retain it and new worktrees/sessions use it. Seed an existing browser with no preference once from the current persisted session’s model; do not overwrite an existing preference merely by opening another/older session. Pending or failed changes do not replace the saved choice.",
+    "answerable": true,
+    "required": [
+      {
+        "entryId": "0d36bfc9",
+        "timestamp": "2026-08-18T14:31:37.985Z",
+        "role": "assistant",
+        "startCodepoint": 118,
+        "endCodepoint": 221,
+        "quote": "I will add a user-scoped browser preference and update it only after successful explicit model changes."
+      },
+      {
+        "entryId": "a2ab48d5",
+        "timestamp": "2026-08-18T14:32:25.056Z",
+        "role": "assistant",
+        "startCodepoint": 108,
+        "endCodepoint": 169,
+        "quote": "SESSION_MODEL_STORAGE_PREFIX = \\\"yinshi:last-session-model:\\\""
+      },
+      {
+        "entryId": "67091337",
+        "timestamp": "2026-08-18T15:01:05.289Z",
+        "role": "assistant",
+        "startCodepoint": 77,
+        "endCodepoint": 185,
+        "quote": "I will seed it once from the current persisted session model, without overwriting any later explicit choice."
+      },
+      {
+        "entryId": "d846255a",
+        "timestamp": "2026-08-18T15:15:37.521Z",
+        "role": "assistant",
+        "startCodepoint": 151,
+        "endCodepoint": 203,
+        "quote": "New worktrees and sessions use the remembered model."
+      },
+      {
+        "entryId": "d846255a",
+        "timestamp": "2026-08-18T15:15:37.521Z",
+        "role": "assistant",
+        "startCodepoint": 206,
+        "endCodepoint": 248,
+        "quote": "Opening older sessions does not change it."
+      },
+      {
+        "entryId": "d846255a",
+        "timestamp": "2026-08-18T15:15:37.521Z",
+        "role": "assistant",
+        "startCodepoint": 251,
+        "endCodepoint": 300,
+        "quote": "Failed or pending selections do not overwrite it."
+      }
+    ],
+    "compactionId": "2f659070",
+    "firstKeptEntryId": "c244d098",
+    "source": "019ffa52-e03f-7134-befa-04021cfdfc2c",
+    "family": "019ffa52-e03f-7134-befa-04021cfdfc2c"
+  },
+  "sw05": {
+    "answer": "The Apple Silicon app bundle was `desktop/release/mac-arm64/Yinshi.app` (under the Yinshi project). At the initial local smoke-test milestone, interactive account sign-in and the post-authentication workspace flow were still untested/incomplete.",
+    "answerable": true,
+    "required": [
+      {
+        "entryId": "d3cf42b8",
+        "timestamp": "2026-07-12T15:30:12.364Z",
+        "role": "assistant",
+        "startCodepoint": 37,
+        "endCodepoint": 143,
+        "quote": "I built and launched a fresh Apple Silicon package successfully on macOS 14.5. Sign-in screen is open now."
+      },
+      {
+        "entryId": "d3cf42b8",
+        "timestamp": "2026-07-12T15:30:12.364Z",
+        "role": "assistant",
+        "startCodepoint": 306,
+        "endCodepoint": 361,
+        "quote": "Current package: `desktop/release/mac-arm64/Yinshi.app`"
+      },
+      {
+        "entryId": "d3cf42b8",
+        "timestamp": "2026-07-12T15:30:12.364Z",
+        "role": "assistant",
+        "startCodepoint": 402,
+        "endCodepoint": 480,
+        "quote": "Sign-in and post-auth workspace flow still require interactive account testing"
+      }
+    ],
+    "compactionId": "258f3cca",
+    "firstKeptEntryId": "7de89e85",
+    "source": "019f4e6f-89f2-7f82-9bf9-a4790d571aa6",
+    "family": "019f4e6f-89f2-7f82-9bf9-a4790d571aa6"
+  },
+  "sw06": {
+    "answer": "First, the packaged preload was ESM, so Electron did not expose `window.yinshiDesktop` and the renderer could not reach sign-in IPC. After that was fixed, sign-in reached the main process but the hosted service returned 404 because the production backend was stale.",
+    "answerable": true,
+    "required": [
+      {
+        "entryId": "9407afd0",
+        "timestamp": "2026-07-12T15:31:46.268Z",
+        "role": "user",
+        "startCodepoint": 0,
+        "endCodepoint": 50,
+        "quote": "Nothing happens when I click `Sign in with Yinshi`"
+      },
+      {
+        "entryId": "c8c66b0d",
+        "timestamp": "2026-07-12T15:50:57.878Z",
+        "role": "assistant",
+        "startCodepoint": 22,
+        "endCodepoint": 96,
+        "quote": "packaged preload was ESM, so Electron never exposed `window.yinshiDesktop`"
+      },
+      {
+        "entryId": "c8c66b0d",
+        "timestamp": "2026-07-12T15:50:57.878Z",
+        "role": "assistant",
+        "startCodepoint": 98,
+        "endCodepoint": 211,
+        "quote": "after fixing that, sign-in reached main process but `yinshi.io` returned 404 because production backend is stale."
+      }
+    ],
+    "compactionId": "258f3cca",
+    "firstKeptEntryId": "7de89e85",
+    "source": "019f4e6f-89f2-7f82-9bf9-a4790d571aa6",
+    "family": "019f4e6f-89f2-7f82-9bf9-a4790d571aa6"
+  },
+  "sw07": {
+    "answer": "The parent review process could hang in TUI/post-run finalization after all reviewer/judge children had exited: sending the post-run quit could block, or Bubble Tea shutdown could stall. TUISink.PostRunComplete was changed to send the quit asynchronously, wait for a bounded grace period, then force-kill the Bubble Tea program if shutdown stalls.",
+    "answerable": true,
+    "required": [
+      {
+        "entryId": "8ba8f6dc",
+        "timestamp": "2026-06-25T14:12:09.588Z",
+        "role": "assistant",
+        "startCodepoint": 72,
+        "endCodepoint": 118,
+        "quote": "it has no child reviewer/judge processes left."
+      },
+      {
+        "entryId": "46b597ca",
+        "timestamp": "2026-06-25T14:15:54.798Z",
+        "role": "assistant",
+        "startCodepoint": 28,
+        "endCodepoint": 96,
+        "quote": "robust against both a blocked `Send` and a stuck Bubble Tea shutdown"
+      },
+      {
+        "entryId": "094ba0e4",
+        "timestamp": "2026-06-25T14:19:00.024Z",
+        "role": "assistant",
+        "startCodepoint": 350,
+        "endCodepoint": 402,
+        "quote": "`TUISink.PostRunComplete()` no longer waits forever."
+      },
+      {
+        "entryId": "094ba0e4",
+        "timestamp": "2026-06-25T14:19:00.024Z",
+        "role": "assistant",
+        "startCodepoint": 405,
+        "endCodepoint": 525,
+        "quote": "It now sends the quit message asynchronously, waits briefly, then force-kills the Bubble Tea program if shutdown stalls."
+      }
+    ],
+    "compactionId": "be835d4c",
+    "firstKeptEntryId": "50af2cc1",
+    "source": "019eca64-8c2c-7b00-90c6-3aa49738c497",
+    "family": "019eca64-8c2c-7b00-90c6-3aa49738c497"
+  },
+  "sw08": {
+    "answer": "Abstain: no exact post-push installed-executable commit was verified in the recorded history. The earlier installed-binary observation was `9368a31ca+dirty`. The repository shutdown fix was pushed as `9ae87932b`, but the final report explicitly said the installed executable still needed rebuilding/updating to include it.",
+    "answerable": false,
+    "required": [
+      {
+        "entryId": "4412dcaa",
+        "timestamp": "2026-06-25T14:12:57.468Z",
+        "role": "assistant",
+        "startCodepoint": 0,
+        "endCodepoint": 71,
+        "quote": "The installed binary includes the latest render fix (`9368a31ca+dirty`)"
+      },
+      {
+        "entryId": "094ba0e4",
+        "timestamp": "2026-06-25T14:19:00.024Z",
+        "role": "assistant",
+        "startCodepoint": 291,
+        "endCodepoint": 338,
+        "quote": "`9ae87932b review: bound TUI post-run shutdown`"
+      },
+      {
+        "entryId": "094ba0e4",
+        "timestamp": "2026-06-25T14:19:00.024Z",
+        "role": "assistant",
+        "startCodepoint": 736,
+        "endCodepoint": 839,
+        "quote": "your installed `/Users/dip/.local/bin/entire` still needs to be rebuilt/updated to include `9ae87932b`."
+      }
+    ],
+    "compactionId": "be835d4c",
+    "firstKeptEntryId": "50af2cc1",
+    "source": "019eca64-8c2c-7b00-90c6-3aa49738c497",
+    "family": "019eca64-8c2c-7b00-90c6-3aa49738c497"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "9d25d4e0",
+  "inputSha256": "fd5504e1b399bf2e151387b3ced271e14c25acee08daef365f069170534625a2",
+  "originalResultSha256": "3ebf3a4111de01ced0b51d99b81afe47c5139d6fb9f890bae77948f6cd048507",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "That gives a total of **3 jewelry items/sets**. I haven’t included the silver necklace you bought for your sister or older jewelry whose acquisition dates weren’t specified.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response clearly selects a total of 3, matching the reference, without unselected alternatives or an unsupported guess."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"That gives a total of **3 jewelry items/sets**. I haven’t included the silver necklace you bought for your sister or older jewelry whose acquisition dates weren’t specified.\",\"hedged\":false,\"guess\":false,\"reason\":\"The response clearly selects a total of 3, matching the reference, without unselected alternatives or an unsupported guess.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 684.9197051487863,
+    "firstVisibleTextFromSpawnMs": 3962.519515072927,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 4391.549971885979,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 5092.047597980127
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/9d25d4e0/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1253,
+    "output": 116,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 32,
+    "totalTokens": 1369,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 5.157199158100411,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/9d25d4e0/attempts/01/judge-session.jsonl",
+  "sessionSha256": "4b38aa64ed1cb5c92324bb1ff3bd41d0fb47203406aa30f680b79f5cfbbe7bc9",
+  "identity": "ad48f205f9ca1ff7307942d2e81e414a434d37589b60b1a1754ae5978b8d8234",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/9d25d4e0/attempts/01/judge-session.jsonl",
+      "sessionSha256": "4b38aa64ed1cb5c92324bb1ff3bd41d0fb47203406aa30f680b79f5cfbbe7bc9",
+      "seconds": 5.157199158100411
+    }
+  ]
+}

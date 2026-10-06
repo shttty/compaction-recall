@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "ceb54acb",
+  "inputSha256": "b6d318695c2bbf8b4548d7ce6dc3d524d4871a5c337ecb645e7d274554f14f43",
+  "originalResultSha256": "2f853c95b8d4d264f3d9961960d7613498f6dbec1f3945885b0e29523778b9cb",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "The other four terms were:\n\n- **Sexual fixations**\n- **Problematic sexual behaviors**\n- **Sexual impulsivity**\n- **Compulsive sexuality**",
+    "hedged": false,
+    "guess": false,
+    "reason": "The selected answer lists exactly the four required terms, with no alternatives, omissions, extra items, or indication of guessing."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"The other four terms were:\\n\\n- **Sexual fixations**\\n- **Problematic sexual behaviors**\\n- **Sexual impulsivity**\\n- **Compulsive sexuality**\",\"hedged\":false,\"guess\":false,\"reason\":\"The selected answer lists exactly the four required terms, with no alternatives, omissions, extra items, or indication of guessing.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 633.9254630729556,
+    "firstVisibleTextFromSpawnMs": 3292.6831950899214,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 4074.419077951461,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 4723.877893993631
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/ceb54acb/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1208,
+    "output": 90,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1298,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 4.769380446057767,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/ceb54acb/attempts/01/judge-session.jsonl",
+  "sessionSha256": "7afc27618cacf27cb83b6052fa986a369e81acd248cc5ffff60d909b25e21dfb",
+  "identity": "240fa23d86b60f09bf3c53011ff78e09d924849a19105e78eacae946d93b65ce",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/ceb54acb/attempts/01/judge-session.jsonl",
+      "sessionSha256": "7afc27618cacf27cb83b6052fa986a369e81acd248cc5ffff60d909b25e21dfb",
+      "seconds": 4.769380446057767
+    }
+  ]
+}

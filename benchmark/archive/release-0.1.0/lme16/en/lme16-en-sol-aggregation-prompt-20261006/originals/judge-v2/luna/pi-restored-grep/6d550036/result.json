@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "6d550036",
+  "inputSha256": "18f8880407d8a238776913cf9795a8c9e3de004f2f769aaefeb9ef9fa16813eb",
+  "originalResultSha256": "f3a580277d3c9c92570a55e5b4da592410710b81383d4c8875fca6f05eda6e05",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "**2 is the confirmed count from your history—not necessarily your full lifetime total.**",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response selects a count of 2, matching the reference; the caveat limits the claim to what was shared without offering an alternative answer."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"**2 is the confirmed count from your history—not necessarily your full lifetime total.**\",\"hedged\":false,\"guess\":false,\"reason\":\"The response selects a count of 2, matching the reference; the caveat limits the claim to what was shared without offering an alternative answer.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 629.4976209755987,
+    "firstVisibleTextFromSpawnMs": 12131.7182329949,
+    "firstThinkingFromSpawnMs": 6782.43395104073,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 11628.242309903726,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 12273.315523052588
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/6d550036/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1299,
+    "output": 516,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 443,
+    "totalTokens": 1815,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 12.34857925097458,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/6d550036/attempts/01/judge-session.jsonl",
+  "sessionSha256": "22576ee15a8a7fdcb2610c430d7dcc72ed038d98b9b61ad30ef5e28c411e7420",
+  "identity": "61d6e11d31b24a5820603f2cb66d17c1176366c2e5c78267030e327f1e4ed481",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/6d550036/attempts/01/judge-session.jsonl",
+      "sessionSha256": "22576ee15a8a7fdcb2610c430d7dcc72ed038d98b9b61ad30ef5e28c411e7420",
+      "seconds": 12.34857925097458
+    }
+  ]
+}

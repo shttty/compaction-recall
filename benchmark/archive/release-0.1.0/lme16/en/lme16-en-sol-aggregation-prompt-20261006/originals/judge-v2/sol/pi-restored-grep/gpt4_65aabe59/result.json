@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_65aabe59",
+  "inputSha256": "8ed78a580bc383a89397e34efd7a0e9508a7f4d80bde1f864d326bdaf1bdf746",
+  "originalResultSha256": "fa497abc5f8dcea5b18669bac6a6cccec84fbbe05ff38bd66ae772c6136e8d31",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "You set up the **smart thermostat first**.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The selected answer identifies the smart thermostat as first, matching the reference; the explanation is consistent and contains no hedging or unsupported guess."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"You set up the **smart thermostat first**.\",\"hedged\":false,\"guess\":false,\"reason\":\"The selected answer identifies the smart thermostat as first, matching the reference; the explanation is consistent and contains no hedging or unsupported guess.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 653.7021589465439,
+    "firstVisibleTextFromSpawnMs": 3451.351816067472,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 3618.1792009156197,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 4287.459686864167
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_65aabe59/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1185,
+    "output": 61,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1246,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 4.334346643881872,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_65aabe59/attempts/01/judge-session.jsonl",
+  "sessionSha256": "b405850ca29d12f1f238c78cc2bc246db438ef5da91a7a30127bcf2a9f1363e8",
+  "identity": "f1dba57ccf832c184b4cf480ba0bb628d1cb46a3b3648cfd0b056eb3b9a688aa",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_65aabe59/attempts/01/judge-session.jsonl",
+      "sessionSha256": "b405850ca29d12f1f238c78cc2bc246db438ef5da91a7a30127bcf2a9f1363e8",
+      "seconds": 4.334346643881872
+    }
+  ]
+}

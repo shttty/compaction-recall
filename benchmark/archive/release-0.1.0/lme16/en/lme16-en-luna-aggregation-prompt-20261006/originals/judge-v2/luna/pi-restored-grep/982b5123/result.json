@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "982b5123",
+  "inputSha256": "434c8bd920aa8043c0a3c1d086e5c67a2a2f6ceec04a42c6b37ea05a089fce7f",
+  "originalResultSha256": "341dffe1e5f7f146a37afd358e6d9c5d811b899012d3f584a8f9b34e7d32759c",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "You said you booked the Airbnb **three months in advance**. I can’t tell exactly how many months ago you booked it from the conversation.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response abstains from giving the required answer of five months ago; it does not offer a guessed answer."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"You said you booked the Airbnb **three months in advance**. I can’t tell exactly how many months ago you booked it from the conversation.\",\"hedged\":false,\"guess\":false,\"reason\":\"The response abstains from giving the required answer of five months ago; it does not offer a guessed answer.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 637.188756139949,
+    "firstVisibleTextFromSpawnMs": 7303.415677975863,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 7017.541893059388,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 7686.384245986119
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/982b5123/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1152,
+    "output": 241,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 164,
+    "totalTokens": 1393,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 7.729685698868707,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/982b5123/attempts/01/judge-session.jsonl",
+  "sessionSha256": "e07aaf2daa8da13aede4ee84894de3239dc35a019e863b32ccbbb388aac13b6e",
+  "identity": "6d61b2a65c8b4491cf96624305ebed740f650155c57ef20cfa4fb6155c968d6f",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/982b5123/attempts/01/judge-session.jsonl",
+      "sessionSha256": "e07aaf2daa8da13aede4ee84894de3239dc35a019e863b32ccbbb388aac13b6e",
+      "seconds": 7.729685698868707
+    }
+  ]
+}

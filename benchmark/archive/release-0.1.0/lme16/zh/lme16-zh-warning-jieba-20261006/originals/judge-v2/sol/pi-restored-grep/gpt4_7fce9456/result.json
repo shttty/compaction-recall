@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_7fce9456",
+  "inputSha256": "abc92e4532ec6f8cb51c8a45e636edec10aceabfbbd6e905d75eea7ed43b887b",
+  "originalResultSha256": "685ad913d83a5e7714dc74194dcad8ff84e54536edd57cc0d42efc4dab0e0c28",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "根据你提到的记录，出价前你看过 **两套房**：2月10日看了一套一居室公寓，2月22日看了布鲁克赛德社区的三居室联排别墅。你在2月25日对联排别墅提出了报价。",
+    "hedged": false,
+    "guess": false,
+    "reason": "The model selects two properties, but the reference requires exactly four properties viewed before making the offer."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"根据你提到的记录，出价前你看过 **两套房**：2月10日看了一套一居室公寓，2月22日看了布鲁克赛德社区的三居室联排别墅。你在2月25日对联排别墅提出了报价。\",\"hedged\":false,\"guess\":false,\"reason\":\"The model selects two properties, but the reference requires exactly four properties viewed before making the offer.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 642.1601851470768,
+    "firstVisibleTextFromSpawnMs": 5980.728900060058,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 10514.591424027458,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 11172.413689084351
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/gpt4_7fce9456/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1284,
+    "output": 114,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1398,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 11.222695817938074,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/gpt4_7fce9456/attempts/01/judge-session.jsonl",
+  "sessionSha256": "2a9c239e9983543f6b0f1ec802fb49f0a1fd734ddf16579558adc3cd0c3f445c",
+  "identity": "4daa34eebc5cb32c9c2df96100f62c6088d2be3bdda33c08f2c829293164be31",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/gpt4_7fce9456/attempts/01/judge-session.jsonl",
+      "sessionSha256": "2a9c239e9983543f6b0f1ec802fb49f0a1fd734ddf16579558adc3cd0c3f445c",
+      "seconds": 11.222695817938074
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+ "question_id": "577d4d32",
+ "question_type": "single-session-user",
+ "question": "What time do I stop checking work emails and messages?",
+ "question_date": "2023/05/30 (Tue) 23:18",
+ "split": "dev8",
+ "selection": {
+  "question_type": "single-session-user",
+  "rationale": "frozen original DEV8 ID; individual LongMemEval M history",
+  "annotatedEvidenceSegments": [
+   1
+  ]
+ }
+}

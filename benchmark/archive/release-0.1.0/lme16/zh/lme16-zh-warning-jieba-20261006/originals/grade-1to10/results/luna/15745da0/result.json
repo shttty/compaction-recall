@@ -1,0 +1,68 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "15745da0",
+  "inputSha256": "83e824c6d0a0691ffe6496017725df6957d48c2ddac3e2ce1c4bfc51acc89bea",
+  "originalResultSha256": "da02c1e30b5a65059cb19b9b4c3c21723f0fb1ae01d2ae3af999740029b6685e",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "score": 10,
+    "reason": "回答与参考答案一致，关键时长“三个月”正确，附加日期不与答案冲突。"
+  },
+  "rawVerdict": "{\"score\":10,\"reason\":\"回答与参考答案一致，关键时长“三个月”正确，附加日期不与答案冲突。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 856.2796099577099,
+    "firstVisibleTextFromSpawnMs": 8609.3001649715,
+    "firstThinkingFromSpawnMs": 6645.778965903446,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 7845.379444072023,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 8717.18919603154
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/grade-1to10/results/luna/15745da0/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 715,
+    "output": 245,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 208,
+    "totalTokens": 960,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 8.83233272493817,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/grade-1to10/results/luna/15745da0/attempts/01/judge-session.jsonl",
+  "sessionSha256": "e5099bf3d00649507d41d1184ed7039a815286c71ca1bdce9add4f97840e8f50",
+  "identity": "c716c90dfb123e93a0e73e1a71d5919f463c11e1a33dd5128de97a74ac6acddf",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/grade-1to10/results/luna/15745da0/attempts/01/result.json"
+    }
+  ],
+  "supplementFingerprint": "0e09654a2ec38f95eecd15f2a10778aefc5ab448bacc821077667af60f424712"
+}

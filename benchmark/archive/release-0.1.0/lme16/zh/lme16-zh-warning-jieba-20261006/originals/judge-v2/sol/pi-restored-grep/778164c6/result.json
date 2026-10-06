@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "778164c6",
+  "inputSha256": "ac7950dfb4f3a9e41c57fd451fa2fe62d55bf4232de259f74306222543286324",
+  "originalResultSha256": "15031a0c32480e6531e2606da99d31c0b2c38d22f22236ed49a2cc13bb26c930",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "你可能想的是**烤鲷鱼配芒果莎莎酱**。不过，之前提到它是加勒比地区常见的做法，并没有特别说它是牙买加菜；牙买加那道菜叫 **Escovitch 鱼**，通常是炸鱼配醋腌蔬菜。",
+    "hedged": true,
+    "guess": false,
+    "reason": "回答虽提到与参考答案对应的烤鲷鱼配芒果莎莎酱，但又将问题中的牙买加菜指向 Escovitch 鱼，给出了改变答案的冲突性替代，而未明确选定唯一答案。"
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"你可能想的是**烤鲷鱼配芒果莎莎酱**。不过，之前提到它是加勒比地区常见的做法，并没有特别说它是牙买加菜；牙买加那道菜叫 **Escovitch 鱼**，通常是炸鱼配醋腌蔬菜。\",\"hedged\":true,\"guess\":false,\"reason\":\"回答虽提到与参考答案对应的烤鲷鱼配芒果莎莎酱，但又将问题中的牙买加菜指向 Escovitch 鱼，给出了改变答案的冲突性替代，而未明确选定唯一答案。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 631.442764075473,
+    "firstVisibleTextFromSpawnMs": 4194.072096142918,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 6027.220857096836,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 6674.210745142773
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/778164c6/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1230,
+    "output": 193,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 36,
+    "totalTokens": 1423,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 6.725580380996689,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+  "sessionSha256": "964a81e55ad49d7112184d8a2725b39018a31b0cce89c72d537d7a7dac73a7ab",
+  "identity": "575762abd2536c18e507132eaed67d4cf9219331e795ca8e2e5ba37f44a6cc1a",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+      "sessionSha256": "964a81e55ad49d7112184d8a2725b39018a31b0cce89c72d537d7a7dac73a7ab",
+      "seconds": 6.725580380996689
+    }
+  ]
+}

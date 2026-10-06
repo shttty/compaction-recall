@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "ceb54acb",
+  "inputSha256": "f3e982892ac98e49b6093de592c4b74e65758d37e603b071452fdb8ec15ec189",
+  "originalResultSha256": "8e6d16224e6e78178b89c462c3e31637e4fb0a5906761973a65c3f985d080216",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "另外四个说法是：\n\n1. **性方面的执念**\n2. **有问题的性行为**\n3. **性冲动性**\n4. **强迫性性行为**",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response selects exactly four options that match the reference terms in Chinese translation, with no unselected alternatives or unsupported guess."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"另外四个说法是：\\n\\n1. **性方面的执念**\\n2. **有问题的性行为**\\n3. **性冲动性**\\n4. **强迫性性行为**\",\"hedged\":false,\"guess\":false,\"reason\":\"The response selects exactly four options that match the reference terms in Chinese translation, with no unselected alternatives or unsupported guess.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 631.4197150059044,
+    "firstVisibleTextFromSpawnMs": 3345.295230858028,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5155.668725958094,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 5802.608463913202
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/ceb54acb/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1225,
+    "output": 100,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1325,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 5.861062593990937,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/ceb54acb/attempts/01/judge-session.jsonl",
+  "sessionSha256": "a47b98f730c03a163870af0c8c06c3b7a5636f0522bf2b4b14b05744ca4bbae1",
+  "identity": "85847fc5aaa890d9438b41d311c484e7769cba9266ff22ec8edf19da7fb5e523",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/sol/pi-restored-grep/ceb54acb/attempts/01/judge-session.jsonl",
+      "sessionSha256": "a47b98f730c03a163870af0c8c06c3b7a5636f0522bf2b4b14b05744ca4bbae1",
+      "seconds": 5.861062593990937
+    }
+  ]
+}

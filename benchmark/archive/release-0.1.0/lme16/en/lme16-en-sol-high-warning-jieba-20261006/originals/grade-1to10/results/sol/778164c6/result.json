@@ -1,0 +1,68 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "778164c6",
+  "inputSha256": "a7428bac2e96aaee718a4d101df84e5c5c31dc593d63bce8031455a4f0520e0a",
+  "originalResultSha256": "d38c9ccff383c122849e37d025c78e1a4f4dcf08e9cd166bbe29850a65eb0e43",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "score": 10,
+    "reason": "模型准确指出含水果的菜是烤鲷鱼配芒果莎莎酱，并正确解释其与牙买加酸辣腌鱼推荐之间的区别，与参考答案完全一致。"
+  },
+  "rawVerdict": "{\"score\":10,\"reason\":\"模型准确指出含水果的菜是烤鲷鱼配芒果莎莎酱，并正确解释其与牙买加酸辣腌鱼推荐之间的区别，与参考答案完全一致。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 631.5104519017041,
+    "firstVisibleTextFromSpawnMs": 3017.43450993672,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 3735.5441679246724,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 4382.568845059723
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/grade-1to10/results/sol/778164c6/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 946,
+    "output": 56,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1002,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 4.404112173942849,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/grade-1to10/results/sol/778164c6/attempts/01/judge-session.jsonl",
+  "sessionSha256": "083dca4117fb35ade24fe87d7243fdb04e8a83ae9afb49c8a747f3cee18641ad",
+  "identity": "252fab942ee2127c16b5fee9da3fbca78ecb8fa390e2e43adba06413bc6a4ea8",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/grade-1to10/results/sol/778164c6/attempts/01/result.json"
+    }
+  ],
+  "supplementFingerprint": "9b94c4455d8bb254d2e10562c7059277a85daaf287f3f4b157bfe35a02ab9922"
+}

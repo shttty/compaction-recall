@@ -1,0 +1,13 @@
+{
+ "question_id": "778164c6",
+ "split": "dev8",
+ "question_en": "I was looking back at our previous conversation about Caribbean dishes and I was wondering, what was the name of that Jamaican dish you recommended I try with snapper that has fruit in it?",
+ "question": "我回头看了我们之前关于加勒比菜肴的对话，想问问，你推荐我用鲷鱼试的那道带水果的牙买加菜叫什么来着？",
+ "question_date": "2023/05/30 (Tue) 23:58",
+ "provenance": {
+  "model": "deepseek-flash",
+  "edited_by_review": true,
+  "machine_output": "我回头看了我们之前关于加勒比菜肴的对话，想问问，你推荐我用笛鲷试的那道带水果的牙买加菜叫什么来着？",
+  "frozen_at": "2026-10-03T18:47+08:00"
+ }
+}

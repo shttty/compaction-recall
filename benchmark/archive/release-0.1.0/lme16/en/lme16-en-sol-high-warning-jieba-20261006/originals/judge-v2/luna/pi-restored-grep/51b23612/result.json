@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "51b23612",
+  "inputSha256": "79ff4f6f7a63ff6ef6fb73e6dd7687ed85c733ec75c8eae2d28700e68a6c390e",
+  "originalResultSha256": "7ba488ba012a2402a45e22912bd064feed41ff4702213e29578b4f6ead8da443",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "The cartoon I mentioned was **_Nu, pogodi!_ (Ну, погоди!), usually translated as “Well, Just You Wait!”**",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response clearly identifies Nu, pogodi!; the subsequent correction of the premise does not change the selected answer."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"The cartoon I mentioned was **_Nu, pogodi!_ (Ну, погоди!), usually translated as “Well, Just You Wait!”**\",\"hedged\":false,\"guess\":false,\"reason\":\"The response clearly identifies Nu, pogodi!; the subsequent correction of the premise does not change the selected answer.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 639.361877925694,
+    "firstVisibleTextFromSpawnMs": 15670.278165023774,
+    "firstThinkingFromSpawnMs": 13573.09736404568,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 15336.555178975686,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 15991.42199382186
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/51b23612/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1240,
+    "output": 724,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 644,
+    "totalTokens": 1964,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 16.03538550902158,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/51b23612/attempts/01/judge-session.jsonl",
+  "sessionSha256": "1890c5565870e7ffb97c33be2d5de28d5cab4ee5a2c3da26e4a06303275b9c68",
+  "identity": "131ace77a9f49ec7f8cc482a0e27a4c515510a9e1345e1666e0cf9b97983cbb8",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/51b23612/attempts/01/judge-session.jsonl",
+      "sessionSha256": "1890c5565870e7ffb97c33be2d5de28d5cab4ee5a2c3da26e4a06303275b9c68",
+      "seconds": 16.03538550902158
+    }
+  ]
+}

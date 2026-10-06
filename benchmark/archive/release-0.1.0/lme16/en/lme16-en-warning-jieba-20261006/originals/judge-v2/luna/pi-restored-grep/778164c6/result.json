@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "778164c6",
+  "inputSha256": "d5a86dbf2cc99c5ea4ecb40a4f54cc590629fbaf94eb8a16ee0bbf6646acf5d9",
+  "originalResultSha256": "0b40015bb4487a0007d38235e8acc763ebfa2c94313c1f48dc68c2fe3f8a9493",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "The fruit-topped dish I mentioned was **grilled snapper with mango salsa**—but I described it as a Caribbean dish generally, not specifically Jamaican. The Jamaican dish I recommended was **escovitch fish**, which is fried snapper topped with spicy pickled vegetables and doesn’t typically include fruit.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The answer correctly identifies grilled snapper with mango salsa and clarifies the Jamaican-dish mismatch without presenting a conflicting alternative."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"The fruit-topped dish I mentioned was **grilled snapper with mango salsa**—but I described it as a Caribbean dish generally, not specifically Jamaican. The Jamaican dish I recommended was **escovitch fish**, which is fried snapper topped with spicy pickled vegetables and doesn’t typically include fruit.\",\"hedged\":false,\"guess\":false,\"reason\":\"The answer correctly identifies grilled snapper with mango salsa and clarifies the Jamaican-dish mismatch without presenting a conflicting alternative.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 631.4958289731294,
+    "firstVisibleTextFromSpawnMs": 17924.051974900067,
+    "firstThinkingFromSpawnMs": 15770.92464081943,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 17637.118034996092,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 18284.118421841413
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/778164c6/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1343,
+    "output": 313,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 201,
+    "totalTokens": 1656,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 18.34070697496645,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+  "sessionSha256": "340c4bb047bb5b8a76e17d1e3450cbb2bcb1325370c9e7c68299d31d6f3cbfa6",
+  "identity": "5ce815306cb18f43f1ef37df2d64db8cf4ca9e04937edf402e038a8f6b9080ce",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+      "sessionSha256": "340c4bb047bb5b8a76e17d1e3450cbb2bcb1325370c9e7c68299d31d6f3cbfa6",
+      "seconds": 18.34070697496645
+    }
+  ]
+}

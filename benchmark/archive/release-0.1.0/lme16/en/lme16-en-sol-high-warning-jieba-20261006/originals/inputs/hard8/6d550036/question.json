@@ -1,0 +1,18 @@
+{
+ "question_id": "6d550036",
+ "question_type": "multi-session",
+ "question": "How many projects have I led or am currently leading?",
+ "question_date": "2023/05/30 (Tue) 23:55",
+ "split": "hard8",
+ "selection": {
+  "question_type": "multi-session",
+  "score": 102,
+  "evidenceSegments": [
+   1,
+   2,
+   3
+  ],
+  "distractorCues": [],
+  "rationale": "Explicit LongMemEval has_answer turns map to separate evidence in segments [1, 2, 3]; multi-session"
+ }
+}

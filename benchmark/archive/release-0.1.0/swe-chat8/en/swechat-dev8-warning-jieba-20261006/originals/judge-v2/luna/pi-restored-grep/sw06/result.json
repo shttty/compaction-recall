@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw06",
+  "inputSha256": "0f198894b314034a2dcbdf00be5533197e519fe65a46ab064d1f5f4d11ebf41f",
+  "originalResultSha256": "b7d65903bb8ca49700e492e03cf3e64aa6da959ac979ca1b2cdf7a0fee8ab4fa",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "1. **The packaged preload failed to load:** Electron’s sandbox couldn’t run the ESM `preload.js` (`Cannot use import statement outside a module`), so the renderer never received `window.yinshiDesktop` and the sign-in click couldn’t reach the app’s IPC bridge.\n2. **The hosted backend was outdated:** After the preload was fixed and sign-in IPC worked, the request to `/auth/desktop/requests` returned `404` because production was running an older backend.\n\nSo the first cause made the button appear inert; the second blocked sign-in after that bridge was restored.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The answer identifies both causes in sequence and matches the reference: the ESM preload prevented the renderer from reaching sign-in IPC, then a stale production backend returned 404."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"1. **The packaged preload failed to load:** Electron’s sandbox couldn’t run the ESM `preload.js` (`Cannot use import statement outside a module`), so the renderer never received `window.yinshiDesktop` and the sign-in click couldn’t reach the app’s IPC bridge.\\n2. **The hosted backend was outdated:** After the preload was fixed and sign-in IPC worked, the request to `/auth/desktop/requests` returned `404` because production was running an older backend.\\n\\nSo the first cause made the button appear inert; the second blocked sign-in after that bridge was restored.\",\"hedged\":false,\"guess\":false,\"reason\":\"The answer identifies both causes in sequence and matches the reference: the ESM preload prevented the renderer from reaching sign-in IPC, then a stale production backend returned 404.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 644.5902471896261,
+    "firstVisibleTextFromSpawnMs": 7535.6138800270855,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 8552.409349940717,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 9212.49587321654
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/sw06/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1309,
+    "output": 366,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 181,
+    "totalTokens": 1675,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 9.266379271168262,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/sw06/attempts/01/judge-session.jsonl",
+  "sessionSha256": "43424a174ba77a0277c660e3a5b03e62838b979bf8f244e4c6abce882f268557",
+  "identity": "49e0042a7845ef27e04671fceba59b537a29985a51e49cc1ea0c7bc11bbb6d73",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/sw06/attempts/01/judge-session.jsonl",
+      "sessionSha256": "43424a174ba77a0277c660e3a5b03e62838b979bf8f244e4c6abce882f268557",
+      "seconds": 9.266379271168262
+    }
+  ]
+}

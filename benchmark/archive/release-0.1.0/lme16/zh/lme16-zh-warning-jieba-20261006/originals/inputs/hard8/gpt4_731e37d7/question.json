@@ -1,0 +1,17 @@
+{
+ "question_id": "gpt4_731e37d7",
+ "question_type": "multi-session",
+ "question": "How much total money did I spend on attending workshops in the last four months?",
+ "question_date": "2023/02/26 (Sun) 23:59",
+ "split": "hard8",
+ "selection": {
+  "question_type": "multi-session",
+  "score": 82,
+  "evidenceSegments": [
+   1,
+   3
+  ],
+  "distractorCues": [],
+  "rationale": "Explicit LongMemEval has_answer turns map to separate evidence in segments [1, 3]; multi-session"
+ }
+}

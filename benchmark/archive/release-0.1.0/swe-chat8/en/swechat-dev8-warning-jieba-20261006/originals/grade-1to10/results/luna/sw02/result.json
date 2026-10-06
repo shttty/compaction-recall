@@ -1,0 +1,66 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw02",
+  "inputSha256": "91fa6d2f78922ad98a1336924ca749b6b923c77187556a485d02d3b81a3a1be7",
+  "originalResultSha256": "d3ff98e941159b0bcde0bbbddcbdc9680a09ac39517797b2ed6dfe32ec0c9949",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "score": 8,
+    "reason": "正确指出缺失的状态是 `deleted`，也提到将其加入 `ArchiveStatus`；但把计划中的运行时检查说成了回归测试。"
+  },
+  "rawVerdict": "{\"score\":8,\"reason\":\"正确指出缺失的状态是 `deleted`，也提到将其加入 `ArchiveStatus`；但把计划中的运行时检查说成了回归测试。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 1077.753780176863,
+    "firstVisibleTextFromSpawnMs": 7822.160974144936,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 6807.971688220277,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 7901.235921075568
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/grade-1to10/results/luna/sw02/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 822,
+    "output": 191,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 141,
+    "totalTokens": 1013,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 8.001763683976606,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/grade-1to10/results/luna/sw02/attempts/01/judge-session.jsonl",
+  "sessionSha256": "e9c583cebd6cf0f3996375d559933bad5bf4106e9924ccce4a57fe06281809e0",
+  "identity": "f37fac26eeb1f6786a4feb187c0177305f127ae8d662147e44ced313bfd54ad3",
+  "attempts": [
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/grade-1to10/results/luna/sw02/attempts/01/result.json",
+      "status": "graded"
+    }
+  ]
+}

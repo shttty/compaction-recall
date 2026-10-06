@@ -1,0 +1,339 @@
+[
+  {
+    "run": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-native",
+    "manifestSha256": "a3a76d018d955d91e3eabde799f17e3d41cd1c1cf19714fbe2fc4254ca4174d2",
+    "aggregateSha256": "6cec273937d9ea8e4e8285312746f20aa1ad4a6151b9b08375b3e116656e9e78",
+    "fingerprint": "e43a993a6dd0f7a535a74a8efa557e0416df3ee4d77f25a42661cb3044f81baf",
+    "state": "complete",
+    "arms": [
+      "pi-native",
+      "pi-mainline",
+      "pi-sqlite",
+      "omp-native",
+      "omp-sqlite"
+    ],
+    "selected": [
+      "778164c6",
+      "51b23612",
+      "ceb54acb",
+      "577d4d32",
+      "3d86fd0a",
+      "15745da0",
+      "gpt4_65aabe59",
+      "982b5123",
+      "gpt4_7fce9456",
+      "gpt4_a1b77f9c",
+      "28dc39ac",
+      "gpt4_15e38248",
+      "6d550036",
+      "2ce6a0f2",
+      "9d25d4e0",
+      "gpt4_731e37d7"
+    ],
+    "strict": null,
+    "note": "historical source/baseline index only; conditions differ; no accuracy relabeling"
+  },
+  {
+    "run": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-rawfts",
+    "manifestSha256": "91fded6bea12c16972cedaaa831ab6792419297f24d4c536248627c88ba4c0e7",
+    "aggregateSha256": "ff6d5653e785d0b38584ce7d8a1bd0191841c0f5f75c9d54967de67bfaff9416",
+    "fingerprint": "b973ed8e8df85d0dd633e9ca3331440deb84f91048c7fe8cce50702459ec4877",
+    "state": "complete",
+    "arms": [
+      "pi-rawfts"
+    ],
+    "selected": [
+      "778164c6",
+      "51b23612",
+      "ceb54acb",
+      "577d4d32",
+      "3d86fd0a",
+      "15745da0",
+      "gpt4_65aabe59",
+      "982b5123",
+      "gpt4_7fce9456",
+      "gpt4_a1b77f9c",
+      "28dc39ac",
+      "gpt4_15e38248",
+      "6d550036",
+      "2ce6a0f2",
+      "9d25d4e0",
+      "gpt4_731e37d7"
+    ],
+    "strict": {
+      "luna": {
+        "total": {
+          "selected": 16,
+          "correct": 8,
+          "scored": 16,
+          "wrong": 8,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 1,
+          "hedged": 3
+        },
+        "dev8": {
+          "selected": 8,
+          "correct": 8,
+          "scored": 8,
+          "wrong": 0,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 0
+        },
+        "hard8": {
+          "selected": 8,
+          "correct": 0,
+          "scored": 8,
+          "wrong": 8,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 1,
+          "hedged": 3
+        }
+      },
+      "sol": {
+        "total": {
+          "selected": 16,
+          "correct": 9,
+          "scored": 16,
+          "wrong": 7,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 3
+        },
+        "dev8": {
+          "selected": 8,
+          "correct": 8,
+          "scored": 8,
+          "wrong": 0,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 0
+        },
+        "hard8": {
+          "selected": 8,
+          "correct": 1,
+          "scored": 8,
+          "wrong": 7,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 3
+        }
+      }
+    },
+    "note": "historical source/baseline index only; conditions differ; no accuracy relabeling"
+  },
+  {
+    "run": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-token-loss-reject-20261006",
+    "manifestSha256": "86961aed7a105184948362ecc196235c24d3fd0a2af62f86d2ecb150ddf5004a",
+    "aggregateSha256": "80a8cde193bd0f5e083124ea070f36d494d8257ce8db9157b32d17fdc44f66f0",
+    "fingerprint": "dcf71ede745a0aac5c525c66ef0896a7927bc7e3f74f84cec0cefacf8c430ccc",
+    "state": "complete",
+    "arms": [
+      "pi-restored-grep"
+    ],
+    "selected": [
+      "778164c6",
+      "51b23612",
+      "ceb54acb",
+      "577d4d32",
+      "3d86fd0a",
+      "15745da0",
+      "gpt4_65aabe59",
+      "982b5123",
+      "gpt4_7fce9456",
+      "gpt4_a1b77f9c",
+      "28dc39ac",
+      "gpt4_15e38248",
+      "6d550036",
+      "2ce6a0f2",
+      "9d25d4e0",
+      "gpt4_731e37d7"
+    ],
+    "strict": {
+      "luna": {
+        "total": {
+          "selected": 16,
+          "correct": 8,
+          "scored": 15,
+          "wrong": 7,
+          "failed": 1,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 1,
+          "hedged": 3
+        },
+        "dev8": {
+          "selected": 8,
+          "correct": 6,
+          "scored": 8,
+          "wrong": 2,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 0
+        },
+        "hard8": {
+          "selected": 8,
+          "correct": 2,
+          "scored": 7,
+          "wrong": 5,
+          "failed": 1,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 1,
+          "hedged": 3
+        }
+      },
+      "sol": {
+        "total": {
+          "selected": 16,
+          "correct": 8,
+          "scored": 16,
+          "wrong": 8,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 4
+        },
+        "dev8": {
+          "selected": 8,
+          "correct": 6,
+          "scored": 8,
+          "wrong": 2,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 1
+        },
+        "hard8": {
+          "selected": 8,
+          "correct": 2,
+          "scored": 8,
+          "wrong": 6,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 3
+        }
+      }
+    },
+    "note": "historical source/baseline index only; conditions differ; no accuracy relabeling"
+  },
+  {
+    "run": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-token-loss-reject-repeat1-20261006",
+    "manifestSha256": "967bc44c2753f1469c414c2c1957fb2017910118c6c34f8f7bae4e57ca608878",
+    "aggregateSha256": "56b0ca4a55b1ee01823eafb9c11152c05e68f15fe7b709a1c0321483e2fd73e4",
+    "fingerprint": "9d92ee53e087e688b7877a9fd7093881f99324d7a056960bc4f837d2f696485c",
+    "state": "complete",
+    "arms": [
+      "pi-restored-grep"
+    ],
+    "selected": [
+      "778164c6",
+      "51b23612",
+      "ceb54acb",
+      "577d4d32",
+      "3d86fd0a",
+      "15745da0",
+      "gpt4_65aabe59",
+      "982b5123",
+      "gpt4_7fce9456",
+      "gpt4_a1b77f9c",
+      "28dc39ac",
+      "gpt4_15e38248",
+      "6d550036",
+      "2ce6a0f2",
+      "9d25d4e0",
+      "gpt4_731e37d7"
+    ],
+    "strict": {
+      "luna": {
+        "total": {
+          "selected": 16,
+          "correct": 7,
+          "scored": 16,
+          "wrong": 9,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 6
+        },
+        "dev8": {
+          "selected": 8,
+          "correct": 7,
+          "scored": 8,
+          "wrong": 1,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 0
+        },
+        "hard8": {
+          "selected": 8,
+          "correct": 0,
+          "scored": 8,
+          "wrong": 8,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 6
+        }
+      },
+      "sol": {
+        "total": {
+          "selected": 16,
+          "correct": 7,
+          "scored": 16,
+          "wrong": 9,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 5
+        },
+        "dev8": {
+          "selected": 8,
+          "correct": 7,
+          "scored": 8,
+          "wrong": 1,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 0
+        },
+        "hard8": {
+          "selected": 8,
+          "correct": 0,
+          "scored": 8,
+          "wrong": 8,
+          "failed": 0,
+          "missing": 0,
+          "pendingOrUnknown": 0,
+          "guess": 0,
+          "hedged": 5
+        }
+      }
+    },
+    "note": "historical source/baseline index only; conditions differ; no accuracy relabeling"
+  }
+]

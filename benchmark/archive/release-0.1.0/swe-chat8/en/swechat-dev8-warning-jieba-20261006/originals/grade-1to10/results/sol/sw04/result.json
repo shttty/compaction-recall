@@ -1,0 +1,66 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "sw04",
+  "inputSha256": "d7991fa4e7f8787dd436d57201312d02217465dd9579ce2f035b2999e0b6c90c",
+  "originalResultSha256": "fe7a059f9e01c8b61366166038f0838c82135bf42ea4e247cb0d27145707eb73",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "score": 10,
+    "reason": "答案准确说明了按用户保存最后一次成功确认的模型选择、跨刷新及新工作树复用、仅一次从当前会话初始化，以及旧会话和待定或失败的更改不会覆盖已保存偏好，与参考答案一致。"
+  },
+  "rawVerdict": "{\"score\":10,\"reason\":\"答案准确说明了按用户保存最后一次成功确认的模型选择、跨刷新及新工作树复用、仅一次从当前会话初始化，以及旧会话和待定或失败的更改不会覆盖已保存偏好，与参考答案一致。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 646.348430076614,
+    "firstVisibleTextFromSpawnMs": 7285.874296212569,
+    "firstThinkingFromSpawnMs": 6687.459919136018,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 7564.866286003962,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 8226.770078064874
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/grade-1to10/results/sol/sw04/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 900,
+    "output": 128,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 60,
+    "totalTokens": 1028,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 8.269450679887086,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/grade-1to10/results/sol/sw04/attempts/01/judge-session.jsonl",
+  "sessionSha256": "910b0e478502f3eb0cd93f450a79701f9ed679d8385a7cf4e6ecad5f60573d9d",
+  "identity": "8492e9cc888cece4bdef531525bd0591871bbc60b264fa5db0d0be1531a6d79d",
+  "attempts": [
+    {
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/swechat-dev8-warning-jieba-20261006/grade-1to10/results/sol/sw04/attempts/01/result.json",
+      "status": "graded"
+    }
+  ]
+}

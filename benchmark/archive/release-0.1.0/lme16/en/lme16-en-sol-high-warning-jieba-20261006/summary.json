@@ -1,0 +1,30 @@
+{
+  "strict": {
+    "luna": {
+      "selected": 16,
+      "scored": 16,
+      "correct": 9,
+      "wrong": 7
+    },
+    "sol": {
+      "selected": 16,
+      "scored": 16,
+      "correct": 9,
+      "wrong": 7
+    }
+  },
+  "graded": {
+    "luna": {
+      "selected": 16,
+      "scored": 16,
+      "totalScore": 129,
+      "effectiveMax": 160
+    },
+    "sol": {
+      "selected": 16,
+      "scored": 16,
+      "totalScore": 131,
+      "effectiveMax": 160
+    }
+  }
+}

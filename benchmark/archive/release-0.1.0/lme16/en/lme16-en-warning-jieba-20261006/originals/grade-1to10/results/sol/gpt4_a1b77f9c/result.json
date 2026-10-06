@@ -1,0 +1,68 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_a1b77f9c",
+  "inputSha256": "729f1a4233e5efa9f0510a11e6778248ec58b1dfb6fcbfff5b4a39b1dcad1094",
+  "originalResultSha256": "8f26f946fac3ba280d5e8de753a2d83fe5efeee76dea3d2bb79e62985762653f",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "score": 9,
+    "reason": "三本书分别耗时2、4、2周及总计8周均与参考答案一致，但使用“约8周”并附加日历时间与实际阅读时间的区分，使结论略显含糊。"
+  },
+  "rawVerdict": "{\"score\":9,\"reason\":\"三本书分别耗时2、4、2周及总计8周均与参考答案一致，但使用“约8周”并附加日历时间与实际阅读时间的区分，使结论略显含糊。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 641.9226811267436,
+    "firstVisibleTextFromSpawnMs": 6092.60141919367,
+    "firstThinkingFromSpawnMs": 5409.549779025838,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 5886.931978864595,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 6544.386679073796
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/grade-1to10/results/sol/gpt4_a1b77f9c/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 856,
+    "output": 113,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 48,
+    "totalTokens": 969,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 6.567239681025967,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/grade-1to10/results/sol/gpt4_a1b77f9c/attempts/01/judge-session.jsonl",
+  "sessionSha256": "0d14e700b25889179a3733d933eecd16eb0259ee33d57d149d1c77f2f6895477",
+  "identity": "d9d643d72e32bf312a93d208a0d3b4480f3c030050a5698871e4b6ffc8b6328e",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-warning-jieba-20261006/grade-1to10/results/sol/gpt4_a1b77f9c/attempts/01/result.json"
+    }
+  ],
+  "supplementFingerprint": "df0929975dd26180bda48f67f268976667be47bfbabc4587e484d48bf365d274"
+}

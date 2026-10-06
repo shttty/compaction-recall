@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "28dc39ac",
+  "inputSha256": "4f49de968999f39f87e4720835e5995c8225e06266c7835ca4182c1548d4acec",
+  "originalResultSha256": "369866e8fa5c368d1dbd556ab7210e14cf80d4871efa693895d47695b1ec2f0f",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "Based on the gaming time you’ve mentioned, your **estimated total is 155–160 hours**, assuming the general gaming sessions were additional to your game-specific totals.",
+    "hedged": true,
+    "guess": false,
+    "reason": "The selected total of 155–160 hours does not match the required 145 hours and is conditional on additional sessions not overlapping; the response also offers a lower total if they overlap."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"Based on the gaming time you’ve mentioned, your **estimated total is 155–160 hours**, assuming the general gaming sessions were additional to your game-specific totals.\",\"hedged\":true,\"guess\":false,\"reason\":\"The selected total of 155–160 hours does not match the required 145 hours and is conditional on additional sessions not overlapping; the response also offers a lower total if they overlap.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 623.2351530343294,
+    "firstVisibleTextFromSpawnMs": 6192.079882137477,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 8097.779868170619,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 8736.589779146016
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/28dc39ac/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1468,
+    "output": 139,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 43,
+    "totalTokens": 1607,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 8.793706701835617,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/28dc39ac/attempts/01/judge-session.jsonl",
+  "sessionSha256": "927f0b0e1f5d1d63e39665cb35c5caf645d62daf01a75edd3618c18765cac0a9",
+  "identity": "182ffd343db837ad452405755ee70560dc85b5ccf189bf15643aece7f63779a3",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/28dc39ac/attempts/01/judge-session.jsonl",
+      "sessionSha256": "927f0b0e1f5d1d63e39665cb35c5caf645d62daf01a75edd3618c18765cac0a9",
+      "seconds": 8.793706701835617
+    }
+  ]
+}

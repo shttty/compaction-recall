@@ -1,0 +1,68 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "28dc39ac",
+  "inputSha256": "5452809ca422b275655ccbec3afb5e93a0d3a9b758d8389d38cb8eaad30f7501",
+  "originalResultSha256": "369866e8fa5c368d1dbd556ab7210e14cf80d4871efa693895d47695b1ec2f0f",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "score": 6,
+    "reason": "正确列出了参考答案中的 145 小时游戏时间，但又加入不在参考答案中的 10–15 小时并据此给出错误总计 155–160 小时。"
+  },
+  "rawVerdict": "{\"score\": 6, \"reason\": \"正确列出了参考答案中的 145 小时游戏时间，但又加入不在参考答案中的 10–15 小时并据此给出错误总计 155–160 小时。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 626.8655590247363,
+    "firstVisibleTextFromSpawnMs": 10677.76290117763,
+    "firstThinkingFromSpawnMs": 8830.909586045891,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 12547.831999137998,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 13190.27265603654
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/grade-1to10/results/luna/28dc39ac/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1024,
+    "output": 247,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 189,
+    "totalTokens": 1271,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 13.222998548997566,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/grade-1to10/results/luna/28dc39ac/attempts/01/judge-session.jsonl",
+  "sessionSha256": "5f85e2e12cc7da939c70665e2940930d6b05701cd9b7e797dc41f8ba686a661c",
+  "identity": "76520ff873329de03cbe892031ef552100872e3b270538647783d37920651499",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/grade-1to10/results/luna/28dc39ac/attempts/01/result.json"
+    }
+  ],
+  "supplementFingerprint": "97afea7d99a0e4fc69b9ccefde9b5afafecb41ecf893e486b0127280619e59d4"
+}

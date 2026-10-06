@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "577d4d32",
+  "inputSha256": "d13164bbe88039ae9a50f3725aa4f3118c5a2e0025844f2001153f050c2bd0c2",
+  "originalResultSha256": "b1642cc1328f21577927a0f45f7b45357229733e46a85ddb6e7c9b88cbb9ca37",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "1. 你之前提到，晚上 **7 点后**会停止查看工作邮件和消息。\n2. 所以，你通常从晚上 7 点开始不再查看工作信息。",
+    "hedged": false,
+    "guess": false,
+    "reason": "两点都明确表示晚上7点后停止查看工作邮件和消息，与参考答案一致。"
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"1. 你之前提到，晚上 **7 点后**会停止查看工作邮件和消息。\\n2. 所以，你通常从晚上 7 点开始不再查看工作信息。\",\"hedged\":false,\"guess\":false,\"reason\":\"两点都明确表示晚上7点后停止查看工作邮件和消息，与参考答案一致。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 630.226134089753,
+    "firstVisibleTextFromSpawnMs": 16169.309807009995,
+    "firstThinkingFromSpawnMs": 14281.552873086184,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 15683.301970828325,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 16329.081092961133
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/577d4d32/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1165,
+    "output": 343,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 255,
+    "totalTokens": 1508,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 16.378358904039487,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/577d4d32/attempts/01/judge-session.jsonl",
+  "sessionSha256": "1f65f2e13ea9c08f4e6a13d8a4df93f78ed5ae85dc4de2ac2d50104f63f63813",
+  "identity": "c1ce82b84bd0f11837fe61a8d87c13cafae16a4a4f113ae524ad0298ad8b9fb8",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/577d4d32/attempts/01/judge-session.jsonl",
+      "sessionSha256": "1f65f2e13ea9c08f4e6a13d8a4df93f78ed5ae85dc4de2ac2d50104f63f63813",
+      "seconds": 16.378358904039487
+    }
+  ]
+}

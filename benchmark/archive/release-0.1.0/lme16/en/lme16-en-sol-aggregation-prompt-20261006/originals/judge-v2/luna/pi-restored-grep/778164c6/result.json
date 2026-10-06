@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "778164c6",
+  "inputSha256": "91d133a73e595f153a20cd6c2a4a3a3622bd0a3b1907efb31a15aed9dd111790",
+  "originalResultSha256": "d86371153a529bebf969edb026f2b679620f3fc535382cb3c774f5470e9b4d6c",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "You’re likely thinking of **Grilled Snapper with Mango Salsa**, which I described as grilled snapper topped with a fruity, spicy salsa.\n\nThere were two dishes in that conversation that match different parts of your memory:\n- **The fruit-based dish:** Grilled Snapper with Mango Salsa, described as popular across the Caribbean—not specifically Jamaican.\n- **The Jamaican dish I recommended trying first:** Escovitch Fish, which has a spicy pickled **vegetable** topping rather than fruit.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The response clearly identifies Grilled Snapper with Mango Salsa as the fruit-based snapper dish and explains the Jamaican-dish mismatch without offering an unresolved alternative."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"You’re likely thinking of **Grilled Snapper with Mango Salsa**, which I described as grilled snapper topped with a fruity, spicy salsa.\\n\\nThere were two dishes in that conversation that match different parts of your memory:\\n- **The fruit-based dish:** Grilled Snapper with Mango Salsa, described as popular across the Caribbean—not specifically Jamaican.\\n- **The Jamaican dish I recommended trying first:** Escovitch Fish, which has a spicy pickled **vegetable** topping rather than fruit.\",\"hedged\":false,\"guess\":false,\"reason\":\"The response clearly identifies Grilled Snapper with Mango Salsa as the fruit-based snapper dish and explains the Jamaican-dish mismatch without offering an unresolved alternative.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 632.1631569880992,
+    "firstVisibleTextFromSpawnMs": 15103.150418028235,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 16394.97792487964,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 17042.72192902863
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/778164c6/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1385,
+    "output": 802,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 642,
+    "totalTokens": 2187,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 17.09653371013701,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+  "sessionSha256": "aa2852c734da583969bf333678c4c9d4f3a07735831c3bcdc05146c7186ab0ea",
+  "identity": "7917120c3790ce574b13c01039c74875a919a36906f01f297d01eb47fe2f96f8",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/778164c6/attempts/01/judge-session.jsonl",
+      "sessionSha256": "aa2852c734da583969bf333678c4c9d4f3a07735831c3bcdc05146c7186ab0ea",
+      "seconds": 17.09653371013701
+    }
+  ]
+}

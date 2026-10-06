@@ -1,0 +1,13 @@
+{
+ "question_id": "ceb54acb",
+ "split": "dev8",
+ "question_en": "In our previous chat, you suggested 'sexual compulsions' and a few other options for alternative terms for certain behaviors. Can you remind me what the other four options were?",
+ "question": "在我们之前的聊天里，你建议用“性强迫行为”和另外几个选项来替代某些行为的说法。你能提醒我另外四个选项是什么吗？",
+ "question_date": "2023/05/30 (Tue) 23:22",
+ "provenance": {
+  "model": "deepseek-flash",
+  "edited_by_review": true,
+  "machine_output": "在我们之前的聊天里，你建议用“性冲动”和另外几个选项来替代某些行为的说法。你能提醒我另外四个选项是什么吗？",
+  "frozen_at": "2026-10-03T18:47+08:00"
+ }
+}

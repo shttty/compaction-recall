@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "9d25d4e0",
+  "inputSha256": "fd5504e1b399bf2e151387b3ced271e14c25acee08daef365f069170534625a2",
+  "originalResultSha256": "3ebf3a4111de01ced0b51d99b81afe47c5139d6fb9f890bae77948f6cd048507",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "You mentioned **3 new additions to your own jewelry collection in the last two months**, counting the earrings as one pair:\n\n1. **Silver necklace with a small pendant** — acquired on **April 15**.\n2. **Engagement ring** — received about a month before our May conversations, so **around April**.\n3. **Emerald earrings** — bought at a **flea market the weekend before May 26**.\n\nThat gives a total of **3 jewelry items/sets**. I haven’t included the silver necklace you bought for your sister or older jewelry whose acquisition dates weren’t specified.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The selected answer gives a clear total of 3, matching the reference, without hedging or presenting it as a guess."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"You mentioned **3 new additions to your own jewelry collection in the last two months**, counting the earrings as one pair:\\n\\n1. **Silver necklace with a small pendant** — acquired on **April 15**.\\n2. **Engagement ring** — received about a month before our May conversations, so **around April**.\\n3. **Emerald earrings** — bought at a **flea market the weekend before May 26**.\\n\\nThat gives a total of **3 jewelry items/sets**. I haven’t included the silver necklace you bought for your sister or older jewelry whose acquisition dates weren’t specified.\",\"hedged\":false,\"guess\":false,\"reason\":\"The selected answer gives a clear total of 3, matching the reference, without hedging or presenting it as a guess.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 629.1788858361542,
+    "firstVisibleTextFromSpawnMs": 9658.369110897183,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 11488.235719967633,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 12135.566520970315
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/9d25d4e0/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1251,
+    "output": 526,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 345,
+    "totalTokens": 1777,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 12.190412536961958,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/9d25d4e0/attempts/01/judge-session.jsonl",
+  "sessionSha256": "f310f19c9bf2cf75de353c70a0e117af221353e13eb7bb741de7b6e28d27f6e7",
+  "identity": "abb3e2dc512af31940f2c06705079ab4f90952e73b33ebcc820ee4f771a86c05",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/9d25d4e0/attempts/01/judge-session.jsonl",
+      "sessionSha256": "f310f19c9bf2cf75de353c70a0e117af221353e13eb7bb741de7b6e28d27f6e7",
+      "seconds": 12.190412536961958
+    }
+  ]
+}

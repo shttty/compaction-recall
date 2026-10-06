@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "982b5123",
+  "inputSha256": "a142a7c6e6f08b062f9919d4e361a5bc6bd7d706a0288b1219b8710a147a5136",
+  "originalResultSha256": "1e99dfb1bdd08c471d44322413a0680626224588a4920f826903caee27a775e4",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "You booked the Airbnb **five months ago**.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The answer clearly selects five months ago, matching the reference; the supporting explanation does not change it."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"You booked the Airbnb **five months ago**.\",\"hedged\":false,\"guess\":false,\"reason\":\"The answer clearly selects five months ago, matching the reference; the supporting explanation does not change it.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 932.1852731518447,
+    "firstVisibleTextFromSpawnMs": 8851.355553139001,
+    "firstThinkingFromSpawnMs": 7273.2456480152905,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 7982.7132620848715,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 8930.506487144157
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/982b5123/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1195,
+    "output": 269,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 213,
+    "totalTokens": 1464,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 9.005548389162868,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/982b5123/attempts/01/judge-session.jsonl",
+  "sessionSha256": "002ed28914993ea379f5fd07d16f3287af1f5434c7f857cfb0c13a3448573a68",
+  "identity": "c9befba0b4aee9e1f7f86eb327ebffa3738310f148b68d07653dea2753732bcf",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-high-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/982b5123/attempts/01/judge-session.jsonl",
+      "sessionSha256": "002ed28914993ea379f5fd07d16f3287af1f5434c7f857cfb0c13a3448573a68",
+      "seconds": 9.005548389162868
+    }
+  ]
+}

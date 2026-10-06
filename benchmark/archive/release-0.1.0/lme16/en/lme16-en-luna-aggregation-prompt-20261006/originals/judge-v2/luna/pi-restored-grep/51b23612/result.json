@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "51b23612",
+  "inputSha256": "17d7d2df7d36a8ab7e26903d881ae3d999edec84fc8f748c53baad134d78ce84",
+  "originalResultSha256": "10a13cf8d6cc776638d3382b3144db24077eba5a1f40a5bce95d3e0cb6de302a",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "The cartoon mentioned was **Nu, pogodi!** (“Just You Wait!”), a popular Soviet animated series. My earlier description was misleading: it is best known as a slapstick chase comedy about a wolf pursuing a hare, not as a cartoon specifically designed to mock Western culture or portray the Soviet Union as superior.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The answer clearly identifies Nu, pogodi!, matching the reference; the added clarification does not offer an alternative or make the answer conditional."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"The cartoon mentioned was **Nu, pogodi!** (“Just You Wait!”), a popular Soviet animated series. My earlier description was misleading: it is best known as a slapstick chase comedy about a wolf pursuing a hare, not as a cartoon specifically designed to mock Western culture or portray the Soviet Union as superior.\",\"hedged\":false,\"guess\":false,\"reason\":\"The answer clearly identifies Nu, pogodi!, matching the reference; the added clarification does not offer an alternative or make the answer conditional.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 635.0826229900122,
+    "firstVisibleTextFromSpawnMs": 14204.89939278923,
+    "firstThinkingFromSpawnMs": 10563.861931907013,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 13795.570655027404,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 14446.190536953509
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/51b23612/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1210,
+    "output": 542,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 425,
+    "totalTokens": 1752,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 14.49600078491494,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/51b23612/attempts/01/judge-session.jsonl",
+  "sessionSha256": "dcd89aa595343f68ee13163b4940604ee83b6eea990fd8015f946a78d50a7285",
+  "identity": "371c51f307598b5b2d301ebe06ef16a496fc8f042db51d2d584000ba93225c80",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-luna-aggregation-prompt-20261006/judge-v2/luna/pi-restored-grep/51b23612/attempts/01/judge-session.jsonl",
+      "sessionSha256": "dcd89aa595343f68ee13163b4940604ee83b6eea990fd8015f946a78d50a7285",
+      "seconds": 14.49600078491494
+    }
+  ]
+}

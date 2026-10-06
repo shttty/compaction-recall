@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "9d25d4e0",
+  "inputSha256": "1ddcc2de68ea8f1d46c36e170081195896d226d4405a4c5e3318018f6823f4af",
+  "originalResultSha256": "1a1d43abd25c3bb0de7cc5a07fced688e58a4b3fd4a2ebf47e31ff41cd251909",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "根据你提到的时间，过去两个月里你获得了 **3件珠宝**：\n\n1. 一条带小吊坠的银项链——上个月15日购买。\n2. 一枚订婚戒指——大约一个月前收到。\n3. 一对祖母绿耳环——上周末在跳蚤市场买的。\n\n你祖母的钻石项链只是试戴过，因此我没有把它计入。",
+    "hedged": false,
+    "guess": false,
+    "reason": "答案明确选定为3件珠宝，与参考答案一致，没有保留其他选项或标为猜测。"
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"根据你提到的时间，过去两个月里你获得了 **3件珠宝**：\\n\\n1. 一条带小吊坠的银项链——上个月15日购买。\\n2. 一枚订婚戒指——大约一个月前收到。\\n3. 一对祖母绿耳环——上周末在跳蚤市场买的。\\n\\n你祖母的钻石项链只是试戴过，因此我没有把它计入。\",\"hedged\":false,\"guess\":false,\"reason\":\"答案明确选定为3件珠宝，与参考答案一致，没有保留其他选项或标为猜测。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 629.0828681085259,
+    "firstVisibleTextFromSpawnMs": 15392.752561951056,
+    "firstThinkingFromSpawnMs": 13767.609687987715,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 15846.06732102111,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 16506.88836304471
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/9d25d4e0/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1228,
+    "output": 434,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 277,
+    "totalTokens": 1662,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 16.568474871106446,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/9d25d4e0/attempts/01/judge-session.jsonl",
+  "sessionSha256": "fd919025e60c8c2843075dca575296882892e0f415232b4d0bd90072ff11d9f9",
+  "identity": "097165be7b47bbd209a9129d73f950cadd20f048557672775203bffb08b5a542",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/9d25d4e0/attempts/01/judge-session.jsonl",
+      "sessionSha256": "fd919025e60c8c2843075dca575296882892e0f415232b4d0bd90072ff11d9f9",
+      "seconds": 16.568474871106446
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+ "question_id": "6d550036",
+ "split": "hard8",
+ "question_en": "How many projects have I led or am currently leading?",
+ "question": "我领导过或正在领导多少个项目？",
+ "question_date": "2023/05/30 (Tue) 23:55",
+ "provenance": {
+  "model": "deepseek-flash",
+  "edited_by_review": false,
+  "machine_output": null,
+  "frozen_at": "2026-10-03T18:47+08:00"
+ }
+}

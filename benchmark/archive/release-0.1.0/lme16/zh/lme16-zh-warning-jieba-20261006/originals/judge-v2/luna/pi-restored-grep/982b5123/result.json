@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "982b5123",
+  "inputSha256": "cf4663d459bcb9f0a4beb7a3a4895374ed3ccd3b09711664cfa0280ad1ce5ccc",
+  "originalResultSha256": "230d9c9337e16b28cda42a9baa5150521f0443ab09005ea8041d39d505804a8a",
+  "judgeName": "luna",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "你说那次旧金山之旅是在大约两个月前，而 Airbnb 需要提前三个月预订。按这个时间推算，你大约是五个月前订的。",
+    "hedged": false,
+    "guess": false,
+    "reason": "回答明确给出大约五个月前，与参考答案 Five months ago 一致；推算表述本身不构成未支持的猜测或未选定的备选答案。"
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"你说那次旧金山之旅是在大约两个月前，而 Airbnb 需要提前三个月预订。按这个时间推算，你大约是五个月前订的。\",\"hedged\":false,\"guess\":false,\"reason\":\"回答明确给出大约五个月前，与参考答案 Five months ago 一致；推算表述本身不构成未支持的猜测或未选定的备选答案。\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 632.1648319717497,
+    "firstVisibleTextFromSpawnMs": 7764.309915015474,
+    "firstThinkingFromSpawnMs": 6442.480240017176,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 7291.773820063099,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 7939.546256093308
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/982b5123/attempts/01/effort-evidence.json",
+    "sha256": "6ef6db956153a4a7a81aae3ac3cd5240a04b206f7cdb756bb90c7df81ddeb13e",
+    "effort": "xhigh",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1162,
+    "output": 289,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 181,
+    "totalTokens": 1451,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "xhigh",
+    "stopReason": "stop"
+  },
+  "seconds": 7.9920370490290225,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/982b5123/attempts/01/judge-session.jsonl",
+  "sessionSha256": "6c8b5d4771388f128e5b69c45da8543777adb5e8b5e532796a4795ce24ccba53",
+  "identity": "6e2a27be95ab84252581f447ece951d5c721779791252d20d08b7b7f01c8974c",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-zh-warning-jieba-20261006/judge-v2/luna/pi-restored-grep/982b5123/attempts/01/judge-session.jsonl",
+      "sessionSha256": "6c8b5d4771388f128e5b69c45da8543777adb5e8b5e532796a4795ce24ccba53",
+      "seconds": 7.9920370490290225
+    }
+  ]
+}

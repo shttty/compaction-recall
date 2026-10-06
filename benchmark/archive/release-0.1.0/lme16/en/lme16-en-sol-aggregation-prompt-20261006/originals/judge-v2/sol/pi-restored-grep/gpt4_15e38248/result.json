@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "gpt4_15e38248",
+  "inputSha256": "b1f12a4a50f6748200da1f03ebb2b4d84e7c7c5ef6aefce0bfec0625a49a3475",
+  "originalResultSha256": "9fb23fb164a2c455c378a8be7266c78be299b37e969bfd06d61417b3df02f858",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": false,
+    "final_answer": "I can confirm **3 distinct pieces of furniture**, or **4 if you include your new mattress**:",
+    "hedged": true,
+    "guess": false,
+    "reason": "The answer leaves the count conditional between 3 and 4 rather than selecting the required count of 4; its concluding explanation preserves that ambiguity."
+  },
+  "rawVerdict": "{\"correct\":false,\"final_answer\":\"I can confirm **3 distinct pieces of furniture**, or **4 if you include your new mattress**:\",\"hedged\":true,\"guess\":false,\"reason\":\"The answer leaves the count conditional between 3 and 4 rather than selecting the required count of 4; its concluding explanation preserves that ambiguity.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 618.0952040012926,
+    "firstVisibleTextFromSpawnMs": 4048.1377989053726,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 4305.396038806066,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 4955.1594578661025
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_15e38248/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1325,
+    "output": 75,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1400,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 5.026711988961324,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_15e38248/attempts/01/judge-session.jsonl",
+  "sessionSha256": "a834663757e848a29598c7254a48cfbf8093b9309773fe1cad8aedc6a1baa894",
+  "identity": "aed384bc9bb675b1515761aa488559a2430953cede35c77ce3a7c79707035273",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/gpt4_15e38248/attempts/01/judge-session.jsonl",
+      "sessionSha256": "a834663757e848a29598c7254a48cfbf8093b9309773fe1cad8aedc6a1baa894",
+      "seconds": 5.026711988961324
+    }
+  ]
+}

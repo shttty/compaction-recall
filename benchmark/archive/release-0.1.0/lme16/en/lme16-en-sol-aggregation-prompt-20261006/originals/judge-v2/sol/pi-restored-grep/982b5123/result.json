@@ -1,0 +1,73 @@
+{
+  "arm": "pi-restored-grep",
+  "question_id": "982b5123",
+  "inputSha256": "9e83f5f14bb3191a28cf92a2a28d20ecc3d4a9156332a316024c2e1f7ed5e9fe",
+  "originalResultSha256": "93aaeb849208bc52b31e3ac9b9c2a9f748762c8489e200b802221e24e3b95c44",
+  "judgeName": "sol",
+  "status": "graded",
+  "verdict": {
+    "correct": true,
+    "final_answer": "You booked the Airbnb **five months ago**.",
+    "hedged": false,
+    "guess": false,
+    "reason": "The selected answer matches the reference exactly in month count, and the surrounding explanation supports it without alternatives or an unsupported guess."
+  },
+  "rawVerdict": "{\"correct\":true,\"final_answer\":\"You booked the Airbnb **five months ago**.\",\"hedged\":false,\"guess\":false,\"reason\":\"The selected answer matches the reference exactly in month count, and the surrounding explanation supports it without alternatives or an unsupported guess.\"}",
+  "failureKind": null,
+  "timing": {
+    "startupToRpcReadyMs": 652.5917968247086,
+    "firstVisibleTextFromSpawnMs": 2528.6218128167093,
+    "firstThinkingFromSpawnMs": null,
+    "firstToolDeltaFromSpawnMs": null,
+    "promptToCompleteMs": 3028.0850019771606,
+    "providerTTFTMs": null,
+    "modelTurns": 1,
+    "toolBatches": 0,
+    "toolCalls": 0,
+    "userMessages": 1,
+    "processWallMs": 3712.2910539619625
+  },
+  "rpcOutcome": "completed",
+  "rc": 0,
+  "effortEvidence": {
+    "path": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/982b5123/attempts/01/effort-evidence.json",
+    "sha256": "1043dedf197051ff3e2d03c7f559a8b881135c8589af7007a4f680b8f24c9302",
+    "effort": "medium",
+    "source": "onPayload"
+  },
+  "tokens": {
+    "input": 1195,
+    "output": 58,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1253,
+    "cost": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    }
+  },
+  "judgeEvidence": {
+    "provider": "clp",
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "stopReason": "stop"
+  },
+  "seconds": 3.773529984988272,
+  "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/982b5123/attempts/01/judge-session.jsonl",
+  "sessionSha256": "66f5b55746290fc1caf7cc8a46d8286fb2c7747371e648eb1067029ae7d8da23",
+  "identity": "0340a810f9de8ed3e79ea4e00f5c9d6cf4dd1f3a3489d63230ffbdd8fab85874",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "graded",
+      "failureKind": null,
+      "session": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/coding-recall/e2e/lme16-en-sol-aggregation-prompt-20261006/judge-v2/sol/pi-restored-grep/982b5123/attempts/01/judge-session.jsonl",
+      "sessionSha256": "66f5b55746290fc1caf7cc8a46d8286fb2c7747371e648eb1067029ae7d8da23",
+      "seconds": 3.773529984988272
+    }
+  ]
+}
