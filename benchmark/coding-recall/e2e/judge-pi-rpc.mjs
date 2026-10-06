@@ -1,5 +1,5 @@
 // Generated evaluation model definitions contain no auth/header/baseUrl values.
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, chmodSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { main } from '../../sdk-rpc.mjs';
 
@@ -33,9 +33,25 @@ export async function configureJudgeModel({ modelRuntime, phase }) {
       const changed = observer ? await observer(payload, model) : undefined;
       const serialized = changed ?? payload;
       const effort = serialized?.reasoning_effort ?? serialized?.reasoning?.effort;
-      if (effort !== phase.effort) throw new Error('Serialized judge effort differs from requested tier');
+      if (effort !== phase.effort || model.provider !== phase.provider || model.id !== phase.model) {
+        throw new Error('Serialized judge provider/model/effort differs from requested selection');
+      }
       if (!sessionPath) throw new Error('Provider request requires explicit judge session');
-      writeFileSync(join(dirname(sessionPath), 'effort-evidence.json'), JSON.stringify({ effort, source: 'onPayload' }), { mode: 0o600 });
+      const directory = dirname(sessionPath);
+      let request = 1;
+      while (existsSync(join(directory, `wire-payload-${String(request).padStart(4, '0')}.json`))) request++;
+      const payloadFile = `wire-payload-${String(request).padStart(4, '0')}.json`;
+      // onPayload is the provider JSON body, not headers or credential-bearing request options.
+      writeFileSync(join(directory, payloadFile), JSON.stringify(serialized), { flag: 'wx', mode: 0o600 });
+      const wireFile = join(directory, 'wire-requests.jsonl');
+      appendFileSync(wireFile, JSON.stringify({ phase: 'judge', provider: model.provider, model: model.id,
+        api: model.api, effort, contextWindow: model.contextWindow, modelMaxTokens: model.maxTokens,
+        maxOutputTokens: serialized?.max_output_tokens ?? serialized?.max_completion_tokens ?? serialized?.max_tokens ?? null,
+        payloadFile, source: 'onPayload' }) + '\n', { mode: 0o600 });
+      chmodSync(wireFile, 0o600);
+      const effortFile = join(directory, 'effort-evidence.json');
+      writeFileSync(effortFile, JSON.stringify({ effort, source: 'onPayload' }), { mode: 0o600 });
+      chmodSync(effortFile, 0o600);
       return changed;
     },
   });

@@ -18,6 +18,8 @@ def _module(name, filename):
 common = _module("zh_report_common", "report.py")
 contract = _module("zh_report_judge_v2", "judge-v2.py")
 ARM = "pi-rawfts"
+CURRENT_ARMS = ('pi-native', 'pi-lite', 'pi-full')
+REUSED_ARMS = ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep', *CURRENT_ARMS)
 JUDGES = ("luna", "sol")
 TOOLS = ("history_recall", "history_grep", "history_expand")
 TOKENS = common.TOKEN_FIELDS
@@ -27,8 +29,8 @@ FTS_ERROR = re.compile(r"(?:fts5?\s*:\s*(?:syntax error|unterminated string)|FTS
 
 def manifest_arm(manifest):
     arms = manifest.get('arms', [ARM])
-    if arms not in ([ARM], ['pi-concepts'], ['pi-grep-fallback'], ['pi-restored-grep']):
-        raise ValueError('Report accepts only pi-rawfts, pi-concepts, pi-grep-fallback or pi-restored-grep')
+    if len(arms) != 1 or arms[0] not in (ARM, *REUSED_ARMS):
+        raise ValueError('Report requires one authorized LME16 arm')
     arm = arms[0]
     if manifest.get('identity', {}).get('arm', arm) != arm:
         raise ValueError('Manifest arm identity mismatch')
@@ -54,6 +56,8 @@ def reused_source(manifest):
         check_source_hash(filename, digest)
     previous = json.loads(path.read_text())
     language = 'en' if manifest['identity']['dataset'] == 'LME16-English' else 'zh'
+    if manifest_arm(manifest) in CURRENT_ARMS and language != 'en':
+        raise ValueError('Current arms require native English snapshots')
     if previous['fingerprint'] != source['fingerprint'] or (previous['identity'].get('dataset') != 'LME16-English' if language == 'en' else previous.get('arms') != [ARM]):
         raise ValueError('Snapshot source identity mismatch')
     expected = {'pi/' + qid for qid in manifest.get('selected', [])}
@@ -503,7 +507,7 @@ def load_report(root):
     selected = manifest.get("selected", manifest.get("selectedIds", list(questions)))
     selected = list(common.question_map(selected) or {})
     arm = manifest_arm(manifest)
-    reused = arm in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep')
+    reused = arm in REUSED_ARMS
     source_root = reused_source(manifest) if reused else None
     if reused and source_root is None:
         raise ValueError('Structured recall run requires immutable snapshotSource')
@@ -540,7 +544,7 @@ def load_report(root):
         per_question.append({'id': qid, 'question': question, 'answer': answer, 'judges': judged, 'compression': compression})
     judges = {label: {group: score([row["judges"][label] for row in per_question
                                   if group == "total" or row["question"].get("subset") == group],
-                                 ('unknown', 'inflight', 'pending', 'running', 'prepared') if arm == 'pi-restored-grep' else ('unknown', 'inflight'))
+                                 ('unknown', 'inflight', 'pending', 'running', 'prepared') if arm in ('pi-restored-grep', *CURRENT_ARMS) else ('unknown', 'inflight'))
                      for group in ("total", "dev8", "hard8")} for label in JUDGES}
     answers = [row["answer"] for row in per_question]
     metrics = {field: measure(a.get(field) for a in answers) for field in
@@ -550,7 +554,7 @@ def load_report(root):
         metrics[key] = {field: measure(a[key][field] for a in answers) for field in TOKENS}
     metrics["toolCalls"] = {tool: measure(a["retrieval"]["counts"][tool] for a in answers) for tool in TOOLS}
     resource = artifacts.json("resource.json")
-    if arm in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep'):
+    if arm in REUSED_ARMS:
         policy = manifest.get('identity', {}).get('resourcePolicy') or {}
         if (policy.get('maxConcurrentSessions') != 8 or policy.get('authorizedSessionCeiling') != 8
                 or policy.get('wholeRunMemoryMaxBytes') != 14 * 1024 ** 3
@@ -561,13 +565,13 @@ def load_report(root):
                 or resource.get('swapMaxBytes') != 0 or any(resource.get(key, 0) > 8 for key in
                     ('peakActiveQuestions', 'peakActiveRpcSessions', 'activeQuestions', 'activeRpcSessions'))):
             raise ValueError('Fallback native resource ceiling differs')
-    pending = ('missing', 'unknown', 'inflight', 'pending', 'running', 'prepared') if arm == 'pi-restored-grep' else ('missing', 'unknown', 'inflight')
+    pending = ('missing', 'unknown', 'inflight', 'pending', 'running', 'prepared') if arm in ('pi-restored-grep', *CURRENT_ARMS) else ('missing', 'unknown', 'inflight')
     complete = len(per_question) == 16 and all(row["answer"]["state"] not in pending and
                                          row["compression"]["state"] in ("complete", "failed") and
                                          all(j["status"] not in pending for j in row["judges"].values())
                                          for row in per_question)
     return {'task': manifest.get('identity', {}).get('task', 'RSM-ZH16-NATIVE-LIVE-20261005'), 'arm': arm, 'run': str(artifacts.root),
-            "state": "complete" if complete and not artifacts.issues else "incomplete", "manifestState": manifest.get("state"),
+            "state": "capacity-blocked" if manifest.get('state') == 'capacity-blocked' else "complete" if complete and not artifacts.issues else "incomplete", "manifestState": manifest.get("state"),
             "fingerprint": manifest.get("fingerprint"), "identity": manifest.get("identity"),
             "selected": selected, "selectedCount": len(selected), "expectedCount": 16,
             "denominators": {group: sum(q.get("subset") == group for q in (questions.get(qid, {}) for qid in selected)) for group in ("dev8", "hard8")},
@@ -577,7 +581,8 @@ def load_report(root):
             'notes': (['Active recall rejects TOKENIZATION_LOSS before search and zero tokens as EMPTY_ANALYSIS; no automatic literal/mixed rarity fallback. Independent regex history_grep and automatic locators remain enabled.'
                        if manifest.get('identity', {}).get('task') == 'RSM-ZH16-TOKEN-LOSS-REJECT-E2E-20261006' else 'Restored independent regex history_grep retains recall automatic literal/rarity fallback; internal scans are not model tool calls, and active calls and automatic locators are separate. Normal FTS zero hits are not broadened; score differences do not establish success or causality.'
                        if arm == 'pi-restored-grep' else 'Literal fallback routes zero-token or partly unindexable surfaces internally without adding a model tool call; pure FTS zero hits are not relaxed.'
-                       if arm == 'pi-grep-fallback' else 'Concepts changes both the structured recall interface and word-internal matching semantics versus rawfts; no cross-version BM25/score calibration or comparison.',
+                       if arm == 'pi-grep-fallback' else 'Current native arm loads no recall extension, tools, or locators; lite uses production grep/expand; full uses production defaults. Active history calls and automatic locators are separate.'
+                       if arm in CURRENT_ARMS else 'Concepts changes both the structured recall interface and word-internal matching semantics versus rawfts; no cross-version BM25/score calibration or comparison.',
                        'This round makes zero new compression calls; immutable source build costs are listed separately.'] if source_root else []) + ['No provider/config/profile/source-code reads.',
                       "Missing/failed verdicts are unscored, never wrong; null means unknown.",
                       "All-attempt totals never fall back to final-attempt totals.",

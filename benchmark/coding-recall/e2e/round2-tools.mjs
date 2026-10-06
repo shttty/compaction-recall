@@ -54,6 +54,28 @@ function canonicalPath(path) {
   }
 }
 
+// Native SDK observation uses this directly, without registering any extension.
+export function saveNativeToolEvidence(payload, { evidencePath, expectedPath }) {
+  if (typeof evidencePath !== 'string' || !evidencePath) throw new Error('Native tool evidence requires a path');
+  mkdirSync(dirname(resolve(evidencePath)), { recursive: true, mode: 0o700 });
+  if (expectedPath && canonicalPath(evidencePath) === canonicalPath(expectedPath)) {
+    throw new Error('Native tool evidence must not overwrite its expected preflight file');
+  }
+  if (payload?.tools !== undefined && !Array.isArray(payload.tools)) throw new Error('Native serialized tools are invalid');
+  const serialized = ordered((payload?.tools ?? []).map(tool => definition(tool.function ?? tool)), []);
+  const expected = expectedPath ? JSON.parse(readFileSync(expectedPath, 'utf8')) : undefined;
+  if (expected && (!isDeepStrictEqual(expected.registered, []) || !isDeepStrictEqual(expected.serialized, serialized))) {
+    throw new Error('Native tools differ from preflight');
+  }
+  const descriptor = openSync(evidencePath, 'w', 0o600);
+  try {
+    writeFileSync(descriptor, JSON.stringify({ registered: [], serialized,
+      source: 'before_provider_request', observationSource: 'onPayload', descriptionsPreserved: true,
+      expectedMatched: expected ? true : null }));
+    fsyncSync(descriptor);
+  } finally { closeSync(descriptor); }
+}
+
 export function withToolEvidence(pi, { evidencePath, expectedPath, stopAfterSerialization = false, expectedTools = TOOL_NAMES }) {
   if (typeof evidencePath !== 'string' || !evidencePath || typeof stopAfterSerialization !== 'boolean') {
     throw new Error('Round2 tool evidence requires a path and boolean stopAfterSerialization');

@@ -5,6 +5,12 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+if (process.argv[2] === '--three-arms') {
+  if (process.argv.length !== 5) throw new Error('Usage: lme-zh-smoke.mjs --three-arms FROZEN_CANDIDATE NEW_OUTPUT');
+  const { runThreeArmsSmoke } = await import('../../../test/lme-three-arms-fixture.mjs');
+  await runThreeArmsSmoke(process.argv[3], process.argv[4]);
+  process.exit(0);
+}
 const [candidate, output] = process.argv.slice(2);
 if (candidate === '--help' && !output) {
   console.log('Usage: lme-zh-smoke.mjs FROZEN_CANDIDATE NEW_OUTPUT');

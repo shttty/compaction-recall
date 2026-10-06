@@ -355,7 +355,7 @@ def safe_identity(identity):
 def resource_table(original, manifest, resource, per_question):
     phases = {}
     old_answers, old_compressions = zip(*(old_resources(q['oldMetrics'], Path(manifest['identity']['originalRun'])) for q in per_question))
-    concepts = manifest['identity'].get('arm') in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep')
+    concepts = manifest['identity'].get('arm') in old_report.REUSED_ARMS
     compression_stage = 'SOURCE historical compression' if concepts else 'OLD compression'
     answer_stage = 'CURRENT answers' if concepts else 'OLD answers'
     phases[compression_stage] = phase_summary(old_compressions)
@@ -446,11 +446,11 @@ def load_report(root):
     arm = old_report.manifest_arm(original_manifest)
     if identity.get('arm', ARM) != arm:
         raise ValueError('Supplement arm identity differs')
-    if arm in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep'):
+    if arm in old_report.REUSED_ARMS:
         policy = identity.get('resourcePolicy', {})
         if policy.get('questionWorkers') != 8 or policy.get('providerConcurrencyCeiling') != 8:
             raise ValueError('Structured recall supplement requires eight-worker resource policy')
-        if arm in ('pi-grep-fallback', 'pi-restored-grep') and (policy.get('memoryMaxBytes') != 14 * 1024 ** 3 or policy.get('swapMaxBytes') != 0):
+        if arm in ('pi-grep-fallback', 'pi-restored-grep', *old_report.CURRENT_ARMS) and (policy.get('memoryMaxBytes') != 14 * 1024 ** 3 or policy.get('swapMaxBytes') != 0):
             raise ValueError('Fallback supplement requires one 14GiB zero-swap scope')
         old_report.reused_source(original_manifest)
         snapshot_source = original_manifest['identity']['snapshotSource']
@@ -511,7 +511,7 @@ def load_report(root):
         answer = read_json(source)
         check_identity(answer, qid, arm=arm)
         check_session(original_root, answer)
-        failed = arm in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep') and answer.get('outcome') not in ('answered', 'missing', 'unknown', 'inflight', 'pending', 'running', None)
+        failed = arm in old_report.REUSED_ARMS and answer.get('outcome') not in ('answered', 'missing', 'unknown', 'inflight', 'pending', 'running', None)
         if (answer.get('answer') != item['model_answer'] or
                 (not failed and answer.get('outcome') != 'answered') or
                 item.get('answerFailure') != (answer['outcome'] if failed else None)):
@@ -535,7 +535,7 @@ def load_report(root):
                'oldMetrics': old_rows[qid], 'strict': {}, 'scores': {}}
         if old_rows[qid]['answer'].get('answer') != item['model_answer']:
             raise ValueError('Original aggregate answer differs')
-        if arm in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep'):
+        if arm in old_report.REUSED_ARMS:
             compression = old_rows[qid]['compression']
             if compression.get('reused') is not True or compression.get('sourceRun') != snapshot_source['run']:
                 raise ValueError('Aggregate compression source differs')
@@ -601,11 +601,11 @@ def load_report(root):
     tables = {kind: {label: {group: quality([q[kind][label] for q in per_question if group == 'total' or q['subset'] == group], kind == 'scores')
                            for group in GROUPS} for label in JUDGES} for kind in ('strict', 'scores')}
     resource = read_json(root / 'resource.json') if (root / 'resource.json').is_file() else None
-    if arm in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep') and resource is not None:
+    if arm in old_report.REUSED_ARMS and resource is not None:
         if any(resource.get(key) != 8 for key in ('questionWorkers', 'providerConcurrencyCeiling')) or any(
                 resource.get(key, 0) > 8 for key in ('peakActiveQuestions', 'peakActiveProviderRequests', 'activeQuestions', 'activeProviderRequests')):
             raise ValueError('Structured recall grading resource ceiling differs')
-        if arm in ('pi-grep-fallback', 'pi-restored-grep') and (resource.get('memoryMaxBytes') != 14 * 1024 ** 3 or resource.get('swapMaxBytes') != 0):
+        if arm in ('pi-grep-fallback', 'pi-restored-grep', *old_report.CURRENT_ARMS) and (resource.get('memoryMaxBytes') != 14 * 1024 ** 3 or resource.get('swapMaxBytes') != 0):
             raise ValueError('Fallback grading memory ceiling differs')
     verification = read_json(root / 'verification.json') if (root / 'verification.json').is_file() else None
     full_matrix = len(selected) == 16 and all(sum(q['subset'] == group for q in per_question) == 8 for group in GROUPS[:2])
@@ -615,10 +615,10 @@ def load_report(root):
     verified = verification is not None and verification.get('state') == 'verified' and verification.get('originalChangedFiles') == [] and verification.get('inputsChangedFiles') == []
     if verification is not None and (verification.get('newCompressionCalls') != 0 or verification.get('newAnswerCalls') != 0 or verification.get('candidateLoaded') is not False):
         raise ValueError('Supplement verification contradicts immutable reuse')
-    complete = full_matrix and (terminal_matrix if arm in ('pi-grep-fallback', 'pi-restored-grep') else all_scored) and verified and manifest.get('state') == 'complete'
+    complete = full_matrix and (terminal_matrix if arm in ('pi-grep-fallback', 'pi-restored-grep', *old_report.CURRENT_ARMS) else all_scored) and verified and manifest.get('state') == 'complete'
     return {'schemaVersion': 1, 'task': identity['task'], 'arm': arm, 'run': str(root), 'originalRun': str(original_root),
             'fingerprint': manifest['fingerprint'], 'originalFingerprint': identity['originalFingerprint'],
-            'state': 'complete' if complete else 'incomplete', 'manifestState': manifest.get('state'),
+            'state': 'capacity-blocked' if manifest.get('state') == 'capacity-blocked' else 'complete' if complete else 'incomplete', 'manifestState': manifest.get('state'),
             'selected': selected, 'selectedCount': len(selected), 'expectedCount': 16,
             'identity': identity, 'originalIdentity': safe_identity(original_manifest['identity']),
             'originalSnapshots': {key: {field: value.get(field) for field in ('path', 'sha256', 'language')}
@@ -629,8 +629,9 @@ def load_report(root):
             'notes': (['Active recall rejects TOKENIZATION_LOSS before search and zero tokens as EMPTY_ANALYSIS; no automatic literal/mixed rarity fallback. Independent regex history_grep and automatic locators remain enabled.'
                        if identity.get('task') == 'RSM-ZH16-TOKEN-LOSS-REJECT-E2E-20261006' else 'Restored independent regex history_grep retains recall automatic literal/rarity fallback; internal scans are not model tool calls, and active calls and automatic locators are separate. Normal FTS zero hits are not broadened; score differences do not establish success or causality.'
                        if arm == 'pi-restored-grep' else 'Literal fallback routes zero-token or partly unindexable surfaces internally; active history calls and automatic locators are separate.'
-                       if arm == 'pi-grep-fallback' else 'Concepts changes both the structured recall interface and word-internal matching semantics versus rawfts; no cross-version BM25/score calibration or comparison.',
-                       'Source compression is historical reuse; this round generated new answers and strict judgments, with zero new compression calls.'] if arm in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep') else []) + ['Strict correctness comes only from original strict v2 verdicts, never score >=8.',
+                       if arm == 'pi-grep-fallback' else 'Current native arm loads no recall extension, tools, or locators; lite uses production grep/expand; full uses production defaults. Active history calls and automatic locators are separate.'
+                       if arm in old_report.CURRENT_ARMS else 'Concepts changes both the structured recall interface and word-internal matching semantics versus rawfts; no cross-version BM25/score calibration or comparison.',
+                       'Source compression is historical reuse; this round generated new answers and strict judgments, with zero new compression calls.'] if arm in old_report.REUSED_ARMS else []) + ['Strict correctness comes only from original strict v2 verdicts, never score >=8.',
                       'Quality denominators exclude failure/missing/pending; these are never zero scores or wrong answers.',
                       'Coverage denominator = selected; accuracy/mean denominator = valid verdicts; effective maximum = 10 × valid scores.',
                       'All results are read offline after judging; no report evidence is supplied to judge prompts.',

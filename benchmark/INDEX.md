@@ -36,6 +36,10 @@ PYTHONDONTWRITEBYTECODE=1 python3 benchmark/coding-recall/e2e/run-swechat.py \
 
 The existing model flow requires one shared `MemoryMax=14G`, `MemorySwapMax=0` cgroup and at most eight RPC sessions. Missing required external input paths fail before runtime/cgroup startup. No new downloader, runner platform, path shim or runtime copy was added.
 
+Current English comparisons use `--arm pi-native`, `--arm pi-lite` or `--arm pi-full` with the same frozen native snapshot source, an immutable complete candidate archive whose entry is `src/index.ts`, and `--workers 8`. Native loads no extension; lite/full load the real production entry with an isolated formal mode file. The three existing per-arm flows run sequentially in one shared outer scope, not three eight-session pools. `--english-answer-soft-estimate` leaves provider request budgets unchanged and makes chars/4 diagnostic-only; capacity rejection stops new scheduling without retrying the rejection. Historical arm names retain their historical meanings.
+
+Before authorized model calls, `node benchmark/coding-recall/e2e/lme-zh-smoke.mjs --three-arms "$CANDIDATE_ROOT" "$NEW_SMOKE_OUT"` checks real SDK dispatch, 0/2/3 tools, automatic locators only in full, and native production tool execution with synthetic profiles and blocked networking. Observers save serialized tools, current-entry registration/hash, automatic context, model/effort and private provider JSON bodies outside the repository; they never record credential headers.
+
 [Retrieval contract](methods/RETRIEVAL_CONTRACT.md) documents `retrieval-group1.mjs`, `retrieval-group2.py`, `retrieval-session.mjs` and their external data/gold/engine/config/output inputs. Original strategy comparison engines are explicitly under `archive/prototype/` and `archive/benchmark/`; their algorithms are not adopted by production. Shared score accounting counts either explicitly false structured-input or legacy-query comparison as a mismatch, without double-counting a call.
 
 ## Verification

@@ -1,6 +1,6 @@
 """Grade immutable Chinese LME16 answers; reuse the existing prompt and SDK judge."""
 import argparse
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -17,6 +17,8 @@ judge = common.module('supplement_judge_transport', HERE / 'rejudge-v2.py')
 scorer = common.scorer
 MEMORY_MAX = 14 * 1024 ** 3
 LABELS = ('luna', 'sol')
+CURRENT_ARMS = ('pi-native', 'pi-lite', 'pi-full')
+REUSED_ARMS = ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep', *CURRENT_ARMS)
 
 
 def now():
@@ -49,9 +51,11 @@ def load_inputs(original):
     language = 'en' if manifest['identity']['dataset'] == 'LME16-English' else 'zh'
     selected = manifest['selected']
     arms = manifest.get('arms')
-    if len(selected) != 16 or len(set(selected)) != 16 or arms not in (['pi-rawfts'], ['pi-concepts'], ['pi-grep-fallback'], ['pi-restored-grep']):
+    if len(selected) != 16 or len(set(selected)) != 16 or not isinstance(arms, list) or len(arms) != 1 or arms[0] not in ('pi-rawfts', *REUSED_ARMS):
         raise ValueError('Requires the exact original sixteen answers and an authorized arm')
     arm = arms[0]
+    if arm in CURRENT_ARMS and language != 'en':
+        raise ValueError('Current arms require native English snapshots')
     originals = {}
     for filename in ('manifest.json', 'REPORT.md', 'FINAL.json', 'aggregate.json', 'answer-ledger.json', 'resource.json'):
         path = original / filename
@@ -82,7 +86,7 @@ def load_inputs(original):
         reference = read_json(directory / 'answer.json')['answer']
         source = original / 'results' / arm / qid / 'result.json'
         answer = read_json(source)
-        failed = arm in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep') and answer.get('outcome') not in ('answered', 'missing', 'unknown', 'inflight', 'pending', 'running', None)
+        failed = arm in REUSED_ARMS and answer.get('outcome') not in ('answered', 'missing', 'unknown', 'inflight', 'pending', 'running', None)
         if (bilingual['question'] != question['question'] or (bilingual['question'] if language == 'en' else bilingual['question_en']) != english['question']
                 or reference != question['answer'] or answer['question_id'] != qid
                 or answer['arm'] != arm or (not failed and answer.get('outcome') != 'answered')
@@ -111,8 +115,8 @@ def load_inputs(original):
 def prepare(original, workers=16):
     original_manifest, items, original_hashes, input_hashes = load_inputs(original)
     arm = original_manifest['arms'][0]
-    if type(workers) is not int or workers < 1 or workers > 16 or (arm in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep') and workers != 8):
-        raise ValueError('Concept grading requires exactly eight workers; rawfts permits 1–16')
+    if type(workers) is not int or workers < 1 or workers > 16 or (arm in REUSED_ARMS and workers != 8):
+        raise ValueError('Reused-snapshot grading requires exactly eight workers; rawfts permits 1–16')
     output = original / 'grade-1to10'
     output.mkdir(mode=0o700, exist_ok=True)
     freeze = output / 'initial-freeze.json'
@@ -153,7 +157,7 @@ def prepare(original, workers=16):
                 'retryPolicy': {'maximumAttempts': 3, 'retryOnly': 'provider-error', 'delaysSeconds': [2, 4]},
                 'inputsSha256': e.object_sha(items), 'newCompressionCalls': 0, 'newAnswerCalls': 0,
                 'candidateLoaded': False}
-    if arm in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep'):
+    if arm in REUSED_ARMS:
         identity['arm'] = arm
         identity['task'] = original_manifest['identity']['task']
         source = original_manifest['identity']['snapshotSource']
@@ -199,7 +203,7 @@ def describe(config_path, expected):
     return descriptor
 
 
-def grade_one(item, label, config, selected, output, fingerprint, rpc_runner):
+def grade_one(item, label, config, selected, output, fingerprint, rpc_runner, capacity_stop=None):
     directory = output / 'results' / label / item['question_id']
     directory.mkdir(parents=True, exist_ok=True)
     identity = e.object_sha({'run': fingerprint, 'judgeName': label, 'arm': item['arm'],
@@ -215,6 +219,11 @@ def grade_one(item, label, config, selected, output, fingerprint, rpc_runner):
             record = judge.judge_one(item, label, config, selected, folder, fingerprint + '/' + str(number),
                                      rpc_runner=rpc_runner, verdict_parser=lambda text, answer: scorer.parse_score(text))
             attempts.append({'attempt': number, 'status': record['status'], 'path': str(folder / 'result.json')})
+            capacity = common.capacity_error(record)
+            if capacity:
+                if capacity_stop:
+                    capacity_stop(item, label, capacity)
+                break
             if record['status'] != 'provider-error' or number == 3:
                 break
             time.sleep(2 ** number)
@@ -250,10 +259,24 @@ def run(original, *, workers=16, rpc_runner=None, scope=None, descriptor=None):
                 grade_one(item, label, configs[label], selected[label], output, manifest['fingerprint'],
                           lambda *a, **k: (_ for _ in ()).throw(RuntimeError('Completed resume cannot call provider')))
         return manifest
+    if manifest['state'] == 'capacity-blocked':
+        verify_files(manifest['identity']['originalFilesSha256'])
+        verify_files(manifest['identity']['inputFilesSha256'])
+        verify_files(manifest['identity'].get('snapshotSourceFilesSha256', {}))
+        reporter = common.module('supplement_report', HERE / 'lme-grade-report.py')
+        reporter.write_report(output)
+        return manifest
     manifest['descriptors'] = {label: (descriptor or describe)(configs[label], selected[label]) for label in LABELS}
     lock = threading.RLock()
     active_questions, provider_active, peak_questions, peak_providers = set(), 0, 0, 0
     records = []
+    stopped = threading.Event()
+    def capacity_stop(item, label, message):
+        with lock:
+            stopped.set()
+            manifest.setdefault('capacityBlock', {'question_id': item['question_id'], 'judgeName': label,
+                                                 'error': message})
+            manifest['state'] = 'capacity-blocked'
     for item in items:
         for label in LABELS:
             path = output / 'results' / label / item['question_id'] / 'result.json'
@@ -273,7 +296,7 @@ def run(original, *, workers=16, rpc_runner=None, scope=None, descriptor=None):
                         'peakActiveProviderRequests': peak_providers, 'activeProviderRequests': provider_active,
                         'startedAt': manifest['startedAt'], 'finishedAt': manifest.get('finishedAt'),
                         'wallSeconds': manifest.get('wallSeconds')}
-            if manifest['identity'].get('arm') in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep'):
+            if manifest['identity'].get('arm') in REUSED_ARMS:
                 resource['memoryPeakScope'] = 'Shared cumulative outer scope including native answer/strict and graded sessions; not an isolated graded-stage increment'
             e.write_json(output / 'resource.json', resource)
     def observed_rpc(command, env, directory, **kwargs):
@@ -302,7 +325,12 @@ def run(original, *, workers=16, rpc_runner=None, scope=None, descriptor=None):
             persist()
         try:
             for label in LABELS:
-                result = grade_one(item, label, configs[label], selected[label], output, manifest['fingerprint'], observed_rpc)
+                if stopped.is_set():
+                    break
+                result = grade_one(item, label, configs[label], selected[label], output, manifest['fingerprint'], observed_rpc, capacity_stop)
+                capacity = common.capacity_error(result)
+                if capacity:
+                    capacity_stop(item, label, capacity)
                 with lock:
                     records[:] = [r for r in records if (r['question_id'], r['judgeName']) != (qid, label)]
                     records.append(result)
@@ -322,17 +350,27 @@ def run(original, *, workers=16, rpc_runner=None, scope=None, descriptor=None):
     print('ZH16_GRADE_SCOPE_READY ' + json.dumps({'fingerprint': manifest['fingerprint'], 'scope': scope.name,
                                                 'questionWorkers': workers, 'providerCeiling': workers}), flush=True)
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        futures = [pool.submit(question_worker, item) for item in items]
-        for future in as_completed(futures): future.result()
+        remaining = iter(items)
+        futures = {pool.submit(question_worker, item) for item in [next(remaining) for _ in range(min(workers, len(items)))]}
+        while futures:
+            done, futures = wait(futures, return_when=FIRST_COMPLETED)
+            for future in done:
+                future.result()
+            if not stopped.is_set():
+                for _ in done:
+                    item = next(remaining, None)
+                    if item is None:
+                        break
+                    futures.add(pool.submit(question_worker, item))
     verify_files(manifest['identity']['originalFilesSha256'])
     verify_files(manifest['identity']['inputFilesSha256'])
     verify_files(manifest['identity'].get('snapshotSourceFilesSha256', {}))
-    manifest['state'] = 'complete'
+    manifest['state'] = 'capacity-blocked' if stopped.is_set() else 'complete'
     manifest['finishedAt'] = now()
     manifest['wallSeconds'] = time.monotonic() - started
     manifest['outcomes'] = {label: {status: sum(r['judgeName'] == label and r['status'] == status for r in records)
                                   for status in (('graded', 'judge-error', 'provider-error', 'answer-failure-not-scored')
-                                                 if manifest['identity'].get('arm') in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep') else ('graded', 'judge-error', 'provider-error'))} for label in LABELS}
+                                                 if manifest['identity'].get('arm') in REUSED_ARMS else ('graded', 'judge-error', 'provider-error'))} for label in LABELS}
     persist()
     e.write_json(output / 'verification.json', {'state': 'verified',
                  'originalFilesChecked': len(manifest['identity']['originalFilesSha256']),
@@ -350,7 +388,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--original', type=Path, required=True, help='Completed immutable Chinese16 run')
     parser.add_argument('--prepare-only', action='store_true', help='Freeze hashes/configuration without provider calls')
-    parser.add_argument('--workers', type=int, default=16, help='Question/RPC ceiling; concepts requires 8')
+    parser.add_argument('--workers', type=int, default=16, help='Question/RPC ceiling; reused-snapshot arms require 8')
     args = parser.parse_args()
     if args.prepare_only:
         output, manifest, *_ = prepare(args.original.resolve(), workers=args.workers)

@@ -1,0 +1,2781 @@
+{
+  "schemaVersion": 1,
+  "run": "lme16-current-three-arms-20261006",
+  "date": "2026-10-06",
+  "dataset": "LongMemEval_M",
+  "language": "en",
+  "selection": "DEV8 + hard8-turn-label-v2",
+  "candidate": {
+    "candidateCommit": "33667b3f0a4715c5848ec2ad10eaa60add45fc75",
+    "candidateArchiveSha256": "03b662c2f069625e0b30ec27bab656ac861739919fd80d87d2da113cee931d11",
+    "candidateEntrySha256": "f04ab577ec620b29e3c1c34df925e6314f6ae57e7c4816ebcc0aa31b1d0b3d16",
+    "candidateRuntimeClosureSha256": "20613af26fee67b258c8066c01e863b77364e7c142e143603cfe701dbdfb88dd",
+    "packageLockSha256": "134dba0c9421c7f3ee0d452522347b7fab80f744d6e62533449175c2ace41087",
+    "sdkVersion": "1.0.0",
+    "nodeVersion": "v24.18.0"
+  },
+  "answer": {
+    "provider": "clp",
+    "model": "gpt-6-luna",
+    "effort": "high"
+  },
+  "judges": {
+    "luna": {
+      "provider": "clp",
+      "model": "gpt-6-luna",
+      "effort": "xhigh"
+    },
+    "sol": {
+      "provider": "clp",
+      "model": "gpt-6.1-sol",
+      "effort": "medium"
+    }
+  },
+  "selected": [
+    {
+      "id": "778164c6",
+      "subset": "dev8",
+      "questionFileSha256": "4d306274ef696ee3f6bb3facf0cf527030b98a8a71160b5f1c4dcc5c630990ed",
+      "questionTextSha256": "4e969c339b5bc4ff60a282410eda219174c285365ce5862f34d173ea2cfbccb8",
+      "referenceFileSha256": "83f7afe4cf30ec34beb8389d298af2d99b052491aa021d3edc1adef3d821d49b",
+      "referenceValueSha256": "c0c3972fa3756b94584c06825b030d7cd6d251bc6f13d9ca477139fd457e32d4",
+      "snapshotSha256": "cbe5043259fcd0805e37b11b7a7eae3323ef4005a194d9c82ed742937d3e9e1c"
+    },
+    {
+      "id": "51b23612",
+      "subset": "dev8",
+      "questionFileSha256": "f82a3557f33d63eb629e958f4b0af0900211dd5b1c26916de6fd3fcaaee1af22",
+      "questionTextSha256": "fff4e74041437e8b9e56cfa7ca2c231da5bdb54fcfb7aefb6ac1597be7f6953d",
+      "referenceFileSha256": "5c989ca3388a4a1d9209e5b77c0dd12718a09cbea05abce17a1895d1017d483a",
+      "referenceValueSha256": "a762f57d81c0935bfa77ac9ad559d04402ede6efbd774fd20d03356cd1df0dd6",
+      "snapshotSha256": "3fab22939e41c881e64d9ed3f734ef40fd9c9fc8aedc0c1b9ceefb1c6731bcb1"
+    },
+    {
+      "id": "ceb54acb",
+      "subset": "dev8",
+      "questionFileSha256": "30455383abd4ba29f02c073465fbd02ec309c4d28e18e783d82305d3a9db7b4b",
+      "questionTextSha256": "25396c5a5f1236474296c41f31b30a27f990a7d289695b94cbf5ad3bf738f294",
+      "referenceFileSha256": "450cbd8d91ec32f5993b2b0da20f364c379da95077d8724896754e0c687f4231",
+      "referenceValueSha256": "5b0a5ff0584744d8aa930e82f275377594ff75a28385663f37142762eb34e969",
+      "snapshotSha256": "0738f5feb673cb790086b527ed30ae72d509b22f0446a0ea29816edb7656cf8b"
+    },
+    {
+      "id": "577d4d32",
+      "subset": "dev8",
+      "questionFileSha256": "197cb1991209405c0aa4ffc42fb9902c22cd246cc855499a8f5c5f26e55b29f0",
+      "questionTextSha256": "c053b4b871008fa79e72ca6d196b3745f9abd599c459dec1df945e7bd7bcd090",
+      "referenceFileSha256": "a2e162ac4ee04fa3c2f4068510de895899324058804aa5eea63f13f88c666ff8",
+      "referenceValueSha256": "51442f12bf9f726e207ceb52d9ee3f0a19c64ef04a3ed4be7c389f1813cae531",
+      "snapshotSha256": "21a39f38235cd8af8caba7db6e13a5c34f6698a67ac03c8dc3dd588d3db44b3b"
+    },
+    {
+      "id": "3d86fd0a",
+      "subset": "dev8",
+      "questionFileSha256": "55dfd1dec51476bf9faf575d6150d8009a6589ed3d1d13024811da13cf7cee59",
+      "questionTextSha256": "fc86aebf8bc85af0f8377de8eddc404e61f277d0f0ac17e05de95f7dc5aa7f98",
+      "referenceFileSha256": "32298091d970bd2d4027b93acf774ea49b5e5c6cd8eabf09c81373297d0e7f6e",
+      "referenceValueSha256": "e61b3737e38e57767a76b8c281a0ad71767e0aae4f8a55568435b7501d9e32a0",
+      "snapshotSha256": "8cfd753c8dc6b54a90e3b62dbd93535d3073559b9461ce14c3bbf0a84d310300"
+    },
+    {
+      "id": "15745da0",
+      "subset": "dev8",
+      "questionFileSha256": "50a0737d524fb6955d2d695700b79927c334dca9f9169ddea167feecaecacebd",
+      "questionTextSha256": "999eecaa8d8c7c47f673cbc1b7735a05db740aea58e8a9d490482f3d048d57bf",
+      "referenceFileSha256": "15a4a9b36dd993e84bd3f271086ff83a3ce0478b7f838262f0818671eec9b6cd",
+      "referenceValueSha256": "f9c12b2a4d76720711fd27d7873945c44ffd3081debeab063b6179f244ebd8fb",
+      "snapshotSha256": "1b12bb677d50d03d764b80fcc949a00dfd8ca5febccf1f77b2f23593165ccb0e"
+    },
+    {
+      "id": "gpt4_65aabe59",
+      "subset": "dev8",
+      "questionFileSha256": "ad8df969a5e15bfdeb180e9b4c908c319c64de8f4ccee07d66fde77612f291da",
+      "questionTextSha256": "3c50fa04be77e4a9ef6f5ea02901cf2deec8318b15c74dbeeaddd679de5a3b79",
+      "referenceFileSha256": "a3e9c9b1292c5c54cc52bb3a3c109049604ab70e56257ac5d9b58684de7092ff",
+      "referenceValueSha256": "450d75ed274fb454dfab0e4d362b270d3227a6dc8b81d5173959f55b0d38c82e",
+      "snapshotSha256": "ac6c239c932dd1bef71eef4195bcc4779fb2a6e706b4a6a1327a7b27ff969bb9"
+    },
+    {
+      "id": "982b5123",
+      "subset": "dev8",
+      "questionFileSha256": "665ab4ddff1baeeb36a5d62f59bfa0d1a94a0657ed5f6288a88c2fdb3f0ec578",
+      "questionTextSha256": "0b8bdf62d5bbf6349f9ef09c95eba7c28deb82cfc9e1fe71b2e1da173eafd7f8",
+      "referenceFileSha256": "05f19426651c336cb4260839205212026b5d0943e98a67e6e22315088602bd2d",
+      "referenceValueSha256": "543bc13452baf99729cb689271aab5998df256f8d6571d6c0e7a36621992e910",
+      "snapshotSha256": "b0207314e6e35c7ed8350252e122a36cdebfa74d1dbfc1f8ac27d9949557707a"
+    },
+    {
+      "id": "gpt4_7fce9456",
+      "subset": "hard8",
+      "questionFileSha256": "2d351de8e29a7c5a62ce59dd38aaa5cbd8a7e6485145ec1a7dcfbcaa7bf0a1b7",
+      "questionTextSha256": "6b83a0eb387030db92616653cee01f00ccf23a124114f1787e2caa55f276acde",
+      "referenceFileSha256": "04eed3e0224c322801d7f86be871b340e6e8229fc7ed786c36221885ce7b37aa",
+      "referenceValueSha256": "259af4ae5a9b7d8b2f70973bfee27eac9e35766c88cfe2aa5c0b72438ec26e1b",
+      "snapshotSha256": "37b0b80273a9eb4510f73ed7e25e17c5dd0f9d1ee8de982d3425d4483ec2870e"
+    },
+    {
+      "id": "gpt4_a1b77f9c",
+      "subset": "hard8",
+      "questionFileSha256": "019e6c6b6130b5cf1a0fba74962b497f2839b0012e1ca1296f7cb1512262bcee",
+      "questionTextSha256": "ba5b25b439870544b9dabe6e6659072c77977c48dad2c70a1e21b435e794febf",
+      "referenceFileSha256": "dd9ed1ac04510ac9326a0145cc33b4ba947293d9ca41ab4beaf5c878678fe9aa",
+      "referenceValueSha256": "d9219e6d61ee42ea85cb51c10e8b707864ce87b0e35183df07b643a1dc29c5f1",
+      "snapshotSha256": "0f188e45c4acf50bad6eaf8241b83b027809471aa75c4c3ebd3ac79a6a4ab745"
+    },
+    {
+      "id": "28dc39ac",
+      "subset": "hard8",
+      "questionFileSha256": "56a18a85d3f09e7c6f1a358463a401ab8758cb21a5d195c1ad936bb6866d9141",
+      "questionTextSha256": "161cd4c94dcf095534b992d5ecdfa28de7c78e6e87e2e170bd429d056e643788",
+      "referenceFileSha256": "1b4ae2ffe8b0c887940a4e799beaa68da240d9b390dde214d68d76f80991091f",
+      "referenceValueSha256": "7419c5e2fb31d04c4e581381afbe0327aaee1675beb426464b9df79315f76315",
+      "snapshotSha256": "d4f3fe4363ed7149f7cddecbf0e03f1a421bcb20bdc5bf66fa9a282b4cb1f7fd"
+    },
+    {
+      "id": "gpt4_15e38248",
+      "subset": "hard8",
+      "questionFileSha256": "c8cc7f0fd51d0145cfb9552b42b533488eda704717c9eec1715bdfc26db01cfe",
+      "questionTextSha256": "3b61483b1e72e659ecbc31c313e07011321a29cfb34a30389dfe36c4a2eef1fd",
+      "referenceFileSha256": "813d6ae6f14ead48d2da03f3ac1c57de6eeb3fa64ba351792adc2a30d8131bfe",
+      "referenceValueSha256": "2bf175f9655e7bb7357b9f0a7c6051465a5ae701104ffe741b98e852c0e4d460",
+      "snapshotSha256": "59ee6dee0c59e262ed91d5d3a984681658b7cb50ffe9e6e86c242a656ead5488"
+    },
+    {
+      "id": "6d550036",
+      "subset": "hard8",
+      "questionFileSha256": "97e585c2a01a33caebdb33f7c4d2858927869fe1609bcc7f9457a2eadbe66ee4",
+      "questionTextSha256": "41e549b7457aa21fc550ff42a20a09e5fcdda793771ca86d0d7a8f198391e0f5",
+      "referenceFileSha256": "9b897b8c2dfae9a0d3129e54088793d0af681cc0a697c7e31bd7226fb3e97edb",
+      "referenceValueSha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
+      "snapshotSha256": "4e2355ccd0d03f55cde95934bff1e143d3b28e69ba01918e108067112c6b6620"
+    },
+    {
+      "id": "2ce6a0f2",
+      "subset": "hard8",
+      "questionFileSha256": "6d8f1ee77063ea4ca262a9efdab263f82e93914f0d06a47d42379ecca78e418f",
+      "questionTextSha256": "2872c253d9443c036cd7ddb8b3ffcb2432e234dda7300df32b53d17ab3869b26",
+      "referenceFileSha256": "35bb159f81806b51f78697fa8f10f09d48688481fabb18aadc8dbc9df390b47e",
+      "referenceValueSha256": "4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a",
+      "snapshotSha256": "9b6caf8484927006fdb493c80116eb6000c3d3ffa4bfbf97d5c04b5ce410afec"
+    },
+    {
+      "id": "9d25d4e0",
+      "subset": "hard8",
+      "questionFileSha256": "372f03027ff54df47d287c6e2b7fed68d3fa367171ed5c38870529df8df736b3",
+      "questionTextSha256": "f5c459fd0e7be84bb90b570d7c368ac4eb76731c6285dfb681d0b10a57d2d3af",
+      "referenceFileSha256": "f55d6927773d5d5169ce3f84b139c9a7684faf993a0e2afa25bb9edccdd49b63",
+      "referenceValueSha256": "4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce",
+      "snapshotSha256": "4b5e6d526e1147f0d6826cb285227ca71d24e80ee77b0f59ac1cf446b26877ec"
+    },
+    {
+      "id": "gpt4_731e37d7",
+      "subset": "hard8",
+      "questionFileSha256": "91c41e77c793a8400777cc3f4ebe0121cd8862bc29e8931cd09cdae4ef8d30cf",
+      "questionTextSha256": "e6db3672e8fb9388085e499f11d84ffe28b0b66c48855bb83d5cb552f5ba0540",
+      "referenceFileSha256": "f516d50bc5a58629fee0a9623014af999b15dd7396bc8cba2c725c31cfa15850",
+      "referenceValueSha256": "a94b870a89a09ca057dbae29d01b3828481467d2e76c1f0169e66c0bef7fd20c",
+      "snapshotSha256": "26aca92bdf0752149dd68d9e4bd5f5806a315010a632be00e31be75baad2d9fd"
+    }
+  ],
+  "arms": {
+    "pi-native": {
+      "state": "complete",
+      "strict": {
+        "luna": {
+          "dev8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "correct": 0,
+            "wrong": 8
+          },
+          "hard8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "correct": 0,
+            "wrong": 8
+          },
+          "total": {
+            "selected": 16,
+            "scored": 16,
+            "statuses": {
+              "graded": 16
+            },
+            "correct": 0,
+            "wrong": 16
+          }
+        },
+        "sol": {
+          "dev8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "correct": 0,
+            "wrong": 8
+          },
+          "hard8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "correct": 0,
+            "wrong": 8
+          },
+          "total": {
+            "selected": 16,
+            "scored": 16,
+            "statuses": {
+              "graded": 16
+            },
+            "correct": 0,
+            "wrong": 16
+          }
+        }
+      },
+      "score1to10": {
+        "luna": {
+          "dev8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "totalScore": 10,
+            "meanScore": 1.25
+          },
+          "hard8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "totalScore": 16,
+            "meanScore": 2.0
+          },
+          "total": {
+            "selected": 16,
+            "scored": 16,
+            "statuses": {
+              "graded": 16
+            },
+            "totalScore": 26,
+            "meanScore": 1.625
+          }
+        },
+        "sol": {
+          "dev8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "totalScore": 8,
+            "meanScore": 1.0
+          },
+          "hard8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "totalScore": 14,
+            "meanScore": 1.75
+          },
+          "total": {
+            "selected": 16,
+            "scored": 16,
+            "statuses": {
+              "graded": 16
+            },
+            "totalScore": 22,
+            "meanScore": 1.375
+          }
+        }
+      },
+      "toolCalls": {},
+      "failures": {},
+      "strictPromptSha256": "b46f81a002cd87c0216c2e956d999e1b6e2b7daa81b59bb4cc9bfbe6a5ef0f4b",
+      "numericPromptSha256": "6a8353a7d7d827e1080aa0ca48d0c5bef3aae3b8d74b1a104aa026035542f385",
+      "manifestSha256": "21a678c522bcddddd6dc5f60453b6d7375c3299594be9c8fa838103a27b1c78a",
+      "perQuestion": [
+        {
+          "id": "778164c6",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "c25cc2107d6dc1c6006387fe8116fcd69600b17309ff62fcdb7b6bfc46e5b812",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "cca8e810c0eb15432b92775cd72cb9739647756cee7b58f1c2f7b53562d58e5f",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "70ad961d9be8c0ad897b7d2658e0d489624ccc114cd273234cb3901936cf509b",
+              "resultSha256": "e0d67eb005edc6d79261cebad733e9c861f8becaa380c2fe0177ee5825bb01af"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "9e1360d28a3c3b90a20c2a5abd0542eef47de673c675838b53e3cda0152fe601",
+              "resultSha256": "e61cf0e1eb784973305b40ae7639595bc5478182448da0e0b7a3056240bd6653"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "9d6cd7d57d7df4880e0b08a4583f79dd0cb33b183ac1700e01a1638c77a25b4e",
+              "resultSha256": "98deabbc5f6b5a6a591443374efee7855b1f7ce7e274ef33715f9792b8c11939"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "004929e83fc552940ce82143fc5f0cdc2a755291d29befb3153e9f50e6011bcc",
+              "resultSha256": "f01ccef4de1148a2abdac12a8cf195c4b049cd9f7ab1ced81f6edbf716b150ca"
+            }
+          }
+        },
+        {
+          "id": "51b23612",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "797f8f310e3824716468ed6edcd63b74fe306192547a9fd06fe43c5b10ea5400",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "1b96ce077f5fc6e7c0259719a54eae5a7fc030c8108c966d185957e8af845a63",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "b634f24fc71e85bce8bd8865fc7e1e4845aebdd28f640d3659d5ea1fddd3b318",
+              "resultSha256": "33acd6b8e72be2b8fc2362034be76c0aec2b9ab4f5c689eacc9b87e3b887a6d5"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "14eb676d0a40884b3aeabd2edc8774bc871980035760aae00aad2c29d1d2020e",
+              "resultSha256": "2193d8587627cb83674b97a7e624ef1c0add9b534cf1dafe81ba5bb39c36a7bf"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "1499e2259bcc358b448c118346134a625fd3209da3f9f848b41e4b14eeb80d45",
+              "resultSha256": "b0af51408db5cc2980ce827ea6aeda3133a66b133c048ce600df9b1f84b0025e"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "23906cb7bd44e7613adbfcbf262b8ce70c9431474d2e99053df0c7af00dc2c2f",
+              "resultSha256": "0602163cc64220fea93780a97c3f6ab57ffbb35374287701d83bbd3f18820e23"
+            }
+          }
+        },
+        {
+          "id": "ceb54acb",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "9403315f74e7ff2beca78820781e20bb774f469cdf796867c205331d7bb061b9",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "12aeacce8bb4ae7749e48a08529a9e769046df07fe9da21e14a631163c5b837e",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "d798b63f336e59c591e588b10069a41f17f337bb6d6af0cc0fe654cd419fa05a",
+              "resultSha256": "e4b00d4d706be7fcd0e375625d906c003bd5037dcb81b637879409d9a51e4028"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "c2ab22ec39afa260136e108d1f1116040eaa390a886d9f0e8b8df47bd4ba51af",
+              "resultSha256": "fcf1294b71a5906eecf28e8efc1a1b8ebc7cde507062a6f35b35db1c5d191fbb"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "06610c0e9bc389259eab148d598508a93e1be850bcc7d61877cada30a11c47a5",
+              "resultSha256": "ea9a20f465480b567cd3971d4107e88b958b937f446fb24e2922894b0dc44b45"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "fbdec5e708a855ca50da8e58d9dea64e75ed37ee034377335100ec9c68387fe0",
+              "resultSha256": "c75836194081cb4e2f46f211e3e0a7e57b61672af33e9e220a924d394af02a07"
+            }
+          }
+        },
+        {
+          "id": "577d4d32",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "1010b5ba482b383213cc6168a7d84364efb8c3abc177678c827235d9cad38450",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "094765fa7b8599a82a44909ee9dc04d4c8f1234bfc10dca31b2b3139692db3b9",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "e6a1b1f3b93ec1140d884a45b5f4ce76bcc18e6f90724ee570a666418484ca6c",
+              "resultSha256": "725520c7d24085c94dc9e985bbde7a12aaaf2e58fb11e54d2bcd758f4bbf1d10"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "80e6420b8175597165adf6d63e9ebc7e811c14b3f8d954e4a4a3bf0d350efad1",
+              "resultSha256": "f057fe965c6cba3e0a2484d66117ce079825776ba42a991af9449e5bfccf7c48"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 3,
+              "attempts": 1,
+              "rawVerdictSha256": "b5d8e9dde220f9c1eb61e4df5b5fc57cdc186415ab9c09845c1a360a53a89211",
+              "resultSha256": "61d8451fcc5442e5a4fb9bc59037471557f0d18e30f98589e8ee3b85dca95deb"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "7ffa007d968708f4c74db7032b0bbeb70fc99fa5715115842bc6da4319899a6f",
+              "resultSha256": "6536d48c6c4a5c02c7737ac2d9aa768bbc178e1a42dbaef32dd7ff1d263a3d33"
+            }
+          }
+        },
+        {
+          "id": "3d86fd0a",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "ee3c5eccdb33d864c338d7a8045ca696e70b4e73f0d41f9fee5b6b1e42b2c216",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "89f9740a54882d83a868b89991d6f0d9039d53f0dc7a6c24453a45b8d986104a",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "49cb834bb8b9132dd87601e804fb68f9c010f8c5fd5641ed84befa66d39005a2",
+              "resultSha256": "b2855ae017d5febbb274cf570032447d0bfe786d05d142f0d59a62dbfacd3b6b"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "b69b86bd5f5f782bfa0c092b381e21f447f090243b768975a161e6f0ba4350ce",
+              "resultSha256": "daed59699379731dc45bc4ad60abb1abfcf1f93eb9343f7ea8bbfd6571c4b93a"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "2ef7a446609fdd51351aec921227ab729d1d708418373522d370d8469c2c4609",
+              "resultSha256": "186babdc56f31b89478b4b4c7a1b6869be4cad3b4d9ee8475a8d04a4d80a9f67"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "0151b3a1cacd344576472983b3d592f9d7237fe1513325605fccb46f9df068d5",
+              "resultSha256": "28a28835f8a9f223b20dfc64f912e061c09d448463040da3eda525db0d5092e2"
+            }
+          }
+        },
+        {
+          "id": "15745da0",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "0854648edc915eb8ac4351d861f3be8f126c9c396129c61d2f0ff0c7fdeb8e65",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "ef87037207302a4ec03cb2e7aa302c309c213e1f06942d06dcb241dcb3067913",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "20f9cd3339dba6d56dad4632fd081ce2e367b6294b91c2b8df63bb850138ca6b",
+              "resultSha256": "e81e8d61626fa05fe9b4f5f1ca61049cdf3042572441ef8640b5890b935e08f7"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "6a76b8fde6919e3583610363e5d908bd7b278dd5056634ab340dcdc720b0edf4",
+              "resultSha256": "3c110757a6084686027395d76fccbccb74148835fffb384703868627bb759fb9"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "4fb534dd8691fa188a282f3807dcccc26f82000a53ca51f4c4957fd009d848ba",
+              "resultSha256": "c9828fce507327a8863adc86ec2c3b9b25b5d068d87172899fb74311aa72820e"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "09ee7d5e8f0b4ff865b2780e6bb595f5ad4fd6914dea0da7e29d978414a7e293",
+              "resultSha256": "38759759cee9a3cf1fde1ebf283f181f7dcddcbf7a973bc3cab2efca8a836358"
+            }
+          }
+        },
+        {
+          "id": "gpt4_65aabe59",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "5106e8f1aa7d3e7f6d3676d10746c07207aa0514a2c22c03034f03bda222f40e",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "61797198ae85688e90bea8ffbb7717221af20c40c2eaed5426d6cd2c78c3c80a",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "2579df054c53309732957961b16ef7303dda236d897f9f72be5297e0063adc5c",
+              "resultSha256": "2a745baa2a796ad785e6f509b3c015be49615b04d77b6f8939b3cf78ff2c8a84"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "7b7b01490bed2c996e8141d4ef02c5e449bcc4528949ec6c69cd08bb57251438",
+              "resultSha256": "b3b2524bfa9b6abe18f9ff25dbcae43ce4870186f1be31ae5044c14abbaa9f7b"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "e8247cd5d5f638774df318d6b0aaea4055c54d4a80a07e339b60051dbdeaac30",
+              "resultSha256": "d44b975b52524f9fa0412ad0b20d37628ae5d7a23bf4dfbbd816f61b24db3c79"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "5a5d69703b65ee6445cc53864a8d33cdafd72c8b998c6c72ab7c6fa3e09ec566",
+              "resultSha256": "bfe59807ce45a4c77d52399a881fc308ceedd7240e01ec2a65e7e170a6c0dc9a"
+            }
+          }
+        },
+        {
+          "id": "982b5123",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "2de1b7cb598e4a694d56f076c20df727e604cd8af917fabb41c3290c5636e9bf",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "904bb64f835ecf190463f4cde05125a1421235bad79e0e8ad1316812e268ad13",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "c477503fe6c402a79bd95912e3b643dbffc7ba871fb9efb780aeb6d4d2d743a8",
+              "resultSha256": "a9814fa9f046c422232002033779fae79a3f38a946c168e8d0cc6d84fd0598e7"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "7e223d7287a84d27af2913ac22265c5041c0268bfaf9ee13d9f58a1110fc7f78",
+              "resultSha256": "bf5b969fe54149c5dd822c927c5825e35f4fe6a86772a88d887b69534dbbfe10"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "c060f99111018891c7ea9c2458aadfb6bda0c9b47638707f09c44b35b12c0115",
+              "resultSha256": "1a29e220f2617b4739fe58331228e4605b200f738b4e15e01e840335c888e156"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "ea5638857f8ed41e8d587b88d004230b399e39c7f34b2b54e8bd8a3218f0030e",
+              "resultSha256": "b64bf636c3f82928d71f3c974fc96cddd12134faf418799255e16530b8244a5f"
+            }
+          }
+        },
+        {
+          "id": "gpt4_7fce9456",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "cd8c36d05410e8e2a59ab2097cb634b863c556fab573c597397662192a9d29b9",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "4d997d9d6fbe171de66879c796b305e376cff39271c8b0ac00a8c66c82ea1fb2",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "115cd3f2fb0f66f5811791bdf1e2a5574804a8e0cee401169e0413fe6376d01f",
+              "resultSha256": "a6aaf91e74405d5340300f11b05e6c191d8baf0acfd713ad621c9da0f4911345"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "073606209b8ec46579708a7524b3fe6d9a09ce9992f578290ff9bed609d07ee1",
+              "resultSha256": "17e326ed7ee83335108a9aca3e8c259d464ef81a0f3e6173b15eee48f12c45e2"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "79504585ec005dc0959091e94f297bd94c90a36c98b5efb4716051c299f8b896",
+              "resultSha256": "5f9d2f16312e48687028cf9f0be65843fc8601bd8e11314e8c5ceacf96779347"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "f0cb6ce6920c6569b5425d79bef64711d81ab538720087923557dc4e2d308987",
+              "resultSha256": "4ef34e46ed7c4d1e25048044b000f7d58389b9ed847442261e0d1259029c5cb6"
+            }
+          }
+        },
+        {
+          "id": "gpt4_a1b77f9c",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "9c7902ac898534e8c0f26c12340ee49563ffbcd35452171db1dec35c12693489",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "1f9b4d3713be6ca340b698c6209020f3f7668efdf53c6dac9ebf0136fabe399a",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "aa219aa4da471b9f149116020355e938f426a9cc588e24159992ae31f0191b50",
+              "resultSha256": "5ac7d3da1c5ae38b2eda84110dab3ca3df8405be914548575525a4776f09a81e"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "fbe4a233d9eb2103906b2e6478392fbfeb33d7f22be386a839ea80b522c8fb7f",
+              "resultSha256": "8e0c4560fb05ee4af5eda4849b8806f348baae0ad817426bd67078ac1c13a770"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "5c5b6f840a7db0a1ffb8f1195c65ba695c3d7bcdc9a231cff801c1ede443dfa2",
+              "resultSha256": "4285811a6270b14f46c1ededc4558a79c5a27ff8550ff63c2f5a2086ad1767a9"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "c6a61a5af4aa366be3f9b7398fd3d16b738e7d65b9842a8ba409b18f3d29deba",
+              "resultSha256": "a01ce256d835817086fd342bad529781d50bdbe0a9f81c2ca5d0b3876e4015ee"
+            }
+          }
+        },
+        {
+          "id": "28dc39ac",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "c609f908b9954dc40c34464622444cff253109a0f694f6638be29d3610331da2",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "cf03663d28e6f9e57a9272301a994747b73c2e6706393bb4debda26510cb4a0c",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "6a3d2a8a190a9858ff2c37b02412a2d13c62eb29c16cb9a47eb03a0f14c4c206",
+              "resultSha256": "46eb1873063f7a500f78488ddf3a6333e5d8a7b7be282aa6943500109d37e59c"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "9af014b149926a94c688ff80a7dbc9d34bd97226336db5d954299d746ce23ce7",
+              "resultSha256": "43d83cc7bbecad7029e02e58d95cd851693d156341379431a8728bc6643e1f89"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "10617674199a98a93fbec90695812dba304e21bc6aea551a9684bc639e394a87",
+              "resultSha256": "f380ce90702f4b74cb59e1f26a05e67188504616c693f1971090890d3f022acf"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "c89ef4fdd9797f0add478febb3fd9117be3d32a2182c58b4e84c147385957118",
+              "resultSha256": "06d9f3bcd3a205d056a5d5ce7e1879aac3935f60534411f008bef3edf39e01b0"
+            }
+          }
+        },
+        {
+          "id": "gpt4_15e38248",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "e0701b220e9b6809741568f744fa25a50dea5892f8dc2484746211d656000e34",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "458df66726fe1712d974a259d5dd1d6dfebb5f9b717dc1cef636d95e046e9c15",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "c41f2d93addb10edc7924537fbfd10a785204e22b8c0e16376e294bde8eb14a1",
+              "resultSha256": "31a533c7ad6a0f79570a580aa6b4a64ccc47a187423dcb3f725c4517265e584c"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "214c3fe885967b05604e30577102dfe4d40126bcbad308c4920eeec1911b3c5b",
+              "resultSha256": "57873093529670bfe5199e0398a0eb3c148c8d82418d00d71effea975fe1b0f2"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "b3116e8d68b55e87dfd3a1ee830d82f610323cbe075c05bd15d7b37d3445098e",
+              "resultSha256": "6d88cf405df80d016c14cdbea24c787396767192da801a20788d02e5bcf8028f"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "313103ca387cfb0d730a9b7cdadb813adf559179b94dbe211406ecfe8438ff08",
+              "resultSha256": "193063228a44a6105d99b94f774067dacc43f1955ead3b299d474abcf8309089"
+            }
+          }
+        },
+        {
+          "id": "6d550036",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "0854648edc915eb8ac4351d861f3be8f126c9c396129c61d2f0ff0c7fdeb8e65",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "2876db8ee3c89ba670719d77654fc7c30643b5463137abf471f961cdcc0ce89e",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "3fe0d4007e889dca0387834e0a9d7cd81528e49abd1cd566f9674aeed5755c6b",
+              "resultSha256": "f11852b59a365d6e65403928fb8a83f943453d8731f538aa438120f980ea85c1"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "0cae5831be1ca6a64ffb37d07acb715003c6642c48aba9541c2c1a730697eb38",
+              "resultSha256": "7de746053525da788c8ed4734a225f0e8af5c5e0b5ff9f706e8c61aa392e9db3"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 6,
+              "attempts": 1,
+              "rawVerdictSha256": "e2898cba2c8b6bc863348b588a27f86a8937d1d06b5183f8ee24ecca3af6103a",
+              "resultSha256": "d518b429983e83a50c50d4954c56ea1ddc3758eba9e64f290d4195964797bac4"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 5,
+              "attempts": 1,
+              "rawVerdictSha256": "415c2ae8041a37c2776a57c3933c0da5df32a218f91957dd42b2e89e1de5a74c",
+              "resultSha256": "d267069b4c90a90817be86ea4f76ba456dbf690900c09167f626703524229f1e"
+            }
+          }
+        },
+        {
+          "id": "2ce6a0f2",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "59e6c7192c2f6ca8520595bf01157a2543b19bc42390fc1f066fee94f4cc7ec2",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "d97c28dae2f71033ad993108a6216d43c3b65a329ac51bcd2a679b5f30b4b625",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "cae0e759dfdd268cbc9323bdf7057ed8561e8f18faf062822dca5bd23a685ca4",
+              "resultSha256": "748a24f39f9a2c774817420c65a39c59132a91ad60db91513919f731957b2054"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "bb289c1a7acf7733e34bcf7decbcd5016c2f09b0400a3c1d822c833a277607f6",
+              "resultSha256": "e4bb9fe3d152836d137ee44f96977d14170d982d1a6ab5d6b31f6d426231c439"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 3,
+              "attempts": 1,
+              "rawVerdictSha256": "dfc51b2ad94dcbdbb64fa6577bbbca366033f2cc9cc28630fb1bc7a6cf4b3b59",
+              "resultSha256": "16a0692ead49fdeb094c824e6075cb1bc170463c15d15e19c0f44f6fd5dfcb4a"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 3,
+              "attempts": 1,
+              "rawVerdictSha256": "1cfc6180e62c2eb92d71b8b050920d03ed3cbc442b7bda8fb3e19d85421a9167",
+              "resultSha256": "079c0315daf9bab759952f5a1cddb11b7ee8718b8baf445c6546f1e81982be4f"
+            }
+          }
+        },
+        {
+          "id": "9d25d4e0",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "f517bc136f8b93cadc6da58e21139921804d3427905cd2a7f1f2e5da54a25438",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "f104bd76804b09c66fd553147762d30f945c7aee874c6bdc9d768514e38de2a4",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "3b417030ac6b89bf22e884c54b6ce87cab87cc7e2c3d7bca8219e207eb80e36a",
+              "resultSha256": "18bda6625e7b813b6db5531b2c8e1a813f24ff299a55edfa1da78d0eecddf6aa"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "4344c0e2c3bb12d03aad6599a7e3f97ca6d17036b5f1f4bee51c9b16d120b10d",
+              "resultSha256": "703b70388ef31b96acfb9717180a91610f06645d532a0080ce1107bb5124409e"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 2,
+              "attempts": 1,
+              "rawVerdictSha256": "e08e7a806347a499bfce840e2ed7f64c12b933c22db46c753aa493be5057de81",
+              "resultSha256": "653e05cfdc0960384b5592848e34cb78749ff7d5ffd570241e0b2cbc6c8d8fab"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "bac2bd352519c8d95ef1fcc45f11cab91e62fcf40d023fcfff6961c04fe263be",
+              "resultSha256": "76197800298a035c5702b85524d0b555e89f11ba0d6f9ab97b025e106e89d7ab"
+            }
+          }
+        },
+        {
+          "id": "gpt4_731e37d7",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 0,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "8e14b94d66438195a356bf38a4769666dd730ed6e1acf49bdd4d9375fb1d538e",
+          "serializedToolsSha256": "52337e0ac5746be5b55e0451b00fe5c0aca8d1dfc452b9cacd1ffcaaeec4aa46",
+          "answerResultSha256": "44b33a37ad57aa3f2c781c455846be2dca11db805e290ff6fdfc890ec8dc95ef",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "a8f48a33bcfe0d430ad5a87d0c3f426959c27bd0fda1ee4a820f401be6f5fedb",
+              "resultSha256": "7ba495ec2a61ec9b906725d5d6f319d4f7396554ee1639d80cfb7a3a9220304c"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "d717e47bd2e2501be426b82d300aa65cc8e6ba1aeeae97e2b3bc174944b59dfa",
+              "resultSha256": "091d3c7223d0d14fefa71feef0c157519db10c1f505ed352523246adcc69a466"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "d13d67ffacbab1003e2b4ab896fb6279d393259650e008f275db588dba259e78",
+              "resultSha256": "6bff2a2d2781892f57d365890b551f8e1b9551cb50fdf7b716e81c112dcb2ecd"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "4931d8e6f6698a174b13198f6f16aaabfbe29c4c72f6532518f92f4f88a79474",
+              "resultSha256": "00d54336407805488e0bcc705d902ed9535f6abc4a49b3e434117cd6bbb0c37b"
+            }
+          }
+        }
+      ]
+    },
+    "pi-lite": {
+      "state": "complete",
+      "strict": {
+        "luna": {
+          "dev8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "correct": 2,
+            "wrong": 6
+          },
+          "hard8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "correct": 0,
+            "wrong": 8
+          },
+          "total": {
+            "selected": 16,
+            "scored": 16,
+            "statuses": {
+              "graded": 16
+            },
+            "correct": 2,
+            "wrong": 14
+          }
+        },
+        "sol": {
+          "dev8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "correct": 2,
+            "wrong": 6
+          },
+          "hard8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "correct": 0,
+            "wrong": 8
+          },
+          "total": {
+            "selected": 16,
+            "scored": 16,
+            "statuses": {
+              "graded": 16
+            },
+            "correct": 2,
+            "wrong": 14
+          }
+        }
+      },
+      "score1to10": {
+        "luna": {
+          "dev8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "totalScore": 32,
+            "meanScore": 4.0
+          },
+          "hard8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "totalScore": 21,
+            "meanScore": 2.625
+          },
+          "total": {
+            "selected": 16,
+            "scored": 16,
+            "statuses": {
+              "graded": 16
+            },
+            "totalScore": 53,
+            "meanScore": 3.3125
+          }
+        },
+        "sol": {
+          "dev8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "totalScore": 34,
+            "meanScore": 4.25
+          },
+          "hard8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "totalScore": 20,
+            "meanScore": 2.5
+          },
+          "total": {
+            "selected": 16,
+            "scored": 16,
+            "statuses": {
+              "graded": 16
+            },
+            "totalScore": 54,
+            "meanScore": 3.375
+          }
+        }
+      },
+      "toolCalls": {
+        "history_grep": 10,
+        "history_expand": 7
+      },
+      "failures": {},
+      "strictPromptSha256": "b46f81a002cd87c0216c2e956d999e1b6e2b7daa81b59bb4cc9bfbe6a5ef0f4b",
+      "numericPromptSha256": "6a8353a7d7d827e1080aa0ca48d0c5bef3aae3b8d74b1a104aa026035542f385",
+      "manifestSha256": "7a5826ba7edbc65c7a3b86b4994fccbb2ced206e5186189947589f9f59de2686",
+      "perQuestion": [
+        {
+          "id": "778164c6",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "c25cc2107d6dc1c6006387fe8116fcd69600b17309ff62fcdb7b6bfc46e5b812",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "3bd61794e9111e267746c8368f36d6449734ac097d10b5477f03f1303b054461",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "6775f3a7a2ffcbcabe4084e14b2ad72d6a746e844260c2e56d7601a0c3a19150",
+              "resultSha256": "c6f77a30111036ba12f3128c80fc888984cf9039cd057ade231f02c6d56ce053"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "e306662bec77165f57c9e97535f2da65a8320655588058dea569c60968bf8671",
+              "resultSha256": "34173e77d68c02d956af19b7a38411498b13b8ba028c413dce73404089ad57ea"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 9,
+              "attempts": 1,
+              "rawVerdictSha256": "f85d43a435cf96db8492281398bca26462874f848e98fe5dfbeb69db5ada7063",
+              "resultSha256": "f9148137367515ccf171e8b8c0a65e49da07418ee41167539f66ffa842a35fab"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 9,
+              "attempts": 1,
+              "rawVerdictSha256": "ca37036e0cf3fd81050dcc838604c859a128b9019db451fcc386c1482ba25530",
+              "resultSha256": "752bfe4041bf236a2342e4d3c89f52efd9fa179826252363816912f633537958"
+            }
+          }
+        },
+        {
+          "id": "51b23612",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "797f8f310e3824716468ed6edcd63b74fe306192547a9fd06fe43c5b10ea5400",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "bbc4efd6fa57f6c0ff30e873a04c263897eadb3daa85ef05cad56116683569b9",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "f5e01d01f771548f8b66f602b398394f1da96a39bbafd78e1d0dc9ddfd957eda",
+              "resultSha256": "aab43f8b3caf1c67164e45be1583c9d6236c465037c76e0be54ac25c372f243d"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "b46c4f33a1845920de3d8e57a2bb15fe3a9600d1324b31da801ecacf6b6d2b09",
+              "resultSha256": "485147c6c06f563b080c5f10a8920c142e3dbdf83a4c8b265273d0891df40b43"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 8,
+              "attempts": 1,
+              "rawVerdictSha256": "dc57b75199fb0d99f85efe8e9f796fe3430b9c5a553e86c46000d9345a456434",
+              "resultSha256": "030d618f87e3aac15c47655a1b05e41ab0e1d2d3053b4eaceacbc981414ba9c6"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "e791e4ca025417fd9444491b1d86c47ac43342fa20bc9a43acbdad5e1f894219",
+              "resultSha256": "ff525ce78e1cdd06679955f45528f79cd80103e99624e8e6e08aa5c50fbb6df4"
+            }
+          }
+        },
+        {
+          "id": "ceb54acb",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "9403315f74e7ff2beca78820781e20bb774f469cdf796867c205331d7bb061b9",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "58c6c6a2c3a5dbc9890374ec04337ca886bd4cdd78b40b49343638f46b7ab31f",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "66439cb774ae9a94a9deb5d4287c4b46a96a954410c507e88f9908f93944828c",
+              "resultSha256": "3ad374c9aed12e01aa5b9937219e842242874eea6700e45783090d56bb96948f"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "49c3fc7f463d066f3368006f104ba1df41b46307e279e8490cb57992552d1c94",
+              "resultSha256": "34634eaf5bfd1b5b2980fb520fa89cf7c212bee16f5f1b1da97eb8dd23fe1abc"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "90775889752bd5c8d65d55d3f20a5c8e618a5b824f4c772c13a239eee58f4384",
+              "resultSha256": "a028d6d1c94199544c5eb5a6d25e09f14b72edf590529f77e5b6b9cfce486022"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "4fb8bb8b201e63c5df554c18339111f2903aab753acd8e4ea9f17192265cb0b9",
+              "resultSha256": "abb2ee4cc747a31da00a4dc16fec7a949c69953573f1246f2064aee9f8bcaabc"
+            }
+          }
+        },
+        {
+          "id": "577d4d32",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "1010b5ba482b383213cc6168a7d84364efb8c3abc177678c827235d9cad38450",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "4c6aa5d164afa4eb1d532e96dae281d89c7d40a6e74ef120942b277f7435d728",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "ff14fb7adf812485bb3dcc083361cf110e81fcbe41966b0cc3e05d595d55f83b",
+              "resultSha256": "3d63b541ba783481ba88df1e2ed37d84f4eb9e0a3e0bf9ae68d765bc180a525c"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "005dc48c95ff523936b79667e1938ef5fed3550c2a2af4d4505b84566437b156",
+              "resultSha256": "4d364f5bcc5d3fc5658b4b92b4007cb1ffd20d75628fccca3d66e94b0c99e0f3"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "4f6e50ba7da805208a45540311274781c5042cc3a12fc64706b857b4a0b9b59f",
+              "resultSha256": "786c71f54ac9549e5d58fad206e5a22917ee14c0423b2feaf11da84e72f5a7b0"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "56d3f391fb00e63d2b53131a7c4cd5b4cf1ec1d3e2f4051e976d1663f3e85633",
+              "resultSha256": "ac710234b963f53b40393c55c333447d420f25436086c59405d366d1c210e0da"
+            }
+          }
+        },
+        {
+          "id": "3d86fd0a",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "ee3c5eccdb33d864c338d7a8045ca696e70b4e73f0d41f9fee5b6b1e42b2c216",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "5b9cb8c7c99efa3277a65ee693ed9af62271ad2553af30e4f214263deb97644d",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "dea6d8a57b0930a6abcc79cf6020ca30309563b17dab752c9e8a655ad46144f6",
+              "resultSha256": "8e683d4d7723ed3f3a65cedf91b37ba8cb359dbe5c84e3297e89a5e5c0ba38e8"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "20c55cfb51e2e7a9cab706ba6f51d4f75058f11d3cc9faab9af87a82b61e54b8",
+              "resultSha256": "aedcf3c3bc77659608669a11785490b8d0a167d5c1bebfaadf33e90bde62e9f1"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "ab158615ad62adebfe069b455ca833e16bbf7c3001ce15f688e375d2505cbb5f",
+              "resultSha256": "3f768be162f80b16273c5a60f9d0d64419e3d34cb1478557d96263906558d995"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "ddb7601f7393a070a3c9f504aa4ef693f8a301aff74afc8506d81aad0ce67c37",
+              "resultSha256": "6eb7a240fc116668a2d4c16cd61570e77125034444e52f8997a5e6aa4c9111c1"
+            }
+          }
+        },
+        {
+          "id": "15745da0",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "0854648edc915eb8ac4351d861f3be8f126c9c396129c61d2f0ff0c7fdeb8e65",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "d3362fc3079ff3784da8a22f5be8f2af1330a1a3c5d622a78a4c9d61577ef16a",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "4b87e2ef2a74ce46000d30e540e5f9a8099bf5d36692e96f3f59f527f50f9910",
+              "resultSha256": "80968946b5ed3129798c45dcf1e4f5a95543975e7cc5d22658bac664bb82965b"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "89d5a3e9f5665657ad9a952773fa395eb7aaadce7e227fac7135873a6974e773",
+              "resultSha256": "f436aedcdab58ba7c7c5e478c1f13d825a128127b25d5735ddab2351c2d3123d"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "b39d11a7315199f57252e8537e6755946f152a6384a2c6c5ef90732f8addd96a",
+              "resultSha256": "9677e9bcd3d2bb368c499017627225618a9e0059d8e6c914cfc787000b5f9a51"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "8fb0b3fe58d40a42a4cbc756091eb49c1ce27607d7e398dfb1bc9d27eb80a1ff",
+              "resultSha256": "8cc5b9b5db02d78ca3a1bdb9e2833f47d9629211995322d96d0e49becd81d1f1"
+            }
+          }
+        },
+        {
+          "id": "gpt4_65aabe59",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "5106e8f1aa7d3e7f6d3676d10746c07207aa0514a2c22c03034f03bda222f40e",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "77754ed48f53ddc9d4be0d2811308bea44ceb1e8b693cc8841f197e38d831ee7",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "02d3cf21ae82451098402ab9882febae58f6aa6eec2437e2e03e59cae55460f1",
+              "resultSha256": "d2d1572956ad8ecbeb93df511a3b76d6bc6172d35fbd1db621673895d4273eab"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "e4bcae6b80178079a83851625bb6a2e4bbf86a1fdf40562c46f62df38b719a4a",
+              "resultSha256": "d1e4d16607caf95e003404c60b3976978b9a62a06beb0ba247a63a3535b1c22a"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "8ff000d5ec036b276e1ea508b388b676e15d4ee7024b52ed085ebb6398112af0",
+              "resultSha256": "720f34b40aff931a5e29ceef3d0b63dc0bb5fb15b3f76ec793c7169a7ea7104e"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "4a99893602c35b90306ae5780b7245b57e128f40d91ca31f83e3f04e11602183",
+              "resultSha256": "6d9f46de1a2034c52358c0100bee00a1c0ca5f8af3f39b037d2a5fe98b32d91d"
+            }
+          }
+        },
+        {
+          "id": "982b5123",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "2de1b7cb598e4a694d56f076c20df727e604cd8af917fabb41c3290c5636e9bf",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "d7832b701a335f252032f126c8e98d65518b51c612840165ee9b704eb70df984",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "0d08267d4075d2491a523f341137b69688bc32e9d3ac58129e031e4a6026d521",
+              "resultSha256": "c57f3db6d7d9bb6d90c0c62ee1d8ceb6ab1d89c8f1c3d458df4ada6ddf30f8d6"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "8d9074b6179329c006d7a39d9710b74ff7ba689b21baf45eb6721a31718fd6ff",
+              "resultSha256": "59cfc60b3f6ae09592bb454b9faeb620dec08bbef44bf4bc16785bb305e6863e"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "aa687216e2c9bddf763d8ae00c3fb76fcb0750009e1d5f5f65d4e5c461363cbd",
+              "resultSha256": "2f329e3140482c9a51e780f0fd1a4205aa7257d68314e8707985f04295596d39"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "04ead022ecd13a25d7e17afee758eaf931b7b6f20376091229994eab5495f35b",
+              "resultSha256": "2676e180b8bd35ac7aee51b72696eff0f507f002674c335ca34b38364ec4a6e6"
+            }
+          }
+        },
+        {
+          "id": "gpt4_7fce9456",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "cd8c36d05410e8e2a59ab2097cb634b863c556fab573c597397662192a9d29b9",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "ca9ac24ebbb03d7f763064120de78dedae0de25c0530358952764f110e42cd54",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "08965bf765d11733d6d533a7c89c43bb05267348483e2402f156d399661a18cb",
+              "resultSha256": "75ae9046d9153736afdaaf9004c58e1077245b0415dcdf187bab99052c4a91cb"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "58325eeedba7b453b8236b85e2f2c0eb1a71b4ed39acf9ad7e38bbe37931d0cd",
+              "resultSha256": "569252b2f19c2d2a79acb2923e76329ae676a3fcc33fdf652d97a644aed85ef9"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "d7806726fcc1df0460eb91aa555c1470990aefec433d142faa30ae7f10522e1e",
+              "resultSha256": "bfeb6cd7254f4ff9bd159f348ff65965301b987e8dfe7c02b094275463033132"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "cfb83e43481c5f6d0b5682f581bed17eca1d8862077d2105a4c040ffd0bdb175",
+              "resultSha256": "79a4a934b2e62fbaa0290657e4376f5a5947c1487b9b0a4377c40434c46fcb28"
+            }
+          }
+        },
+        {
+          "id": "gpt4_a1b77f9c",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "9c7902ac898534e8c0f26c12340ee49563ffbcd35452171db1dec35c12693489",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "927c7293d092655a2efd5eb743e97e227cb1390eb8b62b9a09e6abef84f3df3c",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "d487cd02989a63eafa6daf81ee31b843350493627542c5523f2391d9a8b38e67",
+              "resultSha256": "eec98f12a5ef8fbd2291d76a2331e30085a0f167ece736946f51d65e43c75a34"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "9dff2e56c12b7718cb76745e051477e2265e19b5080560bf286c26ae05396bd6",
+              "resultSha256": "b5d6115be9347eb5e8d70c738ce4aac79be9a90eb7fe9f97c74a3f4b27122af8"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "31f9b118d1535cc83ada75b6ce0939b524ff0314f2e0d909509ded9d5804369a",
+              "resultSha256": "056e70f80da1346fdf3e1b392036c7196611a0c743702864de325aca3ee6d25c"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 3,
+              "attempts": 1,
+              "rawVerdictSha256": "21f7b76169b1cf37d70c005b3b0b0e67efe212f334f63e2c0580ae973d6eee46",
+              "resultSha256": "8029b2487bc205e16635e542b6af7ead1df314623dc77f351333d8ec0e29b0c3"
+            }
+          }
+        },
+        {
+          "id": "28dc39ac",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "c609f908b9954dc40c34464622444cff253109a0f694f6638be29d3610331da2",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "7bfa27d4a2080a3e8b292812b62180a149c9eb9677b274d64185cb1e62d08fc2",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "761dd0730f093c6def6206932a7071552ef2629bbbd3068a874be377959588ea",
+              "resultSha256": "52385dbfeb2889a687fab03e99944a827a1f20e8c301f6f12a1c78366aef5b35"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "dc08a1d040ed1063d9c5f3af9bb76fe457e00732478f94adaa70bfd162f280da",
+              "resultSha256": "447a8eb2ff886c7a0153b418cc54d9d55ff4b7eec4a99120ef3a2a5304dc63d8"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 2,
+              "attempts": 1,
+              "rawVerdictSha256": "40575774290c564e3b5a3f423c3fa9dbd56cb8b8a539151274966a2ee37d134f",
+              "resultSha256": "304a2822232cbc60f2a58df81852740055e2fcb64fc9a10533d8d01ad3ad8fd5"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 2,
+              "attempts": 1,
+              "rawVerdictSha256": "ba1f044ba9cb3011faaaadfc5c2a96721cc423d23ca09ed79f71e92828a78ecf",
+              "resultSha256": "b205938806fd1f3b90c2e23843e428240cb308d6bf6a4938bc7f48158c17e7be"
+            }
+          }
+        },
+        {
+          "id": "gpt4_15e38248",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "e0701b220e9b6809741568f744fa25a50dea5892f8dc2484746211d656000e34",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "a7d4c1af0836ba488365c8908cff3f1396b4ebfb225b0ef8c62b8a44b04ba1f1",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "8089ae66c6d4e99170dd7f9d68839e732e23fe8e53264358234d8d4a2eaf0fcb",
+              "resultSha256": "05969846791bc15fb1d38484f06ae6b4161c2ce381c2eabac9560e881e6bbb06"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "8944405b2f3d50befde2031e8cec5d831f3dc8025c951b3d68bb919cdbac92dc",
+              "resultSha256": "08354deb657e9a97ad1315b0f6b73a08938931a6ec0ba110b2e81424569d17f3"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "f947b2ea9bc8d57eea9a00887e996383c8bbb946e3c11db5b9c88f53cbfaad84",
+              "resultSha256": "6fc77a856683b4692f4e107492ace389c8b5d8bd0cd16ba11df84fa09c7d417c"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "c4310437946ba8578f56c9e94db5ae53442545ceb7af9010e67e2075c7f12f8e",
+              "resultSha256": "7f51ace28337c621440437e9b736d6b9dc4c301c0513bb16cce5854ade66d58f"
+            }
+          }
+        },
+        {
+          "id": "6d550036",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "0854648edc915eb8ac4351d861f3be8f126c9c396129c61d2f0ff0c7fdeb8e65",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "beff5a077273657fdad4a3dcea3f8866057592ba9244706a5332f169cbf62848",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "e6e172b9da9c6fb7c3d8a0c7306b61a339949e5e595637d5eafc4831027d19bb",
+              "resultSha256": "860dbccf1fe14d7ab5339482ea26e85139e7976b0e844165b649c70b4b8d94c9"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "94ef992ef27167f0c7f1c52901622b4d7cd5886a1a0185565ec647ba43dc9ce6",
+              "resultSha256": "23a23565a3c104389374ee0d639f4697d2db854e54b6d5aa0d007690d010c6d4"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 8,
+              "attempts": 1,
+              "rawVerdictSha256": "81af7dd2ed387f4fa32fc6077ac67bba2fa881ab9dd935ad9e4c1a7986658722",
+              "resultSha256": "ca1b2e0332f69c2d49ad6d512367428e31bea598de75de5516e6f966b013bab6"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 6,
+              "attempts": 1,
+              "rawVerdictSha256": "a43f129d9fa792a28e4d92023008d673f4647442c9876c43a152ab6dca203cd7",
+              "resultSha256": "0f89925b578e7e9301260900d29cd9ae48cea63651d26a599fdabfb0a42ddae5"
+            }
+          }
+        },
+        {
+          "id": "2ce6a0f2",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "59e6c7192c2f6ca8520595bf01157a2543b19bc42390fc1f066fee94f4cc7ec2",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "57391b608c3419aaa60d27eb900e8b4b0fc4690f60ed6d8026264430102c3227",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "5c9a7f9ce3fc1f073e0ae9b1e7dbd6cc2839bddec67a3411cf39c17f4c73ee38",
+              "resultSha256": "fddc976f8e53a7542a03516bae48cd0b91a5dc99fede00236e32a7e79b0bfabf"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "d82dcdbbb9f6efe72771715cbf8f0103f5149df14c753cfe5d0ac50c2200f738",
+              "resultSha256": "695c26e43123ba7e79b501c458a35229cb560d6f6adf22f1c59c51ea113ea7fe"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 6,
+              "attempts": 1,
+              "rawVerdictSha256": "60952a28fee812cc512f4700cc57ba4cfd7997d4c03a1ae37c01c90239d7f599",
+              "resultSha256": "727702f6d612583a0c7386b44c0f358a60b210ed567076f335f222cf7992d52b"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 5,
+              "attempts": 1,
+              "rawVerdictSha256": "e06d6ea6ee6d096842e1f04239ff0a95b9202818ef294762bca26a53e49b0468",
+              "resultSha256": "6b39f32cace19ace6a0169f05058782e52f28218db360fae1c0d4b253f4819e8"
+            }
+          }
+        },
+        {
+          "id": "9d25d4e0",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "f517bc136f8b93cadc6da58e21139921804d3427905cd2a7f1f2e5da54a25438",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "6be532904c56a024378efd18354938b4cba75e1b7125de6e72e15ec59a7cacbe",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "84a6e3771e1c1026812261b299ece471e4940f3293bcb3b845d88b4fac13c47f",
+              "resultSha256": "9854715356c6b68c94713079a456fd1294435f3a2b0cc0dfc1fa7dcd3de390b2"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "621d94293d8581dcacca592b61a086fe33d37b8a55af9a3ce00331c24dccd3c3",
+              "resultSha256": "a085809559c92b5b5568b8f09567eec4214a8e3e21c92ec0ddcd4684249aa129"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "a4c7d8c527a6188be9ea6fd1e493cea51a3a7f22e7faef23092fa5313e18f81f",
+              "resultSha256": "972f03a491bba1487640f500a42969941a3de10b6b8b0b5de1d7ddb9ce23d782"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "4ad9eafb1d1328cf8e564b15635cb5f137504b710da05b7250fbe947b9ce0569",
+              "resultSha256": "85aa5b72a3254b43b59a732fda52817bd6024815aa29f4a1074591f0e2d41ced"
+            }
+          }
+        },
+        {
+          "id": "gpt4_731e37d7",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 2,
+          "automaticLocatorRequests": 0,
+          "answerPromptSha256": "8e14b94d66438195a356bf38a4769666dd730ed6e1acf49bdd4d9375fb1d538e",
+          "serializedToolsSha256": "7d9ea7adafd1540518efb5d3a6a0310283337e2827f231c4d8aee46a47faf87a",
+          "answerResultSha256": "999d4886fe809688e3da45fabb3329307c7a8081df4de4a69fa55f9705d68f80",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "740a4febe38b6340e7dcc13c49dc7578fcee2a778fc29431f2d35a8964f44154",
+              "resultSha256": "2c26d12e1c3f9eb3120fe7829ca8c035595a620f2fdc76e535c55f6bee5e43b2"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "a390fd056f457473ef54a380425fb6913605046cb911dd757edb6bf34cdeae54",
+              "resultSha256": "1d3331e36cb49b6605bffa73211e35d3418a44ce4973be7efbc6af212244a6a9"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "1fb44434e5b3cd059665237e5f7c3923cd29c380fadf08e6763517f5dd3b8667",
+              "resultSha256": "6ae463e5c6459043447ac1afd5e5ede1894c2b1afdf79a7d3bb1357cd9ebb5dc"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "020499321624f8ccb27e7f3796fc70ae2267c4d51b5e5bb748aeee1a70a4e97b",
+              "resultSha256": "45bb5f1d6c1a277bf6a17ee75dffe84298e23f1800c1a78156a9019c18806123"
+            }
+          }
+        }
+      ]
+    },
+    "pi-full": {
+      "state": "complete",
+      "strict": {
+        "luna": {
+          "dev8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "correct": 7,
+            "wrong": 1
+          },
+          "hard8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "correct": 3,
+            "wrong": 5
+          },
+          "total": {
+            "selected": 16,
+            "scored": 16,
+            "statuses": {
+              "graded": 16
+            },
+            "correct": 10,
+            "wrong": 6
+          }
+        },
+        "sol": {
+          "dev8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "correct": 7,
+            "wrong": 1
+          },
+          "hard8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "correct": 3,
+            "wrong": 5
+          },
+          "total": {
+            "selected": 16,
+            "scored": 16,
+            "statuses": {
+              "graded": 16
+            },
+            "correct": 10,
+            "wrong": 6
+          }
+        }
+      },
+      "score1to10": {
+        "luna": {
+          "dev8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "totalScore": 67,
+            "meanScore": 8.375
+          },
+          "hard8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "totalScore": 55,
+            "meanScore": 6.875
+          },
+          "total": {
+            "selected": 16,
+            "scored": 16,
+            "statuses": {
+              "graded": 16
+            },
+            "totalScore": 122,
+            "meanScore": 7.625
+          }
+        },
+        "sol": {
+          "dev8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "totalScore": 70,
+            "meanScore": 8.75
+          },
+          "hard8": {
+            "selected": 8,
+            "scored": 8,
+            "statuses": {
+              "graded": 8
+            },
+            "totalScore": 55,
+            "meanScore": 6.875
+          },
+          "total": {
+            "selected": 16,
+            "scored": 16,
+            "statuses": {
+              "graded": 16
+            },
+            "totalScore": 125,
+            "meanScore": 7.8125
+          }
+        }
+      },
+      "toolCalls": {
+        "history_recall": 28,
+        "history_expand": 32,
+        "history_grep": 10
+      },
+      "failures": {},
+      "strictPromptSha256": "b46f81a002cd87c0216c2e956d999e1b6e2b7daa81b59bb4cc9bfbe6a5ef0f4b",
+      "numericPromptSha256": "6a8353a7d7d827e1080aa0ca48d0c5bef3aae3b8d74b1a104aa026035542f385",
+      "manifestSha256": "9d7b6d0a3bd67eb2f6af1f8aae8cbcaf5f97b0a0ec4ce522a4f971060ef94413",
+      "perQuestion": [
+        {
+          "id": "778164c6",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 3,
+          "answerPromptSha256": "c25cc2107d6dc1c6006387fe8116fcd69600b17309ff62fcdb7b6bfc46e5b812",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "f4d1e1cdd185aff00558c509de8360a0cf81d3f642811c5b37ad1168d45d826f",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "f54ff8505496f1ecd1028ed512b4a2989f81a76de2e7304cc93b1d26a53285b2",
+              "resultSha256": "2e5eec7c640caf28dfc1549a2f4b1a7e632dd60bdcc48161588c8ace0b3e43dd"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "51ec4e5e93b49a6345912655de7569bf718c963b83bf355f0ebcbff80087eca1",
+              "resultSha256": "e29b6482507106711911e9da85664bc6f8d5d32a24638f1089665f42d0b84c24"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "efb21572d94f4adfd044df15b08c082e28dad48da0a3a7ba584f65f2b69d51cd",
+              "resultSha256": "1cca5999aecf6998cced7b642fc28067c30fc85d6a118e12061ee63e2431c605"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "8f44a5fc6879c25198b714204777d6896685496c63b640e34eca9dfad5a2d3aa",
+              "resultSha256": "c99c6296645b2dad8b85b54b8047566313c0bf0b4d0b5476cba2c8385495952f"
+            }
+          }
+        },
+        {
+          "id": "51b23612",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 2,
+          "answerPromptSha256": "797f8f310e3824716468ed6edcd63b74fe306192547a9fd06fe43c5b10ea5400",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "b8e845a90f5d764f4d924443c3f4713de587fc487f3ce00d24a3d5ef7ee59ca7",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "a85d56538d71f6aaf5f260473f065fce62fca7aafc0880fcb08503b29c25ecf9",
+              "resultSha256": "11ecb0c5165146b93733e4641fcd50ff2bada1c3255f619758228c92710e0cc6"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "efc1f1c245060e461451c58cb10410fa4a841adebff743c8c51721b26757ec5f",
+              "resultSha256": "0d229038e2f0b7f89b0709822154a2b74a642e9dac7a5638118cdb1b15e5efb7"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 8,
+              "attempts": 1,
+              "rawVerdictSha256": "9fe80f72438a120a57f57557dc18d1aeaf34ecbb3b71e6f0db7ce379fcf384c0",
+              "resultSha256": "0864504239b745cd49efd64fed09dbb43799f6dbc9c179bacbcf2a654dfa8963"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 9,
+              "attempts": 1,
+              "rawVerdictSha256": "e95ef616b438b3f093b4bf854290cc71c8e243a7bde89b43b5566915ef408add",
+              "resultSha256": "d6c9695b6e50bab2de88f973a8513b405b2517f971b28ff9bc002cb0d2a98298"
+            }
+          }
+        },
+        {
+          "id": "ceb54acb",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 3,
+          "answerPromptSha256": "9403315f74e7ff2beca78820781e20bb774f469cdf796867c205331d7bb061b9",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "2c714b4a7e3e445c4f6ab0e76b92653813bfdfe7a985de78af8bea61981ec6a2",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "f4139cac873a45fe7c7b8c7233e81f8a1055a2ce09ab3157b036a8328752ae9d",
+              "resultSha256": "94d068253643bcdbb5adda51a35f23f8344f0c092d5fc0f03293ea41aa34533f"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "2f6a12b4992475fa45d4327858deaa70865bce5648c02f843efd6d66165fb5ad",
+              "resultSha256": "02a042e5c241aa3db421ff296d2fcf9c63e27347c76dd846d061606f7831a4ee"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "90775889752bd5c8d65d55d3f20a5c8e618a5b824f4c772c13a239eee58f4384",
+              "resultSha256": "b2b5172eda930c348acf46380937a7b335e4a025547b0a7a3789f0501b520153"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "2e30ae5a373f83979be2236a3b5186b8eadb5c7a1dd8c9265a1d2a4fadd0b792",
+              "resultSha256": "969f5c00fe900304a91c28e9e6126b57bdae3265f3e93e46b0fc0cf0a9725a70"
+            }
+          }
+        },
+        {
+          "id": "577d4d32",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 3,
+          "answerPromptSha256": "1010b5ba482b383213cc6168a7d84364efb8c3abc177678c827235d9cad38450",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "1e67969e020506a69aa5f5217d5b877d4a8bd3e0bbb32f7926bf5c161fe7fd2e",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "4219b5b148779f87ae3f0aaeb6bebf507e9d54ce804534a9fa5367b61de5bbc2",
+              "resultSha256": "d12e17cce8a8f81edeba9554fc2831972fe818e68e64ed1d8b0ae14dee31f0be"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "9296adeeda83be0caca7091ebd51def876ea16065892a6f9f8b2b6c44f6bc904",
+              "resultSha256": "236c665a96d03485e80e7b600125620f581bbedbc4c2dcd376eb7bf0d1822b09"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 9,
+              "attempts": 1,
+              "rawVerdictSha256": "c412e2ca7a1e6394cb8720bd811c089d1dc25f93a4e5e25565cb949079de2843",
+              "resultSha256": "d164f490f070c06416f0a9693a9d2d37ff2081aeeba0674fef34523a5d3aab47"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "479aec8e140605844443c70e1f461599c274cedea9293bb7d09a8d32c4b2c543",
+              "resultSha256": "18ffcce69371255fcd727df395abb4315a97ba1f4340783a6c6aefa45c451ea2"
+            }
+          }
+        },
+        {
+          "id": "3d86fd0a",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 2,
+          "answerPromptSha256": "ee3c5eccdb33d864c338d7a8045ca696e70b4e73f0d41f9fee5b6b1e42b2c216",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "b83b91fcbd5c55093c64657b5307080797e1bd0fe5cc4b09b7545349a2b44153",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "5ff7f538af8a1b80b01ad54a550ddefe964227fda753cd1c6e979d8b9aedc9c5",
+              "resultSha256": "3e4391a1a5dbee11990b4921d7c958f614539d56cd223ba4cd87126ee642e3b4"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "d5e2e16d895f232c704226e96053b6497012de067473822e2e8074d054dc8c69",
+              "resultSha256": "ca1b97ee7e327719a61b64df6bcafbe73b5c6d370ee047edf57ef30bdc8c2c04"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "de304d14aff162055e22243b01ac53b0503cae82e2e397903d48f85d4db7ee18",
+              "resultSha256": "e8be106daac92bc6c9e6b1328534706f19da14a4a677d2fb3483e2629b8d9e8b"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "d85c27aaa75f6a4dbd689a232243d6b968ad56b624d9c7c112e98241e0ace81e",
+              "resultSha256": "f0ada42966ba25b923a072ae0f8d18f1070738acc9135112a187d88b7b15ad7d"
+            }
+          }
+        },
+        {
+          "id": "15745da0",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 1,
+          "answerPromptSha256": "0854648edc915eb8ac4351d861f3be8f126c9c396129c61d2f0ff0c7fdeb8e65",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "360e3202e49b2eab14954dca109fe961c15d413695001b405084efe0e2956ee4",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "ea493ca8721a1da8c5a5610a9c22fa7daecbdeef587978daf98fac9f63436ca5",
+              "resultSha256": "d000f0e10df3ff56160be3a77b40cb728372593ce37f4426f0be788b1c7eec75"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "75e40a26182506311129193b19acfccf5941a35d5b9159898102c2d408549077",
+              "resultSha256": "dc84d16693bd3d0e8dfdd5ced0e451ebb074b46009811767d145646ec8f75c1c"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 9,
+              "attempts": 1,
+              "rawVerdictSha256": "4e188297756fd5a0f419b161c0433889c0c6ebd7a3743de510810b4acb63a361",
+              "resultSha256": "6d314994dbf01601f3937b2775532236948dc678213aa1d5bf0ef1cdb2e1dd14"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "932bb9a13212bfcf831fc713b79099ceece43ed44dccc0b8c4ced0269f41ce34",
+              "resultSha256": "da4f0d2316839e7a0c213001b1afff3c1f310d5c9779831e3b68550b28b4d0fa"
+            }
+          }
+        },
+        {
+          "id": "gpt4_65aabe59",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 5,
+          "answerPromptSha256": "5106e8f1aa7d3e7f6d3676d10746c07207aa0514a2c22c03034f03bda222f40e",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "1ac59cea3a023bd3dfd1907e76a48ca112729f3ca22b58413f4bd93265d87eb5",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "58270d2b8151272ee6b8773d494ac62a478d5425993d67e74835480d930240fb",
+              "resultSha256": "ca4833d73a4f429a5c821b14b94b036f605b84cf3ae651cc61256117663bd399"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "586b8d427563ef20895c7bc6c9ff584fb8d1a755d57fb4736e2dc5c5e91bc7de",
+              "resultSha256": "34d657caf7a4a517ed39c2ebaf7897f745994698d663d8d1b15a2df034a13ebd"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "868467970f689e9ca12b6bb3419e0cfc407db9eaf18237ad39cb1ff35b6a48a9",
+              "resultSha256": "1e6534524ac1aabb1fbcfe836263abd6d44e847a2fff1227b379b45a465f093d"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "c2f51a3246623fbc0571a82f845fb5e98d23f2306c598c033b17f3340926cd06",
+              "resultSha256": "cee45803cbe2d8eeef24652dd842601a1cd4d1dc46fd3548605ab72bd8a41a0a"
+            }
+          }
+        },
+        {
+          "id": "982b5123",
+          "subset": "dev8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 5,
+          "answerPromptSha256": "2de1b7cb598e4a694d56f076c20df727e604cd8af917fabb41c3290c5636e9bf",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "8efd7e50cec609fa93a728f8f6378e39f1b2edcbf46307b3ce1f44c24a61eb9f",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "eeebe1e6ffdee86c5266880ad42be759ed7bfd9099454fb370f77b4f6304cf41",
+              "resultSha256": "043bf5bc963db030c5312f7aeeccfd6bf5952ab85f6b29947ca6c7dce6ba8605"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "6559079d635650f36ea6902546e4059f250b01ef31f21c17bc132c2d6a97bbd5",
+              "resultSha256": "f30c83ec791e081593cfa9acb2cac6ac7f053c47312bfcd769ba9c381742133f"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "9a24a534ce60b9f7257e16157cb8c52c6f681cb5429d84df2d2dbffdd29b7cef",
+              "resultSha256": "b3bc86226f790cee85d4a40d8bd0ebab52eb472fd6c86907a2e6134e2e86b94a"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "c7096257094fbaada82465d4a2d9f1e138a8c4dbbdb046f1b7db09afa6491467",
+              "resultSha256": "1d0a2d70dd248653bf62cbea17bb424d3e543fa94de2d5b7d02a9d5b79a4e207"
+            }
+          }
+        },
+        {
+          "id": "gpt4_7fce9456",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 5,
+          "answerPromptSha256": "cd8c36d05410e8e2a59ab2097cb634b863c556fab573c597397662192a9d29b9",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "a98c09ad357dd43a15e4140438059cb43d6bdff9cebe1a10ee3ced3ac17bab41",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "f23d4d9f6680071442c5dc2751089812ff94ec7511271d4dacb73576ef745d63",
+              "resultSha256": "69f7b1f3746d7ba9e77f9c75c0672e0174d8abd03ee73daf47a0a48c6b520139"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "60b010655342051a18128ce4a37c555e7ef884b610d2f76509a7f79729d38c35",
+              "resultSha256": "85d198ec0ec9300681415574bf8bdf237952ae76f4cb46fb9f1158ef664dc4c5"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "707c64acf8858c2beac07eb72bab75fe36f074f227a7c495def0fe9f27adb80f",
+              "resultSha256": "67dc9058f8469aedb293393c6ba58fbcb2de087a15657ea8a63ba1739ffebf44"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 1,
+              "attempts": 1,
+              "rawVerdictSha256": "7383a30bc1c27c6dc216b565ebb2c5d38f324631b4d3deba52433a2e85e90136",
+              "resultSha256": "36eb11526fc1ee5a7e8ae20cddea29468d0d9564ce8c1a9bc36c4a2d9394117f"
+            }
+          }
+        },
+        {
+          "id": "gpt4_a1b77f9c",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 4,
+          "answerPromptSha256": "9c7902ac898534e8c0f26c12340ee49563ffbcd35452171db1dec35c12693489",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "4d05db40cc7ce49ab1ff0062512f98a561bf1769104f8de4ee6e75efb918e28f",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "5ee0c14bf86dd873478ee1c6f82331cb7f8721163bcc862be889db3e3fbfc31c",
+              "resultSha256": "4a3debff8cadf595fd869e5bbaad2375c1ffc07aa2179cc5c4333e7323a21688"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "289535f4bd11f214da3c8e84d77803ef315c1febd9ce6d4dd0c6d216ed00b7cc",
+              "resultSha256": "ba0036b3eb2a6d2af217e247578a2ed5023e2be3d12d2181bf2d17eb19339daf"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "75b8ba1960ef62061c995fd5c4f8f40d52f04518abcd9a8b2059a5f57458d2fa",
+              "resultSha256": "3e2a55fcb1cddec3cb7f686d537aa46d5c073682ebcdccd3c55b9c311ab8e3d6"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "40f7f77e1631252915807f0018e5479ffdadca213b0f313aba19ea540e7d6282",
+              "resultSha256": "7f75fe496d071403ecc4ce40277ffb6203ce36886a46f5cb1ca5d7e83daf7b0f"
+            }
+          }
+        },
+        {
+          "id": "28dc39ac",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 9,
+          "answerPromptSha256": "c609f908b9954dc40c34464622444cff253109a0f694f6638be29d3610331da2",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "e12059841341b496e404d78d65bb658b4a620ce52ead0daebe38d1555fbc7d6b",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "bd4931c71e17bd15e883e44c70d5735f48da774070729fd4864905286f6de3fe",
+              "resultSha256": "5e081e9a85d17da2f28425ec5087a3ee016f055bc96fecc26fa1d5803dc57a23"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "00dde03f3d21bec76b9b767600c3b0d074e027c3f9a615db35c1f28cd57784bd",
+              "resultSha256": "c6a62a4db2d7f601afe9284985264360f7735bbca1299b559257cbcc65bc63b9"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 5,
+              "attempts": 1,
+              "rawVerdictSha256": "001fddb70e3b56eb29689f4d2c761d3679c850f28496d4951f3b6348e4d90c04",
+              "resultSha256": "bf213f264ebba217fbf69b4e7f3c10adf06a7e814c1839af79966fc8469e01ef"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 6,
+              "attempts": 1,
+              "rawVerdictSha256": "e7199269421c3fffaacafaf9355ed02bdbf2c5472008116a4b129648f31cd43b",
+              "resultSha256": "cd9e152f0c484bab375aed4931b6340c1e3ea16b454b3057b531dbaaf0a1e2e4"
+            }
+          }
+        },
+        {
+          "id": "gpt4_15e38248",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 7,
+          "answerPromptSha256": "e0701b220e9b6809741568f744fa25a50dea5892f8dc2484746211d656000e34",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "4bf7d8a54be64a8de633ad20547657bb81cdce86b1ffcd68353f7053e96dc490",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "c5f5b15c7233c19aa7decd0b3760274bc4a1eef56a01a6b85ceb8e6a2ecabe75",
+              "resultSha256": "b9444cbe3344a97c1a65b8e0034dae95cb1234899293dc1dc0e557ba9704fa21"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "2bc5eb8a4c1e6c2ab99995a06d1f7f4d9033447fb15b1a4ce02834f8e2369b8c",
+              "resultSha256": "376312bce5e10ea8d45a86e82b30cbc29e3824fe335852e85bd8f3c7b6111ba4"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 6,
+              "attempts": 1,
+              "rawVerdictSha256": "6a3e9c096ef96e0386d41b79bd6b23425f1d1a1937e9817ccf7813fe0a0b9b78",
+              "resultSha256": "933c19f281c06aee0f0ebfd17bfdc2369f3fca416d1006f91ba6016a3377d4b9"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 6,
+              "attempts": 1,
+              "rawVerdictSha256": "4220dd444b3a20773a17894d7af29675113bde62a4b1de547c97d6ad15d44004",
+              "resultSha256": "b6e29de9d8fa426a94ff88469c9309f4ae90e6b58c2eac743520483d8d9cc301"
+            }
+          }
+        },
+        {
+          "id": "6d550036",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 4,
+          "answerPromptSha256": "0854648edc915eb8ac4351d861f3be8f126c9c396129c61d2f0ff0c7fdeb8e65",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "595e32f02909f29faf1304994e10ac880dc834309c580321eac1390a3b736af1",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "dc7ffdb0f4dd55715afe3ba82ed5b6969c3b49521cb8fb016671dab7c4d595da",
+              "resultSha256": "9bb592582a7def157ed154fdffb9f3344b5e9c6cb8d423c99f06bc467b428dc1"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "2ff82a98ac653426f35beb4879ba1eac200d72865b13a082937a8888fbf749ed",
+              "resultSha256": "5f888b9cb0174b02b4a98e2e88001bc65b3203e049a52c302e9e1aa338228aea"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 7,
+              "attempts": 1,
+              "rawVerdictSha256": "eddc775a0994c467e0ed017766d1583f40720421d093e45ab5cc78d6ea5eb0af",
+              "resultSha256": "4daec1aa4c43ffa1ba30d3006d6a26dd0d8cc9d0f29d8df0b89570df2111b906"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 6,
+              "attempts": 1,
+              "rawVerdictSha256": "93cacd4e3012755c042e576c82f04d72f5f862e56c201b2fc0f078155a5b1fe5",
+              "resultSha256": "9c293fdc7cbe4684525ad38b7b0eca9f040c6e86a33a2f59f99c065b01a3f537"
+            }
+          }
+        },
+        {
+          "id": "2ce6a0f2",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 8,
+          "answerPromptSha256": "59e6c7192c2f6ca8520595bf01157a2543b19bc42390fc1f066fee94f4cc7ec2",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "25ab3b7e5bb74e5aaf6acc0510baffd6d5e5d08013e4e4884b5fc5a9764c178a",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "a570f6103471d470d52c8ab2508201fe133a94f610fbc88015fcf7d256b65e27",
+              "resultSha256": "c0868872e05f2dc0f85c46013dca1969d22f6147f9cd9fd6b627fd9eac26fac8"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": false,
+              "attempts": 1,
+              "rawVerdictSha256": "e3b235cdf16d086c5fe9b670e96a90b8ee31603fcd0fd0a0a04763b242d073cd",
+              "resultSha256": "e689519b3400aca3d8e1405f55756b52cd408186a37363dbd0597ed6cc623922"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 6,
+              "attempts": 1,
+              "rawVerdictSha256": "2d213f403da39e826a929d7283ebe2a34aa0f637113718371d39560fce4f20a3",
+              "resultSha256": "61686d3203f9fdd61830bcabd25ae345c4b5d210f4285873491c61cac209f810"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 6,
+              "attempts": 1,
+              "rawVerdictSha256": "052b9ea1146cb0b9900113f595c955feec55ca4e1b1bce96fef8b7302781c0ff",
+              "resultSha256": "2ee492a47c4dd80daaf76099b887834edcc02626609edf31218213a3bbcf523a"
+            }
+          }
+        },
+        {
+          "id": "9d25d4e0",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 4,
+          "answerPromptSha256": "f517bc136f8b93cadc6da58e21139921804d3427905cd2a7f1f2e5da54a25438",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "b5f9ec5c762c7e624216a3408369ba2a15708f32ad77b2cd42ba1b90cde6c545",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "6eeafc29f2c50b5f01d9a5758a1060e01122c26693d1ce530450a917db6801ff",
+              "resultSha256": "830e591e29bdefa688f47a8ab66d829b178714f8a80f5e947142f2a5fabdf686"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "07f41fd36972eb160baacaf68e6356837cbc7733c386075e8aa74fca398f9b05",
+              "resultSha256": "b691c3ca48192fc0c459ec71e951d6d6ad24dfae95b1e2cf75d8878c01dba686"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "2c928c2e2cace01c3d3aad4fe87bdf5c94f4ee40a96c285bf4f1dba210891420",
+              "resultSha256": "79653fd1f667608e02e8c30384041a049d10444a4b0a4a13f0e71bb454d89288"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "49f19d3d9045691b3e9cb39727047eb870a8f14cf84b9150428709012f4bd194",
+              "resultSha256": "d68b5fa5d72e44d26907109354b9b169cc8adad14185a9ee09b1f0da261c600f"
+            }
+          }
+        },
+        {
+          "id": "gpt4_731e37d7",
+          "subset": "hard8",
+          "answerStatus": "answered",
+          "answerAttempts": 1,
+          "snapshotPrefixVerified": true,
+          "serializedToolCount": 3,
+          "automaticLocatorRequests": 4,
+          "answerPromptSha256": "8e14b94d66438195a356bf38a4769666dd730ed6e1acf49bdd4d9375fb1d538e",
+          "serializedToolsSha256": "48d8b7b5cfff2029dffb83c5d1e4ae0e0b887001523c8c1771b908c47463fd51",
+          "answerResultSha256": "a45f76e9b77a508b1c5184c8a7849377df7111acb356f7b0eff082dce2957e9e",
+          "strict": {
+            "luna": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "a7ce6b52c1bf7f885e6156315f52faa4b533acef05320a79bf87c0fad27935b9",
+              "resultSha256": "48a357ed4ff404ff1a09f2627bb47ea07221e4a6c0f19585495f5d23181553d5"
+            },
+            "sol": {
+              "status": "graded",
+              "correct": true,
+              "attempts": 1,
+              "rawVerdictSha256": "ac029575f2943123cd139e427fb930027907305659ae157fa6a8530dddc41bd8",
+              "resultSha256": "c59e1815de98115a9b60183088ed4f358b61491200fc8a2d7e7e36d26b38623e"
+            }
+          },
+          "score1to10": {
+            "luna": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "a0cbee8cc07477b289127cda8ab440d6a97d994ef2c8dc94b2f8dba7f374cf35",
+              "resultSha256": "e0a88f99b106ea20b19e22038c08f6da68407fbd266ca3db829310744bf1144c"
+            },
+            "sol": {
+              "status": "graded",
+              "score": 10,
+              "attempts": 1,
+              "rawVerdictSha256": "d53850f9447aa7977342213d7a3c138bd9a309018469b1605453610971cde8df",
+              "resultSha256": "c71de3bbc36e2c73bb163e15c333390648601ba853ed55c6753f99cd748a216e"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "evidenceHashes": {
+    "aggregate.json": "ab15ca404dd80b145b581ed8ee796547e00419b7aa8f73ea8802d0072877a1a8",
+    "input-bindings.json": "b215ec328b7fc89b88fb24bb251fbcc5c5f943a8b775750ee709656c7f5299c1",
+    "answer-prompt-bindings.json": "3d65550bee4c8e7a13b478abdfc8f7af6a68c2cc8eb7b3b04c3e7588a21dacbb",
+    "runtime-verification.json": "6ffe0bdbbeee4de2ee927302428d9fd5480520661c161c33dab4f4512cb46589",
+    "execution-sources-sha256.json": "973047624298aadf08e28b7c131aff393c7de6121ac27e71ed5883b42510b7c8",
+    "benchmark-test.diff": "a79ed4c0c89d2ef699c99800d0d2a9dbdd2a477609544c6bfe64f9aca9e44827",
+    "parent-score-verification.json": "53c24c9ca08ef0cba23dbb8264fd0c8d916192e6a1020acede6f3abff98c0127"
+  },
+  "verification": {
+    "answers": 48,
+    "judgments": 192,
+    "snapshotPrefixes": 48,
+    "sessionHashes": 48,
+    "sessionSuffixes": 48
+  },
+  "historicalBest": {
+    "run": "lme16-en-warning-jieba-20261006",
+    "candidateCommit": "0ecff723655300550d58ae6c6cc5a3d8da22ee07",
+    "selectionRule": "Among the four archived English SQLite runs in release-0.1.0/manifest.json, require complete strict and numerical grading by both judges; maximize the sum of both strict correct counts. Select one whole run, never per-question maxima.",
+    "models": {
+      "compression": {
+        "provider": "clp",
+        "model": "gpt-6-luna",
+        "effort": "high"
+      },
+      "answer": {
+        "provider": "clp",
+        "model": "gpt-6-luna",
+        "effort": "high"
+      },
+      "judges": {
+        "luna": {
+          "provider": "clp",
+          "model": "gpt-6-luna",
+          "effort": "xhigh"
+        },
+        "sol": {
+          "provider": "clp",
+          "model": "gpt-6.1-sol",
+          "effort": "medium"
+        }
+      }
+    },
+    "summary": {
+      "strict": {
+        "luna": {
+          "selected": 16,
+          "scored": 16,
+          "correct": 10,
+          "wrong": 6
+        },
+        "sol": {
+          "selected": 16,
+          "scored": 16,
+          "correct": 11,
+          "wrong": 5
+        }
+      },
+      "graded": {
+        "luna": {
+          "selected": 16,
+          "scored": 16,
+          "totalScore": 127,
+          "effectiveMax": 160
+        },
+        "sol": {
+          "selected": 16,
+          "scored": 16,
+          "totalScore": 128,
+          "effectiveMax": 160
+        }
+      }
+    },
+    "eligibleRuns": [
+      "lme16-en-warning-jieba-20261006",
+      "lme16-en-sol-high-warning-jieba-20261006",
+      "lme16-en-luna-aggregation-prompt-20261006"
+    ],
+    "excludedIncompleteRuns": [
+      "lme16-en-sol-aggregation-prompt-20261006"
+    ]
+  },
+  "limits": [
+    "A small development set, not the full LongMemEval benchmark or an independent held-out estimate.",
+    "One new answer per question and arm; no repeated runs selected for the current table.",
+    "Strict verdicts and 1–10 partial-credit grades are independent.",
+    "Full-text inputs, answers, verdict reasons, request payloads and source snapshots remain external.",
+    "Reproduction requires the external artifacts and their recorded hashes; provider responses are nondeterministic."
+  ]
+}

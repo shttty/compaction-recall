@@ -1,4 +1,4 @@
-"""Authorized Chinese LME16: one pinned arm, native snapshots, durable pilot/resume."""
+"""Pinned LME16 native snapshots, current production arms, durable pilot/resume."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import json
@@ -18,6 +18,7 @@ lme = common.module('zh_live_native', HERE / 'lme-run.py')
 r2 = common.module('zh_live_round2', HERE / 'round2-run.py')
 zh = common.module('zh_live_inputs', HERE / 'lme-zh-preflight.py')
 ARM = 'pi-rawfts'
+CURRENT_ARMS = ('pi-native', 'pi-lite', 'pi-full')
 MEMORY_MAX = 14 * 1024 ** 3
 FIXED_ENV = {'COMPACTION_RECALL_SQLITE_ARM': 'porter', 'COMPACTION_RECALL_SQLITE_BIGRAM_ONLY': 'porter',
              'COMPACTION_RECALL_SQLITE_HAN_PHRASE_TRIAL': 'off', 'COMPACTION_RECALL_AUTO_GATE': '280',
@@ -39,30 +40,41 @@ def plain_rpc(command, env, directory, **kwargs):
 
 
 def answer_command(output, config, pins, arm, folder, session, evidence, expected=None, stop=False):
+    command = ['node', str(HERE / 'lme-zh-rpc.mjs'), '--config', str(output / 'config.json'), '--phase', 'answer',
+               '--session', str(session), '--append-system-prompt', str(folder / 'answer-system.txt')]
+    if arm == 'pi-native':
+        command.extend(['--arm', 'native', '--tool-evidence', str(evidence)])
+        if expected:
+            command.extend(['--expected-tools', str(expected)])
+        if stop:
+            command.append('--stop-after-serialization')
+        return command
     directory = folder / 'wrapper'
     directory.mkdir(parents=True, exist_ok=True)
     pin = pins['sqlite']
     settings = {'entry': str(Path(pin['path']) / pin['entry']), 'sdkPath': config['sdk_path'], 'sqlite': False}
+    if arm in CURRENT_ARMS:
+        settings.update(mode=None, runtimeEvidencePath=str(folder / 'sdk-registration.json'))
     options = {'evidencePath': str(evidence), 'expectedPath': str(expected) if expected else None, 'stopAfterSerialization': stop}
     if arm == 'pi-grep-fallback':
         options['expectedTools'] = ['history_expand', 'history_recall']
-    context = {'directory': str(folder), 'toolsOnly': False}
+    elif arm == 'pi-lite':
+        options['expectedTools'] = ['history_expand', 'history_grep']
+    context = {'directory': str(folder), 'toolsOnly': arm == 'pi-lite'}
     content = (f"import {{ registerPinned }} from {json.dumps(str(HERE / 'plugin.mjs'))};\n"
                f"import {{ withToolEvidence }} from {json.dumps(str(HERE / 'round2-tools.mjs'))};\n"
                f"import {{ withContextEvidence }} from {json.dumps(str(HERE / 'round3-context.mjs'))};\n"
                f"export default async pi => {{ Object.assign(process.env, {json.dumps(pin.get('configuration', FIXED_ENV))}); "
-               f"await registerPinned(withContextEvidence(withToolEvidence(pi, {json.dumps(options)}), {json.dumps(context)}), {json.dumps(settings)}); }};\n")
+               f"await registerPinned(withToolEvidence(withContextEvidence(pi, {json.dumps(context)}), {json.dumps(options)}), {json.dumps(settings)}); }};\n")
     entry = directory / 'entry.mjs'
     if entry.exists() and entry.read_text() != content:
-        raise ValueError('Frozen Chinese answer wrapper changed')
+        raise ValueError('Frozen answer wrapper changed')
     if not entry.exists():
         entry.write_text(content)
     r2.frozen_json(directory / 'package.json', {'type': 'module', 'pi': {'extensions': ['./entry.mjs']}})
     entry.chmod(0o444); (directory / 'package.json').chmod(0o444)
-    command = ['node', str(HERE / 'lme-zh-rpc.mjs'), '--config', str(output / 'config.json'), '--phase', 'answer',
-               '--session', str(session), '--arm', 'production', '--plugin-dir', str(directory),
-               '--timing-file', str(folder / 'timing.jsonl'), '--append-system-prompt', str(folder / 'answer-system.txt')]
-    if arm in ('pi-grep-fallback', 'pi-restored-grep'):
+    command.extend(['--arm', 'production', '--plugin-dir', str(directory), '--timing-file', str(folder / 'timing.jsonl')])
+    if arm in ('pi-grep-fallback', 'pi-restored-grep', 'pi-lite', 'pi-full'):
         command.extend(['--recall-config', str(output / 'recall-config.json')])
     return command
 
@@ -161,9 +173,10 @@ def reused_snapshots(source, output, approved, preflight_path, questions, inputs
 def prepare(args):
     arm = getattr(args, 'arm', ARM)
     source = getattr(args, 'snapshot_source', None)
-    if arm not in (ARM, 'pi-concepts', 'pi-grep-fallback', 'pi-restored-grep') or not 1 <= args.workers <= 8:
-        raise ValueError('Unsupported Chinese arm/worker ceiling (maximum eight)')
-    concepts = arm in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep')
+    if arm not in (ARM, 'pi-concepts', 'pi-grep-fallback', 'pi-restored-grep', *CURRENT_ARMS) or not 1 <= args.workers <= 8:
+        raise ValueError('Unsupported arm/worker ceiling (maximum eight)')
+    current = arm in CURRENT_ARMS
+    concepts = arm in ('pi-concepts', 'pi-grep-fallback', 'pi-restored-grep', *CURRENT_ARMS)
     language = getattr(args, 'language', 'zh')
     if language == 'en' and not concepts:
         raise ValueError('English requires frozen native snapshot reuse; new compression is not authorized')
@@ -179,7 +192,7 @@ def prepare(args):
     pins = json.loads(args.pins.read_text())
     pin = pins['sqlite']
     commit, archive_sha = args.commit, args.archive_sha256
-    candidate_environment = {**FIXED_ENV, 'COMPACTION_RECALL_SQLITE_HAN_PHRASE_TRIAL': getattr(args, 'han_phrase_trial', 'off')}
+    candidate_environment = {} if current else {**FIXED_ENV, 'COMPACTION_RECALL_SQLITE_HAN_PHRASE_TRIAL': getattr(args, 'han_phrase_trial', 'off')}
     pin['configuration'] = candidate_environment
     if not re.fullmatch(r'[0-9a-f]{40}', commit) or not re.fullmatch(r'[0-9a-f]{64}', archive_sha) or not args.task:
         raise ValueError('Explicit full candidate commit/archive hash and task identity required')
@@ -189,9 +202,13 @@ def prepare(args):
             or pin['archiveSha256'] != archive_sha or Path(pin['path']).resolve() != Path(candidate['snapshotRepo']).resolve()
             or pin['entry'] not in candidate['files'] or not pin['runtimeClosureSha256']):
         raise ValueError('Candidate archive/pin/source mismatch')
+    if current and (pin['entry'] != 'src/index.ts' or language != 'en'):
+        raise ValueError('Current arms require the frozen public src/index.ts and English native snapshots')
     for relative, digest in pin['runtimeClosureSha256'].items():
         if common.sha(Path(pin['path']) / relative) != digest:
             raise ValueError('Runtime import closure changed: ' + relative)
+    verify_files({str(Path(pin['path']) / relative): digest for relative, digest in pin.get('dependencyFilesSha256', {}).items()},
+                 'Pinned runtime dependency')
     for relative, digest in candidate['files'].items():
         if common.sha(Path(pin['path']) / relative) != digest:
             raise ValueError('Fixed candidate file bytes changed: ' + relative)
@@ -238,6 +255,10 @@ def prepare(args):
         recall_config = output / 'recall-config.json'
         r2.frozen_json(recall_config, {'mode': 'full', 'trace': True, 'autoGate': 280,
                                      'snippetBudget': 240, 'recallTimeoutMs': 5000})
+        inputs[str(recall_config)] = common.sha(recall_config)
+    if arm in ('pi-lite', 'pi-full'):
+        recall_config = output / 'recall-config.json'
+        r2.frozen_json(recall_config, {'mode': 'lite' if arm == 'pi-lite' else 'full'})
         inputs[str(recall_config)] = common.sha(recall_config)
     sources = (Path(__file__), HERE / 'lme-zh-rpc.mjs', HERE / 'lme-zh-preflight.py', HERE / 'lme-run.py',
                HERE / 'lme-zh-report.py', HERE / 'lme-grade-run.py', HERE / 'lme-grade-report.py', HERE / 'lme-zh-smoke.mjs',
@@ -302,7 +323,7 @@ def serialization(output, config, pins, manifest):
     folder.mkdir(exist_ok=True)
     own = {**config, 'output_dir': str(folder)}
     r2.frozen_json(folder / 'config.json', own)
-    if arm in ('pi-grep-fallback', 'pi-restored-grep'):
+    if arm in ('pi-grep-fallback', 'pi-restored-grep', 'pi-lite', 'pi-full'):
         r2.frozen_json(folder / 'recall-config.json', json.loads((output / 'recall-config.json').read_text()))
     source = folder / 'synthetic.jsonl'
     if not source.exists():
@@ -310,8 +331,9 @@ def serialization(output, config, pins, manifest):
     question = {'id': 'offline-synthetic', 'question': 'Inspect only synthetic tool serialization.', 'question_date': '2024/01/01 00:00'}
     probe = {'fingerprint': manifest['fingerprint'], 'questions': [question], 'preflight': {},
              'snapshots': {'pi/offline-synthetic': {'path': str(source)}}}
+    tool_count = 0 if arm == 'pi-native' else 2 if arm in ('pi-grep-fallback', 'pi-lite') else 3
     r2.preflight(folder, own, pins, probe, arms=(arm,), command_factory=answer_command,
-                 expected_tool_count=2 if arm == 'pi-grep-fallback' else 3)
+                 expected_tool_count=tool_count)
     manifest['preflight'] = probe['preflight']
     manifest['answerDescriptor'] = probe['answerDescriptor']
     descriptors = {} if 'snapshotSource' in manifest['identity'] else {'compression': (HERE / 'lme-zh-rpc.mjs', output / 'config.json')}
@@ -602,7 +624,7 @@ if __name__ == '__main__':
     parser.add_argument('--archive-sha256', required=True)
     parser.add_argument('--task', required=True)
     parser.add_argument('--workers', type=int, choices=range(1, 9), default=8)
-    parser.add_argument('--arm', choices=(ARM, 'pi-concepts', 'pi-grep-fallback', 'pi-restored-grep'), default='pi-restored-grep')
+    parser.add_argument('--arm', choices=(ARM, 'pi-concepts', 'pi-grep-fallback', 'pi-restored-grep', *CURRENT_ARMS), default='pi-restored-grep')
     parser.add_argument('--snapshot-source', type=Path)
     parser.add_argument('--han-phrase-trial', choices=('off', 'jieba'), default='off', help='Explicit candidate Han phrase configuration; bound into manifest and SDK wrapper')
     parser.add_argument('--language', choices=('zh', 'en'), default='zh', help='Original question/history language; English requires compatible native snapshot reuse')

@@ -3,6 +3,7 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+import threading
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -28,7 +29,7 @@ def save(path, value):
     return path
 
 
-def fixture(base, failure=False, arm=ARM):
+def fixture(base, failure=False, arm=ARM, english=False):
     ARM = arm
     source, current = base / 'source', base / 'concepts'
     source.mkdir(); current.mkdir()
@@ -37,11 +38,13 @@ def fixture(base, failure=False, arm=ARM):
     tokens = {'input': 7, 'output': 2, 'cacheRead': 1, 'cacheWrite': 0}
     for index, qid in enumerate(ids):
         subset = 'dev8' if index < 8 else 'hard8'
-        question = {'id': qid, 'subset': subset, 'question': '问题' + qid,
+        question = {'id': qid, 'subset': subset, 'question': ('Question ' if english else '问题') + qid,
                     'answer': '参考' + qid, 'question_date': '2026-01-01'}
         questions.append(question)
-        for name, value in (('question-zh.json', {'question': question['question'], 'question_en': 'Question ' + qid}),
-                            ('question.json', {'question': 'Question ' + qid}), ('answer.json', {'answer': question['answer']})):
+        sources = [('question.json', {'question': 'Question ' + qid}), ('answer.json', {'answer': question['answer']})]
+        if not english:
+            sources.append(('question-zh.json', {'question': question['question'], 'question_en': 'Question ' + qid}))
+        for name, value in sources:
             path = save(base / 'data' / subset / qid / name, value)
             inputs[str(path)] = report.sha(path)
         build = {'state': 'complete', 'compactions': [{'success': True, 'seconds': 3,
@@ -54,8 +57,8 @@ def fixture(base, failure=False, arm=ARM):
             save(attempt / 'result.json', build['compactions'][0])
             save(attempt / 'wire-requests.jsonl', {'phase': 'compression'})
             save(attempt / 'wire-results.jsonl', {'phase': 'compression', 'usage': tokens})
-        snapshots['pi/' + qid] = {'path': str(snapshot), 'sha256': report.sha(snapshot), 'language': 'zh', 'build': build}
-    old_identity = {'dataset': 'LME16-Chinese', 'inputs': inputs}
+        snapshots['pi/' + qid] = {'path': str(snapshot), 'sha256': report.sha(snapshot), 'language': 'en' if english else 'zh', 'build': build}
+    old_identity = {'dataset': 'LME16-English' if english else 'LME16-Chinese', 'inputs': inputs}
     old_fingerprint = report.common.e.object_sha(old_identity)
     old_manifest = save(source / 'manifest.json', {'identity': old_identity, 'fingerprint': old_fingerprint,
         'arms': ['pi-rawfts'], 'selected': ids, 'questions': questions, 'snapshots': snapshots, 'state': 'complete'})
@@ -64,7 +67,7 @@ def fixture(base, failure=False, arm=ARM):
     binding = {'run': str(source), 'fingerprint': old_fingerprint, 'manifestPath': str(old_manifest),
                'manifestSha256': report.sha(old_manifest), 'filesSha256': source_files,
                'snapshots': {key: {k: s[k] for k in ('path', 'sha256')} for key, s in snapshots.items()}}
-    identity = {'task': 'RSM-ZH16-RESTORED-GREP-E2E-20261006' if ARM == 'pi-restored-grep' else 'RSM-ZH16-CONCEPT-E2E-20261005', 'arm': ARM, 'dataset': 'LME16-Chinese',
+    identity = {'task': 'RSM-LME16-CURRENT-THREE-ARMS-20261006' if arm in native.CURRENT_ARMS else 'RSM-ZH16-RESTORED-GREP-E2E-20261006' if ARM == 'pi-restored-grep' else 'RSM-ZH16-CONCEPT-E2E-20261005', 'arm': ARM, 'dataset': old_identity['dataset'],
                 'inputs': inputs, 'snapshotSource': binding, 'resourcePolicy': {'maxConcurrentSessions': 8,
                     'authorizedSessionCeiling': 8, 'wholeRunMemoryMaxBytes': 14 * 1024 ** 3,
                     'wholeRunMemorySwapMaxBytes': 0}}
@@ -127,6 +130,90 @@ def boundary(command, env, directory, prompt, **kwargs):
 
 
 class ConceptReportTest(unittest.TestCase):
+
+    def test_current_arms_reuse_english_and_keep_independent_score_denominators(self):
+        for arm in native.CURRENT_ARMS:
+            with self.subTest(arm=arm), tempfile.TemporaryDirectory() as tmp:
+                current, source, scope = fixture(Path(tmp), failure=True, arm=arm, english=True)
+                with self.assertRaisesRegex(ValueError, 'eight'):
+                    runner.prepare(current, workers=7)
+                output, manifest, items, configs, judges = runner.prepare(current, workers=8)
+                runner.grade_one(items[0], 'luna', configs['luna'], judges['luna'], output, manifest['fingerprint'], boundary)
+                runner.grade_one(items[-1], 'luna', configs['luna'], judges['luna'], output, manifest['fingerprint'],
+                                 lambda *a, **k: self.fail('Failed answer invoked provider'))
+                data = report.load_report(output)
+                self.assertEqual(data['arm'], arm)
+                self.assertEqual(items[0]['question_zh'], '')
+                self.assertEqual(data['scores']['luna']['total']['mean'], 9)
+                self.assertEqual(data['scores']['luna']['total']['missing'], 14)
+                self.assertEqual(data['scores']['luna']['total']['failed'], 1)
+                self.assertEqual(data['strict']['luna']['total']['correct'], 0)
+                self.assertIsNone(data['scores']['sol']['total']['mean'])
+                self.assertEqual(data['resources']['phases']['SOURCE historical compression']['calls']['sum'], 48)
+                snapshot = Path(next(iter(runner.read_json(current / 'manifest.json')['snapshots'].values()))['path'])
+                snapshot.write_text('changed')
+                with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+                    native.load_report(current)
+
+    def test_capacity_stops_scheduling_without_retry_and_preserves_inflight_scores(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            current, source, scope = fixture(Path(tmp), arm='pi-full', english=True)
+            barrier = threading.Barrier(8)
+            blocked = threading.Event()
+            calls = []
+            grade_one = runner.grade_one
+            def grade(*args, **kwargs):
+                args = list(args)
+                stop = args[-1]
+                def capacity_stop(*details):
+                    stop(*details)
+                    blocked.set()
+                args[-1] = capacity_stop
+                return grade_one(*args, **kwargs)
+            def rpc(command, env, directory, prompt, **kwargs):
+                qid = Path(directory).parents[1].name
+                calls.append(qid)
+                barrier.wait(timeout=10)
+                observed = boundary(command, env, directory, prompt, **kwargs)
+                if qid == 'q00':
+                    session = Path(command[command.index('--session') + 1])
+                    rows = [json.loads(line) for line in session.read_text().splitlines()]
+                    rows[-1]['message'].update(stopReason='error', errorMessage='maximum context length exceeded')
+                    session.write_text(''.join(json.dumps(row) + '\n' for row in rows))
+                else:
+                    if not blocked.wait(10):
+                        raise AssertionError('Capacity error was not observed')
+                return observed
+            with patch.object(runner, 'grade_one', grade), patch.object(runner.time, 'sleep', side_effect=AssertionError('Capacity retried')):
+                manifest = runner.run(current, workers=8, scope=scope, rpc_runner=rpc, descriptor=lambda config, expected: expected)
+            self.assertEqual(manifest['state'], 'capacity-blocked')
+            self.assertEqual(sorted(calls), [f'q{i:02d}' for i in range(8)])
+            data = report.load_report(current / 'grade-1to10')
+            self.assertEqual(data['state'], 'capacity-blocked')
+            self.assertEqual(data['scores']['luna']['total']['scored'], 7)
+            self.assertEqual(data['scores']['luna']['total']['failed'], 1)
+            self.assertEqual(data['scores']['luna']['total']['missing'], 8)
+            self.assertEqual(data['scores']['luna']['total']['totalScore'], 63)
+            self.assertIsNone(data['scores']['sol']['total']['totalScore'])
+            resumed = runner.run(current, workers=8, scope=scope,
+                                 rpc_runner=lambda *a, **k: self.fail('Blocked resume invoked provider'),
+                                 descriptor=lambda *a: self.fail('Blocked resume described provider'))
+            self.assertEqual(resumed['state'], 'capacity-blocked')
+
+    def test_ordinary_provider_errors_keep_three_attempt_retry_policy(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            current, source, scope = fixture(Path(tmp), arm='pi-lite', english=True)
+            output, manifest, items, configs, judges = runner.prepare(current, workers=8)
+            calls = []
+            def rpc(command, env, directory, prompt, **kwargs):
+                calls.append(directory)
+                return {'outcome': 'process-error', 'rc': 1, 'timing': {}}
+            with patch.object(runner.time, 'sleep') as sleep:
+                result = runner.grade_one(items[0], 'luna', configs['luna'], judges['luna'], output, manifest['fingerprint'], rpc)
+            self.assertEqual(len(calls), 3)
+            self.assertEqual([c.args[0] for c in sleep.call_args_list], [2, 4])
+            self.assertEqual(result['status'], 'provider-error')
+            self.assertIsNone(result['verdict'])
 
     def test_terminal_failed_answer_no_rpc_and_valid_missing_failure_denominators(self):
         with tempfile.TemporaryDirectory() as tmp:

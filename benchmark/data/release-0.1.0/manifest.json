@@ -11946,8 +11946,8 @@
   "publicFiles": [
     {
       "path": "benchmark/coding-recall/e2e/judge-pi-rpc.mjs",
-      "sha256": "36803b96b660759ae2124c018ccbd5ef1106625e0d5cdb20787a7ef1a0431c20",
-      "bytes": 2790,
+      "sha256": "3b682191248c698ad1636dd36fdc75b33ca9e196a7f3e39619453cfa9df5bd38",
+      "bytes": 3951,
       "kind": "code-or-source-metadata"
     },
     {
@@ -11958,14 +11958,14 @@
     },
     {
       "path": "benchmark/coding-recall/e2e/lme-grade-report.py",
-      "sha256": "10b0f28f7106673bd463c46603036ee43f1c747710e87845365cc1473d4fee63",
-      "bytes": 51265,
+      "sha256": "ddf347831902dbffa6635352b10851b21c1ab1f159d47f463b2087e5909043fe",
+      "bytes": 51469,
       "kind": "code-or-source-metadata"
     },
     {
       "path": "benchmark/coding-recall/e2e/lme-grade-run.py",
-      "sha256": "5d2ebdc993a4e215afd05f47de9feed48811a883c4439545c78c9780d50b839a",
-      "bytes": 21261,
+      "sha256": "fc7835925ec96daf4909ffcdee768feaed51f8e7b7def74804ab5711d38335f2",
+      "bytes": 22990,
       "kind": "code-or-source-metadata"
     },
     {
@@ -11982,20 +11982,20 @@
     },
     {
       "path": "benchmark/coding-recall/e2e/lme-zh-report.py",
-      "sha256": "1b66f3f60df021197461e3da559f0633c2d4dd7ec2154ee13089c42a0b51b54b",
-      "bytes": 41056,
+      "sha256": "77f1c82a8ed13928852ae8d3718715ed62be247df8eff652a47c149771981926",
+      "bytes": 41525,
       "kind": "code-or-source-metadata"
     },
     {
       "path": "benchmark/coding-recall/e2e/lme-zh-rpc.mjs",
-      "sha256": "6a3d0486e742c8f9e8769e9f209702bd4b299d7feb152e0e2dcc71840d84d183",
-      "bytes": 2422,
+      "sha256": "eac2bcf858fb5c35dfa0c033ae6bb5120e21ae660f66f5fc9682c6fbc4e4a5ad",
+      "bytes": 4918,
       "kind": "code-or-source-metadata"
     },
     {
       "path": "benchmark/coding-recall/e2e/lme-zh-run.py",
-      "sha256": "7d1348f084d732907cd2f37796f038a130f86fcb10ba26f8e7d33c214bbda77f",
-      "bytes": 43079,
+      "sha256": "a92f6773c7272bb2b760c6c70cb9f3eb82044affc6711192fead68327176a4f1",
+      "bytes": 44447,
       "kind": "code-or-source-metadata"
     },
     {
@@ -12012,8 +12012,8 @@
     },
     {
       "path": "benchmark/coding-recall/e2e/plugin.mjs",
-      "sha256": "792f8d11c7972507dbb397fdda065917da10fbdb4aba0b35bacc81c6fa6cb44f",
-      "bytes": 931,
+      "sha256": "3ec60a0e5fc1a4a4617b256bd5ac4beab8761388d58a4fcda25bfaddd235b956",
+      "bytes": 2188,
       "kind": "code-or-source-metadata"
     },
     {
@@ -12036,14 +12036,14 @@
     },
     {
       "path": "benchmark/coding-recall/e2e/round2-tools.mjs",
-      "sha256": "a7e2098e3d2538d1669350acfe0c9585da85e311bef7fc864a20b2e91ca22d40",
-      "bytes": 5379,
+      "sha256": "0dc7b7b703ec97d04eb066e00abb4fbc13f1b9bfa3dd90eaff575ed2f9211c6c",
+      "bytes": 6787,
       "kind": "code-or-source-metadata"
     },
     {
       "path": "benchmark/coding-recall/e2e/round3-context.mjs",
-      "sha256": "5a8c2bf560e5f70dceea51e73143b0d28a4a2980398a1f6caad5898a467ea96d",
-      "bytes": 2356,
+      "sha256": "02478f1415fe1f2f436a67cb8324aa8c5cadc6ffd060bc5c1a842d81cdf58040",
+      "bytes": 3382,
       "kind": "code-or-source-metadata"
     },
     {
@@ -12228,8 +12228,8 @@
     },
     {
       "path": "benchmark/coding-recall/e2e/lme-zh-smoke.mjs",
-      "sha256": "c75db23cdf61ffa711f942adab08efcfc01ccd362dc53b5ce3a9a3244a7c1a26",
-      "bytes": 6007,
+      "sha256": "6f82c8612226cad950a295f67ef9fb17d0c780a655d17c2616a52d7e047d6b47",
+      "bytes": 6339,
       "kind": "current-production-offline-smoke"
     }
   ],

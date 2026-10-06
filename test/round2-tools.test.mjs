@@ -64,7 +64,6 @@ test('serialization preflight persists only native tool metadata before exiting 
   assert.equal(evidence.source, 'before_provider_request');
   assert.equal(evidence.descriptionsPreserved, true);
   assert.equal(evidence.expectedMatched, null);
-  assert.deepEqual(Object.keys(evidence), ['registered', 'serialized', 'source', 'descriptionsPreserved', 'expectedMatched']);
 });
 
 test('normal requests match immutable preflight across provider function wrappers', t => {

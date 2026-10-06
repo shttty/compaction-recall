@@ -1,30 +1,43 @@
-import { closeSync, fsyncSync, mkdirSync, openSync, writeFileSync } from 'node:fs';
+import { closeSync, existsSync, fsyncSync, mkdirSync, openSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const LOCATOR_TYPE = 'compaction-recall:compacted-locators:v1';
 const HEADER = 'Compacted-history locators (lexical hints only).';
 
-// Benchmark observer only: never change messages, tools, or plugin hook results.
-export function withContextEvidence(pi, { directory, toolsOnly }) {
+export function persistContextPayload(payload, { directory, toolsOnly, nativeLocators = [], source = 'before_provider_request', runtime }) {
   mkdirSync(directory, { recursive: true, mode: 0o700 });
-  let locators = [], request = 0;
-  pi.on('before_provider_request', event => {
-    try {
-      const messages = event.payload?.input ?? event.payload?.messages;
-      if (!Array.isArray(messages)) throw new Error('Missing serialized provider messages');
-      // Recall tool results contain the same header; only user messages can be hints.
-      const serializedLocators = messages.filter(message => message.role === 'user'
-        && JSON.stringify(message.content).includes(HEADER));
-      if (toolsOnly && (locators.length || serializedLocators.length)) throw new Error('Tools-only locator leak');
-      if (locators.some(locator => !serializedLocators.some(message => JSON.stringify(message.content)
-        .includes(JSON.stringify(locator.content).slice(1, -1))))) throw new Error('Locator serialization mismatch');
-      const descriptor = openSync(join(directory, `context-${String(++request).padStart(4, '0')}.json`), 'wx', 0o600);
-      try {
-        writeFileSync(descriptor, JSON.stringify({ source: 'before_provider_request', nativeLocators: locators,
-          serializedLocatorCount: serializedLocators.length, messages }));
-        fsyncSync(descriptor);
-      } finally { closeSync(descriptor); }
-    } catch {
+  const messages = payload?.input ?? payload?.messages;
+  if (!Array.isArray(messages)) throw new Error('Missing serialized provider messages');
+  // Recall tool results contain the same header; only user messages can be hints.
+  const serializedLocators = messages.filter(message => message.role === 'user'
+    && JSON.stringify(message.content).includes(HEADER));
+  if (toolsOnly && (nativeLocators.length || serializedLocators.length)) throw new Error('Tools-only locator leak');
+  if (nativeLocators.some(locator => !serializedLocators.some(message => JSON.stringify(message.content)
+    .includes(JSON.stringify(locator.content).slice(1, -1))))) throw new Error('Locator serialization mismatch');
+  let request = 1;
+  while (existsSync(join(directory, `context-${String(request).padStart(4, '0')}.json`))) request++;
+  const suffix = String(request).padStart(4, '0');
+  for (const [name, value] of [[`payload-${suffix}.json`, payload], [`context-${suffix}.json`, {
+    source, nativeLocators, serializedLocatorCount: serializedLocators.length, messages,
+  }], [`request-runtime-${suffix}.json`, { source, provider: runtime?.model?.provider ?? null,
+    model: payload?.model ?? runtime?.model?.id ?? null,
+    effort: payload?.reasoning_effort ?? payload?.reasoning?.effort ?? runtime?.effort ?? null,
+    maxOutputTokens: payload?.max_output_tokens ?? payload?.max_completion_tokens ?? payload?.max_tokens ?? null,
+    contextWindow: runtime?.model?.contextWindow ?? null, modelMaxTokens: runtime?.model?.maxTokens ?? null }]]) {
+    const descriptor = openSync(join(directory, name), 'wx', 0o600);
+    try { writeFileSync(descriptor, JSON.stringify(value)); fsyncSync(descriptor); }
+    finally { closeSync(descriptor); }
+  }
+}
+
+// Benchmark observer only: never change messages, tools, or plugin hook results.
+// Compose withToolEvidence(withContextEvidence(pi, ...), ...) so context is saved before a preflight stop.
+export function withContextEvidence(pi, { directory, toolsOnly }) {
+  let locators = [];
+  pi.on('before_provider_request', (event, ctx) => {
+    try { persistContextPayload(event.payload, { directory, toolsOnly, nativeLocators: locators,
+      runtime: { model: ctx?.model, effort: pi.getThinkingLevel?.() } }); }
+    catch {
       process.stderr.write('ROUND3_CONTEXT_EVIDENCE_FAILED\n');
       process.exit(2);
     }
