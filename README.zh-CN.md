@@ -18,17 +18,25 @@
 
 需要 [Pi](https://github.com/badlogic/pi-mono) 和 **Node.js >=24.18.0**，已在 **Pi SDK 1.0.0** 上测试。
 
-从 Git 安装：
+优先从 npm 安装：
 
 ```sh
-pi install git:github.com/shttty/pi-context-recall
+pi install npm:pi-compaction-recall
 ```
+
+也可从 Git 安装：
+
+```sh
+pi install git:github.com/shttty/compaction-recall
+```
+
+Git 安装、源码检出及链接的 GitHub 指南需要该私有仓库的访问权限。
 
 也可以从源码临时加载，不加入 Pi 的持久配置：
 
 ```sh
-git clone https://github.com/shttty/pi-context-recall.git
-cd pi-context-recall
+git clone https://github.com/shttty/compaction-recall.git
+cd compaction-recall
 npm ci --ignore-scripts
 pi -e ./src/index.ts
 ```
@@ -64,7 +72,7 @@ Pi 会为其管理的 Git 包安装依赖；本地源码目录需要自行安装
 | `COMPACTION_RECALL_TIMING_FILE` | 未设置 | JSONL 计时日志路径，不设则不记录计时。 | 仅环境变量 |
 
 
-检索、预热和 trace 配置只对 `full` 模式生效。细节见 [配置与行为参考](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.zh-CN.md)。
+检索、预热和 trace 配置只对 `full` 模式生效。细节见 [配置与行为参考](https://github.com/shttty/compaction-recall/blob/main/doc/PLUGIN.zh-CN.md)。
 
 ## 范围与隐私
 
@@ -103,7 +111,7 @@ DEV8、HARD8 分别列示历史峰值，可来自不同轮次；峰值合计为�
 
 这是小规模开发集成绩，不代表完整 LongMemEval 跑分或稳定召回准确率。
 
-运行命令和输入要求见 [benchmark 指南](https://github.com/shttty/pi-context-recall/blob/main/doc/benchmark.zh-CN.md)。
+运行命令和输入要求见 [benchmark 指南](https://github.com/shttty/compaction-recall/blob/main/doc/benchmark.zh-CN.md)。
 
 ## 开发
 

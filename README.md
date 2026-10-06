@@ -18,17 +18,25 @@ Currently supports Pi, with support for other agents planned.
 
 Requires [Pi](https://github.com/badlogic/pi-mono) and **Node.js >=24.18.0**. Tested with Pi SDK **1.0.0**.
 
-Install from Git:
+Install from npm:
 
 ```sh
-pi install git:github.com/shttty/pi-context-recall
+pi install npm:pi-compaction-recall
 ```
+
+Or install from Git:
+
+```sh
+pi install git:github.com/shttty/compaction-recall
+```
+
+Git installation, source checkouts and linked GitHub guides require access to the private repository.
 
 Or try a source checkout without adding it to your Pi settings:
 
 ```sh
-git clone https://github.com/shttty/pi-context-recall.git
-cd pi-context-recall
+git clone https://github.com/shttty/compaction-recall.git
+cd compaction-recall
 npm ci --ignore-scripts
 pi -e ./src/index.ts
 ```
@@ -64,7 +72,7 @@ Unset fields use defaults; environment variables override the configuration file
 | `COMPACTION_RECALL_TIMING_FILE` | Unset | JSONL timing output path; unset means no timing log. | Environment only |
 
 
-Retrieval, preindex and trace settings apply to `full` mode. Details: [Configuration and behavior reference](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md).
+Retrieval, preindex and trace settings apply to `full` mode. Details: [Configuration and behavior reference](https://github.com/shttty/compaction-recall/blob/main/doc/PLUGIN.md).
 
 ## Scope and privacy
 
@@ -103,7 +111,7 @@ A single run on the fixed English LongMemEval_M set on 2026-10-06, not a new ran
 
 These small development-set results are not full LongMemEval scores or a guarantee of recall accuracy.
 
-See the [benchmark guide](https://github.com/shttty/pi-context-recall/blob/main/doc/benchmark.md) for commands and required inputs.
+See the [benchmark guide](https://github.com/shttty/compaction-recall/blob/main/doc/benchmark.md) for commands and required inputs.
 
 ## Development
 

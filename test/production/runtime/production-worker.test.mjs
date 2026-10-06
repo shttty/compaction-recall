@@ -102,7 +102,7 @@ for (const timingEnabled of [false, true]) {
       mkdirSync(join(root, 'node_modules'), { recursive: true });
       symlinkSync(fileURLToPath(new URL('../../../node_modules/@node-rs', import.meta.url)), join(root, 'node_modules/@node-rs'), 'dir');
       const source = process.env.COMPACTION_RECALL_TEST_PACKAGE || fileURLToPath(new URL('../../..', import.meta.url));
-      for (const [layout, archive] of [join(root, 'compaction-recall'), join(root, 'node_modules', 'compaction-recall')].entries()) {
+      for (const [layout, archive] of [join(root, 'compaction-recall'), join(root, 'node_modules', 'pi-compaction-recall')].entries()) {
         for (const file of ['package.json', 'src']) cpSync(join(source, file), join(archive, file), { recursive: true });
         for (const [index, entry] of [archive, join(archive, 'src/index.ts'), join(archive, 'src/recall-extension.ts')].entries()) {
           const timingFile = join(root, `timing-${layout}-${index}.jsonl`);

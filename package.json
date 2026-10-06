@@ -1,16 +1,16 @@
 {
-  "name": "compaction-recall",
+  "name": "pi-compaction-recall",
   "version": "0.1.0",
   "description": "Lexical recall for Pi's compacted history, with automatic locators and bounded grep/expand tools",
   "license": "MIT",
   "author": "shttty",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shttty/pi-context-recall.git"
+    "url": "git+https://github.com/shttty/compaction-recall.git"
   },
-  "homepage": "https://github.com/shttty/pi-context-recall#readme",
+  "homepage": "https://github.com/shttty/compaction-recall#readme",
   "bugs": {
-    "url": "https://github.com/shttty/pi-context-recall/issues"
+    "url": "https://github.com/shttty/compaction-recall/issues"
   },
   "files": [
     "src/",
@@ -28,6 +28,10 @@
     "extensions": [
       "./src/index.ts"
     ]
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "scripts": {
     "typecheck": "tsc -p .",

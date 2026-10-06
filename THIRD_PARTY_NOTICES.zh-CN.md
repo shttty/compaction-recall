@@ -36,7 +36,7 @@ SQLite 由 Node 内置的 `node:sqlite` 提供。项目许可证不替代随 Nod
 ODC-By 适用于数据库权利，不代表每份会话正文都适用同一许可证。
 本仓库不分发 SWE 题目、答卷或会话摘录；所需数据应按上游适用的许可证获取。
 
-评测输入与归档细节见[评测运行指南](https://github.com/shttty/pi-context-recall/blob/main/doc/benchmark.zh-CN.md)。
+评测输入与归档细节见[评测运行指南](https://github.com/shttty/compaction-recall/blob/main/doc/benchmark.zh-CN.md)。
 
 ## LongMemEval MIT 声明原文
 

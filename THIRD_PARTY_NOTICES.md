@@ -42,7 +42,7 @@ transcript's contents. This repository does not distribute SWE questions,
 answers or transcript excerpts. Obtain data from the source under its applicable license.
 
 For evaluation inputs and archive details, see the
-[benchmark guide](https://github.com/shttty/pi-context-recall/blob/main/doc/benchmark.md).
+[benchmark guide](https://github.com/shttty/compaction-recall/blob/main/doc/benchmark.md).
 
 ## LongMemEval MIT notice
 
