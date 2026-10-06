@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { BackgroundIndex } from '../src/background-index.mjs';
-import { buildLocator, buildRecallPage } from '../src/locator.mjs';
+import { BackgroundIndex } from '../benchmark/archive/js-runtime/background-index.mjs'
+import { buildLocator, buildRecallPage } from '../benchmark/archive/js-runtime/locator.mjs'
 import { initialBranch, extendedBranch, msg } from './corpus.mjs';
 import { StageTiming } from '../src/timing.mjs';
 import { Worker } from 'node:worker_threads';
@@ -142,7 +142,7 @@ test('worker timing connects actual execution spans to main thread roundtrips', 
 });
 
 test('disabled timing performs no performance clock reads inside the actual worker', async () => {
- const workerURL = new URL('../src/index-worker.mjs',import.meta.url).href;
+ const workerURL = new URL('../benchmark/archive/js-runtime/index-worker.mjs',import.meta.url).href;
  const index = new BackgroundIndex({workerFactory:()=>new Worker(
   `const {performance}=require('node:perf_hooks'); performance.now=()=>{throw new Error('Unexpected timing clock read');}; import(${JSON.stringify(workerURL)});`,
   {eval:true},
@@ -178,7 +178,7 @@ test('live prewarm cannot cancel an in-flight cold foreground lookup', async () 
 test('compaction activates live token caches without retokenizing or widening the earlier corpus', async () => {
  const timer = new StageTiming(), documents = [];
  const index = new BackgroundIndex({timer,workerFactory:()=>{
-  const worker = new Worker(new URL('../src/index-worker.mjs',import.meta.url));
+  const worker = new Worker(new URL('../benchmark/archive/js-runtime/index-worker.mjs',import.meta.url));
   worker.on('message',message=>{if(message.result?.documents!==undefined)documents.push(message.result.documents);});
   return worker;
  }});

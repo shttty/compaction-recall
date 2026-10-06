@@ -10,7 +10,7 @@ import { buildBlindCorpus } from '../benchmark/blind-harness-core.mjs';
 import { compactedEntries } from '../src/history.mjs';
 import { buildEvaluationCorpus, loadEvaluationCases, searchAutomatic, scoreRetrieval, summarizeRetrieval } from '../benchmark/retrieval-eval-core.mjs';
 import { runGroup1 } from '../benchmark/retrieval-group1.mjs';
-import { buildRecallPage, collectLocatorCandidates, rankLocatorCandidates, locatorRow, recallPageFromRows } from '../src/locator.mjs';
+import { buildRecallPage, collectLocatorCandidates, rankLocatorCandidates, locatorRow, recallPageFromRows } from '../benchmark/archive/js-runtime/locator.mjs'
 
 const question = { question_id: 'q', question: 'quasar?', question_date: '2023/06/01 (Thu) 12:00',
   answer: 'ORACLE_SECRET', judge: 'JUDGE_SECRET', labels: ['LABEL_SECRET'],

@@ -1,9 +1,9 @@
 import { DatabaseSync } from 'node:sqlite';
-import { CompactionIndex } from '../../src/inverted-index.mjs';
+import { CompactionIndex } from '../../benchmark/archive/js-runtime/inverted-index.mjs';
 import {
   locatorText, locatorRow, formatRankedLocators,
   RECALL_DEFAULT_LIMIT, RECALL_MAX_LIMIT, RECALL_PAGE_CHARS
-} from '../../src/locator.mjs';
+} from '../../benchmark/archive/js-runtime/locator.mjs';
 import { measured } from '../../src/timing.mjs';
 import { bigramText, unigramText, queryTerms, planMatch } from './b3-tokenize.mjs';
 

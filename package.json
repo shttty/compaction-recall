@@ -39,17 +39,17 @@
     "typebox": "*"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=24.18.0"
   },
   "devDependencies": {
     "@earendil-works/pi-coding-agent": "1.0.0",
     "@types/node": "24.19.0",
     "typebox": "1.3.27",
-    "typescript": "7.0.2"
-  },
-  "dependencies": {
-    "@node-rs/jieba": "2.0.3",
+    "typescript": "7.0.2",
     "@orama/stemmers": "3.1.18",
     "wink-lemmatizer": "3.0.4"
+  },
+  "dependencies": {
+    "@node-rs/jieba": "2.0.3"
   }
 }

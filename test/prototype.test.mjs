@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { CompactionIndex } from '../src/inverted-index.mjs';
+import { CompactionIndex } from '../benchmark/archive/js-runtime/inverted-index.mjs'
 import { corpus, queries, initialBranch, extendedBranch, msg, compact } from './corpus.mjs';
-import { buildLocator } from '../src/locator.mjs';
+import { buildLocator } from '../benchmark/archive/js-runtime/locator.mjs'
 
 test('experimental index exact parity, incremental compaction, repeat, fork and reset', () => {
   const records = corpus(200), index = new CompactionIndex();

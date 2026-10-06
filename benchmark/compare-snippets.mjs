@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 import { compactedEntries, searchableEntryText } from '../src/history.mjs';
 import { fts5Snippet, selectFts5Window } from './fts5-snippet.mjs';
 import { prototypeSpans, queryTerms, literalHits, prototypeWindow, productionWindow, visibleTerms, answerPositions } from './snippet-compare-core.mjs';
-import { lex, locatorWindow } from '../src/locator.mjs';
+import { lex, locatorWindow } from './archive/js-runtime/locator.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const load = filename => JSON.parse(readFileSync(filename, 'utf8'));
@@ -51,7 +51,7 @@ const rows = [], references = [], inputHashes = {}, skipped = [];
 const corpusCache = new Map();
 const timing = Object.fromEntries(methods.map(method => [method, { ns: 0n, count: 0 }]));
 const contextStats = { noExactHits: 0, rawMiniQueries: 0, rawSqliteQueries: 0, prefixSqliteQueries: 0, miniJsonQueries: 0, callsWithErrors: 0 };
-for (const filename of [fileURLToPath(import.meta.url), path.join(root, 'fts5-snippet.mjs'), path.join(root, 'snippet-compare-core.mjs'), path.join(root, '../src/locator.mjs'), ...['sqlite', 'minisearch'].flatMap(name => [values[`${name}-adapter`], values[`${name}-tokenizer`]])]) inputHashes[path.resolve(filename)] = hash(filename);
+for (const filename of [fileURLToPath(import.meta.url), path.join(root, 'fts5-snippet.mjs'), path.join(root, 'snippet-compare-core.mjs'), path.join(root, './archive/js-runtime/locator.mjs'), ...['sqlite', 'minisearch'].flatMap(name => [values[`${name}-adapter`], values[`${name}-tokenizer`]])]) inputHashes[path.resolve(filename)] = hash(filename);
 function corpus(metadata) {
   const key = `${metadata.key}/${metadata.language}`;
   const raw = readFileSync(metadata.snapshot, 'utf8');
@@ -209,7 +209,7 @@ function summarize(selected) {
     differentPairs: Object.fromEntries(methods.flatMap((a, i) => methods.slice(i + 1).map(b => [a, b])).map(([a, b]) => [`${a}/${b}`, selected.filter(row => differs(row, a, b)).length / selected.length]))
   };
 }
-const source = readFileSync(path.join(root, '../src/locator.mjs'), 'utf8');
+const source = readFileSync(path.join(root, './archive/js-runtime/locator.mjs'), 'utf8');
 const complexity = {
   prototype: { linesByPrototype: Object.fromEntries(['sqlite', 'minisearch'].map(name => [name, codeLines(functionText(readFileSync(values[`${name}-adapter`], 'utf8'), 'snippet'))])), needsDF: false },
   production: { lines: codeLines(functionText(source, 'snippet')) + codeLines(functionText(source, 'locatorWindow')), needsDF: true },

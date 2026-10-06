@@ -264,7 +264,7 @@ test('SDK concept traces correlate original model input and extension mutation w
   assert.equal('fallback' in calls[1].result, false);
   assert.equal('fallback' in calls[3].result, false);
   assert.deepEqual(calls[4].result.ids, ['evidence']);
-  assert.equal('error' in calls[4], false);
+  assert.equal(calls[4].error, null);
   assert.deepEqual(events.find(event => event.type === 'sqlite_provider_evidence'), { type: 'sqlite_provider_evidence', sessionId: 'trace-fixture', locatorPresent: false, locator: null, effort: 'high' });
   assert.doesNotMatch(raw, /SECRET_CREDENTIAL|SECRET_REASONING/);
 });

@@ -1,6 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
-import { CompactionIndex } from '../../src/inverted-index.mjs';
-import { lex, locatorText, queryTerms } from '../../src/locator.mjs';
+import { CompactionIndex } from '../../benchmark/archive/js-runtime/inverted-index.mjs';
+import { lex, locatorText, queryTerms } from '../../benchmark/archive/js-runtime/locator.mjs';
 import { measured } from '../../src/timing.mjs';
 
 // Both variants index the literal, space-separated unique lex() terms. B1's

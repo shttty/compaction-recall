@@ -1,5 +1,5 @@
-import { CompactionIndex } from '../../src/inverted-index.mjs';
-import { lex, locatorText, queryTerms } from '../../src/locator.mjs';
+import { CompactionIndex } from '../../benchmark/archive/js-runtime/inverted-index.mjs';
+import { lex, locatorText, queryTerms } from '../../benchmark/archive/js-runtime/locator.mjs';
 import { measured } from '../../src/timing.mjs';
 
 // Each term owns a growable sequence of (recency, offset, lexical order) triples.

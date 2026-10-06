@@ -1,7 +1,7 @@
 // Offline timing smoke on an explicitly supplied history; no provider/credentials accessed.
 import fs from 'node:fs';
 import { StageTiming } from '../src/timing.mjs';
-import { CompactionIndex } from '../src/inverted-index.mjs';
+import { CompactionIndex } from './archive/js-runtime/inverted-index.mjs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';

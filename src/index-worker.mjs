@@ -8,7 +8,7 @@ try {
     throw new TypeError('engineModule must be an explicit file URL');
   }
   const { createWorkerEngine } = await import(customEngine ? workerData.engineModule : './default-worker-engine.mjs');
-  engine = await createWorkerEngine();
+  engine = await createWorkerEngine(workerData?.engineOptions);
 } catch (error) {
   initializationFailed = true;
   initializationError = error;
@@ -97,8 +97,9 @@ async function respond(message) {
   } catch (error) {
     parentPort.postMessage({
       requestId: message.requestId, generation: message.generation,
-      error: customEngine ? (error?.message ?? String(error)) : 'Index worker operation failed',
-      ...(customEngine ? { errorName: error?.name ?? 'Error', ...(typeof error?.code === 'string' ? { errorCode: error.code } : {}), ...(state.engineOperation ? { engineError: true } : {}) } : {}),
+      error: error?.message ?? String(error),
+      errorName: error?.name ?? 'Error', ...(typeof error?.code === 'string' ? { errorCode: error.code } : {}),
+      ...(state.engineOperation ? { engineError: true } : {}),
       ...(timer ? { stages: timer.events.splice(0), timingOrigin: timer.origin } : {}),
     });
   }

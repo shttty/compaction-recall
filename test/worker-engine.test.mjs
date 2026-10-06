@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { BackgroundIndex } from '../src/background-index.mjs';
 import { StageTiming } from '../src/timing.mjs';
-import { formatLocatorRows, recallPageFromRows, buildLocator, buildRecallPage } from '../src/locator.mjs';
+import { formatLocatorRows, recallPageFromRows, buildLocator, buildRecallPage } from '../benchmark/archive/js-runtime/locator.mjs'
 import { initialBranch, extendedBranch, msg } from './corpus.mjs';
 const engineModule = new URL('./fixtures/worker-engine.mjs', import.meta.url);
 
@@ -113,7 +113,7 @@ test('without a timing destination neither main nor worker memory APIs are sampl
   try {
     const branch = initialBranch([msg('a', 'quasar')]);
     assert.equal(await index.query('quasar', branch), buildLocator('quasar', branch));
-    assert.deepEqual(await index.query('quasar', branch, { mode: 'manual' }), buildRecallPage('quasar', branch));
+    assert.deepEqual(await index.query({ concepts: [['quasar']] }, branch, { mode: 'manual' }), buildRecallPage('quasar', branch));
     assert.equal(index.failed, false);
     assert.equal(heapReads, 0);
   } finally {

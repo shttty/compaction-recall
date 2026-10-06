@@ -1,5 +1,5 @@
 // Explicit benchmark arm selection; production owns indexing and lifecycle.
-import register from '../src/recall-extension.ts';
+import register from './archive/js-runtime/recall-extension.ts'
 
 export function registerBenchmarkArm(pi, arm) {
   if (!['native', 'grep', 'indexed'].includes(arm)) throw new Error('Unknown benchmark arm');

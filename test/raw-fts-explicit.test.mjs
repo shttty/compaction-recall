@@ -94,7 +94,7 @@ test('actual SDK tool returns zero/offset advice, preserves author errors and ke
   assert.doesNotMatch(JSON.stringify(messages),/请检查参数格式/);
 });
 
-test('existing dictionary trial modes keep autocut available and explicitly mark unresolved ranking',async()=>{
+test('dictionary trial modes preserve fixed candidates and automatic lookup',async()=>{
   const matches=[];
   for(const mode of ['off','jieba']) {
     const index=new BackgroundIndex({engineModule:new URL('../benchmark/retrieval-sqlite-worker.mjs',import.meta.url)});
@@ -105,9 +105,8 @@ test('existing dictionary trial modes keep autocut available and explicitly mark
     try {
       const page=await index.queryPage({ concepts: [['牙买加']] },branch,{limit:50});
       assert.deepEqual(page.ids.sort(),['both','gap']);
-      assert.equal(page.page.details.jiebaRankingPending,mode==='jieba'?true:undefined);
       const rows=await index.queryRanked({ concepts: [['牙买加']] },branch,{mode:'manual'});
-      matches.push(rows.results.map(({id,score})=>({id,score})));
+      matches.push(rows.results.map(({id,score})=>({id,score})).sort((a,b)=>a.id.localeCompare(b.id)));
       const auto=await index.queryRanked('where GPU显存 running',branch,{mode:'auto'});
       assert.deepEqual(auto.results.map(row=>row.id),['both']);
       assert.equal(auto.skipped,false);

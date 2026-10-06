@@ -65,10 +65,10 @@ test('bigrams cross dictionary boundaries but never punctuation', t => {
   assert.deepEqual(ids(index.search({ concepts: [['索引']] })), ['joined']);
   assert.deepEqual(ids(index.search({ concepts: [['共和国']] })), ['country']);
   assert.deepEqual(ids(index.search({ concepts: [['𠀀𠀁']] })), ['astral']);
-  assert.deepEqual(ids(index.search({ concepts: [['𠀀']] })), ['astral']);
+  assert.throws(() => index.search({ concepts: [['𠀀']] }), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
 });
 
-test('concept identifier components co-occur; incomplete single characters use literal lookup', t => {
+test('identifier components co-occur; partial loss keeps FTS and zero-token surfaces fail', t => {
   const index = open(t, [
     { id: 'identifier', text: 'foo_bar CompactionResult 42 x _' },
     { id: 'split', text: 'foo bar compaction result 4 2' },
@@ -79,10 +79,9 @@ test('concept identifier components co-occur; incomplete single characters use l
   assert.deepEqual(ids(index.search({ concepts: [['42']] })), ['identifier']);
   assert.deepEqual(ids(index.search({ concepts: [['FOO_BAR']] })).sort(), ['identifier', 'split']);
   assert.deepEqual(ids(index.search({ concepts: [['CompactionResult']] })).sort(), ['identifier', 'split']);
-  assert.deepEqual(ids(index.search({ concepts: [['foo_b']] })), ['identifier']);
-  for (const [query, expected] of [['x', ['identifier']], ['_', ['identifier']],
-    ['4', ['identifier', 'split']], ['2', ['identifier', 'split']]]) {
-    assert.deepEqual(ids(index.search({ concepts: [[query]] })).sort(), expected);
+  assert.deepEqual(ids(index.search({ concepts: [['foo_b']] })).sort(), ['identifier', 'split']);
+  for (const query of ['x', '_', '4', '2']) {
+    assert.throws(() => index.search({ concepts: [[query]] }), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
   }
   assert.deepEqual(ids(index.search({ concepts: [['comp*']] })), []);
 });

@@ -1,66 +1,39 @@
-import { lex, locatorText, locatorRow, rankLocatorCandidates, RECALL_DEFAULT_LIMIT, RECALL_MAX_LIMIT } from './locator.mjs';
+import { createIndex, parseAutoGate } from './sqlite-index.mjs';
 import { measured } from './timing.mjs';
-import { CompactionIndex } from './inverted-index.mjs';
+import { createQueryCheck } from './sqlite-deadline.mjs';
 
-class CachedIndex extends CompactionIndex {
-  add(entry, recency) {
-    if (!entry.tokens) return super.add(entry, recency);
-    if (this.seen.has(entry.id)) return;
-    this.seen.add(entry.id);
-    if (!locatorText(entry.message)) return;
-    this.documents.set(recency, entry);
-    for (const [term, position] of entry.tokens) {
-      let posting = this.postings.get(term);
-      if (!posting) this.postings.set(term, posting = new Map());
-      posting.set(recency, position);
-    }
-    delete entry.tokens;
-    this.indexed++;
-  }
-}
-function tokenize(entry) {
-  const tokens = new Map();
-  let order = 0;
-  for (const { term, offset } of lex(entry.message.content)) {
-    if (!tokens.has(term)) tokens.set(term, { offset, order });
-    order++;
-  }
-  return { ...entry, tokens };
-}
-function branch(entries) {
-  const ids = new Set(entries.map(entry => entry.id));
-  let kept = 'worker-kept';
-  while (ids.has(kept)) kept += '-';
-  return [...entries,
-    { type: 'compaction', id: 'worker-boundary', firstKeptEntryId: kept, summary: '', timestamp: '2000-01-01' },
-    { type: 'message', id: kept, timestamp: '2000-01-01', message: { role: 'user', content: '' } },
-  ];
-}
-
-export function createWorkerEngine() {
-  const index = new CachedIndex();
-  let eligibleBranch = [];
+export function createWorkerEngine({ autoGate = 280, snippetBudget = 240, jieba = true } = {}) {
+  autoGate = parseAutoGate(autoGate);
+  let index;
+  let documents = [];
   return {
-    prepareEntry: tokenize,
     commit(entries, { eligibleCount, timer }) {
-      index.timer = timer;
-      // Live token maps never enter documents/postings (and therefore never N or DF).
-      eligibleBranch = measured(timer, 'eligible_activation_selection', () => branch(entries.filter(entry => entry.sourcePosition < eligibleCount)));
-      timer?.mark('worker_maintenance', { kind: 'activation', entries: eligibleBranch.length - 2, execution: 'worker_thread' });
-      measured(timer, 'postings_activation', () => index.sync(eligibleBranch));
-      return { documents: index.documents.size };
-    },
-    query(query, { mode, options = {}, timer }) {
-      if (mode === 'manual') {
-        const limit = options.limit ?? RECALL_DEFAULT_LIMIT, offset = options.offset ?? 0;
-        if (!Number.isInteger(limit) || limit < 1 || limit > RECALL_MAX_LIMIT) throw new RangeError('limit must be an integer from 1 to 50');
-        if (!Number.isSafeInteger(offset) || offset < 0) throw new RangeError('offset must be a nonnegative safe integer');
+      const next = entries.filter(entry => entry.sourcePosition < eligibleCount).map(entry => ({
+        id: entry.id, text: entry.message.content, sourcePosition: entry.sourcePosition,
+        date: entry.timestamp.slice(0, 10), timestamp: entry.timestamp, role: entry.message.role,
+      }));
+      const changed = !index || next.length !== documents.length || next.some((entry, i) =>
+        entry.id !== documents[i].id || entry.text !== documents[i].text ||
+        entry.sourcePosition !== documents[i].sourcePosition || entry.timestamp !== documents[i].timestamp || entry.role !== documents[i].role);
+      if (changed) {
+        const replacement = measured(timer, 'postings_activation', () => createIndex(next, { jieba, autoGate, snippetBudget }));
+        index?.close(); index = replacement; documents = next;
       }
-      index.timer = timer;
-      const found = index.collect(query, eligibleBranch);
-      const ranked = rankLocatorCandidates(found.candidates, found.frequency, found.documents, timer);
-      const selected = mode === 'manual' ? ranked : ranked.slice(0, 5);
-      return { total: ranked.length, results: selected.map(candidate => locatorRow(candidate, found.frequency)) };
+      timer?.mark('worker_maintenance', { kind: changed ? 'build_or_rebuild' : 'activation', entries: index.size, execution: 'worker_thread' });
+      return { documents: index.size };
     },
+    query(query, { mode, timer, options = {} }) {
+      if (!index) throw new Error('SQLite worker has not committed a corpus');
+      const check = mode === 'manual' ? createQueryCheck(options.queryDeadlineAt, options.queryTimeoutMs) : undefined;
+      check?.();
+      if (mode === 'manual' && options.page) return index.queryPage(query, options, { timer, check });
+      const found = measured(timer, 'candidate_collection', () => index.queryRows(query, { mode, timer, check, ...(mode === 'auto' ? options : {}) }));
+      // Materialize full-rank callers here: deadline errors must remain engine
+      // errors, not transport failures that would discard a healthy index.
+      const results = found.results.map(row => { check?.(); return { ...row }; });
+      check?.();
+      return { ...found, results };
+    },
+    dispose() { index?.close(); index = undefined; documents = []; },
   };
 }

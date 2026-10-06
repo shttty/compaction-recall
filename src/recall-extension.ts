@@ -2,12 +2,14 @@
 import { Type } from "typebox";
 import type { ExtensionAPI, ExtensionContext, SessionEntry } from "@earendil-works/pi-coding-agent";
 import { MAX_HITS, SNIPPET, MAX_EXPAND_CHARS, entryText, searchableEntryText, compactedEntries, toRegExp } from "./history.mjs";
-import { withLocators, locatorText } from "./locator.mjs";
-import { BackgroundIndex } from "./background-index.mjs";
+import { withLocators, locatorText, formatLocatorRows } from "./locator.mjs";
+import { SQLiteBackgroundIndex } from "./sqlite-background-index.mjs";
 import { PreindexCadence } from "./preindex-cadence.mjs";
 import { loadRecallConfig } from "./recall-config.mjs";
 import { recallTiming, flushTiming, measured } from "./timing.mjs";
 import { createRecallTrace } from "./recall-trace.mjs";
+import { displayRows, SQLITE_LOCATOR_HEADER } from "./sqlite-page.mjs";
+import { descriptions } from "./tool-descriptions.mjs";
 
 function codePointLength(text: string): number {
   let length = 0;
@@ -107,8 +109,8 @@ export default function(pi: ExtensionAPI) {
   };
   // Mode and cadence share one agent-directory snapshot until the extension reloads.
   const warn = (message: string) => { process.stderr.write(message + "\n"); };
-  const { mode, trace, userCycles, toolRounds } = loadRecallConfig({ warn });
-  const recallTrace = createRecallTrace({ enabled: trace, warn });
+  const { mode, trace, userCycles, toolRounds, autoGate, recallTimeoutMs, snippetBudget, jieba } = loadRecallConfig({ warn });
+  const recallTrace = createRecallTrace({ enabled: trace, warn, inputFields: ["concepts", "match", "exclude"] });
   if (mode === "full") {
     if (recallTrace) {
       pi.on("message_end", (event, ctx) => { recallTrace.messageEnd(ctx.sessionManager.getSessionId(), event.message); });
@@ -116,7 +118,7 @@ export default function(pi: ExtensionAPI) {
       pi.on("agent_end", () => { recallTrace.flush(); });
       pi.on("session_shutdown", () => { recallTrace.flush(); });
     }
-    const index = new BackgroundIndex({ timer: recallTiming });
+    const index = new SQLiteBackgroundIndex({ timer: recallTiming, autoGate, recallTimeoutMs, snippetBudget, jieba });
     const cadence = new PreindexCadence(userCycles, toolRounds);
     let scheduled: NodeJS.Immediate | undefined;
     const cancelScheduled = () => {
@@ -161,25 +163,19 @@ export default function(pi: ExtensionAPI) {
       const entries = branch(ctx);
       const user = event.messages.findLast(message => message.role === "user");
       const query = user ? measured(recallTiming, "query_text_extraction", () => locatorText(user)) : "";
-      const content = user ? await index.query(query, entries) : undefined;
+      const found = user ? await index.queryRanked(query, entries, { mode: "auto", options: { limit: 5 } }) : { results: [] };
+      const content = formatLocatorRows(displayRows(found.results), SQLITE_LOCATOR_HEADER);
       return { messages: withLocators(event.messages, entries, () => content) };
     }));
     pi.registerTool({
       name: "history_recall",
       label: "History recall",
       description:
-        "Primary keyword lookup of compacted conversation history on the current branch. " +
-        "Honors the latest branch-local context edits: omitted entries are unavailable and replacements hide original content. " +
-        "Use automatic locator hints, then this tool with focused or rewritten keywords to find related entry ids. " +
-        "Uses the same lexical ranking as automatic hints, not semantic search: supply alternative wording or synonyms yourself. " +
-        "Searches user/assistant text plus assistant tool-call names and arguments; excludes toolResult bodies, thinking and images. Paginated results: limit defaults to 50 (maximum 50), offset defaults to 0. " +
-        "Returns total, returned, nextOffset and hasMore; use nextOffset (not offset + limit) with the same query and unchanged branch for another page. " +
-        "Pages target 16000 Unicode codepoints; an oversized metadata row is returned alone and flagged rather than lost. " +
-        "Each snippet contains up to 120 Unicode codepoints around the most informative matched term, plus optional ellipses. " +
-        "Verify exact details with history_expand. If evidence remains insufficient, use history_grep as a supplementary " +
-        "text-search fallback over the same text and tool-input scope. No hit does not prove the information was never mentioned.",
+        descriptions.history_recall,
       parameters: Type.Object({
-        query: Type.String({ description: "Focused keywords or revised wording; first 4000 Unicode codepoints and 24 distinct terms are used" }),
+        concepts: Type.Array(Type.Array(Type.String({ description: "Nonempty trimmed literal surface, at most 256 Unicode codepoints; analyzed FTS co-occurrence, never regex or FTS syntax; partial token loss warns while using the analyzed terms" }), { minItems: 1, maxItems: 4 }), { minItems: 1, maxItems: 5, description: "Concept groups with OR alternatives; all surfaces together at most 2048 Unicode codepoints" }),
+        match: Type.Optional(Type.Union([Type.Literal("any"), Type.Literal("all")], { description: "Default any: one group suffices. all: every group must match the same record; co-occurrence is not phrase matching." })),
+        exclude: Type.Optional(Type.Array(Type.String({ description: "Hard exclusion analyzed by the same FTS compiler; partial token loss warns, any match removes the entire record" }), { maxItems: 5 })),
         limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 50, description: "Maximum results on this page (default 50)" })),
         offset: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER, description: "Result offset (default 0); use nextOffset from the previous page" })),
       }),
@@ -187,11 +183,12 @@ export default function(pi: ExtensionAPI) {
         const token = recallTrace?.begin(ctx.sessionManager.getSessionId(), _id, params);
         try {
           return await observe("tool_history_recall_total", async () => {
-            const page = await index.query(params.query, branch(ctx), { mode: "manual", options: params });
+            const { limit, offset: requestedOffset, ...query } = params;
+            const found = await index.queryPage(query, branch(ctx), { limit, offset: requestedOffset });
+            const page = found.page;
             if (recallTrace) {
-              const ids = page.text.split("\n").filter((line: string) => line.startsWith("{")).map((line: string) => JSON.parse(line).id);
               const { total, offset, returned, nextOffset } = page.details;
-              recallTrace.complete(token, { ids, total, offset, returned, nextOffset });
+              recallTrace.complete(token, { ids: found.ids, total, offset, returned, nextOffset });
             }
             return { content: [{ type: "text" as const, text: page.text }], details: page.details };
           });
@@ -207,9 +204,8 @@ export default function(pi: ExtensionAPI) {
     name: "history_grep",
     label: "History grep",
     description:
-      (mode === "lite"
-        ? "Search compacted conversation history when you need earlier evidence; use history_expand to verify matching entry ids. "
-        : "Supplementary text-search fallback when automatic locators, history_recall and expanded entries leave insufficient evidence. ") +
+      mode === "full" ? descriptions.history_grep :
+      "Search compacted conversation history when you need earlier evidence; use history_expand to verify matching entry ids. " +
       "Search branch-effective user/assistant text and assistant tool-call names/arguments on the current compacted branch, honoring context edits; exclude toolResult bodies, thinking and images. No matches do not prove absence. " +
       "`pattern` is a case-insensitive JavaScript regular expression (not SQL LIKE); invalid patterns fall back to literal search. " +
       "Pages matching entries in branch order: limit defaults to 30 (maximum 50), offset defaults to 0. Use nextOffset with the same pattern and unchanged branch; returned counts entries consumed, including explicitly skipped oversized metadata. total counts raw regex matches, totalEntries matching entries; covered counts other matches visible in this page's snippets, omitted counts raw matches not shown anywhere in this response. " +
@@ -375,9 +371,8 @@ export default function(pi: ExtensionAPI) {
     name: "history_expand",
     label: "History expand",
     description:
-      (mode === "lite"
-        ? "Read branch-effective text (honoring context edits) of a compacted history entry by id from history_grep. The requested entry is shown first; output is bounded to 16000 Unicode codepoints. "
-        : "Read branch-effective text (honoring context edits) of a compacted history entry by id (from automatic locators, history_recall or history_grep). The requested entry is shown first; output is bounded to 16000 Unicode codepoints. ") +
+      mode === "full" ? descriptions.history_expand :
+      "Read branch-effective text (honoring context edits) of a compacted history entry by id from history_grep. The requested entry is shown first; output is bounded to 16000 Unicode codepoints. " +
       "Use offset (default 0), in Unicode codepoints of the requested entry, to continue a long entry; when hasMore is true, pass nextOffset with the same id and before/after values. Neighbor entries (before/after default 2, maximum 20) are included only when the full target is shown and each full neighbor fits. " +
       "Includes tool-call names/arguments and readable toolResult text; excludes thinking and images. Only the current compacted branch is readable.",
     parameters: Type.Object({

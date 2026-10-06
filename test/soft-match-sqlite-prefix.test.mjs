@@ -17,5 +17,5 @@ test('concept punctuation is literal surface data, never prefix or native operat
   assert.deepEqual(ids('alpha AND beta'), []);
   assert.deepEqual(ids('"alpha beta"'), ['short']);
   assert.deepEqual(ids('alpha @ beta'), ['short']);
-  assert.deepEqual(ids('*'), []);
+  assert.throws(() => ids('*'), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
 });

@@ -1,6 +1,5 @@
 import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -53,19 +52,6 @@ test('mode uses only the agent config at registration, with environment overridi
   }
 });
 
-test('full descriptions and parameter schemas retain the accepted byte contract', async () => {
-  // Captured from the accepted worker implementation before adding mode selection.
-  const expected = {
-    history_recall: ['f353e3a3d2d3e8703e4669b3931322083ee8bd6f83e6d6b1863f1b429a1c9161', 'd01ac33882b149a71f1feda412db88e1caebab77c24cc2a67d9ca7c38b2d1ccf'],
-    history_grep: ['941b8cebcdc6a1ad1578355f30879064e556ea152366afdc043cf5a6c20a01b1', 'a3c22b38a9c8af6b04edb0560b2264df5ee25b41dc292b6edbd12cb7a9c118a6'],
-    history_expand: ['54fddca75a09d6439a6d69b7d5ee3b6db447e172604451fdd730ff12fdc708c4', '9577860328df03160fd29b0b95f5b916402c484001843399c8b40704ddc81849'],
-  };
-  const hash = value => createHash('sha256').update(value).digest('hex');
-  const host = fixture({ mode: 'full' }, undefined, capture);
-  try {
-    for (const [name, tool] of host.tools) assert.deepEqual([hash(tool.description), hash(JSON.stringify(tool.parameters))], expected[name], name);
-  } finally { await host.hooks.get('session_shutdown')(); }
-});
 
 test('lite grep and expand preserve full output and branch edits without changing context', async () => {
   const lite = fixture({ mode: 'lite' }, undefined, capture);

@@ -4,8 +4,8 @@ import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import os from 'node:os';
 import { performance } from 'node:perf_hooks';
-import { buildLocator } from '../src/locator.mjs';
-import { CompactionIndex } from '../src/inverted-index.mjs';
+import { buildLocator } from './archive/js-runtime/locator.mjs';
+import { CompactionIndex } from './archive/js-runtime/inverted-index.mjs';
 import { parseArgs } from 'node:util';
 
 const { values: args } = parseArgs({ options: { input: { type: 'string' }, output: { type: 'string' }, worker: { type: 'string' }, help: { type: 'boolean' } } });

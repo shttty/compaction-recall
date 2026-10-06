@@ -2,7 +2,7 @@ import { Worker } from 'node:worker_threads';
 import { pathToFileURL } from 'node:url';
 import { setImmediate as yieldImmediate } from 'node:timers/promises';
 import { branchMessageEntries, compactedEntries } from './history.mjs';
-import { locatorText, buildLocator, buildRecallPage, formatLocatorRows, recallPageFromRows } from './locator.mjs';
+import { locatorText, formatLocatorRows, recallPageFromRows } from './locator.mjs';
 import { measured } from './timing.mjs';
 
 // jiti transforms import.meta.url; its CommonJS filename remains the original source.
@@ -10,7 +10,7 @@ const sourceURL = typeof __filename === 'string' ? pathToFileURL(__filename) : i
 const cancelled = () => Object.assign(new Error('Index generation cancelled'), { name: 'AbortError' });
 export class BackgroundIndex {
  /** @param {{timer?: import('./timing.mjs').StageTiming, engineModule?: string | URL, workerFactory?: (options: {engineModule?: string}) => Worker, yieldFn?: () => Promise<unknown>}} options */
- constructor({ timer, engineModule, workerFactory = options => new Worker(new URL('./index-worker.mjs', sourceURL), { workerData: options }), yieldFn = yieldImmediate } = {}) {
+ constructor({ timer, engineModule = new URL('./default-worker-engine.mjs', sourceURL), workerFactory = options => new Worker(new URL('./index-worker.mjs', sourceURL), { workerData: options }), yieldFn = yieldImmediate } = {}) {
   if (engineModule !== undefined && new URL(engineModule).protocol !== 'file:') throw new TypeError('engineModule must be an explicit file URL');
   Object.assign(this, { timer, engineModule: engineModule === undefined ? undefined : String(engineModule), workerFactory, yieldFn });
   this.generation = 0;
@@ -239,9 +239,6 @@ export class BackgroundIndex {
    return path;
   } catch { /* Optional diagnostics cannot invalidate a completed index. */ }
  }
- scan(query, branch, mode, options) {
-  return measured(this.timer, 'synchronous_scan_fallback', () => mode === 'manual' ? buildRecallPage(query, branch, options, this.timer) : buildLocator(query, branch, this.timer));
- }
  /** @param {unknown} query @param {import('@earendil-works/pi-coding-agent').SessionEntry[]} branch
   * @param {{mode?: 'auto' | 'manual', options?: {limit?: number, offset?: number}}} [settings] */
  queryRanked(query, branch, settings = {}) {
@@ -257,10 +254,10 @@ export class BackgroundIndex {
   */
  /**
   * @overload
-  * @param {string} query
+  * @param {unknown} query
   * @param {import('@earendil-works/pi-coding-agent').SessionEntry[]} branch
   * @param {{mode: 'manual', options?: {limit?: number, offset?: number}}} settings
-  * @returns {Promise<ReturnType<typeof buildRecallPage>>}
+  * @returns {Promise<ReturnType<typeof recallPageFromRows>>}
   */
  /**
   * @overload
@@ -276,10 +273,7 @@ export class BackgroundIndex {
    const wait = async () => { if (!this.serveWhilePreparing) await preparation; };
    if (this.timer) await this.timer.runAsync('critical_path_index_wait', wait); else await wait();
    if (generation !== this.generation || this.disposed) throw cancelled();
-   if (this.failed) {
-    if (this.engineModule) throw this.failure ?? new Error('Index worker unavailable');
-    return this.scan(query, branch, mode, options);
-   }
+   if (this.failed) throw this.failure ?? new Error('Index worker unavailable');
    try {
     const result = await this.rpc('query', { query, mode, options }, generation);
     if (ranked) return result;
@@ -293,8 +287,7 @@ export class BackgroundIndex {
     this.failure = error;
     this.failed = true;
     await this.stopWorker();
-    if (this.engineModule) throw error;
-    return this.scan(query, branch, mode, options);
+    throw error;
    }
   } finally {
    if (--this.activeQueries === 0) {

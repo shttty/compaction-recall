@@ -1,13 +1,13 @@
 import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import register from '../src/index.ts';
-import { buildRecallPage, withLocators } from '../src/locator.mjs';
+import { LOCATOR_TYPE } from '../src/locator.mjs';
 
 const timestamp = '2026-09-30T00:00:00.000Z';
 const msg = (id, content, role = 'user') => ({
@@ -36,36 +36,38 @@ function harness(initial) {
       return result;
     },
     recall(params) { return tools.get('history_recall').execute('fixture', params, undefined, undefined, ctx); },
-    async parity(query = 'quasar nebula') {
-      const messages = [{ role: 'user', content: query, timestamp: 0 }];
+    async parity(expectedIds) {
+      const query = { concepts: [['quasar'], ['nebula']] };
+      const messages = [{ role: 'user', content: 'quasar nebula', timestamp: 0 }];
       const actual = await this.emit('context', { messages });
-      assert.equal(JSON.stringify(actual.messages), JSON.stringify(withLocators(messages, branch)));
+      const rows = text => text.split('\n').filter(line => line.startsWith('{')).map(JSON.parse);
+      const autoIds = rows(actual.messages.find(message => message.customType === LOCATOR_TYPE).content).map(row => row.id);
+      const manualIds = [];
       let offset = 0;
       do {
-        const params = { query, limit: 2, offset };
-        const expected = buildRecallPage(query, branch, params);
-        const page = await this.recall(params);
-        assert.equal(page.content[0].text, expected.text);
-        assert.deepEqual(page.details, expected.details);
+        const page = await this.recall({ ...query, limit: 2, offset });
+        manualIds.push(...rows(page.content[0].text).map(row => row.id));
         offset = page.details.nextOffset;
       } while (offset !== null);
+      assert.deepEqual([...manualIds].sort(), [...expectedIds].sort());
+      assert.deepEqual(manualIds, autoIds);
     },
   };
 }
 
-test('production context and manual pages stay scan-identical across edits, trees and incremental compaction', async () => {
+test('production SQLite context and pages preserve branch visibility across edits, trees and compaction', async () => {
   let branch = [msg('old', 'quasar nebula original'), msg('omit', 'quasar nebula omitted'),
   msg('other', 'quasar historical'), msg('live', 'quasar nebula live'), compact('c1', 'live')];
   const h = harness(branch);
   try {
     await h.emit('session_start', { reason: 'startup' });
-    await h.parity();
+    await h.parity(['old', 'omit', 'other']);
     branch = [...branch,
     { type: 'context_edit', id: 'replace', parentId: null, timestamp, targetId: 'old', replacement: { content: 'quasar replacement' } },
     { type: 'context_edit', id: 'remove', parentId: null, timestamp, targetId: 'omit', replacement: null }];
     h.setBranch(branch);
-    await h.parity();
-    const edited = await h.recall({ query: 'original omitted' });
+    await h.parity(['old', 'other']);
+    const edited = await h.recall({ concepts: [['original'], ['omitted']] });
     assert.equal(edited.details.total, 0);
     const response = msg('response', 'quasar nebula assistant', 'assistant');
     response.message.stopReason = 'stop';
@@ -77,16 +79,16 @@ test('production context and manual pages stay scan-identical across edits, tree
       toolResults: [], toolResultEntryIds: [], outcome: 'completed'
     });
     await h.emit('agent_end', { messages: [response.message] });
-    await h.parity();
+    await h.parity(['old', 'other']);
     branch = [...branch, msg('tail2', 'retained'), compact('c2', 'tail2')]; h.setBranch(branch);
     await h.emit('session_compact', { compactionEntry: branch.at(-1), fromExtension: false });
-    await h.parity();
-    assert.match((await h.recall({ query: 'assistant' })).content[0].text, /"id":"response"/);
+    await h.parity(['old', 'other', 'live', 'response']);
+    assert.match((await h.recall({ concepts: [['assistant']] })).content[0].text, /"id":"response"/);
     branch = [msg('alternate', 'quasar nebula alternate'), msg('tail3', 'tail'), compact('c3', 'tail3')];
     h.setBranch(branch);
     await h.emit('session_tree', { oldLeafId: 'c2', newLeafId: 'c3' });
-    await h.parity();
-    assert.doesNotMatch((await h.recall({ query: 'quasar' })).content[0].text, /"id":"old"|"id":"response"/);
+    await h.parity(['alternate']);
+    assert.doesNotMatch((await h.recall({ concepts: [['quasar']] })).content[0].text, /"id":"old"|"id":"response"/);
   } finally { await h.emit('session_shutdown', { reason: 'quit' }); }
 });
 
@@ -96,6 +98,9 @@ for (const timingEnabled of [false, true]) {
     try {
       const agentDir = join(root, 'env-agent');
       mkdirSync(agentDir);
+      // Supply installed development native dependencies; standalone tgz installation is verified separately.
+      mkdirSync(join(root, 'node_modules'), { recursive: true });
+      symlinkSync(fileURLToPath(new URL('../node_modules/@node-rs', import.meta.url)), join(root, 'node_modules/@node-rs'), 'dir');
       const source = process.env.COMPACTION_RECALL_TEST_PACKAGE || fileURLToPath(new URL('..', import.meta.url));
       for (const [layout, archive] of [join(root, 'compaction-recall'), join(root, 'node_modules', 'compaction-recall')].entries()) {
         for (const file of ['package.json', 'src']) cpSync(join(source, file), join(archive, file), { recursive: true });
@@ -119,10 +124,10 @@ for (const timingEnabled of [false, true]) {
           await emit('session_start', { reason: 'startup' });
           const context = await emit('context', { messages: [{ role: 'user', content: 'quasar', timestamp: 0 }] });
           assert.match(JSON.stringify(context.messages), /sdk-match/);
-          const page = await extension.tools.get('history_recall').definition.execute('sdk', { query: 'quasar', limit: 1 }, undefined, undefined, ctx);
+          const page = await extension.tools.get('history_recall').definition.execute('sdk', { concepts: [['quasar']], limit: 1 }, undefined, undefined, ctx);
           assert.equal(page.details.total, 2);
           assert.equal(page.details.returned, 1);
-          const next = await extension.tools.get('history_recall').definition.execute('sdk', { query: 'quasar', offset: page.details.nextOffset }, undefined, undefined, ctx);
+          const next = await extension.tools.get('history_recall').definition.execute('sdk', { concepts: [['quasar']], offset: page.details.nextOffset }, undefined, undefined, ctx);
           assert.equal(next.details.returned, 1);
           assert.notEqual(page.content[0].text, next.content[0].text);
           const grep = await extension.tools.get('history_grep').definition.execute('sdk', { pattern: 'quasar' }, undefined, undefined, ctx);
@@ -161,13 +166,13 @@ for (const timingEnabled of [false, true]) {
 for (const reason of ['new', 'reload', 'resume', 'fork']) {
   test(`production ${reason} replacement discards previous branch state`, async () => {
     const first = harness([msg('old-session', 'quasar old session'), msg('tail', 'tail'), compact('c', 'tail')]);
-    try { await first.emit('session_start', { reason: 'startup' }); await first.parity(); }
+    try { await first.emit('session_start', { reason: 'startup' }); await first.parity(['old-session']); }
     finally { await first.emit('session_shutdown', { reason }); }
     const next = harness([msg('next-session', 'nebula next session'), msg('next-tail', 'tail'), compact('next-c', 'next-tail')]);
     try {
       await next.emit('session_start', { reason, previousSessionFile: '/old/session.jsonl' });
-      await next.parity();
-      assert.equal((await next.recall({ query: 'quasar' })).details.total, 0);
+      await next.parity(['next-session']);
+      assert.equal((await next.recall({ concepts: [['quasar']] })).details.total, 0);
     } finally { await next.emit('session_shutdown', { reason: 'quit' }); }
   });
 }

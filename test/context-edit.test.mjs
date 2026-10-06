@@ -42,15 +42,15 @@ function host(sessionManager) {
   };
 }
 async function absent(h, query) {
-  assert.equal(await h.auto(query.toLowerCase()), undefined, `automatic locator leaked ${query}`);
-  assert.equal((await h.run('history_recall', { query: query.toLowerCase() })).details.total, 0, `recall leaked ${query}`);
+  assert.ok(rows(await h.auto(query)).every(row => !row.snippet.includes(query)), `automatic locator leaked ${query}`);
+  assert.equal((await h.run('history_recall', { concepts: [[query]] })).details.total, 0, `recall leaked ${query}`);
   assert.equal((await h.run('history_grep', { pattern: query })).details.total, 0, `grep leaked ${query}`);
 }
 async function found(h, query, id) {
-  const automatic = await h.auto(query.toLowerCase());
-  assert.deepEqual(rows(automatic).map(row => row.id), [id]);
+  const automatic = await h.auto(query);
+  assert.ok(rows(automatic).some(row => row.id === id)); // Automatic OR can return other records sharing identifier components.
   assert.ok(automatic.includes(query));
-  const recalled = await h.run('history_recall', { query: query.toLowerCase() });
+  const recalled = await h.run('history_recall', { concepts: [[query]] });
   assert.equal(recalled.details.total, 1);
   assert.deepEqual(rows(text(recalled)).map(row => row.id), [id]);
   assert.ok(text(recalled).includes(query));

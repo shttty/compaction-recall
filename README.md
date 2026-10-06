@@ -2,88 +2,80 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-When Pi compacts a long conversation, the summary keeps the gist and loses the names, numbers and exact wording. compaction-recall lets the model go back to the original messages that compaction removed and look those details up.
+When Pi compacts a long conversation, summaries can lose names, numbers and exact wording. compaction-recall lets the model search the original messages removed from the current branch and expand the evidence.
 
-It doesn't replace Pi's own compaction, and adds no database, no files on disk and no extra model calls.
+**0.1.0 is prepared locally; this preparation does not publish an npm package or a release tag.** The default `full` mode uses SQLite FTS5 **in memory**, inside a native Node worker. It does not replace Pi compaction, persist an index, create database/WAL/SHM files, or make extra model calls. `lite` keeps only regex grep and expansion, without a worker or automatic hints.
 
-## Install
+## Requirements and local use
 
-Requires Node.js 24+ and Pi SDK 1.0.0.
+Requires **Node.js >=24.18.0** and Pi SDK **1.0.0** (the checked host version). The host supplies the Pi SDK and `typebox` as peers. The only production npm dependency is `@node-rs/jieba`; it loads only in the worker.
 
-```sh
-pi install git:github.com/shttty/pi-context-recall
-```
-
-(Temporary address until the repository is renamed.)
-
-## Usage
-
-It works once installed. After a compaction, the model gets a few likely-relevant old message locations before each answer, then decides for itself whether to look: `history_recall` searches by keyword, `history_expand` reads the original text, and `history_grep` runs a regex search.
-
-If you don't want the automatic hints or the background index, switch to `lite`, which keeps only `history_grep` and `history_expand`:
+For a checkout, install its locked dependencies, then try one entry without changing your Pi profile:
 
 ```sh
-COMPACTION_RECALL_MODE=lite pi
+npm ci --ignore-scripts
+pi -e ./src/index.ts
 ```
 
-You can also set this in `~/.pi/agent/extensions/compaction-recall.json`. All options and tool details are in [doc/PLUGIN.md](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md).
+A local package can also be loaded with `pi -e /absolute/path/to/compaction-recall`. Local directories do not have their dependencies installed by Pi; install them first. Pi-managed npm/git packages install their declared dependencies. `pi install` modifies settings, so it is not performed by this release preparation. Do not register `src/index.ts` and the alternate `src/recall-extension.ts` together.
 
-## Evaluation
+## Tools and configuration
 
-The questions come from the original LongMemEval_M split of [LongMemEval](https://github.com/xiaowu0162/LongMemEval). Every history runs past a million tokens, so each question has to go through real Pi compaction before it is answered.
+After compaction, `full` supplies short lexical locations before each answer. The model decides whether more evidence is needed:
 
-| Set | Answer model | Pi alone | + `lite` | + `full` |
-| --- | --- | --- | --- | --- |
-| DEV8 | gpt-6-luna / high | 0 | 3 | 8 |
-| HARD8 | gpt-6-luna / high | 0 | 1 | 3 |
-| HARD8 | gpt-6.1-sol / high | 1 | 6 | 6 |
+- `history_recall({concepts, match?, exclude?, limit?, offset?})`: 1–5 concept groups, each with 1–4 alternative literal surfaces. `any` (default) ORs groups; `all` requires every group in the same record. Analyzed terms within a surface require co-occurrence, not phrase order. For example: `{"concepts":[["bicycle","bike"],["repair","service"]],"match":"all"}`.
+- `history_expand({id, before?, after?, offset?})`: read and page through the branch-effective original text.
+- `history_grep({pattern, limit?, offset?})`: independent JavaScript regex search when evidence is insufficient. Recall never silently switches to literal scanning or grep.
 
-Each cell is correct answers out of 8, and all three columns use the same compacted snapshot. In DEV8 the evidence sits in a single compacted segment; in HARD8 it is spread across several, and the questions were picked for difficulty. A LongMemEval history is many simulated chats stitched together, and each one was fed into a single Pi session, so nothing here searches across Pi sessions.
+FTS decides candidates. The measured production strategy is English Porter plus raw Han bigrams. Worker-default jieba adds only a SQL ranking signal: distinct positive all-Han surfaces of at least three characters found in the existing dictionary-word table, then BM25 and stable time/recency/rowid ties, **before pagination**. Exclusions never add points. Automatic query terms stay unchanged; with the measured raw-bigram analyzer they generally have no Chinese long-surface bonus. No semantic/synonym expansion is implied.
 
-These are archived single runs from development on small sets, using an older build from before the `lite`/`full` switch existed; they were not re-measured with the current code. Scores depend mostly on the answer model: with the same plugin and snapshots, Sol got 6 of the HARD8 questions and Luna got 3. Full records are in [doc/BENCHMARK_RESULTS.md](doc/BENCHMARK_RESULTS.md).
+Partial token loss continues the analyzed FTS search and returns a short warning; a zero-token surface retains the compiler error. Normal zero hits remain zero. Recall pages default to at most 50 entries and target 16,000 Unicode codepoints; use the returned `nextOffset`, not a guessed offset.
 
-## Performance
+Optional agent-wide `<agent-dir>/extensions/compaction-recall.json` (default agent directory `~/.pi/agent`):
 
-Measured offline with no model calls: one LongMemEval_M history cut to several lengths, with everything except the last ~20k tokens compacted. Node.js 24.18 on a Ryzen 7 5800H; median of 3 fresh processes.
+```json
+{
+  "mode": "full",
+  "jieba": true,
+  "autoGate": 280,
+  "snippetBudget": 240,
+  "recallTimeoutMs": 5000,
+  "trace": false,
+  "preindex": { "userCycles": 10, "toolRounds": 10 }
+}
+```
 
-**Memory** (extra process RSS over the same session without the extension):
+Han codepoints weigh 2, other codepoints 1 for the automatic gate and snippet budget. The automatic gate skips overlong questions; manual recall is not subject to that gate. The deadline is cooperative: native MATCH cannot be interrupted, but late results are discarded without clearing healthy worker caches.
 
-| History | `full` | `lite` |
-| --- | --- | --- |
-| 50k tokens | 23 MiB | 2 MiB |
-| 200k tokens | 44 MiB | 2 MiB |
-| 500k tokens | 66 MiB | 2 MiB |
-| 1M tokens | 125 MiB | 3 MiB |
+```sh
+COMPACTION_RECALL_MODE=lite pi -e ./src/index.ts
+COMPACTION_RECALL_JIEBA=off pi -e ./src/index.ts
+```
 
-In `full`, memory grows with the compacted history, roughly 11 MiB per 100k tokens. `lite` keeps no index, so it adds almost nothing.
+Environment overrides use `COMPACTION_RECALL_AUTO_GATE`, `COMPACTION_RECALL_SNIPPET_BUDGET`, `COMPACTION_RECALL_QUERY_TIMEOUT_MS` and the existing preindex variables. Configuration is read once at extension load; reload after changes. `PI_CODING_AGENT_DIR` selects the agent directory, not cwd or an SDK `agentDir` option. Production does not read old SQLite trial/arm variables. Full details are in the repository's [PLUGIN guide](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md).
 
-**Time** (`full`, milliseconds):
+## Scope and privacy
 
-| History | Index build (background) | Longest main-thread pause | Added to each request | `history_recall` reply | First request during a rebuild |
-| --- | --- | --- | --- | --- | --- |
-| 50k tokens | 101 | 0.6 | 1 | 1 | 62 |
-| 200k tokens | 197 | 0.7 | 4 | 8 | 159 |
-| 500k tokens | 375 | 1.0 | 10 | 18 | 325 |
-| 1M tokens | 665 | 1.0 | 19 | 36 | 606 |
+Only compacted user/assistant text and assistant tool-call names/arguments on the **current branch** are searched. Thinking, images, tool-result bodies and compaction summaries are excluded; readable tool results can still be expanded by id. Latest context edits apply: omitted entries disappear and replacements hide original text. Nothing searches other sessions or abandoned branches.
 
-The index is built in a worker thread, so the main thread barely pauses. "Added to each request" is the automatic hint lookup before every model call once the index is ready. If a request arrives while the index is still being rebuilt, it waits for it; that is the last column. In `lite`, nothing runs in the background, and a `history_grep` over 1M tokens takes about 8 ms. Full method and raw numbers are in [doc/PERFORMANCE.md](doc/PERFORMANCE.md).
+Hints and tool results can be sent to your model provider. `lite` injects no hidden hints, but it is not a guarantee that history never reaches the provider. No hit proves absence. Worker failures surface as errors rather than changing retrieval algorithms; shutdown waits for the worker. Optional timing writes only to an explicitly selected file. File-only `trace: true` records content-bearing structured inputs and requires private handling.
 
-## Limits
+## Frozen evaluation and historical performance
 
-- It only searches what was compacted out of the current branch: not other sessions, and not the compaction summary itself.
-- It uses keyword matching, not semantic search. No hit doesn't mean it was never said.
-- Tool results and thinking are not searched.
-- In `full`, the automatic hints are sent to your model provider with each request, and the index lives in memory, growing as the conversation gets longer.
+The [0.1 research archive](https://github.com/shttty/pi-context-recall/tree/main/benchmark/archive/release-0.1.0) contains this round's LME16 English/Chinese and SWE-chat8 questions, references, final answers, original strict/1–10 judgments, provenance and judging code. It is excluded from npm. Runs differ in model, prompt and candidate; no new paid evaluation was performed for this release. SWE-chat8's latest machine result remains **7/8** for both judges; sw08 user acceptance is a separate human review, not a machine 8/8. The frozen snapper reference revision and other disagreements are documented without rewriting judgments.
+
+Older JS implementation results are retained in [BENCHMARK_RESULTS](doc/BENCHMARK_RESULTS.md); older memory/latency tables remain in the repository's [PERFORMANCE notes](https://github.com/shttty/pi-context-recall/blob/main/doc/PERFORMANCE.md). They are **historical, not measurements of this SQLite release**, and must not be used as current production memory/latency guarantees. Small single-run scores do not establish stable accuracy. The old JS runtime and original documentation remain archived in git, not in the package.
 
 ## Development
 
 ```sh
 npm ci --ignore-scripts
 npm run check
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'
 ```
 
-All tests run offline.
+Checks use offline synthetic fixtures and isolated agent directories. Real evaluation requires an explicit external configuration and separate authorization.
 
 ## License
 
-MIT. LongMemEval attribution and license are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md#longmemeval-evaluation-material).
+MIT. Dataset/software attribution and the SWE-chat database/content-rights distinction are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Benchmark materials are git-only; full histories, credentials, profiles and provider wire are not bundled.

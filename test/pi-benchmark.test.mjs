@@ -2,8 +2,8 @@ import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { registerBenchmarkArm } from '../benchmark/pi-benchmark-adapter.mjs';
-import { CompactionIndex } from '../src/inverted-index.mjs';
-import { buildRecallPage, withLocators } from '../src/locator.mjs';
+import { CompactionIndex } from '../benchmark/archive/js-runtime/inverted-index.mjs'
+import { buildRecallPage, withLocators } from '../benchmark/archive/js-runtime/locator.mjs'
 import { initialBranch, msg } from './corpus.mjs';
 
 test('indexed manual pagination preserves scan output across pages, no hits, forks and resets', () => {

@@ -5,7 +5,7 @@ import test from 'node:test';
 import register from '../src/index.ts';
 import legacyRegister from '../src/recall-extension.ts';
 import { compactedEntries, entryText, MAX_EXPAND_CHARS } from '../src/history.mjs';
-import { buildLocator, RECALL_PAGE_CHARS } from '../src/locator.mjs';
+import { RECALL_PAGE_CHARS } from '../src/locator.mjs';
 
 const stamp = '2026-09-30T00:00:00.000Z';
 const msg = (id, text, role = 'user') => ({
@@ -31,7 +31,11 @@ function harness(initial) {
   activeHarnesses.add(() => hooks.get('session_shutdown')?.({ type: 'session_shutdown', reason: 'quit' }, ctx));
   return {
     tools, setBranch: (value) => { branch = value; },
-    run: (name, params) => tools.get(name).execute('test', params, undefined, undefined, ctx)
+    run: (name, params) => tools.get(name).execute('test', params, undefined, undefined, ctx),
+    async auto(query) {
+      const result = await hooks.get('context')({ messages: [{ role: 'user', content: query, timestamp: 0 }] }, ctx);
+      return result.messages.find(message => message.role === 'custom')?.content;
+    }
   };
 }
 
@@ -418,41 +422,41 @@ test('expand reports only complete neighbors and handles empty/out-of-range page
 
 
 
-test('manual recall shares automatic ranking and candidates with independent pagination', async () => {
+test('English literal concepts share automatic candidates and order with independent pagination', async () => {
   const entries = [msg('old', 'quasar old'), msg('best', 'quasar nebula'), msg('recent', 'quasar recent'),
   msg('tool', 'quasar nebula', 'toolResult'), msg('live', 'quasar nebula live'), compact('c', 'live')];
   const h = harness(entries);
-  const result = text(await h.run('history_recall', { query: 'quasar nebula' }));
+  const result = text(await h.run('history_recall', { concepts: [['quasar'], ['nebula']] }));
   const resultRows = result.trim().split('\n').filter(line => line.startsWith('{')).map(JSON.parse);
-  const autoRows = buildLocator('quasar nebula', entries).trim().split('\n').slice(1).map(JSON.parse);
+  const autoRows = (await h.auto('quasar nebula')).split('\n').filter(line => line.startsWith('{')).map(JSON.parse);
   assert.deepEqual(resultRows, autoRows);
   assert.ok(Array.from(result).length <= RECALL_PAGE_CHARS);
   assert.deepEqual(resultRows.map(row => row.id), ['best', 'recent', 'old']);
   h.setBranch([msg('alternate', 'quasar'), msg('live', 'tail'), compact('c2', 'live')]);
-  const alternate = text(await h.run('history_recall', { query: 'quasar' }));
+  const alternate = text(await h.run('history_recall', { concepts: [['quasar']] }));
   assert.match(alternate, /alternate/);
   assert.doesNotMatch(alternate, /"id":"best"/);
 });
 
 test('manual recall permits rewritten keywords but does not invent semantic synonym matches', async () => {
   const h = harness([msg('bike', 'bicycle repair appointment'), msg('live', 'tail'), compact('c', 'live')]);
-  const missing = text(await h.run('history_recall', { query: 'cycling' }));
-  assert.match(missing, /does not prove absence/);
-  assert.match(missing, /history_grep.*supplementary/);
-  assert.match(text(await h.run('history_recall', { query: 'bicycle repair' })), /"id":"bike"/);
-  for (const query of ['', 'the and', 'unmatched']) {
-    assert.match(text(await h.run('history_recall', { query })), /No lexical locators/);
+  const missing = await h.run('history_recall', { concepts: [['cycling']] });
+  assert.equal(missing.details.total, 0);
+  assert.match(text(await h.run('history_recall', { concepts: [['bicycle repair']] })), /"id":"bike"/);
+  for (const surface of ['the and', 'unmatched']) {
+    assert.equal((await h.run('history_recall', { concepts: [[surface]] })).details.total, 0);
   }
+  await assert.rejects(h.run('history_recall', { concepts: [['']] }), { name: 'QueryError', code: 'EMPTY_TEXT' });
   h.setBranch([msg('uncompacted', 'bicycle repair')]);
-  assert.match(text(await h.run('history_recall', { query: 'bicycle' })), /No lexical locators/);
+  assert.equal((await h.run('history_recall', { concepts: [['bicycle']] })).details.total, 0);
 });
 
 test('all search remains null-safe and excludes tool results while expansion can read them', async () => {
   const malformed = msg('broken', 'unused');
   malformed.message.content = [null, undefined, { type: 'text', text: 'quasar valid' }];
   const h = harness([malformed, msg('stdout', 'needle only in tool output', 'toolResult'), msg('live', 'tail'), compact('c', 'live')]);
-  assert.match(text(await h.run('history_recall', { query: 'quasar' })), /"id":"broken"/);
-  assert.match(text(await h.run('history_recall', { query: 'needle' })), /No lexical locators/);
+  assert.match(text(await h.run('history_recall', { concepts: [['quasar']] })), /"id":"broken"/);
+  assert.equal((await h.run('history_recall', { concepts: [['needle']] })).details.total, 0);
   assert.equal((await h.run('history_grep', { pattern: 'needle' })).details.total, 0);
   assert.match(text(await h.run('history_expand', { id: 'stdout', before: 0, after: 0 })), /needle only in tool output/);
 });

@@ -1,5 +1,7 @@
 # Offline scaling / 离线性能扩展测试
 
+> Historical JS implementation measurements, not SQLite 0.1 performance. 下文保留旧 JS 版本的原方法与数字，未作为本次 SQLite 生产迁入的新测量；当前行为见 [PLUGIN.md](PLUGIN.md)，旧源码见 `benchmark/archive/js-runtime/`。
+
 2026-10-03。仅测原始 LongMemEval_M 的 **577d4d32**；没有模型调用、网络、UI 或真实摘要生成。正式结果为每格 **3 个全新进程**，4 个长度 × baseline/lite/full，共 **36 个进程**。Node **v24.18.0**，Pi SDK **1.0.0**；Linux x64，**AMD Ryzen 7 5800H with Radeon Graphics，16 个逻辑 CPU**。README 模板未修改。
 
 One original LongMemEval_M question, **577d4d32**, measured offline: **36 fresh processes**, three per size/arm. No model, network, UI, or generated summaries. Runtime and machine above; these are not general Pi latency or accuracy claims.

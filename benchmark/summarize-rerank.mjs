@@ -1,7 +1,7 @@
 // Post-hoc evidence evaluation only; never used by retrieval/rerank models.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { formatLocatorRows, lex, rankLocatorCandidates } from '../src/locator.mjs';
+import { formatLocatorRows, lex, rankLocatorCandidates } from './archive/js-runtime/locator.mjs';
 import { buildBlindCorpus } from './blind-harness-core.mjs';
 import { searchableEntryText, compactedEntries } from '../src/history.mjs';
 import { parseArgs } from 'node:util';

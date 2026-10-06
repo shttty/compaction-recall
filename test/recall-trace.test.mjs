@@ -123,9 +123,9 @@ test('production registration preserves output with trace off, records execute m
       assert.equal(on.tools.get(name).description, tool.description);
       assert.deepEqual(on.tools.get(name).parameters, tool.parameters);
     }
-    const args = { query: 'original', limit: 1 };
+    const args = { concepts: [['original']], limit: 1 };
     await on.emit('message_end', { message: message('actual', args) });
-    on.hooks.get('tool_call').push(event => { event.input.query = 'quasar'; });
+    on.hooks.get('tool_call').push(event => { event.input.concepts = [['quasar']]; });
     await on.emit('tool_call', { toolName: 'history_recall', toolCallId: 'actual', input: args });
     const invoke = (host, id, params) => host.tools.get('history_recall').execute(id, params, undefined, undefined, ctx);
     assert.deepEqual(await invoke(on, 'actual', args), await invoke(off, 'off', args));
@@ -133,15 +133,15 @@ test('production registration preserves output with trace off, records execute m
     await on.emit('agent_end', { messages: [] });
     const [event] = rows(f.path).filter(row => row.type === 'history_recall_trace');
     assert.deepEqual(event.result, { ids: ['old'], total: 1, offset: 0, returned: 1, nextOffset: null });
-    assert.equal(event.model.arguments.query, 'original');
-    assert.equal(event.execute.query, 'quasar');
-    assert.equal(event.query_identical, false);
+    assert.deepEqual(event.model.arguments.concepts, [['original']]);
+    assert.deepEqual(event.execute.input.concepts, [['quasar']]);
+    assert.equal(event.input_identical, false);
     const cyclic = {}; cyclic.self = cyclic;
-    assert.deepEqual(await invoke(on, 'unserializable', { query: 'quasar', cyclic }), await invoke(off, 'baseline', { query: 'quasar', cyclic }));
-    await assert.rejects(invoke(on, 'unserializable-error', { query: 'quasar', cyclic, limit: 0 }), /limit must be an integer from 1 to 50/);
-    await assert.rejects(invoke(on, 'error', { query: 'quasar', limit: 0 }), /limit must be/);
+    await assert.rejects(invoke(on, 'unserializable', { concepts: [['quasar']], cyclic }), { name: 'QueryError', code: 'UNKNOWN_FIELD' });
+    await assert.rejects(invoke(off, 'baseline', { concepts: [['quasar']], cyclic }), { name: 'QueryError', code: 'UNKNOWN_FIELD' });
+    await assert.rejects(invoke(on, 'error', { concepts: [['quasar']], limit: 0 }), { name: 'RangeError' });
     await on.emit('session_shutdown', {});
-    assert.equal(rows(f.path).filter(row => row.type === 'history_recall_trace')[1].error, 'limit must be an integer from 1 to 50');
+    assert.deepEqual(rows(f.path).filter(row => row.type === 'history_recall_trace')[1].error, { name: 'RangeError', code: null, message: 'limit must be an integer from 1 to 50' });
   } finally {
     for (const host of hosts) await host.emit('session_shutdown', {});
     for (const [key, value] of Object.entries(saved)) { if (value === undefined) delete process.env[key]; else process.env[key] = value; }

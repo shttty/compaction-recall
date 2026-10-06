@@ -5,8 +5,8 @@ import { performance } from 'node:perf_hooks';
 import { createHash } from 'node:crypto';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { parseArgs } from 'node:util';
-import { CompactionIndex } from '../src/inverted-index.mjs';
-import { BackgroundIndex } from '../src/background-index.mjs';
+import { CompactionIndex } from './archive/js-runtime/inverted-index.mjs';
+import { BackgroundIndex } from './archive/js-runtime/background-index.mjs';
 import { StageTiming } from '../src/timing.mjs';
 const { values: args } = parseArgs({ options: { source: { type: 'string' }, query: { type: 'string' }, output: { type: 'string' }, arm: { type: 'string' }, help: { type: 'boolean' } } });
 if (args.help) { console.log('Usage: node --expose-gc benchmark/benchmark-background.mjs --source SESSION_JSONL --query TEXT --output NEW_RESULT_JSON'); process.exit(0); }
@@ -15,7 +15,7 @@ const arm = args.arm, file = args.source, query = args.query;
 if (!arm) {
  const runs = []; for (let repeat = 0; repeat < 3; repeat++)for (const variant of repeat % 2 ? ['worker', 'sync'] : ['sync', 'worker']) runs.push(JSON.parse(execFileSync(process.execPath, ['--expose-gc', new URL(import.meta.url).pathname, '--source', file, '--query', query, '--arm', variant], { encoding: 'utf8' })));
  const hashes = runs.map(r => JSON.stringify(r.outputHashes)); if (new Set(hashes).size !== 1) throw new Error('Output parity failed');
- const sourceHashes = Object.fromEntries(['../src/background-index.mjs', '../src/index-worker.mjs', '../src/inverted-index.mjs', 'benchmark-background.mjs'].map(name => [name, createHash('sha256').update(fs.readFileSync(new URL(name, import.meta.url))).digest('hex')]));
+ const sourceHashes = Object.fromEntries(['./archive/js-runtime/background-index.mjs', './archive/js-runtime/index-worker.mjs', './archive/js-runtime/inverted-index.mjs', 'benchmark-background.mjs'].map(name => [name, createHash('sha256').update(fs.readFileSync(new URL(name, import.meta.url))).digest('hex')]));
  const report = { sourceHashes, runtime: process.version, source: file, query, method: '3 isolated process repetitions/arm; alternating order; 5ms event-loop heartbeat; read/parse separately; cold build+query and incremental update include extraction/transfer/worker wait; 10 warm auto and 5 manual requests per repetition; no model calls', runs };
  fs.writeFileSync(args.output, JSON.stringify(report, null, 2) + '\n', { flag: 'wx' });
  const median = v => v.sort((a, b) => a - b)[Math.floor(v.length / 2)];

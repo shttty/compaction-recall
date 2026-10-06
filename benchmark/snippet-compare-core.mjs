@@ -1,4 +1,4 @@
-import { lex, locatorWindow } from '../src/locator.mjs';
+import { lex, locatorWindow } from './archive/js-runtime/locator.mjs';
 
 const segmenter = new Intl.Segmenter('zh', { granularity: 'word' });
 export const AUTO_STOPWORDS = new Set(('a an and are as at be been but by can could did do does for from had has have how i if in is it its me my of on or our please so than that the their them then there these they this to us was we were what when where which who why will with would you your please tell help about find show recall remember previous earlier history').split(/\s+/));

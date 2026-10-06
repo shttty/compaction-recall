@@ -2,88 +2,80 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-Pi 压缩长对话之后，摘要只剩大意，名字、数字、原话都没了。compaction-recall 让模型回到被压缩掉的原始消息里，把这些细节查回来。
+Pi 压缩长对话后，摘要可能丢掉名字、数字和原话。compaction-recall 让模型搜索当前分支被压缩掉的原始消息，再展开证据核实。
 
-它不替换 Pi 自己的压缩，不加数据库，不写磁盘，也不额外调用模型。
+**0.1.0 目前是本地发布准备；本任务没有发布 npm 包或 release tag。** 默认 `full` 使用原生 Node worker 内的 **SQLite FTS5 内存索引**，不接管 Pi 压缩，不持久化索引、不生成 db/WAL/SHM 文件、不额外调用模型。`lite` 只有正则 grep 和展开工具，没有 worker 或自动提示。
 
-## 安装
+## 要求与本地使用
 
-需要 Node.js 24+ 和 Pi SDK 1.0.0。
+需要 **Node.js >=24.18.0**；已核对宿主 **Pi SDK 1.0.0**。SDK 与 `typebox` 由宿主提供、维持 peer；唯一生产 npm 依赖是 `@node-rs/jieba`，仅在 worker 加载。
 
-```sh
-pi install git:github.com/shttty/pi-context-recall
-```
-
-（仓库改名前的临时地址。）
-
-## 使用
-
-装上就生效。对话被压缩后，模型每次回答前会收到几条可能相关的旧消息位置，然后自己决定要不要查：`history_recall` 按关键词找，`history_expand` 读原文，`history_grep` 做正则搜索。
-
-不想要自动提示和后台索引，就切到 `lite`，只保留 `history_grep` 和 `history_expand`：
+检出源码后安装锁定依赖，再临时加载一个入口，不改 Pi profile：
 
 ```sh
-COMPACTION_RECALL_MODE=lite pi
+npm ci --ignore-scripts
+pi -e ./src/index.ts
 ```
 
-也可以写进 `~/.pi/agent/extensions/compaction-recall.json`。全部配置和工具细节见 [doc/PLUGIN.md](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md)。
+也可以 `pi -e /absolute/path/to/compaction-recall`。Pi 不替本地目录安装依赖，应先安装；Pi 管理的 npm/git 包会安装声明的依赖。`pi install` 会改 settings，本任务未执行。`src/index.ts` 和替代入口 `src/recall-extension.ts` 只选一个，不要重复注册。
 
-## 评测
+## 工具与配置
 
-题目来自 [LongMemEval](https://github.com/xiaowu0162/LongMemEval) 的原始 LongMemEval_M。每条历史都超过一百万 token，答题前必须先经过真实的 Pi 压缩。
+压缩后，`full` 在回答前给模型几条词面定位提示，由模型决定是否继续取证：
 
-| 题集 | 答题模型 | 只有 Pi | + `lite` | + `full` |
-| --- | --- | --- | --- | --- |
-| DEV8 | gpt-6-luna / high | 0 | 3 | 8 |
-| HARD8 | gpt-6-luna / high | 0 | 1 | 3 |
-| HARD8 | gpt-6.1-sol / high | 1 | 6 | 6 |
+- `history_recall({concepts, match?, exclude?, limit?, offset?})`：1–5 个概念组，每组 1–4 个替代词面。默认 `any` 组间 OR；`all` 要求每组在同一记录命中。一个词面分析出的词项要求共现，不要求短语顺序。例如 `{"concepts":[["bicycle","bike"],["repair","service"]],"match":"all"}`。
+- `history_expand({id, before?, after?, offset?})`：读取当前分支编辑生效后的原文，长条目可翻页。
+- `history_grep({pattern, limit?, offset?})`：证据不足时独立使用 JavaScript 正则搜索。recall 不暗中切换为字面扫描或 grep。
 
-每格是 8 题里答对的数量，三列用的是同一份压缩快照。DEV8 的证据在单个被压缩段里；HARD8 的证据分散在多个段里，题目按难度挑选。LongMemEval 的历史由许多段模拟聊天拼成，评测时整条喂进同一个 Pi session，所以这里没有跨 Pi session 的检索。
+FTS 决定候选。生产固定已测的英文 Porter＋纯汉字双字策略。worker 默认启用 jieba，仅利用既有词典长词表加一项 SQL 排名信号：正向、纯汉字、至少三字词面的不同命中数优先，其次 BM25 和原时间/recency/rowid ties，**先排序再分页**。exclude 不加分，候选不扩大。自动选词不变；已测纯双字自动词项通常不具有中文长词加分。不承诺语义或同义词扩展。
 
-这是开发期间归档的单轮结果，题目少，用的是还没有 `lite`/`full` 开关的旧版本，没有用当前代码重测。分数主要取决于答题模型：插件和快照都一样，HARD8 上 Sol 答对 6 题，Luna 只答对 3 题。完整记录见 [doc/BENCHMARK_RESULTS.md](doc/BENCHMARK_RESULTS.md)。
+部分 token 损失继续按分析词项搜 FTS，并返回短 warning；零 token 保留 compiler 错误。正常零命中仍是零结果。recall 每页默认最多 50 条、目标预算 16,000 Unicode 码点，续页必须用返回的 `nextOffset`。
 
-## 性能
+可选 agent 级文件 `<agent-dir>/extensions/compaction-recall.json`（默认 agent 目录 `~/.pi/agent`）：
 
-离线测量，不调用模型：把一条 LongMemEval_M 历史截成几种长度，除最后约 2 万 token 外全部压缩。Node.js 24.18，Ryzen 7 5800H；每格取 3 个全新进程的中位数。
+```json
+{
+  "mode": "full",
+  "jieba": true,
+  "autoGate": 280,
+  "snippetBudget": 240,
+  "recallTimeoutMs": 5000,
+  "trace": false,
+  "preindex": { "userCycles": 10, "toolRounds": 10 }
+}
+```
 
-**内存**（相对同一 session 不加载插件时，多出来的进程 RSS）：
+自动门槛和片段预算中 Han 码点权重 2，其他码点 1。自动查询过长时跳过提示，主动 recall 不受这个门槛限制。超时是协作式：native MATCH 不可抢占，但过期结果会丢弃，健康 worker 缓存不清空。
 
-| 历史长度 | `full` | `lite` |
-| --- | --- | --- |
-| 5 万 token | 23 MiB | 2 MiB |
-| 20 万 token | 44 MiB | 2 MiB |
-| 50 万 token | 66 MiB | 2 MiB |
-| 100 万 token | 125 MiB | 3 MiB |
+```sh
+COMPACTION_RECALL_MODE=lite pi -e ./src/index.ts
+COMPACTION_RECALL_JIEBA=off pi -e ./src/index.ts
+```
 
-`full` 的内存随被压缩的历史增长，大约每 10 万 token 增加 11 MiB。`lite` 不建索引，几乎不增加内存。
+环境覆盖还包括 `COMPACTION_RECALL_AUTO_GATE`、`COMPACTION_RECALL_SNIPPET_BUDGET`、`COMPACTION_RECALL_QUERY_TIMEOUT_MS` 及原预热节奏变量。配置只在扩展加载时读取，改后需重载。`PI_CODING_AGENT_DIR` 选 agent 目录，不跟随 cwd 或 SDK 的 `agentDir` 选项。生产不读旧 SQLite trial/arm 变量。完整规则见仓库的 [PLUGIN 说明](https://github.com/shttty/pi-context-recall/blob/main/doc/PLUGIN.md)。
 
-**时间**（`full`，单位毫秒）：
+## 范围与隐私
 
-| 历史长度 | 建索引（后台） | 主线程最长停顿 | 每次请求多花 | `history_recall` 返回 | 重建期间的首次请求 |
-| --- | --- | --- | --- | --- | --- |
-| 5 万 token | 101 | 0.6 | 1 | 1 | 62 |
-| 20 万 token | 197 | 0.7 | 4 | 8 | 159 |
-| 50 万 token | 375 | 1.0 | 10 | 18 | 325 |
-| 100 万 token | 665 | 1.0 | 19 | 36 | 606 |
+只搜**当前分支**的已压缩用户/助手正文及助手工具调用名/输入。thinking、图片、工具结果正文和压缩摘要不入搜索；可读工具结果仍可按 id 展开。最新 context edit 生效：省略条目不可见，替换内容遮住原文。不跨 session 或被放弃的分支。
 
-索引由 worker 线程建，主线程几乎不停顿。"每次请求多花"是索引就绪后，每次调用模型前查自动提示的时间。如果请求赶上索引正在重建，就要等它建完，即最后一列。`lite` 没有任何后台工作，在 100 万 token 上跑一次 `history_grep` 大约 8 ms。完整方法和原始数据见 [doc/PERFORMANCE.md](doc/PERFORMANCE.md)。
+提示和工具结果可能发送给模型 provider。`lite` 不注入隐藏提示，但不是“历史永不发送”的隐私开关。查不到不证明不存在。worker 失败直接暴露错误，不切换检索算法；shutdown 等待 worker。可选计时只写显式指定的文件；文件配置 `trace: true` 会记录带内容的结构化输入，应按敏感文件处理。
 
-## 限制
+## 冻结评测与历史性能
 
-- 只能查当前分支里被压缩掉的内容，查不到其他 session，也查不到压缩摘要本身。
-- 用的是关键词匹配，不是语义检索。查不到不代表没说过。
-- 工具结果和 thinking 不在搜索范围内。
-- `full` 的自动提示会随请求发给模型服务；它的索引放在内存里，对话越长占得越多。
+[0.1 研究归档](https://github.com/shttty/pi-context-recall/tree/main/benchmark/archive/release-0.1.0) 保存本轮 LME16 英/中文、SWE-chat8 的题目、参考、最终回答、原始严格/1–10 裁判、来源与判题脚本，不进入 npm。不同轮次的模型、提示和候选不同；本次发布没有新跑付费评测。SWE 最新机器严格结果仍为两裁判各 **7/8**；sw08 用户语义认可独立记为人工复核，不能改称机器 8/8。鲷鱼修订参考和其余争议均明确版本，不改写冻结裁判。
+
+更早的 JS 版本结果仍在 [BENCHMARK_RESULTS](doc/BENCHMARK_RESULTS.md)，旧内存/耗时表在仓库 [PERFORMANCE](https://github.com/shttty/pi-context-recall/blob/main/doc/PERFORMANCE.md)。它们是**历史记录，不是本次 SQLite 生产版本的测量**，不能当作当前内存/延迟承诺；小样本单轮评分也不证明稳定准确率。旧 JS 运行时与原说明保留在 git 归档，不进包。
 
 ## 开发
 
 ```sh
 npm ci --ignore-scripts
 npm run check
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'
 ```
 
-测试全部离线运行。
+检查使用离线合成 fixture 与隔离 agent 目录。真实评测需要显式外部配置和另行授权。
 
 ## 许可
 
-MIT。LongMemEval 的来源与许可见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md#longmemeval-evaluation-material)。
+MIT。数据/软件归属、SWE-chat 数据库许可与单条内容权利区别见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。benchmark 仅入 git；完整历史、凭据、profile、provider wire 不打包。

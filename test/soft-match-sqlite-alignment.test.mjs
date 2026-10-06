@@ -127,11 +127,11 @@ test('exact BM25 ties use source time rather than distinct-term count', t => {
   assert.deepEqual(ids(worker.query({ concepts: [['alpha'], ['beta']] }, { mode: 'manual' })), ['newer-one', 'older-two']);
 });
 
-test('apostrophe single-letter fragments use literal lookup without becoming FTS tokens', t => {
+test('apostrophe single-letter fragments stay unsearchable rather than invoking literal lookup', t => {
   const { index, worker } = corpus(t, [doc('friend', "friend's", 0)]);
   assert.deepEqual(ids(index.search({ concepts: [['friend']] })), ['friend']);
-  assert.deepEqual(ids(index.search({ concepts: [['s']] })), ['friend']);
-  assert.deepEqual(ids(worker.query({ concepts: [['s']] }, { mode: 'manual' })), ['friend']);
+  assert.throws(() => index.search({ concepts: [['s']] }), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
+  assert.throws(() => worker.query({ concepts: [['s']] }, { mode: 'manual' }), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
 });
 
 test('empty documents do not change native BM25 corpus scores', t => {
@@ -142,12 +142,12 @@ test('empty documents do not change native BM25 corpus scores', t => {
   assert.deepEqual(padded.worker.query({ concepts: [['aurora']] }, { mode: 'manual' }), baseline.worker.query({ concepts: [['aurora']] }, { mode: 'manual' }));
 });
 
-test('single-letter dollar fragments match literal surfaces without FTS syntax errors', t => {
+test('zero-token dollar fragments retain compiler errors, not literal results', t => {
   const { index, worker } = corpus(t, [doc('dollar', '$x $_', 0)]);
   for (const surface of ['$x', '$_']) {
     const query = { concepts: [[surface]] };
-    assert.deepEqual(ids(index.search(query)), ['dollar']);
-    assert.deepEqual(ids(worker.query(query, { mode: 'manual' })), ['dollar']);
+    assert.throws(() => index.search(query), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
+    assert.throws(() => worker.query(query, { mode: 'manual' }), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
   }
 });
 

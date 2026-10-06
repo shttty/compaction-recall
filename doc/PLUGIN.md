@@ -1,150 +1,106 @@
-# 插件行为与限制
+# 0.1 插件行为与限制
 
-生产代码全部在 `src/`，支持 `full`（默认）和 `lite` 两种模式。full 在 Pi 原生压缩后自动注入短定位提示，提供 `history_recall`、`history_grep`、`history_expand`，并使用会话内 worker 索引和未压缩消息预分词。lite 只提供 `history_grep` 和 `history_expand`，不自动注入提示、不启动 worker。两种模式都不接管压缩，不新增数据库、持久索引或模型调用。已核对宿主 SDK：1.0.0。
+当前生产入口为 `src/index.ts`，替代入口 `src/recall-extension.ts` 只选一个。full 默认使用 SQLite FTS5 **内存库**与原生 Node worker；lite 仅注册 history_grep/history_expand。两种模式不接管 Pi 压缩，不持久化索引，不新增模型调用。要求 Node.js **>=24.18.0**；已检查宿主 Pi SDK **1.0.0** 的 docs/examples、加载和事件接口。SDK/typebox 维持宿主 peer；生产 npm 依赖仅 `@node-rs/jieba`。
 
-本仓库从 `pi-lossless-context/prototype/recall-spike` 独立提取。运行时相对导入均在本仓库内，不依赖原项目；这是来源路径，不是当前入口。[FINDINGS.md](FINDINGS.md) 是历史实验结果，不是目录整理后重新跑分的结论。
+0.1.0 是本地准备版本，本任务没有 npm publish、远端 push 或发布 tag。旧 JS 运行时、原说明与测量保留在 `benchmark/archive/js-runtime/`；本页描述当前 SQLite 行为，历史数字不是本次生产验收成绩。
 
-## 加载
-
-在仓库根目录临时加载，不改 profile：
+## 加载与依赖
 
 ```sh
+npm ci --ignore-scripts
 pi -e ./src/index.ts
 ```
 
-也可以将整个目录作为本地 Pi package 安装；这会修改用户的 Pi settings，需要你自己决定执行：
+也可用 `pi -e /absolute/path/to/compaction-recall` 临时加载 package，不写 profile。Pi 本地目录不自动安装依赖，应先安装；Pi 管理的 npm/git 来源会安装 `dependencies`，宿主映射 SDK/typebox。`pi install` 会修改 settings，本次发布准备未执行。worker 整条依赖链是原生 `.mjs`，不依赖宿主 TypeScript loader、兄弟工作树、benchmark/prototype 模块或 warning suppression。jieba 原生词典仅在 worker 初始化。
 
-```sh
-pi install /absolute/path/to/compaction-recall
-```
+## full / lite
 
-`package.json` 的 `pi.extensions` 指向 `src/index.ts`，也支持 `pi -e ./src/recall-extension.ts`。两个入口只选一个；根目录不保留 shim。宿主提供 Pi SDK 和 `typebox`，开发/测试使用锁定依赖（Pi SDK 1.0.0）。
+| 行为 | full（默认） | lite |
+|---|---|---|
+| 工具 | recall / grep / expand | grep / expand |
+| 自动内容 | 最近用户问题的短词面定位提示 | 不注册 context hook，不额外注入隐藏提示 |
+| 索引 | 当前分支已压缩记录的 SQLite 内存 FTS | 无索引、worker 或预热 hook |
+| 生命周期 | 代次隔离、预热节奏、等待 shutdown | 工具调用时读当前分支 |
+| optional timing | worker、查询与三个工具 | 仅 grep / expand 调用链 |
 
-## lite / full 模式
+模型决定何时查找、展开、补充 grep，没有固定证据分数门槛。lite 工具说明不提未注册的 recall/locators。不声称 lite 更快；工具返回的历史仍可能发给 provider，lite 不是隐私隔离模式。
 
-| 行为 | `lite` | `full`（默认） |
-| --- | --- | --- |
-| 工具 | `history_grep`、`history_expand` | 三个工具，另含 `history_recall` |
-| 自动历史提示 | 不注册 `context` hook，不改写请求上下文 | 按最后一条用户消息注入隐藏短定位提示 |
-| 后台工作 | 无 worker、预分词或索引生命周期 hook | worker 索引、预分词节奏和压缩后启用 |
-| 查找时机 | 模型自己决定何时搜索，再展开核实 | 自动提示辅助定位，也可主动 recall / grep / expand |
-| 可选计时 | 仅 grep/expand 调用链及其分支读取、文本提取、渲染阶段 | 自动提示、检索、worker 维护和三个工具阶段 |
+## 一次性 agent 配置
 
-配置文件**可选**，位置为 `<agent-dir>/extensions/compaction-recall.json`，放在 agent 目录的 `extensions` 子目录。`src/recall-config.mjs` 从 SDK 主入口 `@earendil-works/pi-coding-agent` 导入公开的 `getAgentDir()`，使用 `join(getAgentDir(), "extensions", "compaction-recall.json")` 定位；默认路径为 `~/.pi/agent/extensions/compaction-recall.json`，agent 目录可由 `PI_CODING_AGENT_DIR` 改变，不自行拼接默认目录，也不读取项目级配置。mode 和预分词参数共用一个文件及 `loadRecallConfig` 加载函数。完整示例：
+文件可选：`<getAgentDir()>/extensions/compaction-recall.json`，默认目录 `~/.pi/agent`；从 SDK 公共根导入 `getAgentDir()`。`PI_CODING_AGENT_DIR` 改变 agent 目录，不使用 cwd、项目 `.pi` 文件、`ctx.cwd` 或 SDK loader/createAgentSession 的 `agentDir` 选项。SDK 嵌入时也应在加载前设置该环境变量。
 
 ```json
 {
   "mode": "full",
-  "trace": false,
+  "jieba": true,
+  "autoGate": 280,
+  "snippetBudget": 240,
   "recallTimeoutMs": 5000,
-  "autoGate": 210,
-  "preindex": {
-    "userCycles": 10,
-    "toolRounds": 10
-  }
+  "trace": false,
+  "preindex": { "userCycles": 10, "toolRounds": 10 }
 }
 ```
 
-文件不存在时不警告、不创建文件，静默采用环境变量 / 默认值。`COMPACTION_RECALL_MODE=lite` / `COMPACTION_RECALL_MODE=full` 覆盖文件中的 `mode`；未配置时为 full。值区分大小写，只接受这两个字符串。非法文件值警告并回退 full；非法环境变量也警告并**直接回退 full**，不会重新使用文件里的 lite。预分词字段独立接受 1–100 的整数：有效 `COMPACTION_RECALL_PREINDEX_TURNS` / `COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS` 优先于文件字段，再回退到 10；非法环境值警告后保留有效文件值 / 默认值。文件大小上限为 65,536 字节；不可读、畸形、超限文件忽略并警告，未知字段忽略并警告，不打印非法值或文件内容。加载阶段的 warning 写入 stderr。
+| 文件字段 | 环境覆盖 | 默认与校验 |
+|---|---|---|
+| mode | COMPACTION_RECALL_MODE | full；只接受 full/lite，非法环境覆盖直接回退 full |
+| jieba | COMPACTION_RECALL_JIEBA | true；文件仅布尔，环境仅 on/off；非法所选值警告并回退开启 |
+| autoGate | COMPACTION_RECALL_AUTO_GATE | 280；正安全整数；环境须严格十进制字符串 |
+| snippetBudget | COMPACTION_RECALL_SNIPPET_BUDGET | 240；同上 |
+| recallTimeoutMs | COMPACTION_RECALL_QUERY_TIMEOUT_MS | 5000 ms；同上 |
+| preindex.userCycles | COMPACTION_RECALL_PREINDEX_TURNS | 10；1–100 整数 |
+| preindex.toolRounds | COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS | 10；1–100 整数 |
+| trace | 无 | false；仅文件布尔 |
 
-三个环境变量可以控制 mode 和预分词参数，无需配置文件；trace 只能在文件中开启。例如：
+所有值在扩展注册时读取一次；文件/环境改变后重载。session_start/tree 用已加载参数重置，不重读配置。无文件时静默采用默认/环境，不创建配置。文件上限 65,536 bytes；畸形、不可读、超限文件忽略并警告，未知字段警告但不打印内容。mode 非法直接 full；非法 cadence 环境值保留有效文件/默认值；非法检索数值覆盖静默回退正式默认，不取回有效文件值。trace/jieba 非法值警告，不暴露原值。
 
-```sh
-COMPACTION_RECALL_MODE=lite COMPACTION_RECALL_PREINDEX_TURNS=10 COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS=10 pi -e ./src/index.ts
-```
+正式默认依据为 7820047 的最新冻结 LME/SWE manifest：**英文 Porter＋纯汉字双字、280 / 240 / 5000、jieba 开**。生产固定策略，不提供 S6 arm 选择器，不读取 `COMPACTION_RECALL_SQLITE_ARM`、`COMPACTION_RECALL_SQLITE_BIGRAM_ONLY` 或 `COMPACTION_RECALL_SQLITE_HAN_PHRASE_TRIAL`；旧变量仅保留在评测适配层。
 
-mode 和预分词参数在**扩展加载时一起读取一次**，来源和生效时点一致。修改文件或环境变量后需重新加载扩展 / 重启 Pi。`session_start`、`session_tree` 只用已加载参数重置 cadence 计数器，不重新读取文件；无文件监听或每次工具调用的配置读取。lite 不使用预分词参数安排工作。检索方式是独立议题，本次没有加入嵌入模型配置或组合模式值。
+## recall：概念组与候选语义
 
-**SQLite 原型专用键：** 同一 agent 文件还接受根键 `recallTimeoutMs`（显式 `history_recall` 超时毫秒，默认 5000）和 `autoGate`（自动提示加权长度门槛，默认保持 210）。它们由 `benchmark/retrieval-sqlite-adapter.ts` 在加载时读取一次；正式 `src/` 插件只识别这两个配置字段，不启用 SQLite、不改变正式检索行为。`COMPACTION_RECALL_QUERY_TIMEOUT_MS` / `COMPACTION_RECALL_AUTO_GATE` 分别优先于文件；文件值只接受正安全整数，环境值只接受十进制正安全整数字符串。所选值无效时静默回退 5000 / 210；即使存在有效文件值，非法环境覆盖也直接用默认值。文件不存在仍静默，其他文件错误沿用上述规则。生命周期重建继续使用已加载值，修改后需重载。
+`history_recall({concepts:string[][], match?:'any'|'all', exclude?:string[], limit?, offset?})`。
 
-SQLite 自动提示可显式设 `autoGate: 280`（Han 每码点权重 2，其他权重 1）；280 允许、281 跳过，没有额外词数或前 4000 码点截断。显式查询不受该门槛及关键词数量限制；协作式 JavaScript deadline 从父线程请求起始计时，包含必要的索引准备、排队与查询。索引继续运行在现有 Worker 线程；到检查点后抛 `TimeoutError`，返回 `history_recall timed out after N ms; narrow the query or use history_grep`，过期结果不进入模型或 trace。同步 native MATCH 不可抢占，允许超过名义期限直到 native call 返回检查点；不是硬停止或精确墙钟返回保证。超时不 terminate/reset worker、不清空索引或跨度缓存，也不取消其他排队请求；后续请求正常复用 healthy worker caches，grep / expand 仍独立。2026-10-05 经凛音同意，SQLite 适配层已应用 [英文 v8](SOFT_MATCH_PROMPTS_V9.md) 用于端到端对比；正式 `src/recall-extension.ts` 和冻结历史描述/结果不变。详细依据见 [SQLite 原型 README](../prototype/soft-match-sqlite/README.md#显式查询超时与配置2026-10-05)。
+- 1–5 组，每组 1–4 替代词面；默认 any 是组间 OR，all 要求每组在同一索引记录命中。组内是替代 OR；一个词面的分析路径外 OR、路径内词项 AND，表示同记录共现，不保证顺序、相邻或 phrase。
+- 词面是 literal 数据，不是 SQL、原生 MATCH、任意 AST、regex。每面非空 trim 后最多 256 Unicode 码点，总计 2048；未知字段失败。旧 query/must/prefer 不兼容，不提供别名。
+- 沿用未经修改的作者 parseQuery/compileFts5；FTS MATCH 单独决定候选。索引包含基础词项与原生 Porter aliases；自动查询使用现有 porterTerm。主动 compiler 不推断 stemming/synonym 扩展，须自行给替代词面；不是语义搜索。
+- 分析完整性检查同原候选：零 token 保留 QueryError/EMPTY_ANALYSIS；部分 Letter/Number/Mark 损失继续按实际词项 FTS，并携带短 warning。例：`Warning: "7:30" → ["30"]. Suggestion: revise query terms or use history_grep.` 不丢词面、不扩大候选、不扫描兜底、不恢复 rarity。声明忽略的标点/大小写和合法归一不加 warning。
+- exclude 最多 5 个词面，用同一 compiler 分析，任何匹配硬排除该记录；部分损失同样 warning。exclude 不选片段、不贡献 jieba 排名。
+- 保留已接受的英文聚合段：计数/求和/列表先收集有证据的不同项目，再核时间范围、状态与重复；检索 entry 数不是项目数，首轮/首页不是完整清单，不猜缺项。
 
-SQLite 接受根键 `snippetBudget` 与优先环境变量 `COMPACTION_RECALL_SNIPPET_BUDGET`，加载一次并同时控制自动提示和显式 recall 窗口。文件接受正安全整数，环境接受严格十进制正安全整数字符串；缺省或非法所选值回退 **240 加权单位**，每个 Han 码点计 2、其他码点计 1；非法环境覆盖不回取文件值，无 legacy 码点模式。SQL 对可见消息的规范化全文 SHA-256 分组，代表取 BM25 最优并按分数/时间排序，LIMIT/OFFSET 与 distinct total 都在 SQL 中完成；片段只为当前返回页生成，去重不再依赖查询片段。整体输出预算、grep/expand 及生产 JS 检索不变。
+### SQL 排名、去重与页
 
+复用原长词提取和 `han_rank(rowid,term)`：jieba cutForSearch 的纯 Han 至少三字词只进辅助表，不改基础 FTS token 流。先固定 MATCH 与 BM25/full-content 去重代表项（规范化空白的全文 SHA-256），然后 SQL 按 **不同正向长词面命中数 DESC → BM25 → timestamp DESC → recency DESC → rowid DESC** 排序，最后 LIMIT/OFFSET。词面来自正向 concepts，不从 exclude 取分；没有 JS 全候选或当前页重排，没有 jiebaRankingPending。
 
-`trace` 同样仅在扩展加载时读取，默认 false，只接受布尔值；非法值警告并回退 false，无 trace 环境变量。设为 true 时，每次 full 模式的 `history_recall` execute 在同一 `COMPACTION_RECALL_TIMING_FILE` 追加一条详细事件；未设置该文件时加载阶段仅警告一次、不记录。lite 不增加任何 hook。为等待 message_end 与 execute 的关联，事件延迟到 agent_end / shutdown 写入。关闭时 timing 仍只包含数值及固定标签；开启后会记录 assistant 正文、解析后的模型参数、插件收到的 query/params、返回 id 排序与分页、错误原文，不记录思考或逐字原始 JSON。文件权限 0600，可能含敏感内容，详见 [TIMING.md](TIMING.md#opt-in-content-trace)。
+自动提示复用同一 collector/SQL，但仅用原先选出的 queryTerms。已测纯汉字双字自动词项通常不含至少三字词面，因此开关一般不改变中文自动提示的长词分；不为制造重排效果而补词或改候选。这是保留实测候选行为，不把旧 ICU 增词对照当正式策略。
 
-**SDK 嵌入场景：** `getAgentDir()` 的目录覆盖只读取进程环境变量 `PI_CODING_AGENT_DIR`，不读取 `createAgentSession` 或资源加载器的 `agentDir` 选项。如果只通过 SDK `agentDir` 指定目录而未设置环境变量，扩展不会自动跟随该选项；应在加载扩展前设置 `PI_CODING_AGENT_DIR`，或直接用三个 `COMPACTION_RECALL_*` 环境变量控制 mode / 预分词参数（trace 仍需文件）。`process.cwd()`、`ctx.cwd` 与 SDK `agentDir` 可以不同，不会改变本扩展的配置来源。
+recall 默认及上限 50 条，offset 默认 0；正文/details 返回 total、returned、nextOffset、hasMore。总数为不同规范化全文，SQL 去重和分页在片段生成之前完成，仅为实际页渲染片段。使用返回 nextOffset；同查询、未变分支才稳定，编辑/压缩/换树后从 0 重查。每页目标 16,000 码点；warning 计入预算。单条 metadata 超预算时完整返回并 budgetExceeded，保持可前进。片段默认 240 加权单位（Han2，其余1），不切代理对；日期为 entry 日期，不推断事件日期/摘要归属。
 
-lite 不额外注入隐藏历史提示，也不因此向模型服务商多发这类内容；但模型调用 grep/expand 后，工具返回的历史内容仍会随后续模型请求发送。它不是“历史绝不会发送给服务商”的隐私隔离开关。代价是模型要自行决定何时搜，以及搜索和核实的步骤；**不声称 lite 更快**。
+### 自动提示与期限
 
-归档评测里，等效 grep-only 组在多数对照中明显低于完整工具 / 自动提示组，例如 DEV8 grep-pages 为 3/8 对 8/8，HARD8 grep-pages 为 1/8 对 3/8；并非每组都更低，Sol/high 的两组均为 6/8。见 [历史结果](BENCHMARK_RESULTS.md)。当时使用的是冻结包装器，只保留 grep/expand、禁用自动提示，两个工具描述仍是 full 版文本；**不是用本次模式开关重新跑的结果**，也不能据此承诺普遍准确率差异。
+context 查最近真实用户消息；没有文字/词项、未压缩、无命中不补旧问题。加权 query 长度 **280 允许、281 跳过**，不再使用旧 4000 字/24 词截断；主动查询不受 autoGate 限制。取 SQL 前五名再应用 1500 码点显示预算，不用第六名以后回填。提示 display:false，紧随最后一条真实用户消息，不写 session、不累积，不打断 tool-call/result 邻接。
 
+协作 deadline 从主动请求准备/排队前开始，覆盖编译、完整性检查、native MATCH、去重、片段/渲染。同步 MATCH 不可抢占，不能承诺准确墙钟返回；检查点丢弃过期结果，TimeoutError 建议缩小查询或 grep。超时不终止健康 worker、清缓存或取消其他请求。grep 自身没有 regex 执行超时。
 
-## 工具与范围
+## grep / expand 与范围
 
-full 建议流程：自动短索引 → `history_recall` 用当前问题或改写关键词定位相关 id → `history_expand` 核实原文 → 如果证据仍不足，再用 `history_grep` 补充。自动索引已经给出有用 id 时，也可以直接展开。lite 则由模型自行调用 `history_grep` 查找，再用 `history_expand` 核实；其工具描述和参数说明不提未注册的 recall 或定位提示。两种模式都由模型判断证据是否充足，没有人为的“足够证据”分数门槛，也不强制自动调用 grep。grep 实现仍是 JavaScript 正则，不是 SQLite / SQL LIKE，不新增数据库。
+- `history_grep({pattern,limit?,offset?})`：大小写不敏感 JavaScript gi regex，非法 regex 字面回退；不是 SQL LIKE。按匹配 entry 的分支顺序分页，默认 30、最多 50。total 是原始 occurrence 总数，totalEntries 是匹配记录数；最多 30 个片段/每 entry3 个，输出最多 16,000 码点。covered/omitted 描述本响应覆盖/遗漏，含其他页；消费到超长 metadata 才警告并推进。零宽/裁切等规则保留原 grep 实现。
+- `history_expand({id,before?,after?,offset?})`：目标优先，最多 16,000 码点；offset/returned/total/nextOffset 为码点。目标完整后才放完整邻居，默认各2、范围0–20；不显示的邻居不计 from/to。可读 toolResult 可展开，thinking/图片不展示。
+- 每次读取当前分支最新 compaction 的原始 firstKeptEntryId 边界，只暴露此前消息；缺边界沿既有行为取最新 compaction 前的消息。先用原始位置划界，边界省略不泄露 live 区。
+- 自动、recall、grep、expand 共用 branch-local context_edit：最后编辑生效，null 省略不可用、替换遮原文，不绕过编辑读取旧存储。只搜索用户/助手文本及助手工具名/输入，排除 toolResult/思考/图片/摘要；原输入确定性序列化，异常循环安全。不跨 session/parentSession/被放弃分支。
 
-- `history_recall({ query, limit?, offset? })`：主要的主动检索入口，复用自动索引的词面候选与相关性排序，但使用独立分页：默认及上限均为 50 条，`offset` 默认 0。正文和 `details` 都返回 `total`（去重后的命中总数）、`offset`、`limit`、`returned`、`nextOffset`、`hasMore`；继续同一查询时传回 `nextOffset`，不能直接假设 `offset + limit`。每页以 16,000 个 Unicode 码点为保护预算，正常的 50 条短结果可放下，转义内容或很长的元数据可能使本页少于 50 条；下一页从未返回的那条继续，绝不跳过。极端情况下单条 id / 元数据本身超过预算，会单独返回该条并设置 `budgetExceeded: true`，保证 id 完整且翻页能前进。这个预算不是 token 承诺。分页在相同查询和未变化的当前分支上保持稳定；分支或压缩边界改变后应从 offset 0 重查，不提供持久分页快照。搜索当前分支已压缩的用户 / 助手正文，以及助手 `toolCall` 的工具名和输入参数；排除 `toolResult` 正文。返回真实 id、条目日期、角色和短片段。可以改写关键词再次查找；例如原文是 `bicycle repair`，查询 `cycling` 不保证命中，改用 `bicycle repair` 才有词面依据。没有语义同义词扩展，也没有“无命中就证明从未提过”的保证。
-- `history_grep({ pattern, limit?, offset? })`：证据不足时的补充后备，搜索当前分支有效压缩历史中的用户 / 助手正文及助手 tool-call 名称 / 输入，排除 `toolResult`、thinking、图片；尊重 `context_edit`。大小写不敏感的 JavaScript `gi` 正则；非法 regex 回退为字面量，空 regex 保留 JS 零宽匹配语义。按分支顺序对**匹配 entry**分页：默认 `limit: 30`，最大 50，`offset` 默认 0；同一 pattern 和未变化分支下用 `nextOffset` 续页，改变编辑或压缩边界后从 0 重查。正文和 `details` 都给 `offset`、`returned`、`nextOffset`、`hasMore`；`returned` 是本页实际消费的匹配 entry 数（含显式跳过的超长 metadata），不是正则出现数；`total` 是所有原始 regex 匹配数，`totalEntries` 是匹配 entry 数。最多 30 条代表性片段行、每 entry 最多 3 个，完整输出最多 16,000 Unicode 码点。`covered` 是本次响应片段中完整可见的其他原始匹配数（仅本页片段）；`omitted = total - snippets - covered` 是本次响应任何片段都未展示的全局原始匹配数，包含前后其他页及超长 metadata 的遗漏，不记录或扣除之前响应读过的内容。正文页头也明确给出此全局口径。超长 metadata 只有在该 entry 实际被消费时才警告并计入遗漏，分页仍推进。长匹配可以裁切；片段对超出可见范围的匹配不计覆盖，空白折叠也不伪称覆盖。每条只展示代表性上下文，不保证展示所有 match 文本；用 `history_expand` 读取完整 entry，或用更窄 pattern 查找未展示上下文。无命中不证明历史从未提过。固定输出界限为每页最多 30 条片段行、每行最多 500 码点，连同固定页头 / 状态及保守的 32 位计数位数仍低于 16,000 码点；实现保留运行时预算检查。
-- `history_expand({ id, before?, after?, offset? })`：按自动索引、recall 或 grep 的 id 展开原文；请求条目始终优先显示，前后邻居默认各 2 条、各可设 0–20。输出上限为 16,000 个 Unicode 码点；正文和 `details` 都返回请求条目的码点 `offset`、`total`、`returned`、`nextOffset`、`hasMore`。若 `hasMore: true`，对相同 id 和 before/after 传回 `nextOffset`，可逐页读完长条目；offset 超过正文长度时按正文末尾处理。只允许当前已压缩段里的 id，不读当前上下文或其他分支。
-- 每次调用从 `ctx.sessionManager.getBranch()` 重新取当前分支。以最新 compaction 的原始 `firstKeptEntryId` 为界，仅暴露该条目之前的 message；尚未压缩则返回空。如果边界 id 缺失，沿用 spike 行为：选择最新 compaction 之前的消息。边界消息被省略时仍以它的原始位置划界，不把保留段误当作已压缩历史。
-- 自动定位、recall、grep、expand（包括前后邻居）共用当前分支的 `context_edit` 投影：整条分支扫描，同一目标最后一次编辑生效；`replacement: null` 的条目不可检索或展开，替换条目只暴露替换内容，不回退到原文。字符串及合法文本块均支持，助手 / toolResult 的字符串按 Pi 1.0 归一化为文本块。压缩前后追加的编辑都生效；不修改原始条目，回到编辑之前或另一分支会恢复该分支的视图。编辑后手动分页应从 offset 0 重查。这里的“原文”指分支编辑生效后的正文，不是绕过编辑读取原始存储；仍不搜索 toolResult，但未省略的结果可展开.
-- 自动定位、recall、grep 共用可搜索文本提取：用户 / 助手的字符串或 `type: text` 正文，加上助手 `toolCall` 的工具名和完整输入参数。参数以对象键排序的确定性 JSON 表示，不在提取阶段截断；空值安全，异常循环引用以 `[Circular]` 标记，无法序列化的异常对象有显式占位。不会把 thinking、图片内容、摘要或自定义消息加入搜索。`toolResult` 记录完全排除，空正则也不对它产生伪命中。这是对旧版 grep 搜索范围的有意修改，正则语法、排序和计数规则不变。
-- `history_expand` 单独读取可读原文：可按 id 查看 `toolResult` 的文字结果，也包含助手工具调用名称 / 输入；仍排除 thinking / 图片。请求条目的分页 offset 以 Unicode 码点计数，不切断代理对；目标条目先返回，只有目标本页完整且邻居整条可放入剩余预算时才返回邻居。页状态会显示在模型可见文本中；继续时沿用 id、before、after 和 `nextOffset`。工具结果不会写进搜索索引，也不另存副本；Pi 已经删掉或省略的内容无法恢复。
-- 只查当前分支，不跨会话、不跨 `parentSession`、不搜索被放弃的分支，也不搜索 compaction 摘要。
+## 生命周期、失败与可选日志
 
-## 自动短定位索引（仅 full）
+复用既有 batched worker 协议、分支投影、代次取消与 large-entry 传输。session_start/tree 清旧代次、重置节奏并预热；session_compact 刷新 eligible 记录；默认每10完成用户轮或10完成工具批次安排合并预热。user message_end 发生在 SDK 持久化前，只计 pending；agent_end/turn_end 用完成状态和 entry id 去重。
 
-- 在 SDK 1.0.0 的异步 `context` hook 中运行：每次模型请求移除本扩展旧的定位消息，从实际 `event.messages` 找最后一条 `role: user` 的文字，查询当前分支的已压缩历史索引。已被消费的 steering / follow-up 消息因此也会成为新查询。不依赖 `input` 或 `before_agent_start`；每次取当前分支并检查原始条目引用，未变化时复用有效投影和索引。worker 尚未完成必要维护时等待就绪；只有 live 预分词、不改变可检索集合时可继续查询旧索引。
-- 自动候选包括用户 / 助手正文和助手工具调用名称 / 输入；自动定位、recall、grep 都排除工具结果正文，只有 expand 可按 id 读取它。thinking、图片、摘要和自定义消息不进入搜索。最新用户消息只有图片或没有有效关键词时，不回退到更早的问题；无压缩、无匹配时不添加提示。
-- 查询最多取前 4,000 个 Unicode 码点、24 个去重关键词。英文不区分大小写，保留代码标识符并拆出 `snake_case`、`camelCase`、`HTTPServer` 的词段；连续汉字用重叠双字词组，过滤一组常见中英文停用词。没有模型、embedding、词典分词或新依赖。
-- 按不同查询词的覆盖评分，较少历史条目包含的词权重更高（`1 + log((文档数 + 1) / (含词文档数 + 1))`），重复堆词不会提高分数；同分时按覆盖词数、然后按分支条目新旧排序。先按 id 和相同片段（忽略空白差异）去重，确定性地保留分支中较新的代表，再计算相关性排序；自动提示先选前 5 条，最后应用长度预算，不用第 6 名以后回填。每条包括真实 entry id、条目日期、角色及最多 120 个 Unicode 码点的上下文片段（另可加省略号）：以本条匹配词中历史文档频率最低、信息权重最高的词为中心，约各取前后半个窗口；同频时选原文位置更早的词，靠近文本边缘时平移窗口，不切断 Unicode 代理对；整个提示含固定说明和元数据不超过 1,500 个 Unicode 码点。前 5 条里预算放不下的整行略过，绝不截断或捏造 id。
-- 提示作为 `display: false` 的自定义消息紧随最后一条真实用户消息插入，仅改变本次请求上下文，不写进 session、不修改输入消息、不累积提示，也不拆开后续助手工具调用与结果。UI 隐藏并不等于隐私隔离：提示会随模型请求发送给当前配置的模型服务。
-- 固定说明将片段标为不可信历史数据，而非指令或已验证答案，提示以 `history_recall` 改写关键词定位、用 `history_expand` 的 id 核实精确细节，证据不足时再用 `history_grep` 补充搜索。JSON 转义隔离换行、控制字符和提示分隔符；这降低结构混淆风险，但不能保证模型完全免受历史文本的提示注入影响。日期只是条目日期，不推断事件日期或原文属于哪条摘要。
+SQLite worker 仅索引 sourcePosition < eligibleCount 的记录；live 文本可暂存于传输/staging，但不成为 FTS 候选。当前 SQLite 候选没有沿用旧 JS 的 live token/DF缓存：eligible 投影内容变化时在内存重建，未变时复用。查询等待必要维护；同 eligible 的 live-only 准备不改变可见集。worker/传输失败直接报错，不切回 JS 扫描；显式生命周期重置可重建。shutdown 取消待回调/请求并 await dispose/worker termination，无跨 session 缓存。
 
-离线测试只验证注册、边界、排序和上下文转换等机制，不证明检索质量或主模型回答准确率提升。已有真实 DEV8 / HARD8 三组对比、失败记录和父级审计见 [benchmark/README.md](BENCHMARK.md)；均为小样本、单轮描述性结果。本次归置没有重跑评测或进行在线模型调用。
+`COMPACTION_RECALL_TIMING_FILE=/absolute/private/path.jsonl` 才启用 timing（0600），默认不计时、不写日志。trace 是同一 agent 文件 opt-in；关闭时不加 trace hooks，开启时记录模型参数/执行 concepts/match/exclude、实际返回 id/页与原错误 name/code/message，不记 thinking/凭据，不保存 provider wire。trace 延迟到 agent_end/shutdown 关联，带内容，应视作敏感文件；没有 timing 目标时只警告一次不记录。内存 mark 的 process RSS、main heap、worker heap/external 不能相加，SQLite/jieba 原生内存可能只反映在 RSS。详细历史机制见 TIMING.md，当前 worker 说明见 BACKGROUND_INDEX.md。
 
-这是词面提示，不是语义检索：同义词、单字中文、代词指代、拼写变体、无文字图片以及查询前 4,000 字之外的内容可能漏检；常见词和汉字交界双字也可能误匹配。没有提示不能证明历史没有该信息，提示也不强制模型执行回查。主线程仍要复制 / 校验当前分支、在变化时投影编辑和提取可搜索文本，并提交结构化克隆批次；分词、倒排维护、查询和去重排序在 worker 中执行，已排名结果在主线程复用统一渲染器输出自动提示 / recall 页。大对象参数提取、冷启动等待和内存副本仍有成本，不承诺实时性。
-
-## 后台预分词与生命周期（仅 full）、可选计时
-
-- 每个扩展实例最多一个活动 worker。`session_start` 按已加载配置重置计数器并安排预热；`session_compact` 刷新新增来源并启用已压缩 token；`session_tree` 清除旧分支代次、重置计数器并重建。两者均不重读配置。`session_shutdown` 取消待执行回调 / 请求并等待 worker 终止，适用于 quit、reload、new、resume、fork。
-- 默认每 **10 轮完成的用户对话或 10 轮完成的工具调用批次**（先到先触发）预分词。用户 `message_end` 只记待完成标志，成功的 `agent_end` 才累计用户轮；工具轮在 `turn_end` 按已持久化 `messageEntryId` 去重，多个并行工具结果算一轮，已完成的错误工具结果也计入，aborted/error 助手轮不计。SDK 1.0.0 的 `message_end` 先于持久化，不能在此回调直接索引消息；`agent_end` 没有独立 error 字段。
-- 未压缩文本只保留 worker token 缓存，不建影子倒排、不进入候选或 DF/N。压缩后直接激活缓存。预热与前台查询重叠时，不取消同一分支的有效前台查询；分支切换、编辑和代次失效仍会取消过期结果。
-- 配置来自上述可选 agent 文件和三个环境变量，在扩展加载时统一固定；计数器阈值不随 cwd、文件或环境变量的后续变化而改变。调度一次时两个计数器一起清零，排队后的新活动保留给下一批。
-- worker 启动失败、请求失败或中途退出时，同一实例使用共享同步扫描回退，不自动重启循环。下一次显式生命周期 reset 可以创建新 worker。同步扫描保持输出一致，但可能阻塞主线程。
-- Pi 1.0.0 用 jiti 加载 `.ts` 扩展。worker URL 按原始源码文件定位 `src/index-worker.mjs`，不依赖 cwd 或编译缓存路径。worker 的整个依赖链都是原生 `.mjs`；历史投影、词法 / 渲染和计时分别在 `history.mjs`、`locator.mjs`、`timing.mjs`，主线程扫描与 worker 共用唯一实现。安装在 `node_modules` 下也不需要 TypeScript 加载 hook、宿主 jiti 别名或 warning 抑制。正常启动、查询与 shutdown 不向 stderr 输出。
-- `BackgroundIndex` 允许评测适配层显式提供引擎模块 file URL，继续复用同一分批 / 大条目传输、就绪等待、分支代次及 shutdown。默认引擎为 `src/default-worker-engine.mjs`，生产入口不选择原型；`src/` 不导入 `prototype/` 或 `benchmark/`。自定义引擎错误不悄悄回退生产词面扫描。接口见 [RETRIEVAL_CONTRACT.md](../benchmark/RETRIEVAL_CONTRACT.md#shared-worker-engine-seam-s2-0)。
-- 设置 timing 文件时，每次成功 worker commit 后追加 `index_memory` 数字 mark：进程 RSS、主线程 heapUsed、`Worker.getHeapStatistics()` 的 worker used_heap_size、已索引条目数。无 timing 文件时不调用内存采样 API；不要求内容 trace 开启。三者不可相加，worker 堆不是纯索引，SQLite 等原生内存可能只体现在 RSS；详见 [TIMING.md](TIMING.md#commit-memory-samples)。
-- 仅设置 `COMPACTION_RECALL_TIMING_FILE=/absolute/private/path.jsonl` 才启用阶段日志；默认不读计时时钟、不写日志、不产生计时事件。日志不含正文、查询、片段、工具参数或凭据，文件权限 0600；日志失败不改变工具结果。阶段和父子 span 说明见 [TIMING.md](TIMING.md)，生命周期细节见 [BACKGROUND_INDEX.md](BACKGROUND_INDEX.md)。
-
-
-## 文件
-
-- `src/index.ts`：公开 Pi package 入口
-- `src/recall-extension.ts`：三个工具及 context hook 注册、结果格式；替代加载入口
-- `src/history.mjs`：无副作用的条目文本、压缩边界及正则辅助函数
-- `src/locator.mjs`：词面定位、自动短索引预算、手动分页和非持久上下文转换
-- `src/background-index.mjs` / `src/index-worker.mjs` / `src/inverted-index.mjs`：worker 协调、原生线程入口、倒排检索；失败回退共享扫描
-- `src/preindex-cadence.mjs` / `src/recall-config.mjs`：双计数器，以及模式 / 预分词共用的 agent 配置加载函数
-- `src/timing.mjs`：主线程和 worker 共用的可选计时、跨线程 span 合并与私有日志
-- `test/locator.test.mjs`：自动定位与上下文生命周期回归测试
-- `test/recall.test.mjs`：工具的离线行为与边界测试
-- `test/production-worker.test.mjs`：生产分页 / 生命周期等价和真实 SDK 隔离加载 / 退出测试
-- 共享 `.mjs` 使用 JSDoc 和 `@ts-check` 保留类型检查；`tsconfig.json` 的 `allowJs` 用于 TypeScript 入口消费这些模块，不是运行时转译设置。
-
-## 离线验证
-
-需要 Node 24+ 和 npm。在仓库根目录执行：
+## 验证与历史记录
 
 ```sh
-npm ci --ignore-scripts
 npm run check
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'
 ```
 
-安装依赖需要网络或已有 npm 缓存；`typecheck` 和 `test` 离线运行，不调用模型。测试覆盖扫描 / worker 自动输出和手动分页逐字节等价、编辑与分支恢复、压缩后缓存启用、DF/N 隔离、失败回退、节奏和计时开关。SDK 隔离检查覆盖计时关闭 / 开启、独立目录 / `node_modules` 安装布局，以及 package、`src/index.ts` 和兼容入口：启动、查询、shutdown 全程断言子进程 stderr 为空；计时开启时还必须实际产生 worker 线程查询 span，不能用静默回退冒充成功。只复制 `src/` 与 manifest，正常退出且不修改个人 profile。
-
-## 来源与许可
-
-提取自 `pi-lossless-context` 的工作区版本，基于提交 `62012df340d0774698ece6705062777b82d2f0e3`，包含当时尚未提交的 recall 整理。没有复制原仓库 Git 历史、会话、日志、凭据或数据库。
-
-本项目采用 [MIT LICENSE](../LICENSE)，Copyright (c) 2026 shttty；上文的 recall-spike 提取来源仍予保留。[LongMemEval 评测来源与许可](../THIRD_PARTY_NOTICES.md#longmemeval-evaluation-material) 单独记录评测材料的 Copyright (c) 2024 Di Wu 及 MIT 文本，不替代本项目 LICENSE。已归档模型评测使用 ORIGINAL LongMemEval_M（原始 M），不是 cleaned、S 或 oracle-only 历史；仓内只保留选定评测摘录和输出，不包含完整外部数据集。合成离线 Node/Python 单元测试 fixture 属于另一类测试，并非全部源自 LongMemEval；包运行时不依赖该数据集，也不自动下载数据。
-
-## 当前限制
-
-grep 的正则行为和 expand 的边界 / 截断规则沿用 recall spike；搜索范围已按新需求纳入工具名 / 输入并排除 toolResult，不再与旧版检索语义完全相同。没有重新运行在线基准。手动正则扫描是线性的遍历，但正则本身没有执行超时，避免高回溯的复杂表达式。grep 结果仍按原文顺序，不按相关性排序。自动定位独立按相关性排序，但不自动调用工具。
-
-- `history_expand` 原先对选中消息拼接后按 16,000 个 UTF-16 单元做头部截断，导致长前文挤掉目标、长目标尾部不可达且可能切断代理对。现在每页最多 16,000 个 Unicode 码点，目标优先，返回可见的页状态与码点 offset；模型可用 `nextOffset` 读取目标后续页。只有目标完整时才尝试加入完整邻居；未显示的邻居不会计入 `details.from/to`。grep 完整回复也最多 16,000 个 Unicode 码点，单行最多 500；匹配 entry 按原文顺序分页，最多 30 个片段 / 每 entry 3 个，单个片段对超长匹配仍会裁切。`covered` 只计当前响应片段真实覆盖的其他原始匹配，`omitted` 计全局未展示的原始匹配，包括不在当前页的命中；超长 metadata 仅在消费时明确警告并计为遗漏。代理对内多个 JS regex occurrence 即使映射到同一 Unicode 码点范围，也按独立 occurrence 统计。超长匹配被裁切的部分不计覆盖；空白折叠也不伪称覆盖。
-
-历史实验设计和已完成结果统一见 [BENCHMARK.md](BENCHMARK.md)。生产 worker 的迁入不把历史扫描 / 同步索引跑分重标为新实现结果，也不代表检索或答题准确率提高。
+离线行为/隔离 SDK/真实 worker 检查不证明模型准确率；当前发布没有付费重判或新性能矩阵。`benchmark/archive/release-0.1.0/INDEX.md` 是本轮小材料索引，冻结答案、机器严格/1–10 判题和来源版本分开。sw08 人工认可与机器7/8独立；鲷鱼 current revised reference 与旧中文 grading input 分开。旧 JS 的性能/评分只作历史，原报告与探索不重标。npm 仅含 production src、双语 README、许可证与 clean aggregate，benchmark/test/session/profile/controller 资料不打包。MIT/LICENSE/THIRD_PARTY_NOTICES 保留。

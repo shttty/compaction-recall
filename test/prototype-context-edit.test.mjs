@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { setImmediate as yieldImmediate } from 'node:timers/promises';
-import { CompactionIndex } from '../src/inverted-index.mjs';
-import { BackgroundIndex } from '../src/background-index.mjs';
-import { buildLocator, buildRecallPage } from '../src/locator.mjs';
+import { CompactionIndex } from '../benchmark/archive/js-runtime/inverted-index.mjs'
+import { BackgroundIndex } from '../benchmark/archive/js-runtime/background-index.mjs'
+import { buildLocator, buildRecallPage } from '../benchmark/archive/js-runtime/locator.mjs'
 import { compact, initialBranch, msg, stamp } from './corpus.mjs';
 
 const edit = (id, target, content) => ({ type: 'context_edit', id, targetId: target.id,

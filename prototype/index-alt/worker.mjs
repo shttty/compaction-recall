@@ -1,6 +1,6 @@
 // Throwaway storage comparison. The production worker protocol is unchanged.
 import { parentPort, workerData } from 'node:worker_threads';
-import { lex } from '../../src/locator.mjs';
+import { lex } from '../../benchmark/archive/js-runtime/locator.mjs';
 import { StageTiming, measured } from '../../src/timing.mjs';
 const { variant } = workerData;
 const index = variant === 'A'

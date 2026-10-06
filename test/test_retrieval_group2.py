@@ -1,4 +1,4 @@
-"""A real SDK 1.0.0 session with an in-process fake SSE provider; no sockets."""
+"""Real SDK with archived JS candidate and an in-process fake SSE provider; no sockets."""
 import importlib.util
 import json
 import os
@@ -40,8 +40,8 @@ class RetrievalSdkChainTest(unittest.TestCase):
                 {"role": "user", "content": f"redshift distinct evidence {turn}"} for turn in range(60)]]}
             for filename in ("corpus.json", "corpus-zh.json"):
                 (directory / filename).write_text(json.dumps(corpus))
-            # Production does not consume benchmark input metadata. Include ASK's distinct
-            # framing/date terms in this synthetic question so both real auto paths agree.
+            # This historical JS path does not consume benchmark input metadata. Include
+            # ASK's framing/date terms so both real auto paths agree.
             question = "Synthetic question: 2024/01/02 00:00 / Where redshift evidence?"
             (directory / "question-zh.json").write_text(json.dumps({"question_id": f"q{index}", "split": "dev8", "question": question, "question_en": question, "question_date": "2024/01/02 00:00"}))
             gold["gold"][key] = [{"session": 0, "turn": 58, "role": "user"}]
@@ -54,7 +54,8 @@ class RetrievalSdkChainTest(unittest.TestCase):
                 "id": "fixture-model", "name": "Offline", "reasoning": False, "input": ["text"],
                 "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0}, "contextWindow": 16384, "maxTokens": 2048}]}}}))
         (profile / "auth.json").write_text('{"synthetic-offline":{"type":"api_key","key":"synthetic-not-real"}}')
-        shutil.copytree(ROOT / "src", package / "src")
+        shutil.copytree(ROOT / "benchmark/archive/js-runtime", package / "src",
+                        ignore=shutil.ignore_patterns("original-docs", "original-tests"))
         (package / "package.json").write_text('{"type":"module","pi":{"extensions":["./src/index.ts"]}}')
         for filename in package.rglob("*"):
             if filename.is_file():
@@ -68,7 +69,7 @@ class RetrievalSdkChainTest(unittest.TestCase):
         config_path = home / "config.json"
         config_path.write_text(json.dumps(config))
         engine = home / "engine.mjs"
-        engine.write_text(f"""import {{ collectLocatorCandidates,rankLocatorCandidates }} from {json.dumps((ROOT / 'src/locator.mjs').as_uri())};
+        engine.write_text(f"""import {{ collectLocatorCandidates,rankLocatorCandidates }} from {json.dumps((ROOT / 'benchmark/archive/js-runtime/locator.mjs').as_uri())};
 export function createEngine(documents) {{
  const branch=documents.map((d,i)=>({{type:'message',id:d.id,timestamp:'2024-01-01',message:{{role:'user',content:d.text}}}}));
  branch.push({{type:'message',id:'tail',message:{{role:'user',content:'retained'}}}},{{type:'compaction',firstKeptEntryId:'tail'}});
