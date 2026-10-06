@@ -2,38 +2,49 @@
 
 [English](THIRD_PARTY_NOTICES.md) | [简体中文](THIRD_PARTY_NOTICES.zh-CN.md)
 
-## Project origin
+compaction-recall's own code is licensed under the [MIT License](LICENSE),
+Copyright (c) 2026 shttty. The third-party code and evaluation materials below
+retain their respective licenses and attribution.
 
-`compaction-recall` was extracted from
-`pi-lossless-context/prototype/recall-spike`, based on
-`62012df340d0774698ece6705062777b82d2f0e3` and the then-uncommitted recall
-changes; the initial standalone extraction is `3f73d6a`. This provenance does
-not make the broader project's DAG, SQLite storage or compaction implementation
-part of this standalone plugin, nor does it assert an absence of historical
-design influence.
+## @node-rs/jieba
 
-The project's own [MIT LICENSE](LICENSE), Copyright (c) 2026 shttty, is separate
-from the evaluation-material notice below.
+- Use: Chinese word segmentation for retrieval ranking, loaded only in the native worker.
+- Version: `@node-rs/jieba` 2.0.3.
+- Source: [napi-rs/node-rs](https://github.com/napi-rs/node-rs).
+- License: MIT, Copyright (c) 2020-present LongYinan. The installed package includes its LICENSE.
 
-## LongMemEval evaluation material
+SQLite comes from Node's built-in `node:sqlite`. The project's license does not
+replace notices supplied with Node or installed dependencies.
 
-- Dataset: [xiaowu0162/longmemeval](https://huggingface.co/datasets/xiaowu0162/longmemeval).
-- Upstream project: [LongMemEval](https://github.com/xiaowu0162/LongMemEval).
-- Upstream license: [MIT, Copyright (c) 2024 Di Wu](https://github.com/xiaowu0162/LongMemEval/blob/main/LICENSE).
+## LongMemEval
 
-The archived model evaluations use the **ORIGINAL LongMemEval_M**, not the
-cleaned release, LongMemEval_S, or oracle-only histories. Upstream now recommends
-a cleaned release; that does not change the source of these frozen historical
-evaluations. The dataset publisher labels the original dataset MIT.
+- Use: evaluation data and answer/judge prompts. The archived evaluations use the original LongMemEval_M.
+- Sources: [dataset](https://huggingface.co/datasets/xiaowu0162/longmemeval) and [upstream project](https://github.com/xiaowu0162/LongMemEval).
+- License: the upstream software uses [MIT, Copyright (c) 2024 Di Wu](https://github.com/xiaowu0162/LongMemEval/blob/main/LICENSE). The dataset publisher separately labels the original dataset MIT.
 
-This repository publishes source/processing/run metadata and the 16 user-authorized
-frozen Chinese LME16 question translations, not English original questions, reference
-answers, model outputs or retrieved excerpts. Full datasets and fixed evaluation
-artifacts are obtained separately. Synthetic offline tests are a distinct category.
-The runtime has no LongMemEval dependency or automatic dataset download; benchmark
-materials are excluded from npm.
+The repository includes 16 frozen Chinese question translations and evaluation
+metadata. Full datasets are obtained separately; the plugin does not download
+or depend on LongMemEval at runtime. Evaluation materials are excluded from npm.
+The original MIT notice is reproduced below.
 
-For retained upstream evaluation material, the copyright and license notice is:
+## SWE-chat
+
+- Use: conversation data from which recall questions were derived for evaluation.
+- Source: [SALT-NLP/SWE-chat](https://huggingface.co/datasets/SALT-NLP/SWE-chat).
+- License: [Open Data Commons Attribution License (ODC-By) v1.0](https://opendatacommons.org/licenses/by/1-0/).
+
+This project contains information from SWE-chat. Attribution: Baumann, Padmakumar,
+Li, Yang, Yang and Koyejo, *SWE-chat: Real-World AI Coding Sessions in the Wild*,
+COLM 2026, <https://arxiv.org/abs/2604.20779v2>.
+
+ODC-By covers database rights; it does not establish a license for every
+transcript's contents. This repository does not distribute SWE questions,
+answers or transcript excerpts. Obtain data from the source under its applicable license.
+
+For evaluation inputs and archive details, see the
+[benchmark guide](https://github.com/shttty/pi-context-recall/blob/main/doc/benchmark.md).
+
+## LongMemEval MIT notice
 
 ```text
 MIT License
@@ -58,33 +69,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
-
-## 0.1 runtime dependency
-
-`@node-rs/jieba` 2.0.3 is MIT licensed, Copyright (c) 2020-present LongYinan.
-Its installed package includes its MIT LICENSE; production loads it only in the
-native worker. SQLite is supplied by Node's built-in `node:sqlite`, not by a
-separately bundled npm database binary. Project MIT does not replace dependency
-notices distributed with Node or the installed native packages.
-
-## Frozen 0.1 research archive (git only)
-
-Sources, processing, fixed-input hashes, runner/judge code and non-text metrics
-are indexed at `benchmark/data/release-0.1.0/INDEX.md`. Only the 16 frozen Chinese
-LME question translations are retained as question text. Original English/SWE
-questions, references, answers and excerpts are not distributed. Software MIT and
-the original LongMemEval dataset's independent MIT declaration remain identified.
-
-Contains information from [SWE-chat](https://huggingface.co/datasets/SALT-NLP/SWE-chat),
-which is made available under the [Open Data Commons Attribution License (ODC-By)
-v1.0](https://opendatacommons.org/licenses/by/1-0/). Citation: Baumann, Padmakumar,
-Li, Yang, Yang and Koyejo, *SWE-chat: Real-World AI Coding Sessions in the Wild*,
-COLM 2026, <https://arxiv.org/abs/2604.20779v2>.
-
-ODC-By identifies SWE-chat database rights, not an inferred license over every
-transcript's contents; the source download revision is recorded as unknown.
-We do not distribute SWE questions, answers or transcript excerpts. Obtain required
-data upstream under its applicable license and provide matching external
-derived/frozen inputs for exact replay. Software MIT and dataset attribution remain
-separate. The benchmark manifest records hashes/provenance without credentials,
-profiles, private absolute paths, full histories or provider wire.

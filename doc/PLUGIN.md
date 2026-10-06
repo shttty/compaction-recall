@@ -2,9 +2,11 @@
 
 [English](PLUGIN.md) | [简体中文](PLUGIN.zh-CN.md)
 
-This guide covers compaction-recall's complete configuration, retrieval behavior, and limitations. For installation and a quick introduction, see the [README](../README.md). Pi is currently supported; the plugin does not replace the host's compaction mechanism, persist an index, or make additional model calls.
+compaction-recall currently supports Pi. It does not replace the host's compaction mechanism, persist an index, or make additional model calls. For installation and a quick introduction, see the [README](../README.md).
 
-The public entry point remains `src/index.ts`, and the alternative compatibility entry point remains `src/recall-extension.ts`; load only one at a time. Both only export or assemble components: `tools/` owns the descriptions, schemas, and execution of recall/grep/expand, while `extension/` owns one-time configuration loading, index lifecycle/prewarming, automatic context, and shared branch/timing operations. `history/` (branch projection and location), `search/` (queries and SQLite retrieval), `worker/` (background scheduling and the plain mjs worker), and `observability/` (timing/trace) retain their existing responsibilities; configuration, trace, index, and cadence are not created more than once, and there are no new forwarding entry points or TS worker loaders. For evaluation source responsibilities and commands, see the [running guide](benchmark.md).
+The public entry point is `src/index.ts`; `src/recall-extension.ts` is an alternative compatibility entry point. Load only one. Both only export or assemble components. `tools/` defines the descriptions, schemas, and execution of recall/grep/expand. `extension/` handles one-time configuration loading, index lifecycle and prewarming, automatic context, and shared branch and timing operations.
+
+`history/` handles branch projection and location; `search/` handles queries and SQLite retrieval. `worker/` handles background scheduling and runs the plain mjs worker directly, without a TS worker loader. `observability/` handles timing and trace. Configuration, trace, index, and cadence are initialized at most once per extension load. For evaluation source responsibilities and commands, see the [running guide](benchmark.md).
 
 ## Choosing a mode
 
@@ -20,7 +22,7 @@ In both modes, the model decides whether to search further and expand entries. `
 
 ## Pi configuration file
 
-The configuration file is at `$PI_CODING_AGENT_DIR/extensions/compaction-recall.json`, defaulting to `~/.pi/agent/extensions/compaction-recall.json`. **The file is not generated automatically**; without it, defaults or environment variables are used. All configuration fields are optional.
+The configuration file is at `$PI_CODING_AGENT_DIR/extensions/compaction-recall.json`, defaulting to `~/.pi/agent/extensions/compaction-recall.json`. Create it manually if needed; the plugin does not generate it. Without a file, defaults or environment variables are used. All configuration fields are optional.
 
 ```json
 {
@@ -46,8 +48,8 @@ Configuration is read once when the extension loads; reload after making changes
 | `autoGate` | `280` | Skips automatic hints when the user message exceeds this weighted length; explicit tool calls are unaffected. A positive safe integer. | `COMPACTION_RECALL_AUTO_GATE` |
 | `snippetBudget` | `240` | Weighted-length budget for each original-text excerpt in automatic hints and explicit recall. A positive safe integer. | `COMPACTION_RECALL_SNIPPET_BUDGET` |
 | `recallTimeoutMs` | `5000` | Cooperative timeout threshold for explicit recall, in milliseconds. A positive safe integer. | `COMPACTION_RECALL_QUERY_TIMEOUT_MS` |
-| `preindex.userCycles` | `10` | Number of completed user interaction cycles before prewarming; range `1`–`100`. | `COMPACTION_RECALL_PREINDEX_TURNS` |
-| `preindex.toolRounds` | `10` | Number of completed tool-call batches before prewarming; range `1`–`100`. Parallel calls in the same batch count only once. | `COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS` |
+| `preindex.userCycles` | `10` | Number of completed user interaction cycles before prewarming; range `1` to `100`. | `COMPACTION_RECALL_PREINDEX_TURNS` |
+| `preindex.toolRounds` | `10` | Number of completed tool-call batches before prewarming; range `1` to `100`. Parallel calls in the same batch count only once. | `COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS` |
 | `trace` | `false` | Records content-bearing retrieval diagnostics; a timing file must also be specified. Accepts only a boolean. | None; file configuration only |
 
 Weighted length counts each Chinese character as 2 and each other Unicode code point as 1. Reaching either prewarming threshold triggers prewarming. Retrieval, prewarming, and trace configuration apply only to `full`; timing logs are available in both modes.
@@ -61,25 +63,25 @@ Weighted length counts each Chinese character as 2 and each other Unicode code p
 
 ## Automatic history hints
 
-`full` searches the current branch's compacted history using the most recent actual user message, providing up to 5 location hints within a total display budget of 1,500 Unicode code points. No hints are added when there is no text, no searchable terms, no compacted history, or no matches.
+`full` searches the current branch's compacted history using the most recent actual user message. It provides up to 5 location hints within a total display budget of 1,500 Unicode code points. No hints are added when there is no text, no searchable terms, no compacted history, or no matches.
 
 The default is `autoGate=280`: automatic queries are still allowed at a weighted length of exactly 280 and are skipped above it. Longer messages are treated as instructions for a long task, keeping unrelated history out of the context; the model can still explicitly use retrieval tools.
 
-Hints apply only to the current model request: they are not written to session history and do not accumulate across turns. They are only search leads, not a guarantee that all relevant facts are covered; expand the original text to verify important conclusions.
+Hints apply only to the current model request. They are not written to session history and do not accumulate across turns. They provide search leads and may leave relevant facts uncovered; expand the original text to verify important conclusions.
 
 ## Tool behavior
 
 ### `history_recall`: lexical retrieval
 
-Available only in `full`. Use concept groups to express what to find, alternative wording, and exclusions; this is not semantic search.
+Available only in `full`. Use concept groups to specify what to find, alternative wording, and exclusions. Retrieval is lexical, not semantic.
 
-- `concepts` accepts 1–5 groups, each with 1–4 alternative lexical forms. Any alternative within a group can match; `match="all"` requires every group to match in the same record, while the default `"any"` requires only one group to match. Matches on multiple words do not guarantee their order or adjacency in the original text.
+- `concepts` accepts 1 to 5 groups, each with 1 to 4 alternative lexical forms. Any alternative within a group can match; `match="all"` requires every group to match in the same record, while the default `"any"` requires only one group to match. Matches on multiple words do not guarantee their order or adjacency in the original text.
 - `exclude` accepts up to 5 lexical forms. Matching records are excluded and do not participate in excerpt selection or jieba ranking. Lexical forms are not SQL, FTS MATCH syntax, or regular expressions.
 - Each lexical form must be nonempty after trimming leading and trailing whitespace, with at most 256 Unicode code points per form and 2,048 in total.
 - If tokenization loses some valid characters, retrieval continues with the remaining terms and returns a warning; if no searchable terms remain, it returns an error. recall does not silently switch to grep; the model must rephrase or explicitly call grep when needed.
 - The default and maximum for `limit` are both 50; `offset` defaults to 0. Results include entry IDs, original-text excerpts, the total count, and `nextOffset`; continue paging with the same query while the branch remains unchanged.
 
-The index uses English stemming and Chinese character bigrams. FTS determines the candidates, and records with identical normalized full text are deduplicated. With jieba enabled, records are sorted first by the number of distinct long Chinese words matched, then by BM25 and recency, and finally paginated. jieba only helps order records that already matched: it does not expand synonyms or recover records that did not match.
+The index uses English stemming and Chinese character bigrams. FTS selects candidates; records with identical normalized full text are deduplicated. With jieba enabled, records are sorted first by the number of distinct long Chinese words matched, then by BM25 and recency, and finally paginated. jieba reranks matched records only. It does not expand synonyms or recover records that did not match.
 
 Automatic queries usually use Chinese character bigram terms, which may not contain long words eligible for jieba ranking, so toggling jieba does not guarantee a change to every automatic hint.
 
@@ -93,7 +95,7 @@ grep has no regular-expression execution timeout; avoid complex expressions that
 
 ### `history_expand`: expanding original text
 
-Available in both modes. Reads the target entry by `id`; use `before` / `after` to include neighboring entries, defaulting to 2 on each side, with a range of `0`–`20`.
+Available in both modes. Reads the target entry by `id`; use `before` / `after` to include neighboring entries, defaulting to 2 on each side, with a range of `0` to `20`.
 
 The target body is displayed first, with a per-page limit of 16,000 Unicode code points; neighbors that fit in full are added only after the target is displayed completely. Continue reading long entries with the returned `nextOffset`, measured in Unicode code points. This tool can expand readable tool results, but does not show thinking content or images.
 
@@ -101,13 +103,13 @@ Keep the query, target ID, and relevant parameters unchanged when paging. After 
 
 ## Scope, indexing, and timeouts
 
-- Reads only history before the most recent compaction boundary on the **current branch**; does not cross into other sessions, parent sessions, or abandoned branches.
+- Reads only history before the most recent compaction boundary on the current branch; does not cross into other sessions, parent sessions, or abandoned branches.
 - recall and grep search user/assistant body text and assistant tool-call names and arguments, but not tool-result bodies, thinking content, images, or compaction summaries; readable tool results can still be expanded by ID.
 - All tools and automatic hints respect context edits within the branch: omitted entries are invisible, replacements hide the original text, and edits cannot be bypassed to recover old content.
 - The SQLite index resides only in memory. Session switches and compaction trigger maintenance; the index can be reused when compacted content is unchanged and is rebuilt when that content changes. Shutdown waits for the worker to close; no cross-session index is retained.
-- Worker or transport failures return errors, rather than silently switching to another retrieval algorithm.
+- Worker or transport failures return errors. The plugin does not silently switch to another retrieval algorithm.
 
-`recallTimeoutMs` covers preparation, queueing, retrieval, and rendering for explicit requests, but is not a forced-interruption timer: SQLite's synchronous MATCH cannot be preempted, and the plugin discards expired results at checkpoints. The actual response may therefore arrive later than the configured time. A timeout does not terminate a healthy worker or cancel other requests; if a request times out, narrow the query or use grep instead.
+`recallTimeoutMs` covers preparation, queueing, retrieval, and rendering for explicit requests. It is a cooperative timeout: SQLite's synchronous MATCH cannot be preempted, so the plugin discards expired results at checkpoints. The response may arrive later than the configured time. A timeout does not terminate a healthy worker or cancel other requests. If a request times out, narrow the query or use grep instead.
 
 ## Timing and diagnostic logs
 
@@ -119,4 +121,4 @@ COMPACTION_RECALL_TIMING_FILE="$HOME/compaction-recall-timing.jsonl" pi
 
 Log files have permissions `0600`. `lite` records only grep / expand call chains; `full` can also record indexing and query stages. Process RSS, main-thread heap, and worker heap memory metrics are not mutually exclusive and cannot be added directly.
 
-Only after also setting `"trace": true` in the configuration file are content-bearing diagnostics such as query parameters, returned entry IDs, pagination, and errors recorded. Without a timing file, trace only warns and records nothing. trace does not save thinking content, credentials, or raw provider requests, but it may still contain conversation information: keep it private and inspect its contents before sharing.
+Set `"trace": true` in the configuration file to enable content-bearing diagnostics, including query parameters, returned entry IDs, pagination, and errors. trace also requires a timing-file path; without one, it warns and records nothing. It does not save thinking content, credentials, or raw provider requests. Logs may still contain conversation information. Keep them private and inspect them before sharing.

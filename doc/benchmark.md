@@ -4,7 +4,7 @@
 
 [Project overview](../README.md) | [Configuration and behavior reference](PLUGIN.md)
 
-The currently maintained entry point is `benchmark/run.py`: it compares Pi native / lite / full on the fixed English LME16 set and runs recall questions derived from SWE-chat. The current LME dataset is `LME16-English`. `runner/` handles preparation, scheduling, and persistence; `judging/` handles scoring contracts and execution; `sdk/` handles the actual Pi SDK and evidence observation. The benchmark ships with the source, not in the npm package.
+Use `benchmark/run.py` to compare Pi native / lite / full on the fixed English LME16 set and run recall questions derived from SWE-chat. The current LME dataset is `LME16-English`. `runner/` prepares, schedules, and persists runs; `judging/` defines and executes scoring; `sdk/` runs the actual Pi SDK and observes evidence. The benchmark ships with the source, not in the npm package.
 
 Offline tests verify only the product and its wiring. Real answers and scoring require separate authorization and incur model fees. The run examples below do not authorize model calls.
 
@@ -27,9 +27,9 @@ node benchmark/smoke.mjs \
   --three-arms "$CANDIDATE_ROOT" "$NEW_SMOKE_OUT"
 ```
 
-`CANDIDATE_ROOT` is a source directory containing `src/index.ts`, package metadata, and installed locked dependencies. The check loads the actual entry point, executes real tools, and verifies the 0/2/3 tool sets and automatic hints only in full mode; it is not a static source assertion.
+`CANDIDATE_ROOT` is a source directory containing `src/index.ts`, package metadata, and installed locked dependencies. The check loads the actual entry point and executes real tools to verify the 0/2/3 tool sets and automatic hints only in full mode.
 
-## 2. Supply inputs without assembling companion manifests manually
+## 2. Supply inputs
 
 LME16 uses the fixed DEV8 and HARD8 subsets of [LongMemEval_M](https://huggingface.co/datasets/xiaowu0162/longmemeval), with eight questions each; it is neither the full LongMemEval dataset nor a new random sample. See [input materials](../benchmark/data/release-0.1.0/INDEX.md) for provenance and frozen question IDs. Public metadata and Chinese question text cannot reconstruct the original text, references, or native snapshots stored outside the repository.
 
@@ -43,7 +43,7 @@ LME16 uses the fixed DEV8 and HARD8 subsets of [LongMemEval_M](https://huggingfa
 
 The LME question set retains `question.json`, `corpus.json`, `answer.json`, and `judge.json` under `data/dev8/<id>/` and `data/hard8/<id>/`. Snapshots reuse existing native compaction; no new compaction is added. SWE uses external `freeze.json`, `questions.json`, and `gold.json`, with actual snapshot paths and hashes bound to its questions. These questions are derived from local SWE-chat sessions, not ready-made upstream QA.
 
-The runner's preparation stage is the sole manifest owner: it generates and freezes candidate and input bindings from the actual source / locked dependencies, questions / references, model configuration, and existing snapshots. **Do not supply `CANDIDATE`, `PINS`, `PREFLIGHT`, two judge configurations, or manual archive / commit hashes; the runner no longer depends on historical Chinese preflight.** Original frozen materials and historical metrics retain their original values; new code must not rewrite old fingerprints.
+The runner's preparation stage generates and freezes candidate and input bindings from the actual source and locked dependencies, questions and references, model configuration, and existing snapshots. Do not supply `CANDIDATE`, `PINS`, `PREFLIGHT`, two judge configurations, or manual archive / commit hashes. The runner operates independently of historical Chinese preflight. Original frozen materials and historical metrics retain their original values; new code must not rewrite old fingerprints.
 
 An explicit source directory supplies the actual bytes under test. A Git commit is provenance only; uncommitted runtime code must not be presented as bytes from that commit. Preparation freezes a copy and hashes, and subsequent stages verify the same identity. All three modes share one candidate freeze and the same questions / references / snapshots; gold answers go only to judges and are not mixed into answer requests.
 
@@ -72,7 +72,7 @@ All models, providers, and effort settings must be explicit. `luna` / `sol` are 
 
 ## 4. Preparation and execution
 
-Preparation only generates and checks source / dependency, question / reference, model configuration, and snapshot manifests deterministically. It does not open profiles or start the SDK or a provider:
+Preparation deterministically generates and checks manifests for source and dependencies, questions and references, model configuration, and snapshots. It does not open profiles or start the SDK or a provider:
 
 ```sh
 python3 benchmark/run.py \
@@ -81,7 +81,7 @@ python3 benchmark/run.py \
   --arm all --stage prepare
 ```
 
-Then use the same inputs and output directory and change only the stage. The same runner executes the three modes sequentially; there is no longer a shell loop assembling three sets of arguments, configurations, and gates.
+Keep the same inputs and output directory and change only the stage. The runner executes the three modes sequentially.
 
 `pilot` / `all` / `flow` first run a recoverable serialization preflight through the actual SDK within the shared resource scope, stopping before network transmission. Answer requests are sent only after it passes. The isolated three-arm smoke check in section 1 can also verify production wiring beforehand.
 
@@ -103,13 +103,13 @@ systemd-run --user --scope \
 | `--stage prepare` | Freezes input / candidate and model identities; does not open profiles or call the SDK / provider. |
 | `--stage pilot` | The first question in each arm and two strict judges; that question counts toward the question set, without a separate answer run. |
 | `--stage all` | Reuses the first question and completes answers and strict scoring. |
-| `--stage flow` | Also performs independent 1–10 scoring and reporting on the same answers; does not replace strict scoring. |
+| `--stage flow` | Also performs independent 1 to 10 scoring and reporting on the same answers; does not replace strict scoring. |
 
 The frozen `benchmark/grep-only-adapter.mjs` is historical evidence, not current lite; the current CLI does not load it.
 
-At most eight sessions may run concurrently; `--workers` accepts 1–8. Resource boundaries are actually checked, not merely agreed upon. Character estimates are diagnostic only. An actual provider capacity rejection stops new scheduling rather than being bypassed with retries. Bounded ordinary provider retries retain evidence for each attempt; unknown in-flight state prevents replay.
+At most eight sessions may run concurrently; `--workers` accepts 1 to 8. The runner checks resource boundaries. On an actual provider capacity rejection, it stops new scheduling and does not retry that rejection. Character estimates are diagnostic only. Bounded ordinary provider retries retain evidence for each attempt; unknown in-flight state prevents replay.
 
-SWE uses the same real entry point and orchestration, not a retained stub forwarding CLI:
+SWE uses the same entry point and orchestration:
 
 ```sh
 systemd-run --user --scope \
@@ -121,9 +121,9 @@ systemd-run --user --scope \
 
 ## 5. Reports, failures, and recovery
 
-Completed answers and both sets of raw scoring results are persisted; strict and 1–10 scoring are independent. Errors, missing answers, and scoring failures are not wrong answers or zero scores. Manual review is listed separately and does not overwrite machine scoring; historical peaks must not be presented as results of the current run.
+Completed answers and both sets of raw scoring results are persisted; strict and 1 to 10 scoring are independent. Errors, missing answers, and scoring failures are not wrong answers or zero scores. Manual review is listed separately and does not overwrite machine scoring; historical peaks must not be presented as results of the current run.
 
-`completed` includes only questions with a successful answer and two successful strict judgments. The independent 1–10 stage likewise requires successful results from both judges. The state is `complete` only when all selected questions are complete; some successful questions yield `partial`, and no successfully completed questions yield `failed`. These failure terminal states make the CLI exit nonzero. If answers / strict scoring fail, `flow` only saves a report and does not proceed to 1–10 requests. If 1–10 scoring fails, the overall report shows that stage's failure terminal state and lists `answerStrictState` separately.
+`completed` includes only questions with a successful answer and two successful strict judgments. The independent 1 to 10 stage likewise requires successful results from both judges. The state is `complete` only when all selected questions are complete; some successful questions yield `partial`, and no successfully completed questions yield `failed`. These failure terminal states make the CLI exit nonzero. If answers / strict scoring fail, `flow` only saves a report and does not proceed to 1 to 10 requests. If 1 to 10 scoring fails, the overall report shows that stage's failure terminal state and lists `answerStrictState` separately.
 
 Each judge and subset report explicitly states `selected / scored / failed / pending`. Accuracy and mean scores use only scored records; for example, `1/1` with `selected=16, scored=1, failed=15` does not mean a perfect score across 16 questions.
 
@@ -133,7 +133,7 @@ With `--arm all`, each arm's results are in its corresponding arm directory unde
 python3 benchmark/report.py --run "$ARM_OUT"
 ```
 
-Recovery uses the same entry point, configuration / questions / source / snapshots, and output directory. Completed stages are reused without repeating model calls. Changed identity, unknown in-flight markers, or missing or tampered completion evidence cause recovery to be refused. Do not delete the ledger or modify an old manifest to force replay; start a new run when inputs or code change.
+Recovery uses the same entry point, configuration, questions, source, snapshots, and output directory. Completed stages are reused without repeating model calls. Changed identity, unknown in-flight markers, or missing or tampered completion evidence cause recovery to be refused. Do not delete the ledger or modify an old manifest to force replay; start a new run when inputs or code change.
 
 Reusing any answer / judge result requires a completion receipt with matching identity, `state=complete`, and result hash, along with an unchanged session hash. Missing receipts, inflight state, or identity / hash drift explicitly prevent recovery. The presence of a result file does not implicitly trigger provider replay.
 
@@ -141,7 +141,7 @@ A capacity rejection preserves `capacity-blocked` and evidence for completed / f
 
 Accepted non-text metrics for the current version's three arms are in `benchmark/data/lme16-current-three-arms-20261006.json`.
 
-Original questions / references / answers / judge rationales / excerpts / sessions / actual wire data stay in external private directories; only necessary metrics and provenance hashes are projected publicly. Code paths, CLI commands, and metrics in historical materials remain bound to their recorded commits, not the current executable entry point; moving files or migrating configuration does not relabel historical results or replay historical runs.
+Original questions / references / answers / judge rationales / excerpts / sessions / actual wire data stay in external private directories; only necessary metrics and provenance hashes are published. Code paths, CLI commands, and metrics in historical materials remain bound to their recorded commits, not the current executable entry point. Moving files or migrating configuration does not relabel historical results or replay historical runs.
 
 ## 6. Performance and timing
 
