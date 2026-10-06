@@ -18,30 +18,11 @@
 
 需要 [Pi](https://github.com/badlogic/pi-mono) 和 **Node.js >=24.18.0**，已在 **Pi SDK 1.0.0** 上测试。
 
-优先从 npm 安装：
+从 npm 安装：
 
 ```sh
 pi install npm:pi-compaction-recall
 ```
-
-也可从 Git 安装：
-
-```sh
-pi install git:github.com/shttty/compaction-recall
-```
-
-Git 安装、源码检出及链接的 GitHub 指南需要该私有仓库的访问权限。
-
-也可以从源码临时加载，不加入 Pi 的持久配置：
-
-```sh
-git clone https://github.com/shttty/compaction-recall.git
-cd compaction-recall
-npm ci --ignore-scripts
-pi -e ./src/index.ts
-```
-
-Pi 会为其管理的 Git 包安装依赖；本地源码目录需要自行安装。
 
 配置文件位于 Pi profile 的 agent 插件目录：`$PI_CODING_AGENT_DIR/extensions/compaction-recall.json`（默认：`~/.pi/agent/extensions/compaction-recall.json`）。**配置文件不会自动生成**，需要调整时手动创建；不创建则使用默认值或环境变量。
 

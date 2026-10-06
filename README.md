@@ -24,25 +24,6 @@ Install from npm:
 pi install npm:pi-compaction-recall
 ```
 
-Or install from Git:
-
-```sh
-pi install git:github.com/shttty/compaction-recall
-```
-
-Git installation, source checkouts and linked GitHub guides require access to the private repository.
-
-Or try a source checkout without adding it to your Pi settings:
-
-```sh
-git clone https://github.com/shttty/compaction-recall.git
-cd compaction-recall
-npm ci --ignore-scripts
-pi -e ./src/index.ts
-```
-
-Pi installs dependencies for managed Git packages. Local checkouts need their own dependency installation.
-
 The configuration file lives in the Pi profile's agent extensions directory: `$PI_CODING_AGENT_DIR/extensions/compaction-recall.json` (default: `~/.pi/agent/extensions/compaction-recall.json`). **It is not generated automatically**; create it manually if needed. Without it, defaults and environment variables are used.
 
 ## Tools
