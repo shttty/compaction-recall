@@ -103,7 +103,7 @@ DEV8、HARD8 分别列示历史峰值，可来自不同轮次；峰值合计为�
 
 这是小规模开发集成绩，不代表完整 LongMemEval 跑分或稳定召回准确率。
 
-运行命令和输入要求见 [benchmark 指南](https://github.com/shttty/pi-context-recall/blob/main/benchmark/INDEX.md)。
+运行命令和输入要求见 [benchmark 指南](https://github.com/shttty/pi-context-recall/blob/main/doc/benchmark.md)。
 
 ## 开发
 

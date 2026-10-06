@@ -103,7 +103,7 @@ A single run on the fixed English LongMemEval_M set on 2026-10-06, not a new ran
 
 These small development-set results are not full LongMemEval scores or a guarantee of recall accuracy.
 
-See the [benchmark guide](https://github.com/shttty/pi-context-recall/blob/main/benchmark/INDEX.md) for commands and required inputs.
+See the [benchmark guide](https://github.com/shttty/pi-context-recall/blob/main/doc/benchmark.md) for commands and required inputs.
 
 ## Development
 
