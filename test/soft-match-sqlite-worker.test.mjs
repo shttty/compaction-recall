@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createIndex, tokenizeSpans as prototypeSpans, weightedLength } from '../prototype/soft-match-sqlite/index.mjs';
-import { createWorkerEngine } from '../benchmark/retrieval-sqlite-worker.mjs';
+import { createIndex, tokenizeSpans as prototypeSpans, weightedLength } from '../archive/prototype/soft-match-sqlite/index.mjs';
+import { createWorkerEngine } from '../archive/benchmark/retrieval-sqlite-worker.mjs';
 import { BackgroundIndex } from '../src/background-index.mjs';
 import { initialBranch, msg } from './corpus.mjs';
 
@@ -10,7 +10,7 @@ const entry = (id, text, sourcePosition) => ({
   timestamp: '2026-10-04T12:00:00.000Z', message: { role: 'user', content: text }
 });
 const ranks = rows => rows.map(({ id, score }) => ({ id, score }));
-const engineModule = new URL('../benchmark/retrieval-sqlite-worker.mjs', import.meta.url);
+const engineModule = new URL('../archive/benchmark/retrieval-sqlite-worker.mjs', import.meta.url);
 
 
 

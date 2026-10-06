@@ -4,7 +4,7 @@ import { Worker } from 'node:worker_threads';
 import { mkdtempSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { BackgroundIndex } from '../benchmark/archive/js-runtime/background-index.mjs'
+import { BackgroundIndex } from '../archive/js-runtime/background-index.mjs'
 import { StageTiming } from '../src/timing.mjs';
 import { initialBranch, msg } from './corpus.mjs';
 
@@ -80,7 +80,7 @@ test('disposed worker skips a late settled callback without heap API calls, new 
   let heapReads = 0;
   const index = new BackgroundIndex({
     timer, workerFactory: () => {
-      const worker = new Worker(new URL('../benchmark/archive/js-runtime/index-worker.mjs', import.meta.url));
+      const worker = new Worker(new URL('../archive/js-runtime/index-worker.mjs', import.meta.url));
       const getHeapStatistics = worker.getHeapStatistics.bind(worker);
       worker.getHeapStatistics = () => { heapReads++; return getHeapStatistics(); };
       return worker;
@@ -127,7 +127,7 @@ test('external fields keep the requested main sum and omit absent worker externa
   t.mock.method(process, 'memoryUsage', () => ({ ...memoryUsage(), external: 100, arrayBuffers: 25 }));
   const index = new BackgroundIndex({
     timer, workerFactory: () => {
-      const worker = new Worker(new URL('../benchmark/archive/js-runtime/index-worker.mjs', import.meta.url));
+      const worker = new Worker(new URL('../archive/js-runtime/index-worker.mjs', import.meta.url));
       const getHeapStatistics = worker.getHeapStatistics.bind(worker);
       worker.getHeapStatistics = async () => {
         const stats = await getHeapStatistics();

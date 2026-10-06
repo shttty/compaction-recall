@@ -1,8 +1,8 @@
 import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createIndex, weightedLength } from '../prototype/soft-match-sqlite/index.mjs';
-import { SQLiteBackgroundIndex as BackgroundIndex } from '../benchmark/sqlite-background-index.mjs';
+import { createIndex, weightedLength } from '../archive/prototype/soft-match-sqlite/index.mjs';
+import { SQLiteBackgroundIndex as BackgroundIndex } from '../archive/benchmark/sqlite-background-index.mjs';
 import { LOCATOR_TYPE } from '../src/locator.mjs';
 import { fileURLToPath } from 'node:url';
 import { Worker } from 'node:worker_threads';
@@ -49,7 +49,7 @@ const branch=[...docs.map(({id,text})=>({type:'message',id,timestamp,message:{ro
   {type:'message',id:'live',timestamp,message:{role:'user',content:'retained'}},
   {type:'compaction',id:'compact',timestamp,firstKeptEntryId:'live',summary:'',tokensBefore:10}];
 test('actual worker preserves author errors and stays healthy; autocut retains natural language gate',async()=>{
-  const index=new BackgroundIndex({engineModule:new URL('../benchmark/retrieval-sqlite-worker.mjs',import.meta.url)});
+  const index=new BackgroundIndex({engineModule:new URL('../archive/benchmark/retrieval-sqlite-worker.mjs',import.meta.url)});
   index.scan=()=>{throw new Error('unexpected synchronous fallback');};
   try {
     await index.prepare(branch,{preindexLive:true});
@@ -72,7 +72,7 @@ test('actual worker preserves author errors and stays healthy; autocut retains n
 });
 test('actual SDK tool returns zero/offset advice, preserves author errors and keeps context autocut',async t=>{
   const {discoverAndLoadExtensions}=await import('@earendil-works/pi-coding-agent');
-  const loaded=await discoverAndLoadExtensions([fileURLToPath(new URL('../benchmark/retrieval-sqlite-adapter.ts',import.meta.url))],process.cwd(),process.env.PI_CODING_AGENT_DIR);
+  const loaded=await discoverAndLoadExtensions([fileURLToPath(new URL('../archive/benchmark/retrieval-sqlite-adapter.ts',import.meta.url))],process.cwd(),process.env.PI_CODING_AGENT_DIR);
   assert.deepEqual(loaded.errors,[]);
   const extension=loaded.extensions[0],tool=extension.tools.get('history_recall').definition;
   const ctx={sessionManager:{getSessionId:()=> 'raw-explicit-fixture',getBranch:()=>branch}};
@@ -97,7 +97,7 @@ test('actual SDK tool returns zero/offset advice, preserves author errors and ke
 test('dictionary trial modes preserve fixed candidates and automatic lookup',async()=>{
   const matches=[];
   for(const mode of ['off','jieba']) {
-    const index=new BackgroundIndex({engineModule:new URL('../benchmark/retrieval-sqlite-worker.mjs',import.meta.url)});
+    const index=new BackgroundIndex({engineModule:new URL('../archive/benchmark/retrieval-sqlite-worker.mjs',import.meta.url)});
     index.workerFactory=options=>new Worker(new URL('../src/index-worker.mjs',import.meta.url),{
       workerData:options,env:{...process.env,COMPACTION_RECALL_SQLITE_HAN_PHRASE_TRIAL:mode,COMPACTION_RECALL_SQLITE_BIGRAM_ONLY:'porter'},
     });

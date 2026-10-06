@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { BackgroundIndex } from '../src/background-index.mjs';
 import { StageTiming } from '../src/timing.mjs';
-import { formatLocatorRows, recallPageFromRows, buildLocator, buildRecallPage } from '../benchmark/archive/js-runtime/locator.mjs'
+import { formatLocatorRows, recallPageFromRows, buildLocator, buildRecallPage } from '../archive/js-runtime/locator.mjs'
 import { initialBranch, extendedBranch, msg } from './corpus.mjs';
 const engineModule = new URL('./fixtures/worker-engine.mjs', import.meta.url);
 

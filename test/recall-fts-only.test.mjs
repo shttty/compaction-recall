@@ -1,8 +1,8 @@
 import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createIndex } from '../prototype/soft-match-sqlite/index.mjs';
-import { SQLiteBackgroundIndex } from '../benchmark/sqlite-background-index.mjs';
+import { createIndex } from '../archive/prototype/soft-match-sqlite/index.mjs';
+import { SQLiteBackgroundIndex } from '../archive/benchmark/sqlite-background-index.mjs';
 import { initialBranch, msg } from './corpus.mjs';
 
 const input = surface => ({ concepts: [[surface]] });

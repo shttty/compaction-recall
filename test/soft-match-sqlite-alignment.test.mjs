@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createIndex, tokenize } from '../prototype/soft-match-sqlite/index.mjs';
-import { STOPWORDS, tokenizeSpans } from '../prototype/soft-match-sqlite/lexical.mjs';
-import { createWorkerEngine } from '../benchmark/retrieval-sqlite-worker.mjs';
-import { displayRows, sqliteRecallPage } from '../benchmark/retrieval-sqlite-page.mjs';
+import { createIndex, tokenize } from '../archive/prototype/soft-match-sqlite/index.mjs';
+import { STOPWORDS, tokenizeSpans } from '../archive/prototype/soft-match-sqlite/lexical.mjs';
+import { createWorkerEngine } from '../archive/benchmark/retrieval-sqlite-worker.mjs';
+import { displayRows, sqliteRecallPage } from '../archive/benchmark/retrieval-sqlite-page.mjs';
 import { BackgroundIndex } from '../src/background-index.mjs';
 import { initialBranch, msg } from './corpus.mjs';
 
@@ -167,7 +167,7 @@ test('actual display projection strips scores from retrieved rows and rendered p
 test('real background worker transports aligned aliases, deduped totals and internal ranks', async () => {
   const texts = ['getUser aurora red', 'HTTPServer aurora blue', 'getUser aurora red'];
   const branch = initialBranch(texts.map((text, i) => msg(i, text)));
-  const background = new BackgroundIndex({ engineModule: new URL('../benchmark/retrieval-sqlite-worker.mjs', import.meta.url) });
+  const background = new BackgroundIndex({ engineModule: new URL('../archive/benchmark/retrieval-sqlite-worker.mjs', import.meta.url) });
   const sync = createIndex(branch.slice(0, texts.length).map((entry, i) => ({ id: entry.id, text: texts[i], sourcePosition: i })));
   try {
     await background.prepare(branch, { preindexLive: true });

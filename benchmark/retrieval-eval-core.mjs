@@ -104,7 +104,7 @@ export function scoreRetrieval({ goldIds, autoResults, calls = [] }) {
     mrr: first < 0 ? 0 : 1 / (first + 1), goldTotal: gold.size,
     top5Hit: hits(ranked.slice(0, 5)) > 0, locatedGoldTurns: hits(ranked.slice(0, 5)),
     callCount: calls.length, noCall: calls.length === 0,
-    queryMismatchCount: calls.filter(call => (Object.hasOwn(call, 'input_identical') ? call.input_identical : call.query_identical) === false).length,
+    queryMismatchCount: calls.filter(call => call.input_identical === false || call.query_identical === false).length,
     errorCount: calls.filter(call => call.error !== undefined && call.error !== null).length
   };
   for (const k of [5, 10, 20]) {

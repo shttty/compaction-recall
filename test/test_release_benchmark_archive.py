@@ -9,8 +9,8 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-ARCHIVE = ROOT / 'benchmark/archive/release-0.1.0'
-RUNNER = ARCHIVE / 'source/latest-used/benchmark/coding-recall/e2e'
+ARCHIVE = ROOT / 'benchmark/data/release-0.1.0'
+RUNNER = ROOT / 'benchmark/coding-recall/e2e'
 
 
 class ReleaseBenchmarkArchive(unittest.TestCase):
@@ -20,8 +20,8 @@ class ReleaseBenchmarkArchive(unittest.TestCase):
         self.assertEqual(len(inventory), len(manifest['publicFiles']))
         for name, row in inventory.items():
             with self.subTest(artifact=name):
-                path = ARCHIVE / name
-                self.assertTrue(path.resolve().is_relative_to(ARCHIVE.resolve()))
+                path = ROOT / name
+                self.assertTrue(path.resolve().is_relative_to(ROOT.resolve()))
                 self.assertFalse(path.is_symlink())
                 raw = path.read_bytes()
                 self.assertEqual(len(raw), row['bytes'])

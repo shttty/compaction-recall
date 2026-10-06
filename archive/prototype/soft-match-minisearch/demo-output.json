@@ -1,0 +1,1550 @@
+{
+  "runtime": {
+    "node": "v24.18.0",
+    "icu": "78.3",
+    "unicode": "17.0"
+  },
+  "engine": {
+    "name": "minisearch",
+    "version": "7.2.0",
+    "combineWith": "OR",
+    "prefix": true,
+    "fuzzy": 0.2,
+    "storeFields": []
+  },
+  "documents": [
+    {
+      "id": "a",
+      "text": "网关重启后断连，需要重新连接。",
+      "tokens": [
+        "网关",
+        "关重",
+        "重启",
+        "启后",
+        "后断",
+        "断连",
+        "需要",
+        "要重",
+        "重新",
+        "新连",
+        "连接"
+      ]
+    },
+    {
+      "id": "b",
+      "text": "网关配置保持不变。",
+      "tokens": [
+        "网关",
+        "关配",
+        "配置",
+        "置保",
+        "保持",
+        "持不",
+        "不变"
+      ]
+    },
+    {
+      "id": "c",
+      "text": "网，关之间有标点。",
+      "tokens": [
+        "关之",
+        "之间",
+        "间有",
+        "有标",
+        "标点"
+      ]
+    },
+    {
+      "id": "d",
+      "text": "搜索引擎使用内存索引。",
+      "tokens": [
+        "搜索",
+        "索引",
+        "引擎",
+        "擎使",
+        "使用",
+        "用内",
+        "内存",
+        "存索",
+        "索引"
+      ]
+    },
+    {
+      "id": "e",
+      "text": "修改youer服务端配置。",
+      "tokens": [
+        "修改",
+        "youer",
+        "服务",
+        "务端",
+        "端配",
+        "配置"
+      ]
+    },
+    {
+      "id": "f",
+      "text": "CompactionResult is recorded.",
+      "tokens": [
+        "compactionresult",
+        "recorded"
+      ]
+    },
+    {
+      "id": "g",
+      "text": "vm is isolated.",
+      "tokens": [
+        "vm",
+        "isolated"
+      ]
+    },
+    {
+      "id": "h",
+      "text": "kvm is enabled.",
+      "tokens": [
+        "kvm",
+        "enabled"
+      ]
+    },
+    {
+      "id": "i",
+      "text": "gateway restart disconnected",
+      "tokens": [
+        "gateway",
+        "restart",
+        "disconnected"
+      ]
+    },
+    {
+      "id": "j",
+      "text": "gateway configuration",
+      "tokens": [
+        "gateway",
+        "configuration"
+      ]
+    },
+    {
+      "id": "k",
+      "text": "I stop checking work emails after dinner.",
+      "tokens": [
+        "stop",
+        "checking",
+        "work",
+        "emails",
+        "after",
+        "dinner"
+      ]
+    },
+    {
+      "id": "l",
+      "text": "motorcycle maintenance",
+      "tokens": [
+        "motorcycle",
+        "maintenance"
+      ]
+    },
+    {
+      "id": "m",
+      "text": "GPU集群调度和显存监控。",
+      "tokens": [
+        "gpu",
+        "集群",
+        "群调",
+        "调度",
+        "度和",
+        "和显",
+        "显存",
+        "存监",
+        "监控"
+      ]
+    }
+  ],
+  "searches": [
+    {
+      "text": "网关重启后为什么断连？",
+      "automatic": false,
+      "weightedLength": 21,
+      "tokens": [
+        "网关",
+        "关重",
+        "重启",
+        "启后",
+        "后为",
+        "为什",
+        "为什么",
+        "什么",
+        "么断",
+        "断连"
+      ],
+      "skipped": false,
+      "total": 2,
+      "results": [
+        {
+          "id": "a",
+          "score": 63.18538556773553,
+          "terms": [
+            "网关",
+            "关重",
+            "重启",
+            "启后",
+            "断连"
+          ],
+          "queryTerms": [
+            "网关",
+            "关重",
+            "重启",
+            "启后",
+            "断连"
+          ],
+          "match": {
+            "网关": [
+              "text"
+            ],
+            "关重": [
+              "text"
+            ],
+            "重启": [
+              "text"
+            ],
+            "启后": [
+              "text"
+            ],
+            "断连": [
+              "text"
+            ]
+          },
+          "text": "网关重启后断连，需要重新连接。"
+        },
+        {
+          "id": "b",
+          "score": 2.3558969088983233,
+          "terms": [
+            "网关"
+          ],
+          "queryTerms": [
+            "网关"
+          ],
+          "match": {
+            "网关": [
+              "text"
+            ]
+          },
+          "text": "网关配置保持不变。"
+        }
+      ],
+      "queryTerms": [
+        "网关",
+        "关重",
+        "重启",
+        "启后",
+        "后为",
+        "为什",
+        "为什么",
+        "什么",
+        "么断",
+        "断连"
+      ]
+    },
+    {
+      "text": "网关",
+      "automatic": false,
+      "weightedLength": 4,
+      "tokens": [
+        "网关"
+      ],
+      "skipped": false,
+      "total": 2,
+      "results": [
+        {
+          "id": "b",
+          "score": 2.3558969088983233,
+          "terms": [
+            "网关"
+          ],
+          "queryTerms": [
+            "网关"
+          ],
+          "match": {
+            "网关": [
+              "text"
+            ]
+          },
+          "text": "网关配置保持不变。"
+        },
+        {
+          "id": "a",
+          "score": 2.0428317137802865,
+          "terms": [
+            "网关"
+          ],
+          "queryTerms": [
+            "网关"
+          ],
+          "match": {
+            "网关": [
+              "text"
+            ]
+          },
+          "text": "网关重启后断连，需要重新连接。"
+        }
+      ],
+      "queryTerms": [
+        "网关"
+      ]
+    },
+    {
+      "text": "索引",
+      "automatic": false,
+      "weightedLength": 4,
+      "tokens": [
+        "索引"
+      ],
+      "skipped": false,
+      "total": 1,
+      "results": [
+        {
+          "id": "d",
+          "score": 3.7700914062803332,
+          "terms": [
+            "索引"
+          ],
+          "queryTerms": [
+            "索引"
+          ],
+          "match": {
+            "索引": [
+              "text"
+            ]
+          },
+          "text": "搜索引擎使用内存索引。"
+        }
+      ],
+      "queryTerms": [
+        "索引"
+      ]
+    },
+    {
+      "text": "索引擎",
+      "automatic": false,
+      "weightedLength": 6,
+      "tokens": [
+        "索引",
+        "引擎"
+      ],
+      "skipped": false,
+      "total": 1,
+      "results": [
+        {
+          "id": "d",
+          "score": 13.40831858977457,
+          "terms": [
+            "索引",
+            "引擎"
+          ],
+          "queryTerms": [
+            "索引",
+            "引擎"
+          ],
+          "match": {
+            "索引": [
+              "text"
+            ],
+            "引擎": [
+              "text"
+            ]
+          },
+          "text": "搜索引擎使用内存索引。"
+        }
+      ],
+      "queryTerms": [
+        "索引",
+        "引擎"
+      ]
+    },
+    {
+      "text": "youer",
+      "automatic": false,
+      "weightedLength": 5,
+      "tokens": [
+        "youer"
+      ],
+      "skipped": false,
+      "total": 1,
+      "results": [
+        {
+          "id": "e",
+          "score": 3.191924019248314,
+          "terms": [
+            "youer"
+          ],
+          "queryTerms": [
+            "youer"
+          ],
+          "match": {
+            "youer": [
+              "text"
+            ]
+          },
+          "text": "修改youer服务端配置。"
+        }
+      ],
+      "queryTerms": [
+        "youer"
+      ]
+    },
+    {
+      "text": "网",
+      "automatic": false,
+      "weightedLength": 2,
+      "tokens": [],
+      "skipped": false,
+      "total": 0,
+      "results": [],
+      "queryTerms": []
+    },
+    {
+      "text": "",
+      "automatic": false,
+      "weightedLength": 0,
+      "tokens": [],
+      "skipped": false,
+      "total": 0,
+      "results": [],
+      "queryTerms": []
+    },
+    {
+      "text": "the AND is please",
+      "automatic": false,
+      "weightedLength": 17,
+      "tokens": [],
+      "skipped": false,
+      "total": 0,
+      "results": [],
+      "queryTerms": []
+    },
+    {
+      "automatic": false,
+      "weightedLength": 54,
+      "skipped": false,
+      "total": 1,
+      "originalQueryTextSha256": "c053b4b871008fa79e72ca6d196b3745f9abd599c459dec1df945e7bd7bcd090",
+      "results": [
+        {
+          "id": "k",
+          "score": 51.07078430797302
+        }
+      ]
+    },
+    {
+      "text": "vm",
+      "automatic": false,
+      "weightedLength": 2,
+      "tokens": [
+        "vm"
+      ],
+      "skipped": false,
+      "total": 1,
+      "results": [
+        {
+          "id": "g",
+          "score": 4.014144511293409,
+          "terms": [
+            "vm"
+          ],
+          "queryTerms": [
+            "vm"
+          ],
+          "match": {
+            "vm": [
+              "text"
+            ]
+          },
+          "text": "vm is isolated."
+        }
+      ],
+      "queryTerms": [
+        "vm"
+      ]
+    },
+    {
+      "text": "kvm",
+      "automatic": false,
+      "weightedLength": 3,
+      "tokens": [
+        "kvm"
+      ],
+      "skipped": false,
+      "total": 2,
+      "results": [
+        {
+          "id": "h",
+          "score": 4.014144511293409,
+          "terms": [
+            "kvm"
+          ],
+          "queryTerms": [
+            "kvm"
+          ],
+          "match": {
+            "kvm": [
+              "text"
+            ]
+          },
+          "text": "kvm is enabled."
+        },
+        {
+          "id": "g",
+          "score": 1.2042433533880228,
+          "terms": [
+            "vm"
+          ],
+          "queryTerms": [
+            "kvm"
+          ],
+          "match": {
+            "vm": [
+              "text"
+            ]
+          },
+          "text": "vm is isolated."
+        }
+      ],
+      "queryTerms": [
+        "kvm"
+      ]
+    },
+    {
+      "text": "compaction",
+      "automatic": false,
+      "weightedLength": 10,
+      "tokens": [
+        "compaction"
+      ],
+      "skipped": false,
+      "total": 1,
+      "results": [
+        {
+          "id": "f",
+          "score": 1.3530824195371043,
+          "terms": [
+            "compactionresult"
+          ],
+          "queryTerms": [
+            "compaction"
+          ],
+          "match": {
+            "compactionresult": [
+              "text"
+            ]
+          },
+          "text": "CompactionResult is recorded."
+        }
+      ],
+      "queryTerms": [
+        "compaction"
+      ]
+    },
+    {
+      "text": "CompactionResult",
+      "automatic": false,
+      "weightedLength": 16,
+      "tokens": [
+        "compactionresult"
+      ],
+      "skipped": false,
+      "total": 1,
+      "results": [
+        {
+          "id": "f",
+          "score": 4.014144511293409,
+          "terms": [
+            "compactionresult"
+          ],
+          "queryTerms": [
+            "compactionresult"
+          ],
+          "match": {
+            "compactionresult": [
+              "text"
+            ]
+          },
+          "text": "CompactionResult is recorded."
+        }
+      ],
+      "queryTerms": [
+        "compactionresult"
+      ]
+    },
+    {
+      "text": "result",
+      "automatic": false,
+      "weightedLength": 6,
+      "tokens": [
+        "result"
+      ],
+      "skipped": false,
+      "total": 0,
+      "results": [],
+      "queryTerms": [
+        "result"
+      ]
+    },
+    {
+      "text": "moto",
+      "automatic": false,
+      "weightedLength": 4,
+      "tokens": [
+        "moto"
+      ],
+      "skipped": false,
+      "total": 1,
+      "results": [
+        {
+          "id": "l",
+          "score": 1.2756815184195156,
+          "terms": [
+            "motorcycle"
+          ],
+          "queryTerms": [
+            "moto"
+          ],
+          "match": {
+            "motorcycle": [
+              "text"
+            ]
+          },
+          "text": "motorcycle maintenance"
+        }
+      ],
+      "queryTerms": [
+        "moto"
+      ]
+    },
+    {
+      "text": "motorcycle",
+      "automatic": false,
+      "weightedLength": 10,
+      "tokens": [
+        "motorcycle"
+      ],
+      "skipped": false,
+      "total": 1,
+      "results": [
+        {
+          "id": "l",
+          "score": 4.014144511293409,
+          "terms": [
+            "motorcycle"
+          ],
+          "queryTerms": [
+            "motorcycle"
+          ],
+          "match": {
+            "motorcycle": [
+              "text"
+            ]
+          },
+          "text": "motorcycle maintenance"
+        }
+      ],
+      "queryTerms": [
+        "motorcycle"
+      ]
+    },
+    {
+      "text": "gatway",
+      "automatic": false,
+      "weightedLength": 6,
+      "tokens": [
+        "gatway"
+      ],
+      "skipped": false,
+      "total": 2,
+      "results": [
+        {
+          "id": "j",
+          "score": 1.2190909978060054,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gatway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway configuration"
+        },
+        {
+          "id": "i",
+          "score": 1.1397847840661333,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gatway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway restart disconnected"
+        }
+      ],
+      "queryTerms": [
+        "gatway"
+      ]
+    },
+    {
+      "text": "gateway",
+      "automatic": false,
+      "weightedLength": 7,
+      "tokens": [
+        "gateway"
+      ],
+      "skipped": false,
+      "total": 2,
+      "results": [
+        {
+          "id": "j",
+          "score": 3.0961041214120772,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway configuration"
+        },
+        {
+          "id": "i",
+          "score": 2.8946915150885926,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway restart disconnected"
+        }
+      ],
+      "queryTerms": [
+        "gateway"
+      ]
+    },
+    {
+      "text": "gateway qzxwvvnonexistent",
+      "automatic": false,
+      "weightedLength": 25,
+      "tokens": [
+        "gateway",
+        "qzxwvvnonexistent"
+      ],
+      "skipped": false,
+      "total": 2,
+      "results": [
+        {
+          "id": "j",
+          "score": 3.0961041214120772,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway configuration"
+        },
+        {
+          "id": "i",
+          "score": 2.8946915150885926,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway restart disconnected"
+        }
+      ],
+      "queryTerms": [
+        "gateway",
+        "qzxwvvnonexistent"
+      ]
+    },
+    {
+      "text": "网关火星独角兽",
+      "automatic": false,
+      "weightedLength": 14,
+      "tokens": [
+        "网关",
+        "关火",
+        "火星",
+        "星独",
+        "独角",
+        "独角兽",
+        "角兽"
+      ],
+      "skipped": false,
+      "total": 2,
+      "results": [
+        {
+          "id": "b",
+          "score": 2.3558969088983233,
+          "terms": [
+            "网关"
+          ],
+          "queryTerms": [
+            "网关"
+          ],
+          "match": {
+            "网关": [
+              "text"
+            ]
+          },
+          "text": "网关配置保持不变。"
+        },
+        {
+          "id": "a",
+          "score": 2.0428317137802865,
+          "terms": [
+            "网关"
+          ],
+          "queryTerms": [
+            "网关"
+          ],
+          "match": {
+            "网关": [
+              "text"
+            ]
+          },
+          "text": "网关重启后断连，需要重新连接。"
+        }
+      ],
+      "queryTerms": [
+        "网关",
+        "关火",
+        "火星",
+        "星独",
+        "独角",
+        "独角兽",
+        "角兽"
+      ]
+    },
+    {
+      "text": "GPU集群",
+      "automatic": false,
+      "weightedLength": 7,
+      "tokens": [
+        "gpu",
+        "集群"
+      ],
+      "skipped": false,
+      "total": 1,
+      "results": [
+        {
+          "id": "m",
+          "score": 11.311060330640382,
+          "terms": [
+            "gpu",
+            "集群"
+          ],
+          "queryTerms": [
+            "gpu",
+            "集群"
+          ],
+          "match": {
+            "gpu": [
+              "text"
+            ],
+            "集群": [
+              "text"
+            ]
+          },
+          "text": "GPU集群调度和显存监控。"
+        }
+      ],
+      "queryTerms": [
+        "gpu",
+        "集群"
+      ]
+    },
+    {
+      "text": "gpt",
+      "automatic": false,
+      "weightedLength": 3,
+      "tokens": [
+        "gpt"
+      ],
+      "skipped": false,
+      "total": 1,
+      "results": [
+        {
+          "id": "m",
+          "score": 0.9543707153977823,
+          "terms": [
+            "gpu"
+          ],
+          "queryTerms": [
+            "gpt"
+          ],
+          "match": {
+            "gpu": [
+              "text"
+            ]
+          },
+          "text": "GPU集群调度和显存监控。"
+        }
+      ],
+      "queryTerms": [
+        "gpt"
+      ]
+    }
+  ],
+  "gateCases": [
+    {
+      "name": "ASCII 210",
+      "text": "gateway                                                                                                                                                                                                           ",
+      "automatic": true,
+      "weightedLength": 210,
+      "tokens": [
+        "gateway"
+      ],
+      "skipped": false,
+      "total": 2,
+      "results": [
+        {
+          "id": "j",
+          "score": 3.0961041214120772,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway configuration"
+        },
+        {
+          "id": "i",
+          "score": 2.8946915150885926,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway restart disconnected"
+        }
+      ],
+      "queryTerms": [
+        "gateway"
+      ]
+    },
+    {
+      "name": "ASCII 211",
+      "text": "gateway                                                                                                                                                                                                            ",
+      "automatic": true,
+      "weightedLength": 211,
+      "tokens": [
+        "gateway"
+      ],
+      "skipped": true,
+      "total": 0,
+      "results": []
+    },
+    {
+      "name": "Han 210",
+      "text": "网关汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉",
+      "automatic": true,
+      "weightedLength": 210,
+      "tokens": [
+        "网关",
+        "关汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉"
+      ],
+      "skipped": false,
+      "total": 2,
+      "results": [
+        {
+          "id": "b",
+          "score": 2.3558969088983233,
+          "terms": [
+            "网关"
+          ],
+          "queryTerms": [
+            "网关"
+          ],
+          "match": {
+            "网关": [
+              "text"
+            ]
+          },
+          "text": "网关配置保持不变。"
+        },
+        {
+          "id": "a",
+          "score": 2.0428317137802865,
+          "terms": [
+            "网关"
+          ],
+          "queryTerms": [
+            "网关"
+          ],
+          "match": {
+            "网关": [
+              "text"
+            ]
+          },
+          "text": "网关重启后断连，需要重新连接。"
+        }
+      ],
+      "queryTerms": [
+        "网关",
+        "关汉",
+        "汉汉"
+      ]
+    },
+    {
+      "name": "Han 212",
+      "text": "网关汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉汉",
+      "automatic": true,
+      "weightedLength": 212,
+      "tokens": [
+        "网关",
+        "关汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉",
+        "汉汉"
+      ],
+      "skipped": true,
+      "total": 0,
+      "results": []
+    },
+    {
+      "name": "mixed 210",
+      "text": "网关gateway                                                                                                                                                                                                       ",
+      "automatic": true,
+      "weightedLength": 210,
+      "tokens": [
+        "网关",
+        "gateway"
+      ],
+      "skipped": false,
+      "total": 4,
+      "results": [
+        {
+          "id": "j",
+          "score": 3.0961041214120772,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway configuration"
+        },
+        {
+          "id": "i",
+          "score": 2.8946915150885926,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway restart disconnected"
+        },
+        {
+          "id": "b",
+          "score": 2.3558969088983233,
+          "terms": [
+            "网关"
+          ],
+          "queryTerms": [
+            "网关"
+          ],
+          "match": {
+            "网关": [
+              "text"
+            ]
+          },
+          "text": "网关配置保持不变。"
+        },
+        {
+          "id": "a",
+          "score": 2.0428317137802865,
+          "terms": [
+            "网关"
+          ],
+          "queryTerms": [
+            "网关"
+          ],
+          "match": {
+            "网关": [
+              "text"
+            ]
+          },
+          "text": "网关重启后断连，需要重新连接。"
+        }
+      ],
+      "queryTerms": [
+        "网关",
+        "gateway"
+      ]
+    },
+    {
+      "name": "mixed 211",
+      "text": "网关gateway                                                                                                                                                                                                        ",
+      "automatic": true,
+      "weightedLength": 211,
+      "tokens": [
+        "网关",
+        "gateway"
+      ],
+      "skipped": true,
+      "total": 0,
+      "results": []
+    },
+    {
+      "name": "image excluded",
+      "text": "gateway",
+      "automatic": true,
+      "weightedLength": 7,
+      "tokens": [
+        "gateway"
+      ],
+      "skipped": false,
+      "total": 2,
+      "results": [
+        {
+          "id": "j",
+          "score": 3.0961041214120772,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway configuration"
+        },
+        {
+          "id": "i",
+          "score": 2.8946915150885926,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway restart disconnected"
+        }
+      ],
+      "queryTerms": [
+        "gateway"
+      ]
+    },
+    {
+      "name": "text block separator 210",
+      "text": "gateway\n                                                                                                                                                                                                          ",
+      "automatic": true,
+      "weightedLength": 210,
+      "tokens": [
+        "gateway"
+      ],
+      "skipped": false,
+      "total": 2,
+      "results": [
+        {
+          "id": "j",
+          "score": 3.0961041214120772,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway configuration"
+        },
+        {
+          "id": "i",
+          "score": 2.8946915150885926,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway restart disconnected"
+        }
+      ],
+      "queryTerms": [
+        "gateway"
+      ]
+    },
+    {
+      "name": "attachment in text counted",
+      "text": "gateway\n[attachment]\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "automatic": true,
+      "weightedLength": 232,
+      "tokens": [
+        "gateway",
+        "attachment",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      ],
+      "skipped": true,
+      "total": 0,
+      "results": []
+    },
+    {
+      "name": "long active query, match at end",
+      "text": "                                                                                                                                                                                                                   gateway",
+      "automatic": false,
+      "weightedLength": 218,
+      "tokens": [
+        "gateway"
+      ],
+      "skipped": false,
+      "total": 2,
+      "results": [
+        {
+          "id": "j",
+          "score": 3.0961041214120772,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway configuration"
+        },
+        {
+          "id": "i",
+          "score": 2.8946915150885926,
+          "terms": [
+            "gateway"
+          ],
+          "queryTerms": [
+            "gateway"
+          ],
+          "match": {
+            "gateway": [
+              "text"
+            ]
+          },
+          "text": "gateway restart disconnected"
+        }
+      ],
+      "queryTerms": [
+        "gateway"
+      ]
+    }
+  ],
+  "hanFuzzyFalsePositive": {
+    "documents": [
+      {
+        "id": "han-deletion",
+        "text": "独兽",
+        "tokens": [
+          "独兽"
+        ]
+      }
+    ],
+    "query": "独角兽",
+    "tokens": [
+      "独角",
+      "独角兽",
+      "角兽"
+    ],
+    "skipped": false,
+    "total": 1,
+    "results": [
+      {
+        "id": "han-deletion",
+        "score": 0.12945693260330138,
+        "terms": [
+          "独兽"
+        ],
+        "queryTerms": [
+          "独角兽"
+        ],
+        "match": {
+          "独兽": [
+            "text"
+          ]
+        }
+      }
+    ],
+    "queryTerms": [
+      "独角",
+      "独角兽",
+      "角兽"
+    ]
+  }
+}

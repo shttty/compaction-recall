@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { compileQuery, createIndex } from '../prototype/structured-tool-query/index.mjs';
+import { compileQuery, createIndex } from '../archive/prototype/structured-tool-query/index.mjs';
 
 const group = (...any_of) => ({ any_of });
 const ids = found => found.results.map(row => row.id);

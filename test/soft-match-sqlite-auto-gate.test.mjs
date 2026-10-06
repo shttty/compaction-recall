@@ -1,13 +1,13 @@
 import './isolated-agent-dir.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createIndex, parseAutoGate, weightedLength } from '../prototype/soft-match-sqlite/index.mjs';
-import { createEngine } from '../benchmark/retrieval-sqlite-engine.mjs';
-import { createWorkerEngine } from '../benchmark/retrieval-sqlite-worker.mjs';
+import { createIndex, parseAutoGate, weightedLength } from '../archive/prototype/soft-match-sqlite/index.mjs';
+import { createEngine } from '../archive/benchmark/retrieval-sqlite-engine.mjs';
+import { createWorkerEngine } from '../archive/benchmark/retrieval-sqlite-worker.mjs';
 import { BackgroundIndex } from '../src/background-index.mjs';
 import { initialBranch, msg } from './corpus.mjs';
 
-const engineModule = new URL('../benchmark/retrieval-sqlite-worker.mjs', import.meta.url);
+const engineModule = new URL('../archive/benchmark/retrieval-sqlite-worker.mjs', import.meta.url);
 const text = 'alpha 网关 𠀀𠀁';
 const documents = [{ id: 'match', text }];
 const ids = rows => rows.map(row => row.id);

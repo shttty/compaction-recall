@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createIndex } from '../prototype/soft-match-sqlite/index.mjs';
-import { createWorkerEngine } from '../benchmark/retrieval-sqlite-worker.mjs';
+import { createIndex } from '../archive/prototype/soft-match-sqlite/index.mjs';
+import { createWorkerEngine } from '../archive/benchmark/retrieval-sqlite-worker.mjs';
 import { BackgroundIndex } from '../src/background-index.mjs';
 import { initialBranch, msg } from './corpus.mjs';
 
-const engineModule = new URL('../benchmark/retrieval-sqlite-worker.mjs', import.meta.url);
+const engineModule = new URL('../archive/benchmark/retrieval-sqlite-worker.mjs', import.meta.url);
 const edit = (id, targetId, content) => ({ type: 'context_edit', id, parentId: null, timestamp: '2026-10-04T00:00:00Z', targetId,
   replacement: content === null ? null : { content } });
 const visibleRows = page => page.text.split('\n').filter(line => line.startsWith('{')).map(JSON.parse);

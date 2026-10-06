@@ -28,4 +28,4 @@ Current offline regression coverage exercises concepts/warnings/zero-token, FTS 
 
 ## Historical JS design and results
 
-The pre-SQLite runtime and exact prior design document are retained in [benchmark/archive/js-runtime](../benchmark/archive/js-runtime/) and [its original BACKGROUND_INDEX.md](../benchmark/archive/js-runtime/original-docs/doc/BACKGROUND_INDEX.md). Old JS scan equivalence, live token DF/N caches, synchronous fallback and historical timings belong to that snapshot, not this SQLite implementation. Historical scripts/tests now explicitly reference the archived JS modules. Frozen measurement/result bytes were not rewritten or remeasured.
+The pre-SQLite runtime and exact prior design document are retained in [benchmark/archive/js-runtime](../archive/js-runtime) and [its original BACKGROUND_INDEX.md](../archive/js-runtime/original-docs/doc/BACKGROUND_INDEX.md). Old JS scan equivalence, live token DF/N caches, synchronous fallback and historical timings belong to that snapshot, not this SQLite implementation. Historical scripts/tests now explicitly reference the archived JS modules. Frozen measurement/result bytes were not rewritten or remeasured.

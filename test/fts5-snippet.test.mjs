@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { DatabaseSync } from 'node:sqlite';
-import { fts5Snippet, selectFts5Window } from '../benchmark/fts5-snippet.mjs';
+import { fts5Snippet, selectFts5Window } from '../archive/benchmark/fts5-snippet.mjs';
 
 // Equal-width ASCII words make three-token SQLite windows correspond exactly
 // to eleven-codepoint windows for these odd-width match clusters. This is not

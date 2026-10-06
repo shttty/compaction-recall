@@ -49,7 +49,8 @@ if (operation === 'prepare') {
     const events = readFileSync(item.trace, 'utf8').split('\n').filter(Boolean).map(line => JSON.parse(line));
     const traces = events.filter(event => event.type === 'history_recall_trace').sort((a, b) => a.callIndex - b.callIndex);
     if (traces.length !== item.recallCalls) throw new Error(`Incomplete trace for ${metadata.key}/${metadata.language}: expected ${item.recallCalls}, got ${traces.length}`);
-    const calls = traces.map(event => ({ results: event.result?.ids ?? [], ...(Object.hasOwn(event, 'input_identical') ? { input_identical: event.input_identical } : { query_identical: event.query_identical }), error: event.error }));
+    const calls = traces.map(event => ({ results: event.result?.ids ?? [], input_identical: event.input_identical,
+      query_identical: event.query_identical, error: event.error }));
     rows.push({
       prototype: request.prototype, key: metadata.key, language: metadata.language,
       metrics: scoreRetrieval({ goldIds: metadata.goldIds, autoResults: metadata.autoResults, calls }),

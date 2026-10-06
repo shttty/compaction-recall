@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { Worker } from 'node:worker_threads';
-import { createTokenizer, validateArm } from '../prototype/soft-match-sqlite/arms.mjs';
-import { tokenize, tokenizeSpans } from '../prototype/soft-match-sqlite/lexical.mjs';
+import { createTokenizer, validateArm } from '../archive/prototype/soft-match-sqlite/arms.mjs';
+import { tokenize, tokenizeSpans } from '../archive/prototype/soft-match-sqlite/lexical.mjs';
 
 const require = createRequire(import.meta.url);
 const nativeModules = () => Object.keys(require.cache).filter(path => path.includes('/@node-rs/jieba'));
@@ -42,7 +42,7 @@ test('Han callback locates overlapping repeated words with codepoint spans and u
 });
 
 test('native Jieba search segmentation is lazy, cached once per worker, and preserves exact spans', async () => {
-  const moduleUrl = new URL('../prototype/soft-match-sqlite/arms.mjs', import.meta.url).href;
+  const moduleUrl = new URL('../archive/prototype/soft-match-sqlite/arms.mjs', import.meta.url).href;
   const worker = new Worker(`
     const assert = require('node:assert/strict');
     const { parentPort } = require('node:worker_threads');

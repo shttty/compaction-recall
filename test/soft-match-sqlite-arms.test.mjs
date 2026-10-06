@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createEngine } from '../benchmark/retrieval-sqlite-engine.mjs';
+import { createEngine } from '../archive/benchmark/retrieval-sqlite-engine.mjs';
 import { BackgroundIndex } from '../src/background-index.mjs';
 import { initialBranch, msg } from './corpus.mjs';
 
@@ -14,7 +14,7 @@ for (const arm of ['off', 'prefix-all', 'prefix-min4', 'jieba', 'porter', 'porte
     const previous = process.env.COMPACTION_RECALL_SQLITE_ARM;
     process.env.COMPACTION_RECALL_SQLITE_ARM = arm;
     const branch = initialBranch(texts.map((text, i) => msg(i, text)));
-    const worker = new BackgroundIndex({ engineModule: new URL('../benchmark/retrieval-sqlite-worker.mjs', import.meta.url) });
+    const worker = new BackgroundIndex({ engineModule: new URL('../archive/benchmark/retrieval-sqlite-worker.mjs', import.meta.url) });
     let sync;
     try {
       sync = await createEngine(documents, { arm });

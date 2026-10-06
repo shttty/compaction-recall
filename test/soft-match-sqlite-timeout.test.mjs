@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import { DatabaseSync } from 'node:sqlite';
-import { SQLiteBackgroundIndex } from '../benchmark/sqlite-background-index.mjs';
+import { SQLiteBackgroundIndex } from '../archive/benchmark/sqlite-background-index.mjs';
 import { initialBranch, msg } from './corpus.mjs';
 
 // Native SQLite is non-preemptible; check after it returns, keep the connection
@@ -15,7 +15,7 @@ import { initialBranch, msg } from './corpus.mjs';
 test('cooperative native/JS deadlines discard late results without resetting or cancelling queued work', { timeout: 15000 }, async t => {
   const dir = mkdtempSync(join(tmpdir(), 'recall-cooperative-timeout-'));
   const module = join(dir, 'native-engine.mjs');
-  const helper = new URL('../prototype/soft-match-sqlite/deadline.mjs', import.meta.url).href;
+  const helper = new URL('../archive/prototype/soft-match-sqlite/deadline.mjs', import.meta.url).href;
   writeFileSync(module, `
     import { DatabaseSync } from 'node:sqlite';
     import { parentPort } from 'node:worker_threads';

@@ -54,7 +54,7 @@ class RetrievalSdkChainTest(unittest.TestCase):
                 "id": "fixture-model", "name": "Offline", "reasoning": False, "input": ["text"],
                 "cost": {"input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0}, "contextWindow": 16384, "maxTokens": 2048}]}}}))
         (profile / "auth.json").write_text('{"synthetic-offline":{"type":"api_key","key":"synthetic-not-real"}}')
-        shutil.copytree(ROOT / "benchmark/archive/js-runtime", package / "src",
+        shutil.copytree(ROOT / "archive/js-runtime", package / "src",
                         ignore=shutil.ignore_patterns("original-docs", "original-tests"))
         (package / "package.json").write_text('{"type":"module","pi":{"extensions":["./src/index.ts"]}}')
         for filename in package.rglob("*"):
@@ -69,7 +69,7 @@ class RetrievalSdkChainTest(unittest.TestCase):
         config_path = home / "config.json"
         config_path.write_text(json.dumps(config))
         engine = home / "engine.mjs"
-        engine.write_text(f"""import {{ collectLocatorCandidates,rankLocatorCandidates }} from {json.dumps((ROOT / 'benchmark/archive/js-runtime/locator.mjs').as_uri())};
+        engine.write_text(f"""import {{ collectLocatorCandidates,rankLocatorCandidates }} from {json.dumps((ROOT / 'archive/js-runtime/locator.mjs').as_uri())};
 export function createEngine(documents) {{
  const branch=documents.map((d,i)=>({{type:'message',id:d.id,timestamp:'2024-01-01',message:{{role:'user',content:d.text}}}}));
  branch.push({{type:'message',id:'tail',message:{{role:'user',content:'retained'}}}},{{type:'compaction',firstKeptEntryId:'tail'}});

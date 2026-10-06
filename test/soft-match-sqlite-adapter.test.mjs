@@ -4,9 +4,9 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { sqliteRecallPage } from '../benchmark/retrieval-sqlite-page.mjs';
+import { sqliteRecallPage } from '../archive/benchmark/retrieval-sqlite-page.mjs';
 import { LOCATOR_TYPE } from '../src/locator.mjs';
-import { weightedLength } from '../prototype/soft-match-sqlite/index.mjs';
+import { weightedLength } from '../archive/prototype/soft-match-sqlite/index.mjs';
 
 const rows = Array.from({ length: 50 }, (_, i) => ({ id: String(i), date: '2026-10-04', role: 'user', snippet: 'x'.repeat(120) }));
 test('SQLite renderer preserves pagination and budget; warns only for a true zero total', () => {
@@ -29,7 +29,7 @@ test('SQLite renderer preserves pagination and budget; warns only for a true zer
 
 test('SDK concept tool pages, validates strictly, excludes records and remains usable after errors', async t => {
   const { discoverAndLoadExtensions } = await import('@earendil-works/pi-coding-agent');
-  const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
+  const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../archive/benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
   assert.deepEqual(loaded.errors, []);
   const extension = loaded.extensions[0];
   const recall = extension.tools.get('history_recall').definition;
@@ -91,7 +91,7 @@ test('SDK concept tool pages, validates strictly, excludes records and remains u
 
 test('SDK independent grep finds regex neighbors, pages counts and respects current branch edits', async t => {
   const { discoverAndLoadExtensions } = await import('@earendil-works/pi-coding-agent');
-  const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
+  const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../archive/benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
   assert.deepEqual(loaded.errors, []);
   const extension = loaded.extensions[0];
   const timestamp = '2026-10-06T00:00:00Z';
@@ -156,7 +156,7 @@ test('SDK loads file gate/timeout once; lifecycle rebuilds retain them over late
     else process.env[key] = saved[i];
   }));
   const { discoverAndLoadExtensions } = await import('@earendil-works/pi-coding-agent');
-  const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
+  const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../archive/benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
   assert.deepEqual(loaded.errors, []);
   const extension = loaded.extensions[0];
   const timestamp = '2026-10-04T00:00:00Z';
@@ -222,7 +222,7 @@ test('SDK concept traces correlate original model input and extension mutation w
     }
   });
   const { discoverAndLoadExtensions } = await import('@earendil-works/pi-coding-agent');
-  const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
+  const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../archive/benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
   assert.deepEqual(loaded.errors, []);
   extension = loaded.extensions[0];
   const emit = async (name, event) => {

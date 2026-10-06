@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { createStemmer } from '../prototype/soft-match-sqlite/porter.mjs';
-import { createJsStemmer } from '../prototype/soft-match-sqlite/porter-js.mjs';
-import { createIndex } from '../prototype/soft-match-sqlite/index.mjs';
+import { createStemmer } from '../archive/prototype/soft-match-sqlite/porter.mjs';
+import { createJsStemmer } from '../archive/prototype/soft-match-sqlite/porter-js.mjs';
+import { createIndex } from '../archive/prototype/soft-match-sqlite/index.mjs';
 
 test('JS Porter agrees with native porter ascii on inflections and identifier segmentation', t => {
   const db = new DatabaseSync(':memory:'); t.after(() => db.close());

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { DatabaseSync } from 'node:sqlite';
-import { compileFts5, parseQuery, QueryError, LIMITS } from '../prototype/concept-group-query/original/query.ts';
-import { analyzeQuery, compileQuery, createIndex } from '../prototype/concept-group-query/index.mjs';
-import { createIndex as createPhraseIndex } from '../prototype/structured-tool-query/index.mjs';
-import { createHanPhraseTrial } from '../prototype/soft-match-sqlite/han-phrase-trial.mjs';
+import { compileFts5, parseQuery, QueryError, LIMITS } from '../archive/prototype/concept-group-query/original/query.ts';
+import { analyzeQuery, compileQuery, createIndex } from '../archive/prototype/concept-group-query/index.mjs';
+import { createIndex as createPhraseIndex } from '../archive/prototype/structured-tool-query/index.mjs';
+import { createHanPhraseTrial } from '../archive/prototype/soft-match-sqlite/han-phrase-trial.mjs';
 
 const ids = result => result.results.map(row => row.id);
 const sorted = result => ids(result).sort();

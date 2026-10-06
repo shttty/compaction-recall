@@ -57,7 +57,7 @@ function isolatedEnvironment(home) {
  });
 }
 
-async function main() {
+export async function main({ keepRecentTokens, appendSystemPrompt = '', configureModelRuntime } = {}) {
  const { values } = parseArgs({
   options: {
    help: { type: 'boolean' }, config: { type: 'string' }, phase: { type: 'string' },
@@ -70,6 +70,9 @@ async function main() {
  if (values.help) { process.stdout.write(HELP); return; }
  const configPath = path.resolve(text(values.config, '--config'));
  if (!PHASES.includes(values.phase)) throw new Error('--phase must be compression, answer, or judge');
+ if (keepRecentTokens !== undefined && (values.phase !== 'compression' || !Number.isSafeInteger(keepRecentTokens) || keepRecentTokens < 0)) throw new Error('Explicit keepRecentTokens is compression-only and must be a nonnegative integer');
+ if (typeof appendSystemPrompt !== 'string' || (appendSystemPrompt && values.phase !== 'answer')) throw new Error('Appended system prompt is answer-only text');
+ if (configureModelRuntime !== undefined && typeof configureModelRuntime !== 'function') throw new Error('Model runtime callback must be a function');
  const config = object(json(configPath), 'config', ROOT_KEYS);
  const base = path.dirname(configPath);
  const resolveConfigPath = key => path.resolve(base, text(config[key], key));
@@ -146,6 +149,7 @@ async function main() {
   allowModelNetwork: false, refreshOnCreate: false,
  });
  if (modelRuntime.getError()) throw new Error(`Invalid model profile: ${modelRuntime.getError()}`);
+ if (configureModelRuntime) await configureModelRuntime({ modelRuntime, phase, home });
  const model = modelRuntime.getModel(phase.provider, phase.model);
  if (!model || model.provider !== phase.provider || model.id !== phase.model) throw new Error('SDK did not resolve exact configured provider/model');
  if (!getSupportedThinkingLevels(model).includes(phase.effort)) throw new Error(`Unsupported effort ${phase.effort} for selected model`);
@@ -168,14 +172,14 @@ async function main() {
  }
  process.chdir(cwd);
  const settingsManager = sdk.SettingsManager.inMemory({
-  compaction: { enabled: false, reserveTokens: protocol.reserve_tokens },
+  compaction: { enabled: false, reserveTokens: protocol.reserve_tokens, ...(keepRecentTokens === undefined ? {} : { keepRecentTokens }) },
   cacheWarming: 'off', retry: { enabled: false }, packages: [],
  });
  const resourceLoader = new sdk.DefaultResourceLoader({
   cwd, agentDir, settingsManager, additionalExtensionPaths: extensionPaths,
   noExtensions: true, noSkills: true, noPromptTemplates: true, noThemes: true,
   noContextFiles: true, systemPrompt: '', appendSystemPrompt: [],
-  systemPromptOverride: () => config.system_prompt,
+  systemPromptOverride: () => appendSystemPrompt ? `${config.system_prompt}\n\n${appendSystemPrompt}` : config.system_prompt,
  });
  await resourceLoader.reload();
  const extensions = resourceLoader.getExtensions();

@@ -2,7 +2,7 @@
 
 当前生产入口为 `src/index.ts`，替代入口 `src/recall-extension.ts` 只选一个。full 默认使用 SQLite FTS5 **内存库**与原生 Node worker；lite 仅注册 history_grep/history_expand。两种模式不接管 Pi 压缩，不持久化索引，不新增模型调用。要求 Node.js **>=24.18.0**；已检查宿主 Pi SDK **1.0.0** 的 docs/examples、加载和事件接口。SDK/typebox 维持宿主 peer；生产 npm 依赖仅 `@node-rs/jieba`。
 
-0.1.0 是本地准备版本，本任务没有 npm publish、远端 push 或发布 tag。旧 JS 运行时、原说明与测量保留在 `benchmark/archive/js-runtime/`；本页描述当前 SQLite 行为，历史数字不是本次生产验收成绩。
+0.1.0 是本地准备版本，本任务没有 npm publish、远端 push 或发布 tag。旧 JS 运行时、原说明与测量保留在 `archive/js-runtime/`；本页描述当前 SQLite 行为，历史数字不是本次生产验收成绩。
 
 ## 加载与依赖
 
@@ -103,4 +103,4 @@ npm run check
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'
 ```
 
-离线行为/隔离SDK/worker检查不证明模型准确率；本次未付费重判或重测性能。`benchmark/archive/release-0.1.0/INDEX.md` 公开来源、处理、运行hash、判分代码与非正文指标，并保留授权的16题中文译文。英文原题、参考、最终回答、裁判理由、检索摘录及全文会话留外部；逐字复现需对应外部输入，不能只凭来源链接恢复冻结回答。sw08人工认可与机器7/8独立，修订参考版本/hash与旧中文grading input分开。旧性能数字未重标；npm仍只含src、双语README、许可证和clean aggregate。
+离线行为/隔离SDK/worker检查不证明模型准确率；本次未付费重判或重测性能。`benchmark/data/release-0.1.0/INDEX.md` 公开来源、处理、运行hash、判分代码与非正文指标，并保留授权的16题中文译文。英文原题、参考、最终回答、裁判理由、检索摘录及全文会话留外部；逐字复现需对应外部输入，不能只凭来源链接恢复冻结回答。sw08人工认可与机器7/8独立，修订参考版本/hash与旧中文grading input分开。旧性能数字未重标；npm仍只含src、双语README、许可证和clean aggregate。

@@ -415,27 +415,23 @@ def agent_env(folder):
 
 
 def safe_error(text):
-    text = str(text)
-    def redact(value):
-        nonlocal text
-        if isinstance(value, dict):
-            for key, item in value.items():
-                if key.lower() in {"apikey", "key", "token", "access", "refresh", "baseurl"} and isinstance(item, str) and item:
-                    text = text.replace(item, "[REDACTED]")
-                else:
-                    redact(item)
-        elif isinstance(value, list):
-            for item in value:
-                redact(item)
-    if CONFIG is not None:
-        for phase in ("compression", "answer", "judge"):
-            for name in ("models.json", "auth.json"):
-                try:
-                    redact(json.loads((pathlib.Path(CONFIG[phase]["profile"]) / name).read_text()))
-                except (OSError, ValueError):
-                    pass
-    text = re.sub(r"(?i)(bearer\s+)[A-Za-z0-9._~-]+", r"\1[REDACTED]", text)
-    return text[-2000:]
+    """Never open credential resources merely to format diagnostics.
+
+    Provider text can contain arbitrary unlabelled secrets. Retain only fixed
+    local integrity labels; unknown details are deliberately not persisted.
+    """
+    message = str(text)
+    if not message:
+        return ""
+    for label in ("Saved snapshot bytes changed", "Snapshot changed after launch checks",
+                  "Saved phase identity changed", "Saved phase output bytes changed",
+                  "Saved transcript bytes changed", "Frozen answer system prompt changed",
+                  "Native compaction failed", "Judge provider failed"):
+        if label in message:
+            return label
+    if "inflight" in message.lower():
+        return "Unknown inflight phase; implicit provider replay refused"
+    return "Untrusted diagnostic omitted (no credential access)"
 
 
 def rpc_line(request):

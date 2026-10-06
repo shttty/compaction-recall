@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { selectFts5Range, selectFts5Window } from '../benchmark/fts5-snippet.mjs';
-import { createWorkerEngine } from '../benchmark/retrieval-sqlite-worker.mjs';
-import { weightedLength } from '../prototype/soft-match-sqlite/index.mjs';
+import { selectFts5Range, selectFts5Window } from '../archive/benchmark/fts5-snippet.mjs';
+import { createWorkerEngine } from '../archive/benchmark/retrieval-sqlite-worker.mjs';
+import { weightedLength } from '../archive/prototype/soft-match-sqlite/index.mjs';
 
 const body = snippet => snippet.replace(/^…|…$/gu, '');
 

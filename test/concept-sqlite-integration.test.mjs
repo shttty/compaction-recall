@@ -1,15 +1,15 @@
 import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createIndex } from '../prototype/soft-match-sqlite/index.mjs';
-import { SQLiteBackgroundIndex } from '../benchmark/sqlite-background-index.mjs';
+import { createIndex } from '../archive/prototype/soft-match-sqlite/index.mjs';
+import { SQLiteBackgroundIndex } from '../archive/benchmark/sqlite-background-index.mjs';
 import { BackgroundIndex } from '../src/background-index.mjs';
 import { initialBranch, msg } from './corpus.mjs';
 const docs=[{id:'both',text:'cedar harbor'}, {id:'alternative',text:'maple harbor'},
   {id:'first',text:'cedar inland'}, {id:'second',text:'willow harbor'}, {id:'neither',text:'willow inland'}];
 const query=(concepts,match='any',exclude=[])=>({concepts,match,exclude});
 const sorted=result=>result.results.map(row=>row.id).sort();
-const engineModule=new URL('../benchmark/retrieval-sqlite-worker.mjs',import.meta.url);
+const engineModule=new URL('../archive/benchmark/retrieval-sqlite-worker.mjs',import.meta.url);
 
 test('existing SQLite index integrates groups, alternatives, defaults and hard exclusions',t=>{
   const index=createIndex(docs);t.after(()=>index.close());

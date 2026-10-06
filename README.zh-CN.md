@@ -64,7 +64,7 @@ COMPACTION_RECALL_JIEBA=off pi -e ./src/index.ts
 
 [0.1 benchmark 索引](https://github.com/shttty/pi-context-recall/tree/main/benchmark/archive/release-0.1.0) 公开来源、处理、固定输入hash、runner与非正文指标，并按用户授权保留 **16 道冻结中文题面译文**。英文原题、参考、模型回答、裁判理由和检索摘录留外部。LME 原题可按上游ID提取；逐字复现翻译历史、修订参考、本地派生SWE题集及冻结输出需匹配hash的外部资产，不能称只凭链接可复现96份答案。SWE最新机器严格结果仍为 **7/8**，sw08人工认可独立。benchmark不入npm。
 
-更早的 JS 版本结果仍在 [BENCHMARK_RESULTS](doc/BENCHMARK_RESULTS.md)，旧内存/耗时表在仓库 [PERFORMANCE](https://github.com/shttty/pi-context-recall/blob/main/doc/PERFORMANCE.md)。它们是**历史记录，不是本次 SQLite 生产版本的测量**，不能当作当前内存/延迟承诺；小样本单轮评分也不证明稳定准确率。旧 JS 运行时与原说明保留在 git 归档，不进包。
+更早的 JS 版本结果仍在 [BENCHMARK_RESULTS](doc/BENCHMARK_RESULTS.md)，旧内存/耗时表在仓库 [PERFORMANCE](https://github.com/shttty/pi-context-recall/blob/main/archive/doc/PERFORMANCE.md)。它们是**历史记录，不是本次 SQLite 生产版本的测量**，不能当作当前内存/延迟承诺；小样本单轮评分也不证明稳定准确率。旧 JS 运行时与原说明保留在 git 归档，不进包。
 
 ## 开发
 

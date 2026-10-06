@@ -1,15 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Worker } from 'node:worker_threads';
-import { createEngine } from '../benchmark/retrieval-sqlite-engine.mjs';
+import { createEngine } from '../archive/benchmark/retrieval-sqlite-engine.mjs';
 
 async function inWorker(fn) {
   const worker = new Worker(`const {parentPort,workerData}=require('node:worker_threads');
     Promise.all([import(workerData.lemma),import(workerData.index)]).then(([a,b])=>(${fn.toString()})(a,b)).then(x=>parentPort.postMessage(x));`,
     {
       eval: true, workerData: {
-        lemma: new URL('../prototype/soft-match-sqlite/lemma.mjs', import.meta.url).href,
-        index: new URL('../prototype/soft-match-sqlite/index.mjs', import.meta.url).href
+        lemma: new URL('../archive/prototype/soft-match-sqlite/lemma.mjs', import.meta.url).href,
+        index: new URL('../archive/prototype/soft-match-sqlite/index.mjs', import.meta.url).href
       }
     });
   try { return await new Promise((resolve, reject) => { worker.once('message', resolve); worker.once('error', reject); }); }

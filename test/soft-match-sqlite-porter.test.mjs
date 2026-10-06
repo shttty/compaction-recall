@@ -2,8 +2,8 @@ import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { DatabaseSync } from 'node:sqlite';
-import { createIndex } from '../prototype/soft-match-sqlite/index.mjs';
-import { createStemmer } from '../prototype/soft-match-sqlite/porter.mjs';
+import { createIndex } from '../archive/prototype/soft-match-sqlite/index.mjs';
+import { createStemmer } from '../archive/prototype/soft-match-sqlite/porter.mjs';
 
 const documents = [
   { id: 'past', text: 'Yesterday we booked tickets.' },

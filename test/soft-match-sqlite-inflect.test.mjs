@@ -2,11 +2,11 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createRequire } from 'node:module';
 import { Worker } from 'node:worker_threads';
-import { createInflections } from '../prototype/soft-match-sqlite/inflect.mjs';
-import { createEngine } from '../benchmark/retrieval-sqlite-engine.mjs';
+import { createInflections } from '../archive/prototype/soft-match-sqlite/inflect.mjs';
+import { createEngine } from '../archive/benchmark/retrieval-sqlite-engine.mjs';
 
 const require = createRequire(import.meta.url);
-const helperUrl = new URL('../prototype/soft-match-sqlite/inflect.mjs', import.meta.url).href;
+const helperUrl = new URL('../archive/prototype/soft-match-sqlite/inflect.mjs', import.meta.url).href;
 async function inWorker(check) {
   const worker = new Worker(`
     const assert = require('node:assert/strict');

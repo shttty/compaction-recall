@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildRecallPage, buildLocator, RECALL_PAGE_CHARS, LOCATOR_CHARS } from '../benchmark/archive/js-runtime/locator.mjs'
+import { buildRecallPage, buildLocator, RECALL_PAGE_CHARS, LOCATOR_CHARS } from '../archive/js-runtime/locator.mjs'
 const msg = (id, text) => ({ type: 'message', id, timestamp: '2026-09-30T00:00:00.000Z', parentId: null,
   message: { role: 'user', content: [{ type: 'text', text }], timestamp: 0 } });
 const branch = old => [...old, msg('live', 'quasar live'), { type: 'compaction', id: 'c', firstKeptEntryId: 'live', timestamp: '2026-09-30T00:00:00.000Z' }];
@@ -116,7 +116,7 @@ test('equally informative terms choose the earlier source position, independent 
 });
 
 test('duplicate removal precedes scoring and chooses newest representative', async () => {
-  const { rankLocatorCandidates }=await import('../benchmark/archive/js-runtime/locator.mjs');
+  const { rankLocatorCandidates }=await import('../archive/js-runtime/locator.mjs');
   const shared='quasar same snippet';
   const make=(id,recency,matches)=>({id,recency,text:shared,date:'2026-09-30',role:'user',offset:0,matches:new Set(matches)});
   const ranked=rankLocatorCandidates([make('older',0,['quasar','bonus']),make('newer',1,['quasar'])],new Map([['quasar',2],['bonus',1]]),2);
@@ -124,7 +124,7 @@ test('duplicate removal precedes scoring and chooses newest representative', asy
 });
 
 test('automatic top-five selection precedes budget and never backfills rank six',async()=>{
-  const { renderLocators }=await import('../benchmark/archive/js-runtime/locator.mjs');
+  const { renderLocators }=await import('../archive/js-runtime/locator.mjs');
   const candidates=Array.from({length:6},(_,i)=>({id:i===0?'x'.repeat(2000):`rank${i+1}`,recency:6-i,text:`quasar unique ${i}`,date:'2026-09-30',role:'user',offset:0,matches:new Set(['quasar'])}));
   const text=renderLocators(candidates,new Map([['quasar',6]]),6);
   assert.equal(rows(text).length,4);

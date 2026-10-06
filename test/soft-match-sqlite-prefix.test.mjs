@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createIndex } from '../prototype/soft-match-sqlite/index.mjs';
+import { createIndex } from '../archive/prototype/soft-match-sqlite/index.mjs';
 
 test('concept punctuation is literal surface data, never prefix or native operators', t => {
   const index = createIndex([

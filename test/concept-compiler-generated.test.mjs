@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import * as author from '../prototype/concept-group-query/original/query.ts';
-import * as generated from '../prototype/soft-match-sqlite/concept-query-compiler.mjs';
+import * as author from '../archive/prototype/concept-group-query/original/query.ts';
+import * as generated from '../archive/prototype/soft-match-sqlite/concept-query-compiler.mjs';
 const outcomes = (module,input,analyze) => {
   try{return {plan:module.compileFts5(input,analyze)};}
   catch(error){return {error:{name:error.name,code:error.code,message:error.message}};}

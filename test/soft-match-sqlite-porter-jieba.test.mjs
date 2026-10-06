@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { Worker } from 'node:worker_threads';
-import { createTokenizer, validateArm } from '../prototype/soft-match-sqlite/arms.mjs';
+import { createTokenizer, validateArm } from '../archive/prototype/soft-match-sqlite/arms.mjs';
 
-const armsURL = new URL('../prototype/soft-match-sqlite/arms.mjs', import.meta.url).href;
-const indexURL = new URL('../prototype/soft-match-sqlite/index.mjs', import.meta.url).href;
+const armsURL = new URL('../archive/prototype/soft-match-sqlite/arms.mjs', import.meta.url).href;
+const indexURL = new URL('../archive/prototype/soft-match-sqlite/index.mjs', import.meta.url).href;
 
 // Native Jieba stays in the worker even when exercising the synchronous index.
 test('porter-jieba reuses both token channels for English, Han and mixed queries', async () => {

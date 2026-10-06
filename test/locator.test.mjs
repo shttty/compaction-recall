@@ -1,9 +1,9 @@
 import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import register from '../benchmark/archive/js-runtime/index.ts'
+import register from '../archive/js-runtime/index.ts'
 import { entryText } from '../src/history.mjs';
-import { buildLocator, queryTerms, withLocators, LOCATOR_TYPE, LOCATOR_CHARS, QUERY_TERMS, QUERY_CHARS } from '../benchmark/archive/js-runtime/locator.mjs'
+import { buildLocator, queryTerms, withLocators, LOCATOR_TYPE, LOCATOR_CHARS, QUERY_TERMS, QUERY_CHARS } from '../archive/js-runtime/locator.mjs'
 const stamp = '2026-09-30T00:00:00.000Z';
 const msg = (id, text, role = 'user') => ({
   type: 'message', id, timestamp: stamp, parentId: null,

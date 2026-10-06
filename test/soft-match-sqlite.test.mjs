@@ -1,8 +1,8 @@
 import './isolated-agent-dir.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createIndex, extractText, tokenize, weightedLength } from '../prototype/soft-match-sqlite/index.mjs';
-import { documents } from '../prototype/soft-match-sqlite/demo.mjs';
+import { createIndex, extractText, tokenize, weightedLength } from '../archive/prototype/soft-match-sqlite/index.mjs';
+import { documents } from '../archive/prototype/soft-match-sqlite/demo.mjs';
 
 const ids = result => result.results.map(hit => hit.id);
 const open = (t, docs = documents) => {

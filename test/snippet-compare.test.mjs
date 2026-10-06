@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { prototypeSpans, queryTerms, literalHits, prototypeWindow, productionWindow, answerPositions, visibleTerms } from '../benchmark/snippet-compare-core.mjs';
+import { prototypeSpans, queryTerms, literalHits, prototypeWindow, productionWindow, answerPositions, visibleTerms } from '../archive/benchmark/snippet-compare-core.mjs';
 
 test('prototype spans retain whole ASCII identifiers and Han bigrams/word offsets across Unicode', () => {
   const text = '😀 HTTPServer snake_case 中文数据库';

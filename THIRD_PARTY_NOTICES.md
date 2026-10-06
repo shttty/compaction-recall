@@ -68,7 +68,7 @@ notices distributed with Node or the installed native packages.
 ## Frozen 0.1 research archive (git only)
 
 Sources, processing, fixed-input hashes, runner/judge code and non-text metrics
-are indexed at `benchmark/archive/release-0.1.0/INDEX.md`. Only the 16 frozen Chinese
+are indexed at `benchmark/data/release-0.1.0/INDEX.md`. Only the 16 frozen Chinese
 LME question translations are retained as question text. Original English/SWE
 questions, references, answers and excerpts are not distributed. Software MIT and
 the original LongMemEval dataset's independent MIT declaration remain identified.
