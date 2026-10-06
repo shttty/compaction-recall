@@ -11,7 +11,7 @@ import { selectFts5Range } from '../../benchmark/fts5-snippet.mjs';
 import { measured } from '../../src/timing.mjs';
 import { sqliteRecallPage } from '../../benchmark/retrieval-sqlite-page.mjs';
 import { createHanPhraseTrial } from './han-phrase-trial.mjs';
-import { compileFts5, parseQuery, QueryError } from './concept-query-compiler.mjs';
+import { compileFts5, parseQuery } from './concept-query-compiler.mjs';
 export { STOPWORDS, tokenize, tokenizeSpans } from './lexical.mjs';
 const HAN = /\p{Script=Han}/u;
 const meaningful = /[\p{L}\p{N}\p{M}]/u;
@@ -48,12 +48,11 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
   if (bigramOnly === '1') arm = 'off';
   else if (bigramOnly === 'porter') arm = 'porter';
   const trialMode = process.env.COMPACTION_RECALL_SQLITE_HAN_PHRASE_TRIAL;
-  if (trialMode !== undefined) arm = 'porter'; // Retain the existing dictionary trial selection.
-  const trial = createHanPhraseTrial(trialMode ?? (['jieba', 'porter-jieba'].includes(arm) ? 'jieba' : 'off'));
+  const trial = createHanPhraseTrial(trialMode);
   autoGate = parseAutoGate(autoGate);
   const budget = Number.isSafeInteger(snippetBudget) && snippetBudget > 0 ? snippetBudget : 240;
   const { tokenize, tokenizeSpans } = trial.tokenizer;
-  const automaticTokenizer = ['jieba', 'porter-jieba'].includes(arm) ? trial.automaticTokenizer : createTokenizer(arm);
+  const automaticTokenizer = ['jieba', 'porter-jieba'].includes(arm) ? (trial.automaticTokenizer ?? createTokenizer(arm)) : createTokenizer(arm);
   const porter = arm === 'porter' || arm === 'porter-jieba' || arm === 'porter-js';
   const lemma = arm === 'lemma-index' ? createLemmaNormalizer() : undefined;
   // Latest id wins before the empty check, so a latest empty edit hides older text.
@@ -191,11 +190,19 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
     check?.();
     return results;
   }
-  function collect(expression, snippetTerms, timer, check, { limit = -1, offset = 0 } = {}) {
+  function collect(expression, snippetTerms, timer, check, { limit = -1, offset = 0 } = {}, longWords = []) {
     check?.();
     const total = measured(timer, 'native_count', () => count.get(expression).total);
     check?.();
-    const native = measured(timer, 'native_query', () => match.all(expression, limit, offset));
+    const native = measured(timer, 'native_query', () => {
+      if (!trial.jieba || !longWords.length) return match.all(expression, limit, offset);
+      // Reuse the trial SQL: fix base MATCH representatives before long-word ranking.
+      const ranked = db.prepare(`${rankedSql} SELECT rowid, score,
+        (SELECT count(*) FROM han_rank WHERE han_rank.rowid = ranked.rowid AND term IN (${longWords.map(() => '?').join(',')})) AS long_word_score
+        FROM ranked WHERE representative = 1
+        ORDER BY long_word_score DESC, score, timestamp DESC, recency DESC, rowid DESC LIMIT ? OFFSET ?`);
+      return ranked.all(expression, ...longWords, limit, offset);
+    });
     check?.(); // SQLite is synchronous and cannot check a deadline inside MATCH.
     return { total, results: materialize(native, snippetTerms, timer, check) };
   }
@@ -214,7 +221,8 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
       : inflections ? `(${inflections.expand(term).map(value => `"${value}"`).join(' OR ')})`
         : `"${term.replaceAll('"', '""')}"${prefix ? '*' : ''}`).join(' OR ');
     const expanded = inflections ? queryOperands(expression) : terms;
-    const found = collect(expression, expanded, timer, undefined, { limit, offset });
+    const longWords = trial.jieba ? queryTerms.filter(term => /^\p{Script=Han}{3,}$/u.test(term)) : [];
+    const found = collect(expression, expanded, timer, undefined, { limit, offset }, longWords);
     return { skipped: false, ...found, queryTerms };
   }
   function conceptRows(query, timer, check, options) {
@@ -227,20 +235,21 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
       return terms.length ? [terms] : [];
     }));
     // Compile first so zero-token surfaces retain the author's original error.
-    // The loss gate precedes every count/MATCH for concepts and exclusions alike.
+    const warnings = [];
     for (const [surface, { spans, terms }] of analyses) {
       check?.();
       const chars = Array.from(surface), covered = new Uint8Array(chars.length);
       for (const span of spans) covered.fill(1, span.start, span.end);
       if (chars.some((point, at) => meaningful.test(point) && !covered[at])) {
-        throw new QueryError('TOKENIZATION_LOSS', `Tokenization loss: ${safeQueryData(surface)} → ${safeQueryData([...new Set(terms)])}. Suggestion: revise query terms or use history_grep.`);
+        warnings.push(`Warning: ${safeQueryData(surface)} → ${safeQueryData([...new Set(terms)])}. Suggestion: revise query terms or use history_grep.`);
       }
     }
     // Only positive terms select snippets; exclusions remain in MATCH alone.
     const terms = new Set(normalized.concepts.flatMap(group => group.flatMap(surface => analyses.get(surface).terms)));
     const snippets = [...terms].map(term => ({ term, prefix: false }));
     check?.();
-    return collect(plan.match, snippets, timer, check, options);
+    const longWords = trial.jieba ? [...new Set(normalized.concepts.flat().filter(surface => /^\p{Script=Han}{3,}$/u.test(surface)))] : [];
+    return { ...collect(plan.match, snippets, timer, check, options, longWords), warnings };
   }
   const ranks = rows => rows.map(({ id, score }) => ({ id, score }));
   return {
@@ -264,9 +273,7 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
       if (!Number.isInteger(limit) || limit < 1 || limit > 50) throw new RangeError('limit must be an integer from 1 to 50');
       if (!Number.isSafeInteger(offset) || offset < 0) throw new RangeError('offset must be a nonnegative safe integer');
       const found = conceptRows(query, timer, check, { limit, offset });
-      const page = sqliteRecallPage(found.results, options, { total: found.total, baseOffset: offset });
-      // Independent jieba ranking remains outside this selected BM25 protocol.
-      if (trial.jieba) page.details.jiebaRankingPending = true;
+      const page = sqliteRecallPage(found.results, options, { total: found.total, baseOffset: offset, warnings: found.warnings });
       check?.();
       const ids = found.results.slice(0, page.details.returned).map(row => row.id);
       return { total: found.total, page, ids };

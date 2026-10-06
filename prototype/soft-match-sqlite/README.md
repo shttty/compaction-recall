@@ -1,19 +1,19 @@
 # SQLite FTS5 soft-match 原型
 
-## 当前覆盖契约：主动 FTS、token 损失拒绝与独立 grep（2026-10-06）
+## 当前覆盖契约：主动 FTS、token 损失 warning 与独立 grep（2026-10-06）
 
 本节优先于下文历史接口、切词、候选 arm 和提示词说明。历史评估数字及验证正文保持原文，不代表本轮已重跑。本轮为 SQLite 原型 / benchmark 接入，不是生产发布；不请求 provider 或模型评测。共享 `src/recall-trace.mjs` 仅增加可选结构输入模式，`src/index-worker.mjs` / `src/background-index.mjs` 仅保留自定义引擎错误 code；生产入口、schema、默认字符串 trace 及输出字节契约不变。
 
 - **工具具名字段**：`history_recall({concepts:string[][],match?:'any'|'all',exclude?:string[],limit?,offset?})`。1..5 组，每组 1..4 个替代词面；默认 `any` 组间 OR，`all` 要求各组在同一索引记录命中。组内词面是 OR 替代，每个词面的分析路径外 OR、路径内词项 AND：只要求共现，不要求顺序、相邻或 phrase。词面是 literal 数据，不是 FTS / SQL / 任意 AST；不要求模型手切双字或写原生 MATCH。旧 `query` / `must` / `prefer` / raw 手动入口不兼容。
-- **严格编译与拒绝**：未修改作者生成的纯 JS compiler；主动查询只走 parse/compileFts5 → SQLite BM25。零 token 保留原 `QueryError/EMPTY_ANALYSIS`。任意正向或 exclude 词面的实际 tokenizer spans 丢失 Letter/Number/Mark 时，整次请求在 MATCH/计数之前抛 `QueryError/TOKENIZATION_LOSS`，不跳过坏词、不返回部分结果、不扫描兜底。声明忽略的标点/大小写和合法词形归一不误拒绝。
-- **短错误**：`Tokenization loss: "7:30" → ["30"]. Suggestion: revise query terms or use history_grep.` 原词面和实际词项安全 JSON 编码；这是错误，不是 warning 后继续查询。
-- **排名与分页**：只保留原生 FTS BM25、SQL/full-content 去重分页、原 time ties；混合 rarity 和自动 literal 执行模块移除，没有开关。正常 FTS 零命中仍是零结果。any/all/exclude、50 条上限、16000 码点页预算和 nextOffset 机制不变；排除不引导片段。
-- **自动与超时**：自动选词、210/配置 gate、cadence 和算法不变。主动期限仍覆盖准备/排队、编译与搜索/渲染，native MATCH 不可抢占，健康 worker 缓存保留。
+- **严格编译与 warning**：未修改作者生成的纯 JS compiler；主动查询只走 parse/compileFts5 → SQLite BM25。零 token 保留原 `QueryError/EMPTY_ANALYSIS`。正向或 exclude 词面的实际 tokenizer spans 部分丢失 Letter/Number/Mark 时，按原分析词项继续 FTS，同时返回短 warning；不丢弃词面、不扫描兜底、不恢复 rarity。完整词面、声明忽略的标点/大小写及合法归一不加 warning。
+- **短建议**：`Warning: "7:30" → ["30"]. Suggestion: revise query terms or use history_grep.` 原词面和实际词项安全 JSON 编码；随 worker 页进入模型可见工具正文，并计入原页预算，nextOffset 按实际返回行继续。
+- **排名与分页**：复用既有 jieba 长词提取、`han_rank` 辅助表和旧试验的排序 SQL。实际 SQLite worker 缺省开启，`COMPACTION_RECALL_SQLITE_HAN_PHRASE_TRIAL=off` 可关闭，`jieba` 可显式开启；主线程同步 helper 缺省 off，保持原生 jieba worker-only 约束。FTS MATCH 与原 BM25/full-content 去重代表项先固定，再由 SQLite 按正向纯汉字长词面（至少 3 字）的不同命中数降序、BM25、原 timestamp/recency/rowid ties 排序，最后 LIMIT/OFFSET。正向词面来自 concepts，exclude 不加分；自动提示复用同一 SQL，仅使用已选 queryTerms 中的长词，不新增候选词项。开关不强制切换英文 arm；不拉全量候选回 JS 重排，不再返回 jiebaRankingPending。正常 FTS 零命中仍是零结果；any/all/exclude、50 条上限、16000 码点页预算和 nextOffset 不变。literal/混合 rarity 不恢复。
+- **自动与超时**：自动选词、210/配置 gate、cadence 不变，排名接入上述 SQL 长词优先策略。主动期限仍覆盖准备/排队、编译与搜索/渲染，native MATCH 不可抢占，健康 worker 缓存保留。
 - **三工具与 trace**：recall/grep/expand 保留。独立 `history_grep({pattern,limit?,offset?})` 复用生产 lite 原正则执行器、非法 regex 字面回退、预算、分支分页和 context_edit 隔离；证据不足可主动使用，不强制调用。recall 不新增参数。结构 trace 保留原模型/执行入参；成功结果不再有旧 fallback metadata。生产默认不变。
 
 初轮两工具离线验收（历史记录）：`npm run check` 的 338 项 JS 与 28 项 Python 回归通过，另以空临时 profile 实际加载 SDK/worker/SQLite 验证两工具、literal/rarity、自动提示和结构 trace（0 provider 请求）。纯 FTS 的独立合成完整 IDs/score/order 与该轮基线一致；小规模合成工具耗时/内存只记录在授权执行产物目录，不代表大库/线上性能或模型准确率。
 
-此前独立 grep 恢复及 literal/rarity 验收属于历史记录，旧结果与冻结评测不重标。本次关闭 recall 自动字面兜底，并按最新授权拒绝信息损失；当前最低实跑与日志见授权关闭任务目录。
+此前拒绝策略及 literal/rarity 验收属于历史记录，旧结果与冻结评测不重标。当前按最新授权对部分损失继续 FTS 并返回 warning；轻量实跑与日志见授权 warning 任务目录。
 
 后文 `searchRaw`、implicit OR、原生手写 MATCH、自动 Porter/长 Han、mixed index 等接口和说明均为历史设计 / 评估证据，不覆盖本节当前手动概念组协议。
 
@@ -208,7 +208,7 @@ shared `history_recall_trace` 保留 toolCallId、模型 / execute 原始 query 
 根键 `snippetBudget` 与优先环境变量 `COMPACTION_RECALL_SNIPPET_BUDGET` 加载一次：文件接受正安全整数，环境接受严格十进制正安全整数字符串；缺省/非法所选值回退 240 加权单位，非法环境不回取有效文件值。所有有效预算都按 Han 2 / 其他码点 1 计算，自动和手动共用；没有旧 120 码点默认分支或兼容开关。省略号、自动提示整体预算和工具页预算不变。
 
 
-显式 recall 的协作式 JavaScript deadline 从父线程请求起始计时，覆盖索引准备、排队、编译/损失拒绝、MATCH 与后处理（排序/去重/片段/分页）；自动提示不增加超时。到检查点抛 TimeoutError 并丢弃过期结果。同步 native MATCH 不可抢占，允许超过名义期限直到返回检查点；不是硬停止承诺。超时不 terminate/reset worker、不清空索引/惰性跨度缓存、不取消其他排队请求、不回退同步主线程扫描；后续请求复用 healthy worker caches。
+显式 recall 的协作式 JavaScript deadline 从父线程请求起始计时，覆盖索引准备、排队、编译/损失诊断、MATCH 与后处理（排序/去重/片段/分页）；自动提示不增加超时。到检查点抛 TimeoutError 并丢弃过期结果。同步 native MATCH 不可抢占，允许超过名义期限直到返回检查点；不是硬停止承诺。超时不 terminate/reset worker、不清空索引/惰性跨度缓存、不取消其他排队请求、不回退同步主线程扫描；后续请求复用 healthy worker caches。
 
 中断能力已按当前 **Node 24.18.0 / Bun 1.4.2** 查官方文档、发布标签源码和实际 API：均无公开 interrupt / progress handler。SQLite C 本身有 [sqlite3_interrupt](https://www.sqlite.org/c3ref/interrupt.html) / [progress handler](https://www.sqlite.org/c3ref/progress_handler.html)，但 JS 绑定未提供。Node 的构造参数 timeout 是锁等待 busy timeout，不是执行期限（[版本文档](https://nodejs.org/download/release/v24.18.0/docs/api/sqlite.html#new-databasesyncpath-options)、[绑定源码](https://github.com/nodejs/node/blob/v24.18.0/src/node_sqlite.cc)）；Bun 的 handle 是数组编号而非可传给 FFI 的 sqlite3 指针（[官方文档](https://bun.sh/docs/runtime/sqlite)、[1.4.2 类型声明](https://github.com/oven-sh/bun/blob/bun-v1.4.2/packages/bun-types/sqlite.d.ts)、[原生注册表](https://github.com/oven-sh/bun/blob/bun-v1.4.2/src/jsc/bindings/sqlite/JSSQLStatement.cpp)）。
 

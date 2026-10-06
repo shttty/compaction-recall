@@ -242,8 +242,9 @@ test('SDK concept traces correlate original model input and extension mutation w
   }
   await assert.rejects(recall.execute('invalid', { concepts: [] }, undefined, undefined, ctx), { name: 'QueryError', code: 'INVALID_ARRAY' });
   await recall.execute('after-error', { concepts: [['alpha']] }, undefined, undefined, ctx);
-  await assert.rejects(recall.execute('token-loss', { concepts: [['7:30']] }, undefined, undefined, ctx), { name: 'QueryError', code: 'TOKENIZATION_LOSS',
-    message: 'Tokenization loss: "7:30" → ["30"]. Suggestion: revise query terms or use history_grep.' });
+  const partial = await recall.execute('token-loss', { concepts: [['7:30']] }, undefined, undefined, ctx);
+  assert.equal(partial.details.total, 1);
+  assert.ok(partial.content[0].text.includes('Warning: "7:30" → ["30"]. Suggestion: revise query terms or use history_grep.'));
   await emit('before_provider_request', { type: 'before_provider_request', payload: { apiKey: 'SECRET_CREDENTIAL', thinking: 'SECRET_REASONING', reasoning_effort: 'high' } });
   await emit('agent_end', { type: 'agent_end', messages: [] });
   const raw = readFileSync(tracePath, 'utf8');
@@ -262,8 +263,8 @@ test('SDK concept traces correlate original model input and extension mutation w
   assert.equal('fallback' in calls[0].result, false);
   assert.equal('fallback' in calls[1].result, false);
   assert.equal('fallback' in calls[3].result, false);
-  assert.equal(calls[4].error.code, 'TOKENIZATION_LOSS');
-  assert.equal(calls[4].error.message, 'Tokenization loss: "7:30" → ["30"]. Suggestion: revise query terms or use history_grep.');
+  assert.deepEqual(calls[4].result.ids, ['evidence']);
+  assert.equal('error' in calls[4], false);
   assert.deepEqual(events.find(event => event.type === 'sqlite_provider_evidence'), { type: 'sqlite_provider_evidence', sessionId: 'trace-fixture', locatorPresent: false, locator: null, effort: 'high' });
   assert.doesNotMatch(raw, /SECRET_CREDENTIAL|SECRET_REASONING/);
 });

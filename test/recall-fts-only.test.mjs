@@ -31,8 +31,9 @@ test('real SQLite worker retains its generation and subsequent queries after com
   assert.equal((await run(input('topic'))).total, 2);
   const worker = index.worker, generation = index.generation;
   await assert.rejects(run(input('晨')), error);
-  await assert.rejects(run(input('7:30')), { name: 'QueryError', code: 'TOKENIZATION_LOSS',
-    message: 'Tokenization loss: "7:30" → ["30"]. Suggestion: revise query terms or use history_grep.' });
+  const partial = await run(input('7:30'));
+  assert.deepEqual(partial.results.map(row => row.id).sort(), ['mevidence', 'mother']);
+  assert.deepEqual(partial.warnings, ['Warning: "7:30" → ["30"]. Suggestion: revise query terms or use history_grep.']);
   const recovered = await run(input('topic'));
   assert.deepEqual(recovered.results.map(row => row.id).sort(), ['mevidence', 'mother']);
   assert.ok(recovered.results.every(row => row.score < 0));
@@ -49,7 +50,7 @@ test('normal FTS zero hits stay zero despite literal substrings and native error
   assert.throws(() => index.queryRows(input('needle')), { code: 'ERR_INVALID_STATE' });
 });
 
-test('any lossy concept or exclusion rejects the whole request before native count or MATCH', t => {
+test('lossy concepts and exclusions use original FTS terms and report warnings', t => {
   const index = createIndex([{ id: 'seven', text: 'topic 7:30 café gpu7' },
     { id: 'eight', text: 'topic 8:30 caf' }, { id: 'extra', text: 'topic cafe' }]);
   t.after(() => index.close());
@@ -58,9 +59,10 @@ test('any lossy concept or exclusion rejects the whole request before native cou
       { concepts: [['topic'], [surface]] }, { concepts: [['topic']], exclude: [surface] }]) {
       const stages = [];
       const timer = { run(stage, work) { stages.push(stage); return work(); } };
-      assert.throws(() => index.queryRows(query, { timer }), { name: 'QueryError', code: 'TOKENIZATION_LOSS',
-        message: `Tokenization loss: ${JSON.stringify(surface)} → ${JSON.stringify(indexedTerms)}. Suggestion: revise query terms or use history_grep.` });
-      assert.equal(stages.some(stage => stage === 'native_count' || stage === 'native_query' || stage.startsWith('fallback_')), false);
+      const found = index.queryRows(query, { timer });
+      assert.deepEqual(found.warnings, [`Warning: ${JSON.stringify(surface)} → ${JSON.stringify(indexedTerms)}. Suggestion: revise query terms or use history_grep.`]);
+      assert.ok(stages.includes('native_count') && stages.includes('native_query'));
+      assert.equal(stages.some(stage => stage.startsWith('fallback_')), false);
     }
   }
   const recovered = index.queryPage(input('TOPIC!'));

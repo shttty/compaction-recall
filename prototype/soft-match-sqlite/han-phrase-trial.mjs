@@ -18,7 +18,7 @@ const tokenizer = {
   },
 };
 
-export function createHanPhraseTrial(mode) {
+export function createHanPhraseTrial(mode = isMainThread ? 'off' : 'jieba') {
   if (!['off', 'jieba'].includes(mode)) throw new SyntaxError('Han phrase trial mode must be off or jieba');
   let jieba;
   if (mode === 'jieba') {
