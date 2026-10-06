@@ -1,5 +1,7 @@
 # Third-party notices
 
+[English](THIRD_PARTY_NOTICES.md) | [简体中文](THIRD_PARTY_NOTICES.zh-CN.md)
+
 ## Project origin
 
 `compaction-recall` was extracted from
@@ -29,7 +31,7 @@ frozen Chinese LME16 question translations, not English original questions, refe
 answers, model outputs or retrieved excerpts. Full datasets and fixed evaluation
 artifacts are obtained separately. Synthetic offline tests are a distinct category.
 The runtime has no LongMemEval dependency or automatic dataset download; benchmark
-materials are excluded from npm, whose aggregate contains only historical metrics.
+materials are excluded from npm.
 
 For retained upstream evaluation material, the copyright and license notice is:
 

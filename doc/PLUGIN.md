@@ -1,24 +1,26 @@
-# 配置与行为参考
+# Configuration and behavior reference
 
-本文说明 compaction-recall 的完整配置、检索行为和使用限制。安装与快速介绍见 [README](../README.zh-CN.md)。目前支持 Pi；插件不替换宿主的压缩机制，不持久化索引，也不额外调用模型。
+[English](PLUGIN.md) | [简体中文](PLUGIN.zh-CN.md)
 
-公开入口仍为 `src/index.ts`，替代兼容入口仍为 `src/recall-extension.ts`；每次只加载一个。两者只负责导出或装配：`tools/` 分别拥有 recall/grep/expand 的描述、schema与执行，`extension/` 拥有单次配置读取、索引生命周期/预热、自动context以及共享分支/计时操作。`history/`（分支投影与定位）、`search/`（查询与SQLite检索）、`worker/`（后台调度与纯mjs worker）、`observability/`（timing/trace）保留现有分工；配置、trace、index和cadence不重复创建，没有新增转发入口或TS worker loader。评测源码职责和命令见 [benchmark索引](../benchmark/INDEX.md) 与 [运行指南](benchmark.md)。
+This guide covers compaction-recall's complete configuration, retrieval behavior, and limitations. For installation and a quick introduction, see the [README](../README.md). Pi is currently supported; the plugin does not replace the host's compaction mechanism, persist an index, or make additional model calls.
 
-## 选择模式
+The public entry point remains `src/index.ts`, and the alternative compatibility entry point remains `src/recall-extension.ts`; load only one at a time. Both only export or assemble components: `tools/` owns the descriptions, schemas, and execution of recall/grep/expand, while `extension/` owns one-time configuration loading, index lifecycle/prewarming, automatic context, and shared branch/timing operations. `history/` (branch projection and location), `search/` (queries and SQLite retrieval), `worker/` (background scheduling and the plain mjs worker), and `observability/` (timing/trace) retain their existing responsibilities; configuration, trace, index, and cadence are not created more than once, and there are no new forwarding entry points or TS worker loaders. For evaluation source responsibilities and commands, see the [running guide](benchmark.md).
 
-| 行为 | `full`（默认） | `lite` |
+## Choosing a mode
+
+| Behavior | `full` (default) | `lite` |
 |---|---|---|
-| 工具 | `history_recall`、`history_grep`、`history_expand` | `history_grep`、`history_expand` |
-| 自动提示 | 回答前提供相关历史的短片段和条目 ID | 不添加自动提示 |
-| 检索索引 | Node worker 中的 SQLite FTS5 内存库 | 不创建索引或 worker |
-| 预热 | 在会话切换、压缩和配置的交互节奏下维护索引 | 无预热 |
-| 可选计时 | 索引、查询和工具调用 | grep / expand 工具调用 |
+| Tools | `history_recall`, `history_grep`, `history_expand` | `history_grep`, `history_expand` |
+| Automatic hints | Provides short excerpts of relevant history and entry IDs before a response | Adds no automatic hints |
+| Retrieval index | In-memory SQLite FTS5 database in a Node worker | Creates no index or worker |
+| Prewarming | Maintains the index on session switches, compaction, and the configured interaction cadence | No prewarming |
+| Optional timing | Indexing, queries, and tool calls | grep / expand tool calls |
 
-两种模式都由模型决定是否继续查找和展开。`lite` 不等于隐私隔离：主动调用工具返回的历史仍会进入模型上下文，也可能发送给模型服务商。
+In both modes, the model decides whether to search further and expand entries. `lite` does not provide privacy isolation: history returned by explicit tool calls still enters the model context and may be sent to the model provider.
 
-## Pi 配置文件
+## Pi configuration file
 
-配置文件路径为 `$PI_CODING_AGENT_DIR/extensions/compaction-recall.json`，默认是 `~/.pi/agent/extensions/compaction-recall.json`。**文件不会自动生成**；不创建时使用默认值或环境变量。所有配置项都可省略。
+The configuration file is at `$PI_CODING_AGENT_DIR/extensions/compaction-recall.json`, defaulting to `~/.pi/agent/extensions/compaction-recall.json`. **The file is not generated automatically**; without it, defaults or environment variables are used. All configuration fields are optional.
 
 ```json
 {
@@ -35,86 +37,86 @@
 }
 ```
 
-配置在扩展加载时读取一次，修改后需要重载。环境变量优先于文件；插件不读取项目目录下的配置文件。`PI_CODING_AGENT_DIR` 是 Pi 的宿主设置，不是插件配置项。通过 Pi SDK 嵌入扩展时，也应在加载前设置它；仅传入 SDK 的 `agentDir` 选项不会改变插件的配置查找位置。
+Configuration is read once when the extension loads; reload after making changes. Environment variables take precedence over the file; the plugin does not read configuration files in the project directory. `PI_CODING_AGENT_DIR` is a Pi host setting, not a plugin configuration field. When embedding the extension through the Pi SDK, set it before loading as well; passing only the SDK's `agentDir` option does not change where the plugin looks for its configuration.
 
-| 配置项 | 默认值 | 作用与取值 | 环境变量覆盖 |
+| Field | Default | Purpose and accepted values | Environment override |
 |---|---|---|---|
-| `mode` | `"full"` | 选择 `full` 或 `lite`。 | `COMPACTION_RECALL_MODE` |
-| `jieba` | `true` | 用中文长词命中重排已有检索候选，不增加候选；文件用布尔值，环境用 `on` / `off`。 | `COMPACTION_RECALL_JIEBA` |
-| `autoGate` | `280` | 用户消息超过此加权长度时跳过自动提示，主动调用工具不受影响；正安全整数。 | `COMPACTION_RECALL_AUTO_GATE` |
-| `snippetBudget` | `240` | 自动提示和主动 recall 中，每条原文片段的加权长度预算；正安全整数。 | `COMPACTION_RECALL_SNIPPET_BUDGET` |
-| `recallTimeoutMs` | `5000` | 主动 recall 的协作式超时门槛，单位毫秒；正安全整数。 | `COMPACTION_RECALL_QUERY_TIMEOUT_MS` |
-| `preindex.userCycles` | `10` | 完成多少轮用户交互后预热，范围 `1`–`100`。 | `COMPACTION_RECALL_PREINDEX_TURNS` |
-| `preindex.toolRounds` | `10` | 完成多少批工具调用后预热，范围 `1`–`100`；同批并行调用只计一次。 | `COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS` |
-| `trace` | `false` | 记录带内容的检索诊断，须同时指定计时文件；仅接受布尔值。 | 无，仅文件配置 |
+| `mode` | `"full"` | Selects `full` or `lite`. | `COMPACTION_RECALL_MODE` |
+| `jieba` | `true` | Reranks existing retrieval candidates using matches on long Chinese words; adds no candidates. Use a boolean in the file and `on` / `off` in the environment. | `COMPACTION_RECALL_JIEBA` |
+| `autoGate` | `280` | Skips automatic hints when the user message exceeds this weighted length; explicit tool calls are unaffected. A positive safe integer. | `COMPACTION_RECALL_AUTO_GATE` |
+| `snippetBudget` | `240` | Weighted-length budget for each original-text excerpt in automatic hints and explicit recall. A positive safe integer. | `COMPACTION_RECALL_SNIPPET_BUDGET` |
+| `recallTimeoutMs` | `5000` | Cooperative timeout threshold for explicit recall, in milliseconds. A positive safe integer. | `COMPACTION_RECALL_QUERY_TIMEOUT_MS` |
+| `preindex.userCycles` | `10` | Number of completed user interaction cycles before prewarming; range `1`–`100`. | `COMPACTION_RECALL_PREINDEX_TURNS` |
+| `preindex.toolRounds` | `10` | Number of completed tool-call batches before prewarming; range `1`–`100`. Parallel calls in the same batch count only once. | `COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS` |
+| `trace` | `false` | Records content-bearing retrieval diagnostics; a timing file must also be specified. Accepts only a boolean. | None; file configuration only |
 
-加权长度按汉字计 2、其余 Unicode 码点计 1。两个预热门槛满足任一即触发。检索、预热和 trace 配置只对 `full` 生效；两种模式都可使用计时日志。
+Weighted length counts each Chinese character as 2 and each other Unicode code point as 1. Reaching either prewarming threshold triggers prewarming. Retrieval, prewarming, and trace configuration apply only to `full`; timing logs are available in both modes.
 
-### 配置错误如何处理
+### Handling configuration errors
 
-- 文件不存在时静默使用环境变量或默认值。文件不可读、JSON 格式错误或超过 65,536 字节时，忽略文件并警告；未知字段忽略并警告。
-- 数值环境变量必须是十进制整数字符串。`autoGate`、`snippetBudget`、`recallTimeoutMs` 的非法值回退默认值；非法环境覆盖不会重新采用文件值。
-- 预热环境变量无效时，保留有效的文件值，否则使用默认值。
-- `mode` 的非法环境覆盖回退 `full`；`jieba` 的非法环境覆盖回退开启；非法 `trace` 值回退关闭。诊断不会打印非法配置值的内容。
+- If the file does not exist, environment variables or defaults are used silently. If the file is unreadable, contains invalid JSON, or exceeds 65,536 bytes, it is ignored with a warning; unknown fields are ignored with a warning.
+- Numeric environment variables must be decimal integer strings. Invalid values for `autoGate`, `snippetBudget`, and `recallTimeoutMs` fall back to defaults; an invalid environment override does not fall back to the file value.
+- If a prewarming environment variable is invalid, a valid file value is retained; otherwise, the default is used.
+- An invalid environment override for `mode` falls back to `full`; an invalid environment override for `jieba` falls back to enabled; an invalid `trace` value falls back to disabled. Diagnostics do not print the contents of invalid configuration values.
 
-## 自动历史提示
+## Automatic history hints
 
-`full` 根据最近一条真实用户消息搜索当前分支的已压缩历史，提供最多 5 条定位提示，总显示预算为 1,500 Unicode 码点。没有文字、可搜索词项、已压缩历史或命中结果时，不添加提示。
+`full` searches the current branch's compacted history using the most recent actual user message, providing up to 5 location hints within a total display budget of 1,500 Unicode code points. No hints are added when there is no text, no searchable terms, no compacted history, or no matches.
 
-默认 `autoGate=280`：加权长度等于 280 时仍允许自动查询，超过时跳过。较长消息被视为长任务指示，避免无关历史挤进上下文；模型仍可主动使用检索工具。
+The default is `autoGate=280`: automatic queries are still allowed at a weighted length of exactly 280 and are skipped above it. Longer messages are treated as instructions for a long task, keeping unrelated history out of the context; the model can still explicitly use retrieval tools.
 
-提示只用于当前模型请求，不写入会话历史，也不会逐轮累积。它只是查找线索，不保证覆盖所有相关事实；重要结论应展开原文核对。
+Hints apply only to the current model request: they are not written to session history and do not accumulate across turns. They are only search leads, not a guarantee that all relevant facts are covered; expand the original text to verify important conclusions.
 
-## 工具行为
+## Tool behavior
 
-### `history_recall`：词面检索
+### `history_recall`: lexical retrieval
 
-只在 `full` 中提供。通过概念组表达要查找的内容、可替换措辞和排除词，不是语义搜索。
+Available only in `full`. Use concept groups to express what to find, alternative wording, and exclusions; this is not semantic search.
 
-- `concepts` 接受 1–5 组，每组 1–4 个替代词面。组内满足任一即可；`match="all"` 要求每组在同一记录中命中，默认 `"any"` 只要求命中一组。多词命中不保证原文中的顺序或相邻关系。
-- `exclude` 最多 5 个词面，匹配的记录会被排除，不参与片段选择或 jieba 排名。词面不是 SQL、FTS MATCH 语法或正则表达式。
-- 每个词面去除首尾空白后须非空，最多 256 Unicode 码点，总计最多 2,048。
-- 分词损失部分有效字符时，会继续搜索剩余词项并返回警告；完全没有可搜索词项时会报错。recall 不会暗中切换到 grep，必要时由模型换词或主动调用 grep。
-- `limit` 默认及上限均为 50，`offset` 默认 0。结果包含条目 ID、原文片段、总数和 `nextOffset`；相同查询、分支未变化时可继续翻页。
+- `concepts` accepts 1–5 groups, each with 1–4 alternative lexical forms. Any alternative within a group can match; `match="all"` requires every group to match in the same record, while the default `"any"` requires only one group to match. Matches on multiple words do not guarantee their order or adjacency in the original text.
+- `exclude` accepts up to 5 lexical forms. Matching records are excluded and do not participate in excerpt selection or jieba ranking. Lexical forms are not SQL, FTS MATCH syntax, or regular expressions.
+- Each lexical form must be nonempty after trimming leading and trailing whitespace, with at most 256 Unicode code points per form and 2,048 in total.
+- If tokenization loses some valid characters, retrieval continues with the remaining terms and returns a warning; if no searchable terms remain, it returns an error. recall does not silently switch to grep; the model must rephrase or explicitly call grep when needed.
+- The default and maximum for `limit` are both 50; `offset` defaults to 0. Results include entry IDs, original-text excerpts, the total count, and `nextOffset`; continue paging with the same query while the branch remains unchanged.
 
-索引使用英文词干和汉字双字。FTS 决定候选，规范化全文相同的记录会去重；启用 jieba 后，先按命中的不同中文长词数量排序，再按 BM25 及新旧顺序排序，最后分页。jieba 只帮助排列已经命中的记录，不做同义词扩展，也不会找回未命中的记录。
+The index uses English stemming and Chinese character bigrams. FTS determines the candidates, and records with identical normalized full text are deduplicated. With jieba enabled, records are sorted first by the number of distinct long Chinese words matched, then by BM25 and recency, and finally paginated. jieba only helps order records that already matched: it does not expand synonyms or recover records that did not match.
 
-自动查询通常使用汉字双字词项，未必含有可参与 jieba 排名的长词，因此开关 jieba 不保证每次自动提示都会改变。
+Automatic queries usually use Chinese character bigram terms, which may not contain long words eligible for jieba ranking, so toggling jieba does not guarantee a change to every automatic hint.
 
-### `history_grep`：正则搜索
+### `history_grep`: regular-expression search
 
-两种模式都提供。`pattern` 是不区分大小写的 JavaScript 正则表达式；语法无效时按字面文本搜索，不是 SQL LIKE。
+Available in both modes. `pattern` is a case-insensitive JavaScript regular expression; invalid syntax falls back to literal-text search, not SQL LIKE.
 
-按匹配记录的分支顺序分页，`limit` 默认 30、最多 50，`offset` 默认 0。每页最多展示 30 个代表片段，每条记录最多 3 个；正文输出上限为 16,000 Unicode 码点。匹配次数与匹配记录数不同，片段没有展示的内容可通过 `history_expand` 查看。
+Matching records are paginated in branch order. `limit` defaults to 30 and has a maximum of 50; `offset` defaults to 0. Each page displays at most 30 representative excerpts, with at most 3 per record; body output is capped at 16,000 Unicode code points. The number of matches differs from the number of matching records; use `history_expand` to view content not shown in the excerpts.
 
-grep 没有正则执行超时，避免可能产生灾难性回溯的复杂表达式。
+grep has no regular-expression execution timeout; avoid complex expressions that could cause catastrophic backtracking.
 
-### `history_expand`：展开原文
+### `history_expand`: expanding original text
 
-两种模式都提供。按 `id` 读取目标条目，可用 `before` / `after` 附带相邻条目，默认各 2 条，范围 `0`–`20`。
+Available in both modes. Reads the target entry by `id`; use `before` / `after` to include neighboring entries, defaulting to 2 on each side, with a range of `0`–`20`.
 
-目标正文优先显示，每页上限为 16,000 Unicode 码点；只有目标完整显示后，才加入能完整容纳的邻居。长条目用返回的 `nextOffset` 继续读取，偏移单位为 Unicode 码点。它可展开可读的工具结果，但不展示思考内容或图片。
+The target body is displayed first, with a per-page limit of 16,000 Unicode code points; neighbors that fit in full are added only after the target is displayed completely. Continue reading long entries with the returned `nextOffset`, measured in Unicode code points. This tool can expand readable tool results, but does not show thinking content or images.
 
-翻页时保持查询、目标 ID 及相关参数不变。发生编辑、压缩或分支切换后，应从第一页重新查询。
+Keep the query, target ID, and relevant parameters unchanged when paging. After an edit, compaction, or branch switch, query again from the first page.
 
-## 范围、索引与超时
+## Scope, indexing, and timeouts
 
-- 只读取**当前分支**最近一次压缩边界之前的历史，不跨会话、父会话或被放弃的分支。
-- recall 和 grep 搜索用户/助手正文及助手工具调用名和参数，不搜索工具结果正文、思考内容、图片或压缩摘要；可读工具结果仍可按 ID 展开。
-- 所有工具和自动提示遵循分支内的上下文编辑：省略的条目不可见，替换内容遮住原文，不能绕过编辑恢复旧内容。
-- SQLite 索引只驻留内存。会话切换和压缩会触发维护；已压缩内容未变化时可复用索引，内容变化时重建。退出时等待 worker 关闭，不保留跨会话索引。
-- worker 或传输失败会报错，不会静默换成另一套检索算法。
+- Reads only history before the most recent compaction boundary on the **current branch**; does not cross into other sessions, parent sessions, or abandoned branches.
+- recall and grep search user/assistant body text and assistant tool-call names and arguments, but not tool-result bodies, thinking content, images, or compaction summaries; readable tool results can still be expanded by ID.
+- All tools and automatic hints respect context edits within the branch: omitted entries are invisible, replacements hide the original text, and edits cannot be bypassed to recover old content.
+- The SQLite index resides only in memory. Session switches and compaction trigger maintenance; the index can be reused when compacted content is unchanged and is rebuilt when that content changes. Shutdown waits for the worker to close; no cross-session index is retained.
+- Worker or transport failures return errors, rather than silently switching to another retrieval algorithm.
 
-`recallTimeoutMs` 覆盖主动请求的准备、排队、检索和渲染，但不是强制中断计时器：SQLite 的同步 MATCH 不能被抢占，插件会在检查点丢弃过期结果。因此实际返回可能晚于设定时间。超时不会终止健康 worker 或取消其他请求；遇到超时可缩小查询范围或改用 grep。
+`recallTimeoutMs` covers preparation, queueing, retrieval, and rendering for explicit requests, but is not a forced-interruption timer: SQLite's synchronous MATCH cannot be preempted, and the plugin discards expired results at checkpoints. The actual response may therefore arrive later than the configured time. A timeout does not terminate a healthy worker or cancel other requests; if a request times out, narrow the query or use grep instead.
 
-## 计时与诊断日志
+## Timing and diagnostic logs
 
-默认不写日志。设置 `COMPACTION_RECALL_TIMING_FILE` 指定 JSONL 文件后启用计时，例如：
+No logs are written by default. Set `COMPACTION_RECALL_TIMING_FILE` to a JSONL file path to enable timing, for example:
 
 ```sh
 COMPACTION_RECALL_TIMING_FILE="$HOME/compaction-recall-timing.jsonl" pi
 ```
 
-日志文件权限为 `0600`。`lite` 仅记录 grep / expand 调用链；`full` 还可记录索引和查询阶段。内存指标中的进程 RSS、主线程堆和 worker 堆不是互斥项，不能直接相加。
+Log files have permissions `0600`. `lite` records only grep / expand call chains; `full` can also record indexing and query stages. Process RSS, main-thread heap, and worker heap memory metrics are not mutually exclusive and cannot be added directly.
 
-配置文件中再设置 `"trace": true`，才会记录查询参数、返回条目 ID、分页和错误等带内容的诊断。未指定计时文件时，trace 只警告，不记录。trace 不保存思考内容、凭据或服务商原始请求，但仍可能包含对话信息，应私密保存，分享前检查内容。
+Only after also setting `"trace": true` in the configuration file are content-bearing diagnostics such as query parameters, returned entry IDs, pagination, and errors recorded. Without a timing file, trace only warns and records nothing. trace does not save thinking content, credentials, or raw provider requests, but it may still contain conversation information: keep it private and inspect its contents before sharing.

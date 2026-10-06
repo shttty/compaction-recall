@@ -18,9 +18,9 @@ LME按会话时间排序，保持原question date；四段历史、三次native 
 
 ## 现有命令及外部前提
 
-当前runner/支持代码唯一归属本树，见[benchmark入口](../../INDEX.md)；旧实验归archive，不依赖来源工作树。`sourceVersions`保留每轮原代码hash，当前闭包不冒称覆盖所有旧源码。目录归属、SDK bridge、离线smoke与structured/legacy计分标记按现有维护版本收口，CLI在启动前检查外部输入。历史hash与96份原输出不改写；逐字旧轮回放仍需匹配hash的外部源码、candidate和snapshot。
+当前runner/支持代码唯一归属本树，见[benchmark运行指南](../../../doc/benchmark.zh-CN.md)；旧实验归archive，不依赖来源工作树。`sourceVersions`保留每轮原代码hash，当前闭包不冒称覆盖所有旧源码。目录归属、SDK bridge、离线smoke与structured/legacy计分标记按现有维护版本收口，CLI在启动前检查外部输入。历史hash与96份原输出不改写；逐字旧轮回放仍需匹配hash的外部源码、candidate和snapshot。
 
-先提供显式外部DATA_ROOT、CONFIG、LUNA_CONFIG/SOL_CONFIG、CANDIDATE、PINS、PREFLIGHT、SNAPSHOT_SOURCE、TASK_ID、COMMIT及ARCHIVE_SHA256。配置用本树的SDK/helper或匹配hash的外部candidate资产，不以旧工作树路径为前提；凭据不入git。原flow要求共享14-GiB/no-swap cgroup。下面是复现命令，不是本次模型运行授权；当前完整入口见[benchmark/INDEX.md](../../INDEX.md)。
+先提供显式外部DATA_ROOT、CONFIG、LUNA_CONFIG/SOL_CONFIG、CANDIDATE、PINS、PREFLIGHT、SNAPSHOT_SOURCE、TASK_ID、COMMIT及ARCHIVE_SHA256。配置用本树的SDK/helper或匹配hash的外部candidate资产，不以旧工作树路径为前提；凭据不入git。原flow要求共享14-GiB/no-swap cgroup。下面是复现命令，不是本次模型运行授权；当前完整入口见[benchmark运行指南](../../../doc/benchmark.zh-CN.md)。
 
 ```sh
 RUNNER=benchmark

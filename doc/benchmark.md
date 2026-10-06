@@ -1,12 +1,16 @@
-# 如何运行 benchmark
+# How to run the benchmark
 
-当前维护入口是 `benchmark/run.py`：固定英文 LME16 的 Pi 原生 / lite / full 对比，以及 SWE-chat 派生回忆题。当前 LME 数据集为 `LME16-English`。`runner/` 管准备、调度与持久化，`judging/` 管判分契约与执行，`sdk/` 管实际Pi SDK及证据观察；实现索引见 [benchmark目录](../benchmark/INDEX.md)。benchmark 随源码提供，不进入 npm 包。
+[English](benchmark.md) | [简体中文](benchmark.zh-CN.md)
 
-离线测试只验证产品与接线；真实答题和判分需要另行授权，会产生模型费用。下面的运行示例不是模型调用授权。
+[Project overview](../README.md) | [Configuration and behavior reference](PLUGIN.md)
 
-## 1. 环境与离线检查
+The currently maintained entry point is `benchmark/run.py`: it compares Pi native / lite / full on the fixed English LME16 set and runs recall questions derived from SWE-chat. The current LME dataset is `LME16-English`. `runner/` handles preparation, scheduling, and persistence; `judging/` handles scoring contracts and execution; `sdk/` handles the actual Pi SDK and evidence observation. The benchmark ships with the source, not in the npm package.
 
-需要 Node.js >=24.18.0、Python 3 和项目锁定依赖。真实运行要求 Linux cgroup v2、systemd 用户服务，以及一个共享的 14 GiB、零 swap 运行范围。
+Offline tests verify only the product and its wiring. Real answers and scoring require separate authorization and incur model fees. The run examples below do not authorize model calls.
+
+## 1. Environment and offline checks
+
+Node.js >=24.18.0, Python 3, and the project's locked dependencies are required. Real runs require Linux cgroup v2, systemd user services, and one shared execution scope with 14 GiB of memory and zero swap.
 
 ```sh
 npm ci --ignore-scripts
@@ -16,36 +20,36 @@ python3 benchmark/run.py --help
 python3 benchmark/report.py --help
 ```
 
-真实 SDK / worker 检查使用隔离合成 profile 和阻断网络，不调用真实模型；输出必须是不存在的外部目录：
+The real SDK / worker check uses an isolated synthetic profile and blocks network access without calling real models. Its output must be a nonexistent external directory:
 
 ```sh
 node benchmark/smoke.mjs \
   --three-arms "$CANDIDATE_ROOT" "$NEW_SMOKE_OUT"
 ```
 
-`CANDIDATE_ROOT` 是包含 `src/index.ts`、package 元数据及已安装锁定依赖的源码目录。检查会加载实际入口、执行真实工具并验证 0/2/3 工具集及仅 full 自动提示，不是静态源码断言。
+`CANDIDATE_ROOT` is a source directory containing `src/index.ts`, package metadata, and installed locked dependencies. The check loads the actual entry point, executes real tools, and verifies the 0/2/3 tool sets and automatic hints only in full mode; it is not a static source assertion.
 
-## 2. 提供输入，不再手工拼配套清单
+## 2. Supply inputs without assembling companion manifests manually
 
-LME16 使用 [LongMemEval_M](https://huggingface.co/datasets/xiaowu0162/longmemeval) 的固定 DEV8 和 HARD8，各8题；不是完整 LongMemEval 或新随机抽样。来源和冻结题号见 [输入资料](../benchmark/data/release-0.1.0/INDEX.md)。公开元数据和中文题面不能重建被外置的原文、reference 或 native snapshot。
+LME16 uses the fixed DEV8 and HARD8 subsets of [LongMemEval_M](https://huggingface.co/datasets/xiaowu0162/longmemeval), with eight questions each; it is neither the full LongMemEval dataset nor a new random sample. See [input materials](../benchmark/data/release-0.1.0/INDEX.md) for provenance and frozen question IDs. Public metadata and Chinese question text cannot reconstruct the original text, references, or native snapshots stored outside the repository.
 
-| 调用者输入 | 用途 |
+| Caller input | Purpose |
 |---|---|
-| `--config` | 一份非凭据模型配置；含答题、两位裁判、profile 路径和可选预算。 |
-| `--data-root` | 外部题集、参考答案及其源材料。 |
-| `--snapshot-source` | LME16 完整英文原生轮次的目录，含 `manifest.json` 和逐题原生快照引用。SWE 可直接使用题集中的快照绑定。 |
-| `--output` | 新的外部结果目录，或身份完全一致的已有结果目录供恢复。 |
-| `--source-root` | 被测源码和锁定依赖所在目录；省略时使用当前仓库。 |
+| `--config` | One model configuration without credentials, containing the answer model, two judges, profile paths, and an optional budget. |
+| `--data-root` | External question sets, reference answers, and their source materials. |
+| `--snapshot-source` | A directory from a complete English native run for LME16, containing `manifest.json` and per-question native snapshot references. SWE can use snapshot bindings directly from its question set. |
+| `--output` | A new external result directory, or an existing result directory with exactly matching identity for recovery. |
+| `--source-root` | The directory containing the source under test and its locked dependencies; defaults to the current repository when omitted. |
 
-LME题集保留 `data/dev8/<id>/`、`data/hard8/<id>/` 下的 `question.json`、`corpus.json`、`answer.json`、`judge.json`；快照复用已有原生压缩，不新增压缩。SWE使用外部 `freeze.json`、`questions.json`、`gold.json`，题目带实际 snapshot 路径和hash；这些题来自本地 SWE-chat 会话派生，不是上游现成QA。
+The LME question set retains `question.json`, `corpus.json`, `answer.json`, and `judge.json` under `data/dev8/<id>/` and `data/hard8/<id>/`. Snapshots reuse existing native compaction; no new compaction is added. SWE uses external `freeze.json`, `questions.json`, and `gold.json`, with actual snapshot paths and hashes bound to its questions. These questions are derived from local SWE-chat sessions, not ready-made upstream QA.
 
-runner 的准备阶段是唯一清单 owner：由实际源码/锁定依赖、题面/reference、模型配置和已有快照生成并冻结候选与输入绑定。**不再提供 `CANDIDATE`、`PINS`、`PREFLIGHT`、两份裁判配置或手工 archive/commit hash，不再依赖历史中文 preflight。** 原冻结材料和历史指标仍保持原值，不用新代码重写旧fingerprint。
+The runner's preparation stage is the sole manifest owner: it generates and freezes candidate and input bindings from the actual source / locked dependencies, questions / references, model configuration, and existing snapshots. **Do not supply `CANDIDATE`, `PINS`, `PREFLIGHT`, two judge configurations, or manual archive / commit hashes; the runner no longer depends on historical Chinese preflight.** Original frozen materials and historical metrics retain their original values; new code must not rewrite old fingerprints.
 
-显式源码目录提供的是实际被测字节；Git提交只作来源信息，不能把未提交运行时代码冒称为提交中的字节。准备阶段冻结副本和hash，后续阶段核对同一身份。三模式共享一次候选冻结和相同题面/reference/snapshot；gold只给裁判，不混入答题请求。
+An explicit source directory supplies the actual bytes under test. A Git commit is provenance only; uncommitted runtime code must not be presented as bytes from that commit. Preparation freezes a copy and hashes, and subsequent stages verify the same identity. All three modes share one candidate freeze and the same questions / references / snapshots; gold answers go only to judges and are not mixed into answer requests.
 
-## 3. 一份模型配置
+## 3. One model configuration
 
-例如外部 `models.json`：
+For example, an external `models.json`:
 
 ```json
 {
@@ -64,11 +68,11 @@ runner 的准备阶段是唯一清单 owner：由实际源码/锁定依赖、题
 }
 ```
 
-所有模型、服务商和effort显式给出；`luna` / `sol` 是两位独立裁判的角色名，不是固定模型默认值。profile 可以引用同一专用评测目录，事先准备 SDK 可读的模型/凭据文件；配置仅保存路径，不复制凭据内容。SDK 校验真实 model/effort，不选隐式个人默认，也不钳制不支持的effort。
+All models, providers, and effort settings must be explicit. `luna` / `sol` are role names for two independent judges, not fixed model defaults. Profiles may point to the same dedicated evaluation directory; prepare model / credential files readable by the SDK in advance. The configuration stores only paths, not copies of credentials. The SDK validates the actual model / effort, does not select implicit personal defaults, and does not clamp unsupported effort settings.
 
-## 4. 准备及运行
+## 4. Preparation and execution
 
-准备只确定性生成并核对源码/依赖、题面/reference、模型配置和snapshot清单，不打开profile、不启动SDK或provider：
+Preparation only generates and checks source / dependency, question / reference, model configuration, and snapshot manifests deterministically. It does not open profiles or start the SDK or a provider:
 
 ```sh
 python3 benchmark/run.py \
@@ -77,9 +81,9 @@ python3 benchmark/run.py \
   --arm all --stage prepare
 ```
 
-随后使用相同输入和输出目录，改阶段即可。三模式由同一个runner顺序执行，不再用 shell 循环拼三套参数、配置和gate：
+Then use the same inputs and output directory and change only the stage. The same runner executes the three modes sequentially; there is no longer a shell loop assembling three sets of arguments, configurations, and gates.
 
-`pilot` / `all` / `flow` 在共享资源范围中首先执行可恢复的实际SDK序列化预检，停在网络发送前；通过后才发答题请求。此前也可用第1节的隔离三arm smoke检查生产接线。
+`pilot` / `all` / `flow` first run a recoverable serialization preflight through the actual SDK within the shared resource scope, stopping before network transmission. Answer requests are sent only after it passes. The isolated three-arm smoke check in section 1 can also verify production wiring beforehand.
 
 ```sh
 systemd-run --user --scope \
@@ -90,20 +94,22 @@ systemd-run --user --scope \
     --arm all --workers 8 --stage flow
 ```
 
-| 选项 | 含义 |
+| Option | Meaning |
 |---|---|
-| `--arm pi-native` | 无扩展、历史工具或自动locator。 |
-| `--arm pi-lite` | 正式生产入口，正式mode=lite，grep/expand，无自动提示。 |
-| `--arm pi-full` | 正式生产入口，正式mode=full及产品默认。默认只运行full。 |
-| `--arm all` | 在同一共享范围顺序运行三模式，全局最多8个在途会话。 |
-| `--stage prepare` | 冻结输入/候选及模型身份；不打开profile或调用SDK/provider。 |
-| `--stage pilot` | 每arm首题和两位strict裁判；首题计入题集，不另跑答卷。 |
-| `--stage all` | 复用首题，完成答题和strict判分。 |
-| `--stage flow` | 再对相同答案做独立1–10评分和报告；不替代strict。 |
+| `--arm pi-native` | No extension, history-retrieval tools, or automatic locators. |
+| `--arm pi-lite` | The production entry point with production mode=lite, grep/expand, and no automatic hints. |
+| `--arm pi-full` | The production entry point with production mode=full and product defaults. Only full runs by default. |
+| `--arm all` | Runs the three modes sequentially in one shared scope, with at most eight in-flight sessions globally. |
+| `--stage prepare` | Freezes input / candidate and model identities; does not open profiles or call the SDK / provider. |
+| `--stage pilot` | The first question in each arm and two strict judges; that question counts toward the question set, without a separate answer run. |
+| `--stage all` | Reuses the first question and completes answers and strict scoring. |
+| `--stage flow` | Also performs independent 1–10 scoring and reporting on the same answers; does not replace strict scoring. |
 
-最多8个并发会话，`--workers` 可选1–8；资源边界实际检查，不是口头约定。字符估算仅诊断；实际provider容量拒绝停止新调度，不靠重试绕过。有限普通provider重试保留各次证据；未知在途状态拒绝重放。
+The frozen `benchmark/grep-only-adapter.mjs` is historical evidence, not current lite; the current CLI does not load it.
 
-SWE使用同一个真实入口和编排，不保留空壳转发CLI：
+At most eight sessions may run concurrently; `--workers` accepts 1–8. Resource boundaries are actually checked, not merely agreed upon. Character estimates are diagnostic only. An actual provider capacity rejection stops new scheduling rather than being bypassed with retries. Bounded ordinary provider retries retain evidence for each attempt; unknown in-flight state prevents replay.
+
+SWE uses the same real entry point and orchestration, not a retained stub forwarding CLI:
 
 ```sh
 systemd-run --user --scope \
@@ -113,30 +119,32 @@ systemd-run --user --scope \
     --output "$SWE_OUT" --arm pi-full --stage flow
 ```
 
-## 5. 报告、失败与恢复
+## 5. Reports, failures, and recovery
 
-完成的答卷和两套原始判分持久化，strict与1–10独立。错误、缺答案、判分失败不等于答错或0分。人工复核另列，不覆盖机器判分；历史峰值不能冒称当前轮次。
+Completed answers and both sets of raw scoring results are persisted; strict and 1–10 scoring are independent. Errors, missing answers, and scoring failures are not wrong answers or zero scores. Manual review is listed separately and does not overwrite machine scoring; historical peaks must not be presented as results of the current run.
 
-`completed` 只包含答题成功且两份strict判分成功的题；独立1–10阶段同样要求两位裁判结果成功。全部所选题完成才是 `complete`；部分成功为 `partial`，没有成功完成的题为 `failed`，这些失败终态令CLI非零退出。`flow` 遇到答题/strict失败只保存报告，不继续1–10请求；1–10失败时总报告显示该阶段的失败终态，并单列 `answerStrictState`。
+`completed` includes only questions with a successful answer and two successful strict judgments. The independent 1–10 stage likewise requires successful results from both judges. The state is `complete` only when all selected questions are complete; some successful questions yield `partial`, and no successfully completed questions yield `failed`. These failure terminal states make the CLI exit nonzero. If answers / strict scoring fail, `flow` only saves a report and does not proceed to 1–10 requests. If 1–10 scoring fails, the overall report shows that stage's failure terminal state and lists `answerStrictState` separately.
 
-每位裁判及子集报告都明确 `selected / scored / failed / pending`。accuracy和均分只用scored记录；例如 `selected=16, scored=1, failed=15` 的 `1/1` 不是16题满分。
+Each judge and subset report explicitly states `selected / scored / failed / pending`. Accuracy and mean scores use only scored records; for example, `1/1` with `selected=16, scored=1, failed=15` does not mean a perfect score across 16 questions.
 
-`--arm all` 的各arm结果位于输出目录下的对应arm目录；单arm使用指定输出。`manifest.json` 保存冻结身份与终态；结果、attempt和会话按内容hash绑定，报告只读取已有产物。需要单独生成离线报告时：
+With `--arm all`, each arm's results are in its corresponding arm directory under the output directory; a single arm uses the specified output directly. `manifest.json` stores frozen identity and terminal state. Results, attempts, and sessions are bound by content hashes, and reports read only existing artifacts. To generate an offline report separately:
 
 ```sh
 python3 benchmark/report.py --run "$ARM_OUT"
 ```
 
-恢复使用同一条入口、同一配置/题面/源码/快照和输出目录；已完成阶段复用，不重复模型调用。身份改变、未知在途标记、完成证据缺失或篡改会拒绝恢复。不要删除账本或改旧manifest强制重放；更换输入或代码建立新轮次。
+Recovery uses the same entry point, configuration / questions / source / snapshots, and output directory. Completed stages are reused without repeating model calls. Changed identity, unknown in-flight markers, or missing or tampered completion evidence cause recovery to be refused. Do not delete the ledger or modify an old manifest to force replay; start a new run when inputs or code change.
 
-复用任何answer/judge结果都必须同时有匹配identity、`state=complete`和result hash的完成凭证，且session hash不变。丢失凭证、inflight、identity/hash漂移会明确拒绝恢复，不因结果文件存在而隐式重放provider。
+Reusing any answer / judge result requires a completion receipt with matching identity, `state=complete`, and result hash, along with an unchanged session hash. Missing receipts, inflight state, or identity / hash drift explicitly prevent recovery. The presence of a result file does not implicitly trigger provider replay.
 
-容量拒绝保留 `capacity-blocked` 及已完成/失败/未开始的阶段证据，不将缺判分的半成品加入completed。该终态在同目录重入时只校验证据并重写报告，不重发已完成或容量拒绝请求，也不启动新的provider请求；需要新的调用应另建轮次，不删除凭证或覆盖旧产物。
+A capacity rejection preserves `capacity-blocked` and evidence for completed / failed / not-started stages; incomplete results missing judgments are not added to completed. Re-entering this terminal state in the same directory only verifies evidence and rewrites reports: it does not resend completed or capacity-rejected requests or start new provider requests. New calls require a new run; do not delete receipts or overwrite old artifacts.
 
-原题/reference/答案/裁判理由/摘录/会话/实际wire留在外部私有目录；公开仅投影必要指标与来源hash。历史资料的代码路径和CLI对应记录时的提交，不是当前可执行入口。
+Accepted non-text metrics for the current version's three arms are in `benchmark/data/lme16-current-three-arms-20261006.json`.
 
-## 6. 性能与计时
+Original questions / references / answers / judge rationales / excerpts / sessions / actual wire data stay in external private directories; only necessary metrics and provenance hashes are projected publicly. Code paths, CLI commands, and metrics in historical materials remain bound to their recorded commits, not the current executable entry point; moving files or migrating configuration does not relabel historical results or replay historical runs.
 
-开启计时见 [配置与行为参考](PLUGIN.md)。用相同语料、分支、查询和环境比较无插件、冷索引、热索引；模型答题正确率不是性能指标。保留实际索引等待、worker构建/查询、context与工具调用阶段；不再维护旧JS索引/原型策略的平行模拟评测框架。
+## 6. Performance and timing
 
-阶段耗时可能嵌套，不能加总父子阶段；RSS包含进程和原生内存，不能当作插件净开销或把主/worker RSS相加。答题wall不等于服务商TTFT；token统计区分输入、输出和cache，未知指标保持未知。
+See the [configuration and behavior reference](PLUGIN.md) to enable timing. Compare no plugin, a cold index, and a warm index using the same corpus, branch, query, and environment; model answer accuracy is not a performance metric. Retain actual index wait, worker build / query, context, and tool-call phases. A parallel simulation benchmark framework for the old JS index / prototype strategies is no longer maintained.
+
+Phase durations may be nested, so parent and child phases must not be added together. RSS includes process and native memory; it is neither the plugin's net overhead nor a quantity for which main / worker RSS should be added together. Answer wall time is not provider TTFT. Token statistics distinguish input, output, and cache; unknown metrics remain unknown.
