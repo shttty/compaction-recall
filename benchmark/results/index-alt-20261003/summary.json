@@ -8,7 +8,6 @@
       "mainHeapMiB": 43.81842803955078,
       "workerHeapMiB": 10.216026306152344,
       "workerExternalMiB": 3.459308624267578,
-      "storageAllocatedMiB": null,
       "buildMs": 118.06400099999996,
       "maxDelayMs": 0.7318789999999353,
       "contextP50Ms": 1.420084000000088,
@@ -123,7 +122,6 @@
       "mainHeapMiB": 44.727874755859375,
       "workerHeapMiB": 16.874229431152344,
       "workerExternalMiB": 3.4408159255981445,
-      "storageAllocatedMiB": null,
       "buildMs": 263.117489,
       "maxDelayMs": 7.999360000000024,
       "contextP50Ms": 4.761154999999917,
@@ -238,7 +236,6 @@
       "mainHeapMiB": 46.73237609863281,
       "workerHeapMiB": 23.421791076660156,
       "workerExternalMiB": 3.4408159255981445,
-      "storageAllocatedMiB": null,
       "buildMs": 475.7043249999999,
       "maxDelayMs": 7.847594000000072,
       "contextP50Ms": 11.70310500000005,
@@ -353,7 +350,6 @@
       "mainHeapMiB": 49.969459533691406,
       "workerHeapMiB": 69.9736328125,
       "workerExternalMiB": 3.4408159255981445,
-      "storageAllocatedMiB": null,
       "buildMs": 858.8477720000001,
       "maxDelayMs": 11.565946000000167,
       "contextP50Ms": 21.601646000000073,
@@ -510,2050 +506,991 @@
           "targetTokens": 50000,
           "repetition": 1,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 25,
           "alternativeTotal": 39,
-          "baseTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000117",
-            "history-000113",
-            "history-000025"
-          ],
-          "alternativeTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000119",
-            "history-000117",
-            "history-000115"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 1,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 7,
           "alternativeTotal": 52,
-          "baseTop5": [
-            "history-000123",
-            "history-000111",
-            "history-000057",
-            "history-000040",
-            "history-000036"
-          ],
-          "alternativeTop5": [
-            "history-000123",
-            "history-000119",
-            "history-000117",
-            "history-000116",
-            "history-000115"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 1,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 0,
           "alternativeTotal": 69,
           "baseTop5": [],
-          "alternativeTop5": [
-            "history-000131",
-            "history-000129",
-            "history-000128",
-            "history-000125",
-            "history-000123"
-          ]
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 1,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 29,
           "alternativeTotal": 43,
-          "baseTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000117",
-            "history-000113",
-            "history-000025"
-          ],
-          "alternativeTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000135",
-            "history-000119",
-            "history-000117"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 1,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 7,
           "alternativeTotal": 57,
-          "baseTop5": [
-            "history-000123",
-            "history-000111",
-            "history-000057",
-            "history-000040",
-            "history-000036"
-          ],
-          "alternativeTop5": [
-            "history-000147",
-            "history-000144",
-            "history-000139",
-            "history-000136",
-            "history-000135"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 1,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 79,
-          "baseTop5": [
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-000150",
-            "history-000149",
-            "history-000147",
-            "history-000145",
-            "history-000143"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 2,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 25,
           "alternativeTotal": 39,
-          "baseTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000117",
-            "history-000113",
-            "history-000025"
-          ],
-          "alternativeTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000119",
-            "history-000117",
-            "history-000115"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 2,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 7,
           "alternativeTotal": 52,
-          "baseTop5": [
-            "history-000123",
-            "history-000111",
-            "history-000057",
-            "history-000040",
-            "history-000036"
-          ],
-          "alternativeTop5": [
-            "history-000123",
-            "history-000119",
-            "history-000117",
-            "history-000116",
-            "history-000115"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 2,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 0,
           "alternativeTotal": 69,
           "baseTop5": [],
-          "alternativeTop5": [
-            "history-000131",
-            "history-000129",
-            "history-000128",
-            "history-000125",
-            "history-000123"
-          ]
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 2,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 29,
           "alternativeTotal": 43,
-          "baseTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000117",
-            "history-000113",
-            "history-000025"
-          ],
-          "alternativeTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000135",
-            "history-000119",
-            "history-000117"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 2,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 7,
           "alternativeTotal": 57,
-          "baseTop5": [
-            "history-000123",
-            "history-000111",
-            "history-000057",
-            "history-000040",
-            "history-000036"
-          ],
-          "alternativeTop5": [
-            "history-000147",
-            "history-000144",
-            "history-000139",
-            "history-000136",
-            "history-000135"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 2,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 79,
-          "baseTop5": [
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-000150",
-            "history-000149",
-            "history-000147",
-            "history-000145",
-            "history-000143"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 3,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 25,
           "alternativeTotal": 39,
-          "baseTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000117",
-            "history-000113",
-            "history-000025"
-          ],
-          "alternativeTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000119",
-            "history-000117",
-            "history-000115"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 3,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 7,
           "alternativeTotal": 52,
-          "baseTop5": [
-            "history-000123",
-            "history-000111",
-            "history-000057",
-            "history-000040",
-            "history-000036"
-          ],
-          "alternativeTop5": [
-            "history-000123",
-            "history-000119",
-            "history-000117",
-            "history-000116",
-            "history-000115"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 3,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 0,
           "alternativeTotal": 69,
           "baseTop5": [],
-          "alternativeTop5": [
-            "history-000131",
-            "history-000129",
-            "history-000128",
-            "history-000125",
-            "history-000123"
-          ]
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 3,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 29,
           "alternativeTotal": 43,
-          "baseTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000117",
-            "history-000113",
-            "history-000025"
-          ],
-          "alternativeTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000135",
-            "history-000119",
-            "history-000117"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 3,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 7,
           "alternativeTotal": 57,
-          "baseTop5": [
-            "history-000123",
-            "history-000111",
-            "history-000057",
-            "history-000040",
-            "history-000036"
-          ],
-          "alternativeTop5": [
-            "history-000147",
-            "history-000144",
-            "history-000139",
-            "history-000136",
-            "history-000135"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 3,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 79,
-          "baseTop5": [
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-000150",
-            "history-000149",
-            "history-000147",
-            "history-000145",
-            "history-000143"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 190,
           "alternativeTotal": 266,
-          "baseTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000646",
-            "history-000642",
-            "history-000594"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000594",
-            "history-000191",
-            "history-000723"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 44,
           "alternativeTotal": 290,
-          "baseTop5": [
-            "history-000737",
-            "history-000736",
-            "history-000734",
-            "history-000732",
-            "history-000698"
-          ],
-          "alternativeTop5": [
-            "history-000738",
-            "history-000737",
-            "history-000736",
-            "history-000735",
-            "history-000734"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 3,
           "alternativeTotal": 401,
-          "baseTop5": [
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-000740",
-            "history-000739",
-            "history-000735",
-            "history-000734",
-            "history-000733"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 0,
           "alternativeTotal": 2,
           "baseTop5": [],
-          "alternativeTop5": [
-            "history-000594",
-            "history-000454"
-          ]
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 199,
           "alternativeTotal": 279,
-          "baseTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000646",
-            "history-000642",
-            "history-000594"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000594",
-            "history-000191",
-            "history-000723"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 47,
           "alternativeTotal": 299,
-          "baseTop5": [
-            "history-000751",
-            "history-000747",
-            "history-000742",
-            "history-000737",
-            "history-000736"
-          ],
-          "alternativeTop5": [
-            "history-000764",
-            "history-000751",
-            "history-000749",
-            "history-000747",
-            "history-000746"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 3,
           "alternativeTotal": 415,
-          "baseTop5": [
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-000767",
-            "history-000766",
-            "history-000765",
-            "history-000763",
-            "history-000759"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 0,
           "alternativeTotal": 2,
           "baseTop5": [],
-          "alternativeTop5": [
-            "history-000594",
-            "history-000454"
-          ]
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 190,
           "alternativeTotal": 266,
-          "baseTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000646",
-            "history-000642",
-            "history-000594"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000594",
-            "history-000191",
-            "history-000723"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 44,
           "alternativeTotal": 290,
-          "baseTop5": [
-            "history-000737",
-            "history-000736",
-            "history-000734",
-            "history-000732",
-            "history-000698"
-          ],
-          "alternativeTop5": [
-            "history-000738",
-            "history-000737",
-            "history-000736",
-            "history-000735",
-            "history-000734"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 3,
           "alternativeTotal": 401,
-          "baseTop5": [
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-000740",
-            "history-000739",
-            "history-000735",
-            "history-000734",
-            "history-000733"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 0,
           "alternativeTotal": 2,
           "baseTop5": [],
-          "alternativeTop5": [
-            "history-000594",
-            "history-000454"
-          ]
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 199,
           "alternativeTotal": 279,
-          "baseTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000646",
-            "history-000642",
-            "history-000594"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000594",
-            "history-000191",
-            "history-000723"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 47,
           "alternativeTotal": 299,
-          "baseTop5": [
-            "history-000751",
-            "history-000747",
-            "history-000742",
-            "history-000737",
-            "history-000736"
-          ],
-          "alternativeTop5": [
-            "history-000764",
-            "history-000751",
-            "history-000749",
-            "history-000747",
-            "history-000746"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 3,
           "alternativeTotal": 415,
-          "baseTop5": [
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-000767",
-            "history-000766",
-            "history-000765",
-            "history-000763",
-            "history-000759"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 0,
           "alternativeTotal": 2,
           "baseTop5": [],
-          "alternativeTop5": [
-            "history-000594",
-            "history-000454"
-          ]
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 190,
           "alternativeTotal": 266,
-          "baseTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000646",
-            "history-000642",
-            "history-000594"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000594",
-            "history-000191",
-            "history-000723"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 44,
           "alternativeTotal": 290,
-          "baseTop5": [
-            "history-000737",
-            "history-000736",
-            "history-000734",
-            "history-000732",
-            "history-000698"
-          ],
-          "alternativeTop5": [
-            "history-000738",
-            "history-000737",
-            "history-000736",
-            "history-000735",
-            "history-000734"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 3,
           "alternativeTotal": 401,
-          "baseTop5": [
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-000740",
-            "history-000739",
-            "history-000735",
-            "history-000734",
-            "history-000733"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 0,
           "alternativeTotal": 2,
           "baseTop5": [],
-          "alternativeTop5": [
-            "history-000594",
-            "history-000454"
-          ]
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 199,
           "alternativeTotal": 279,
-          "baseTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000646",
-            "history-000642",
-            "history-000594"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000594",
-            "history-000191",
-            "history-000723"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 47,
           "alternativeTotal": 299,
-          "baseTop5": [
-            "history-000751",
-            "history-000747",
-            "history-000742",
-            "history-000737",
-            "history-000736"
-          ],
-          "alternativeTop5": [
-            "history-000764",
-            "history-000751",
-            "history-000749",
-            "history-000747",
-            "history-000746"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 3,
           "alternativeTotal": 415,
-          "baseTop5": [
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-000767",
-            "history-000766",
-            "history-000765",
-            "history-000763",
-            "history-000759"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 0,
           "alternativeTotal": 2,
           "baseTop5": [],
-          "alternativeTop5": [
-            "history-000594",
-            "history-000454"
-          ]
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 511,
           "alternativeTotal": 708,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-000594"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-001084",
-            "history-001489",
-            "history-000594"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 127,
           "alternativeTotal": 772,
-          "baseTop5": [
-            "history-001908",
-            "history-001895",
-            "history-001889",
-            "history-001887",
-            "history-001885"
-          ],
-          "alternativeTop5": [
-            "history-001937",
-            "history-001936",
-            "history-001935",
-            "history-001927",
-            "history-001925"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 5,
           "alternativeTotal": 1088,
-          "baseTop5": [
-            "history-001303",
-            "history-001151",
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-001937",
-            "history-001935",
-            "history-001933",
-            "history-001931",
-            "history-001929"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 8,
-          "baseTop5": [
-            "history-001893",
-            "history-001891"
-          ],
-          "alternativeTop5": [
-            "history-001011",
-            "history-000454",
-            "history-001893",
-            "history-001891",
-            "history-001313"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 520,
           "alternativeTotal": 721,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-001950"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-001084",
-            "history-001489",
-            "history-000594"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 128,
           "alternativeTotal": 777,
-          "baseTop5": [
-            "history-001949",
-            "history-001908",
-            "history-001895",
-            "history-001889",
-            "history-001887"
-          ],
-          "alternativeTop5": [
-            "history-001955",
-            "history-001951",
-            "history-001949",
-            "history-001948",
-            "history-001945"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 5,
           "alternativeTotal": 1102,
-          "baseTop5": [
-            "history-001303",
-            "history-001151",
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-001956",
-            "history-001955",
-            "history-001954",
-            "history-001953",
-            "history-001952"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 8,
-          "baseTop5": [
-            "history-001893",
-            "history-001891"
-          ],
-          "alternativeTop5": [
-            "history-001011",
-            "history-000454",
-            "history-001893",
-            "history-001891",
-            "history-001313"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 511,
           "alternativeTotal": 708,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-000594"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-001084",
-            "history-001489",
-            "history-000594"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 127,
           "alternativeTotal": 772,
-          "baseTop5": [
-            "history-001908",
-            "history-001895",
-            "history-001889",
-            "history-001887",
-            "history-001885"
-          ],
-          "alternativeTop5": [
-            "history-001937",
-            "history-001936",
-            "history-001935",
-            "history-001927",
-            "history-001925"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 5,
           "alternativeTotal": 1088,
-          "baseTop5": [
-            "history-001303",
-            "history-001151",
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-001937",
-            "history-001935",
-            "history-001933",
-            "history-001931",
-            "history-001929"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 8,
-          "baseTop5": [
-            "history-001893",
-            "history-001891"
-          ],
-          "alternativeTop5": [
-            "history-001011",
-            "history-000454",
-            "history-001893",
-            "history-001891",
-            "history-001313"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 520,
           "alternativeTotal": 721,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-001950"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-001084",
-            "history-001489",
-            "history-000594"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 128,
           "alternativeTotal": 777,
-          "baseTop5": [
-            "history-001949",
-            "history-001908",
-            "history-001895",
-            "history-001889",
-            "history-001887"
-          ],
-          "alternativeTop5": [
-            "history-001955",
-            "history-001951",
-            "history-001949",
-            "history-001948",
-            "history-001945"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 5,
           "alternativeTotal": 1102,
-          "baseTop5": [
-            "history-001303",
-            "history-001151",
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-001956",
-            "history-001955",
-            "history-001954",
-            "history-001953",
-            "history-001952"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 8,
-          "baseTop5": [
-            "history-001893",
-            "history-001891"
-          ],
-          "alternativeTop5": [
-            "history-001011",
-            "history-000454",
-            "history-001893",
-            "history-001891",
-            "history-001313"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 511,
           "alternativeTotal": 708,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-000594"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-001084",
-            "history-001489",
-            "history-000594"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 127,
           "alternativeTotal": 772,
-          "baseTop5": [
-            "history-001908",
-            "history-001895",
-            "history-001889",
-            "history-001887",
-            "history-001885"
-          ],
-          "alternativeTop5": [
-            "history-001937",
-            "history-001936",
-            "history-001935",
-            "history-001927",
-            "history-001925"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 5,
           "alternativeTotal": 1088,
-          "baseTop5": [
-            "history-001303",
-            "history-001151",
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-001937",
-            "history-001935",
-            "history-001933",
-            "history-001931",
-            "history-001929"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 8,
-          "baseTop5": [
-            "history-001893",
-            "history-001891"
-          ],
-          "alternativeTop5": [
-            "history-001011",
-            "history-000454",
-            "history-001893",
-            "history-001891",
-            "history-001313"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 520,
           "alternativeTotal": 721,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-001950"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-001084",
-            "history-001489",
-            "history-000594"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 128,
           "alternativeTotal": 777,
-          "baseTop5": [
-            "history-001949",
-            "history-001908",
-            "history-001895",
-            "history-001889",
-            "history-001887"
-          ],
-          "alternativeTop5": [
-            "history-001955",
-            "history-001951",
-            "history-001949",
-            "history-001948",
-            "history-001945"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 5,
           "alternativeTotal": 1102,
-          "baseTop5": [
-            "history-001303",
-            "history-001151",
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-001956",
-            "history-001955",
-            "history-001954",
-            "history-001953",
-            "history-001952"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 8,
-          "baseTop5": [
-            "history-001893",
-            "history-001891"
-          ],
-          "alternativeTop5": [
-            "history-001011",
-            "history-000454",
-            "history-001893",
-            "history-001891",
-            "history-001313"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 1078,
           "alternativeTotal": 1459,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-003219"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-003219",
-            "history-001084",
-            "history-001489"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 249,
           "alternativeTotal": 1577,
-          "baseTop5": [
-            "history-003880",
-            "history-003869",
-            "history-003817",
-            "history-003782",
-            "history-003772"
-          ],
-          "alternativeTop5": [
-            "history-003886",
-            "history-003884",
-            "history-003880",
-            "history-003876",
-            "history-003875"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 13,
           "alternativeTotal": 2190,
-          "baseTop5": [
-            "history-003496",
-            "history-003494",
-            "history-003488",
-            "history-003487",
-            "history-003286"
-          ],
-          "alternativeTop5": [
-            "history-003886",
-            "history-003884",
-            "history-003882",
-            "history-003880",
-            "history-003878"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 9,
           "alternativeTotal": 28,
-          "baseTop5": [
-            "history-002564",
-            "history-001893",
-            "history-001891",
-            "history-003636",
-            "history-003544"
-          ],
-          "alternativeTop5": [
-            "history-002591",
-            "history-002587",
-            "history-002564",
-            "history-001893",
-            "history-001891"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 1087,
           "alternativeTotal": 1474,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-003223"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-003219",
-            "history-001084",
-            "history-001489"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 250,
           "alternativeTotal": 1590,
-          "baseTop5": [
-            "history-003917",
-            "history-003880",
-            "history-003869",
-            "history-003817",
-            "history-003782"
-          ],
-          "alternativeTop5": [
-            "history-003917",
-            "history-003916",
-            "history-003914",
-            "history-003911",
-            "history-003906"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 13,
           "alternativeTotal": 2209,
-          "baseTop5": [
-            "history-003496",
-            "history-003494",
-            "history-003488",
-            "history-003487",
-            "history-003286"
-          ],
-          "alternativeTop5": [
-            "history-003918",
-            "history-003917",
-            "history-003916",
-            "history-003915",
-            "history-003912"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 9,
           "alternativeTotal": 28,
-          "baseTop5": [
-            "history-002564",
-            "history-001893",
-            "history-001891",
-            "history-003636",
-            "history-003544"
-          ],
-          "alternativeTop5": [
-            "history-002591",
-            "history-002587",
-            "history-002564",
-            "history-001893",
-            "history-001891"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 1078,
           "alternativeTotal": 1459,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-003219"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-003219",
-            "history-001084",
-            "history-001489"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 249,
           "alternativeTotal": 1577,
-          "baseTop5": [
-            "history-003880",
-            "history-003869",
-            "history-003817",
-            "history-003782",
-            "history-003772"
-          ],
-          "alternativeTop5": [
-            "history-003886",
-            "history-003884",
-            "history-003880",
-            "history-003876",
-            "history-003875"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 13,
           "alternativeTotal": 2190,
-          "baseTop5": [
-            "history-003496",
-            "history-003494",
-            "history-003488",
-            "history-003487",
-            "history-003286"
-          ],
-          "alternativeTop5": [
-            "history-003886",
-            "history-003884",
-            "history-003882",
-            "history-003880",
-            "history-003878"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 9,
           "alternativeTotal": 28,
-          "baseTop5": [
-            "history-002564",
-            "history-001893",
-            "history-001891",
-            "history-003636",
-            "history-003544"
-          ],
-          "alternativeTop5": [
-            "history-002591",
-            "history-002587",
-            "history-002564",
-            "history-001893",
-            "history-001891"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 1087,
           "alternativeTotal": 1474,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-003223"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-003219",
-            "history-001084",
-            "history-001489"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 250,
           "alternativeTotal": 1590,
-          "baseTop5": [
-            "history-003917",
-            "history-003880",
-            "history-003869",
-            "history-003817",
-            "history-003782"
-          ],
-          "alternativeTop5": [
-            "history-003917",
-            "history-003916",
-            "history-003914",
-            "history-003911",
-            "history-003906"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 13,
           "alternativeTotal": 2209,
-          "baseTop5": [
-            "history-003496",
-            "history-003494",
-            "history-003488",
-            "history-003487",
-            "history-003286"
-          ],
-          "alternativeTop5": [
-            "history-003918",
-            "history-003917",
-            "history-003916",
-            "history-003915",
-            "history-003912"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 9,
           "alternativeTotal": 28,
-          "baseTop5": [
-            "history-002564",
-            "history-001893",
-            "history-001891",
-            "history-003636",
-            "history-003544"
-          ],
-          "alternativeTop5": [
-            "history-002591",
-            "history-002587",
-            "history-002564",
-            "history-001893",
-            "history-001891"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 1078,
           "alternativeTotal": 1459,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-003219"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-003219",
-            "history-001084",
-            "history-001489"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 249,
           "alternativeTotal": 1577,
-          "baseTop5": [
-            "history-003880",
-            "history-003869",
-            "history-003817",
-            "history-003782",
-            "history-003772"
-          ],
-          "alternativeTop5": [
-            "history-003886",
-            "history-003884",
-            "history-003880",
-            "history-003876",
-            "history-003875"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 13,
           "alternativeTotal": 2190,
-          "baseTop5": [
-            "history-003496",
-            "history-003494",
-            "history-003488",
-            "history-003487",
-            "history-003286"
-          ],
-          "alternativeTop5": [
-            "history-003886",
-            "history-003884",
-            "history-003882",
-            "history-003880",
-            "history-003878"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 9,
           "alternativeTotal": 28,
-          "baseTop5": [
-            "history-002564",
-            "history-001893",
-            "history-001891",
-            "history-003636",
-            "history-003544"
-          ],
-          "alternativeTop5": [
-            "history-002591",
-            "history-002587",
-            "history-002564",
-            "history-001893",
-            "history-001891"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 1087,
           "alternativeTotal": 1474,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-003223"
-          ],
-          "alternativeTop5": [
-            "history-000640",
-            "history-000004",
-            "history-003219",
-            "history-001084",
-            "history-001489"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 250,
           "alternativeTotal": 1590,
-          "baseTop5": [
-            "history-003917",
-            "history-003880",
-            "history-003869",
-            "history-003817",
-            "history-003782"
-          ],
-          "alternativeTop5": [
-            "history-003917",
-            "history-003916",
-            "history-003914",
-            "history-003911",
-            "history-003906"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 13,
           "alternativeTotal": 2209,
-          "baseTop5": [
-            "history-003496",
-            "history-003494",
-            "history-003488",
-            "history-003487",
-            "history-003286"
-          ],
-          "alternativeTop5": [
-            "history-003918",
-            "history-003917",
-            "history-003916",
-            "history-003915",
-            "history-003912"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 9,
           "alternativeTotal": 28,
-          "baseTop5": [
-            "history-002564",
-            "history-001893",
-            "history-001891",
-            "history-003636",
-            "history-003544"
-          ],
-          "alternativeTop5": [
-            "history-002591",
-            "history-002587",
-            "history-002564",
-            "history-001893",
-            "history-001891"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         }
       ],
       "top5Intersection": 243,
@@ -2578,2049 +1515,1089 @@
           "targetTokens": 50000,
           "repetition": 1,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 25,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000117",
-            "history-000113",
-            "history-000025"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 1,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 7,
           "alternativeTotal": 7,
-          "baseTop5": [
-            "history-000123",
-            "history-000111",
-            "history-000057",
-            "history-000040",
-            "history-000036"
-          ],
-          "alternativeTop5": [
-            "history-000036",
-            "history-000040",
-            "history-000123",
-            "history-000111",
-            "history-000057"
-          ]
-        },
-        {
-          "targetTokens": 50000,
-          "repetition": 1,
-          "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
-          "autoSame": false,
-          "pagesSame": false,
-          "baseTotal": 29,
-          "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000117",
-            "history-000113",
-            "history-000025"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 1,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
-          "baseTotal": 7,
-          "alternativeTotal": 7,
-          "baseTop5": [
-            "history-000123",
-            "history-000111",
-            "history-000057",
-            "history-000040",
-            "history-000036"
-          ],
-          "alternativeTop5": [
-            "history-000036",
-            "history-000040",
-            "history-000123",
-            "history-000111",
-            "history-000057"
-          ]
+          "baseTotal": 29,
+          "alternativeTotal": 0,
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 1,
           "phase": "updated",
-          "query": "id",
+          "autoSame": false,
+          "pagesSame": false,
+          "baseTotal": 7,
+          "alternativeTotal": 7,
+          "baseTop5": [],
+          "alternativeTop5": []
+        },
+        {
+          "targetTokens": 50000,
+          "repetition": 1,
+          "phase": "updated",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000139",
-            "history-000137"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 2,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 25,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000117",
-            "history-000113",
-            "history-000025"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 2,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 7,
           "alternativeTotal": 7,
-          "baseTop5": [
-            "history-000123",
-            "history-000111",
-            "history-000057",
-            "history-000040",
-            "history-000036"
-          ],
-          "alternativeTop5": [
-            "history-000036",
-            "history-000040",
-            "history-000123",
-            "history-000111",
-            "history-000057"
-          ]
-        },
-        {
-          "targetTokens": 50000,
-          "repetition": 2,
-          "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
-          "autoSame": false,
-          "pagesSame": false,
-          "baseTotal": 29,
-          "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000117",
-            "history-000113",
-            "history-000025"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 2,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
-          "baseTotal": 7,
-          "alternativeTotal": 7,
-          "baseTop5": [
-            "history-000123",
-            "history-000111",
-            "history-000057",
-            "history-000040",
-            "history-000036"
-          ],
-          "alternativeTop5": [
-            "history-000036",
-            "history-000040",
-            "history-000123",
-            "history-000111",
-            "history-000057"
-          ]
+          "baseTotal": 29,
+          "alternativeTotal": 0,
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 2,
           "phase": "updated",
-          "query": "id",
+          "autoSame": false,
+          "pagesSame": false,
+          "baseTotal": 7,
+          "alternativeTotal": 7,
+          "baseTop5": [],
+          "alternativeTop5": []
+        },
+        {
+          "targetTokens": 50000,
+          "repetition": 2,
+          "phase": "updated",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000139",
-            "history-000137"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 3,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 25,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000117",
-            "history-000113",
-            "history-000025"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 3,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 7,
           "alternativeTotal": 7,
-          "baseTop5": [
-            "history-000123",
-            "history-000111",
-            "history-000057",
-            "history-000040",
-            "history-000036"
-          ],
-          "alternativeTop5": [
-            "history-000036",
-            "history-000040",
-            "history-000123",
-            "history-000111",
-            "history-000057"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 3,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 29,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000004",
-            "history-000065",
-            "history-000117",
-            "history-000113",
-            "history-000025"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 3,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 7,
           "alternativeTotal": 7,
-          "baseTop5": [
-            "history-000123",
-            "history-000111",
-            "history-000057",
-            "history-000040",
-            "history-000036"
-          ],
-          "alternativeTop5": [
-            "history-000036",
-            "history-000040",
-            "history-000123",
-            "history-000111",
-            "history-000057"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 50000,
           "repetition": 3,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000139",
-            "history-000137"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 190,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000646",
-            "history-000642",
-            "history-000594"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "initial",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 6,
           "alternativeTotal": 6,
-          "baseTop5": [
-            "history-000727",
-            "history-000640",
-            "history-000636",
-            "history-000345",
-            "history-000276"
-          ],
-          "alternativeTop5": [
-            "history-000276",
-            "history-000065",
-            "history-000345",
-            "history-000636",
-            "history-000727"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 44,
           "alternativeTotal": 43,
-          "baseTop5": [
-            "history-000737",
-            "history-000736",
-            "history-000734",
-            "history-000732",
-            "history-000698"
-          ],
-          "alternativeTop5": [
-            "history-000558",
-            "history-000036",
-            "history-000736",
-            "history-000734",
-            "history-000619"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 3,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 199,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000646",
-            "history-000642",
-            "history-000594"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "updated",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 6,
           "alternativeTotal": 6,
-          "baseTop5": [
-            "history-000727",
-            "history-000640",
-            "history-000636",
-            "history-000345",
-            "history-000276"
-          ],
-          "alternativeTop5": [
-            "history-000276",
-            "history-000065",
-            "history-000345",
-            "history-000636",
-            "history-000727"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 47,
           "alternativeTotal": 46,
-          "baseTop5": [
-            "history-000751",
-            "history-000747",
-            "history-000742",
-            "history-000737",
-            "history-000736"
-          ],
-          "alternativeTop5": [
-            "history-000558",
-            "history-000036",
-            "history-000736",
-            "history-000734",
-            "history-000619"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 1,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 3,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 190,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000646",
-            "history-000642",
-            "history-000594"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "initial",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 6,
           "alternativeTotal": 6,
-          "baseTop5": [
-            "history-000727",
-            "history-000640",
-            "history-000636",
-            "history-000345",
-            "history-000276"
-          ],
-          "alternativeTop5": [
-            "history-000276",
-            "history-000065",
-            "history-000345",
-            "history-000636",
-            "history-000727"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 44,
           "alternativeTotal": 43,
-          "baseTop5": [
-            "history-000737",
-            "history-000736",
-            "history-000734",
-            "history-000732",
-            "history-000698"
-          ],
-          "alternativeTop5": [
-            "history-000558",
-            "history-000036",
-            "history-000736",
-            "history-000734",
-            "history-000619"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 3,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 199,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000646",
-            "history-000642",
-            "history-000594"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "updated",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 6,
           "alternativeTotal": 6,
-          "baseTop5": [
-            "history-000727",
-            "history-000640",
-            "history-000636",
-            "history-000345",
-            "history-000276"
-          ],
-          "alternativeTop5": [
-            "history-000276",
-            "history-000065",
-            "history-000345",
-            "history-000636",
-            "history-000727"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 47,
           "alternativeTotal": 46,
-          "baseTop5": [
-            "history-000751",
-            "history-000747",
-            "history-000742",
-            "history-000737",
-            "history-000736"
-          ],
-          "alternativeTop5": [
-            "history-000558",
-            "history-000036",
-            "history-000736",
-            "history-000734",
-            "history-000619"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 2,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 3,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 190,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000646",
-            "history-000642",
-            "history-000594"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "initial",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 6,
           "alternativeTotal": 6,
-          "baseTop5": [
-            "history-000727",
-            "history-000640",
-            "history-000636",
-            "history-000345",
-            "history-000276"
-          ],
-          "alternativeTop5": [
-            "history-000276",
-            "history-000065",
-            "history-000345",
-            "history-000636",
-            "history-000727"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 44,
           "alternativeTotal": 43,
-          "baseTop5": [
-            "history-000737",
-            "history-000736",
-            "history-000734",
-            "history-000732",
-            "history-000698"
-          ],
-          "alternativeTop5": [
-            "history-000558",
-            "history-000036",
-            "history-000736",
-            "history-000734",
-            "history-000619"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 3,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 199,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-000004",
-            "history-000646",
-            "history-000642",
-            "history-000594"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "updated",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 6,
           "alternativeTotal": 6,
-          "baseTop5": [
-            "history-000727",
-            "history-000640",
-            "history-000636",
-            "history-000345",
-            "history-000276"
-          ],
-          "alternativeTop5": [
-            "history-000276",
-            "history-000065",
-            "history-000345",
-            "history-000636",
-            "history-000727"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 47,
           "alternativeTotal": 46,
-          "baseTop5": [
-            "history-000751",
-            "history-000747",
-            "history-000742",
-            "history-000737",
-            "history-000736"
-          ],
-          "alternativeTop5": [
-            "history-000558",
-            "history-000036",
-            "history-000736",
-            "history-000734",
-            "history-000619"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 200000,
           "repetition": 3,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 3,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 511,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-000594"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "initial",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 15,
           "alternativeTotal": 15,
-          "baseTop5": [
-            "history-001478",
-            "history-001282",
-            "history-001272",
-            "history-001203",
-            "history-001185"
-          ],
-          "alternativeTop5": [
-            "history-000276",
-            "history-001478",
-            "history-001282",
-            "history-001024",
-            "history-001272"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 127,
           "alternativeTotal": 127,
-          "baseTop5": [
-            "history-001908",
-            "history-001895",
-            "history-001889",
-            "history-001887",
-            "history-001885"
-          ],
-          "alternativeTop5": [
-            "history-000884",
-            "history-000889",
-            "history-001224",
-            "history-000558",
-            "history-001691"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 5,
           "alternativeTotal": 2,
-          "baseTop5": [
-            "history-001303",
-            "history-001151",
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-001303",
-            "history-001151"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-001893",
-            "history-001891"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 520,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-001950"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "updated",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 15,
           "alternativeTotal": 15,
-          "baseTop5": [
-            "history-001478",
-            "history-001282",
-            "history-001272",
-            "history-001203",
-            "history-001185"
-          ],
-          "alternativeTop5": [
-            "history-000276",
-            "history-001478",
-            "history-001282",
-            "history-001024",
-            "history-001272"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 128,
           "alternativeTotal": 128,
-          "baseTop5": [
-            "history-001949",
-            "history-001908",
-            "history-001895",
-            "history-001889",
-            "history-001887"
-          ],
-          "alternativeTop5": [
-            "history-000884",
-            "history-000889",
-            "history-001224",
-            "history-000558",
-            "history-001691"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 5,
           "alternativeTotal": 2,
-          "baseTop5": [
-            "history-001303",
-            "history-001151",
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-001303",
-            "history-001151"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 1,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-001893",
-            "history-001891"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 511,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-000594"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "initial",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 15,
           "alternativeTotal": 15,
-          "baseTop5": [
-            "history-001478",
-            "history-001282",
-            "history-001272",
-            "history-001203",
-            "history-001185"
-          ],
-          "alternativeTop5": [
-            "history-000276",
-            "history-001478",
-            "history-001282",
-            "history-001024",
-            "history-001272"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 127,
           "alternativeTotal": 127,
-          "baseTop5": [
-            "history-001908",
-            "history-001895",
-            "history-001889",
-            "history-001887",
-            "history-001885"
-          ],
-          "alternativeTop5": [
-            "history-000884",
-            "history-000889",
-            "history-001224",
-            "history-000558",
-            "history-001691"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 5,
           "alternativeTotal": 2,
-          "baseTop5": [
-            "history-001303",
-            "history-001151",
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-001303",
-            "history-001151"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-001893",
-            "history-001891"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 520,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-001950"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "updated",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 15,
           "alternativeTotal": 15,
-          "baseTop5": [
-            "history-001478",
-            "history-001282",
-            "history-001272",
-            "history-001203",
-            "history-001185"
-          ],
-          "alternativeTop5": [
-            "history-000276",
-            "history-001478",
-            "history-001282",
-            "history-001024",
-            "history-001272"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 128,
           "alternativeTotal": 128,
-          "baseTop5": [
-            "history-001949",
-            "history-001908",
-            "history-001895",
-            "history-001889",
-            "history-001887"
-          ],
-          "alternativeTop5": [
-            "history-000884",
-            "history-000889",
-            "history-001224",
-            "history-000558",
-            "history-001691"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 5,
           "alternativeTotal": 2,
-          "baseTop5": [
-            "history-001303",
-            "history-001151",
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-001303",
-            "history-001151"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 2,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-001893",
-            "history-001891"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 511,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-000594"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "initial",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 15,
           "alternativeTotal": 15,
-          "baseTop5": [
-            "history-001478",
-            "history-001282",
-            "history-001272",
-            "history-001203",
-            "history-001185"
-          ],
-          "alternativeTop5": [
-            "history-000276",
-            "history-001478",
-            "history-001282",
-            "history-001024",
-            "history-001272"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 127,
           "alternativeTotal": 127,
-          "baseTop5": [
-            "history-001908",
-            "history-001895",
-            "history-001889",
-            "history-001887",
-            "history-001885"
-          ],
-          "alternativeTop5": [
-            "history-000884",
-            "history-000889",
-            "history-001224",
-            "history-000558",
-            "history-001691"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 5,
           "alternativeTotal": 2,
-          "baseTop5": [
-            "history-001303",
-            "history-001151",
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-001303",
-            "history-001151"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-001893",
-            "history-001891"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 520,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-001950"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "updated",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 15,
           "alternativeTotal": 15,
-          "baseTop5": [
-            "history-001478",
-            "history-001282",
-            "history-001272",
-            "history-001203",
-            "history-001185"
-          ],
-          "alternativeTop5": [
-            "history-000276",
-            "history-001478",
-            "history-001282",
-            "history-001024",
-            "history-001272"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 128,
           "alternativeTotal": 128,
-          "baseTop5": [
-            "history-001949",
-            "history-001908",
-            "history-001895",
-            "history-001889",
-            "history-001887"
-          ],
-          "alternativeTop5": [
-            "history-000884",
-            "history-000889",
-            "history-001224",
-            "history-000558",
-            "history-001691"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 5,
           "alternativeTotal": 2,
-          "baseTop5": [
-            "history-001303",
-            "history-001151",
-            "history-000723",
-            "history-000139",
-            "history-000137"
-          ],
-          "alternativeTop5": [
-            "history-001303",
-            "history-001151"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 500000,
           "repetition": 3,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 2,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-001893",
-            "history-001891"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 1078,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-003219"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "initial",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 42,
           "alternativeTotal": 43,
-          "baseTop5": [
-            "history-003673",
-            "history-003672",
-            "history-003671",
-            "history-003669",
-            "history-003594"
-          ],
-          "alternativeTop5": [
-            "history-003222",
-            "history-000276",
-            "history-001478",
-            "history-001282",
-            "history-001024"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 249,
           "alternativeTotal": 244,
-          "baseTop5": [
-            "history-003880",
-            "history-003869",
-            "history-003817",
-            "history-003782",
-            "history-003772"
-          ],
-          "alternativeTop5": [
-            "history-000884",
-            "history-000889",
-            "history-002275",
-            "history-001224",
-            "history-002277"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 13,
           "alternativeTotal": 10,
-          "baseTop5": [
-            "history-003496",
-            "history-003494",
-            "history-003488",
-            "history-003487",
-            "history-003286"
-          ],
-          "alternativeTop5": [
-            "history-003487",
-            "history-003494",
-            "history-003490",
-            "history-003496",
-            "history-003492"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 9,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-002564",
-            "history-001893",
-            "history-001891",
-            "history-003636",
-            "history-003544"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 1087,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-003223"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "updated",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 42,
           "alternativeTotal": 43,
-          "baseTop5": [
-            "history-003673",
-            "history-003672",
-            "history-003671",
-            "history-003669",
-            "history-003594"
-          ],
-          "alternativeTop5": [
-            "history-003222",
-            "history-000276",
-            "history-001478",
-            "history-001282",
-            "history-001024"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 250,
           "alternativeTotal": 245,
-          "baseTop5": [
-            "history-003917",
-            "history-003880",
-            "history-003869",
-            "history-003817",
-            "history-003782"
-          ],
-          "alternativeTop5": [
-            "history-000884",
-            "history-000889",
-            "history-002275",
-            "history-001224",
-            "history-002277"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 13,
           "alternativeTotal": 10,
-          "baseTop5": [
-            "history-003496",
-            "history-003494",
-            "history-003488",
-            "history-003487",
-            "history-003286"
-          ],
-          "alternativeTop5": [
-            "history-003487",
-            "history-003494",
-            "history-003490",
-            "history-003496",
-            "history-003492"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 1,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 9,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-002564",
-            "history-001893",
-            "history-001891",
-            "history-003636",
-            "history-003544"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 1078,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-003219"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "initial",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 42,
           "alternativeTotal": 43,
-          "baseTop5": [
-            "history-003673",
-            "history-003672",
-            "history-003671",
-            "history-003669",
-            "history-003594"
-          ],
-          "alternativeTop5": [
-            "history-003222",
-            "history-000276",
-            "history-001478",
-            "history-001282",
-            "history-001024"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 249,
           "alternativeTotal": 244,
-          "baseTop5": [
-            "history-003880",
-            "history-003869",
-            "history-003817",
-            "history-003782",
-            "history-003772"
-          ],
-          "alternativeTop5": [
-            "history-000884",
-            "history-000889",
-            "history-002275",
-            "history-001224",
-            "history-002277"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 13,
           "alternativeTotal": 10,
-          "baseTop5": [
-            "history-003496",
-            "history-003494",
-            "history-003488",
-            "history-003487",
-            "history-003286"
-          ],
-          "alternativeTop5": [
-            "history-003487",
-            "history-003494",
-            "history-003490",
-            "history-003496",
-            "history-003492"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 9,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-002564",
-            "history-001893",
-            "history-001891",
-            "history-003636",
-            "history-003544"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 1087,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-003223"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "updated",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 42,
           "alternativeTotal": 43,
-          "baseTop5": [
-            "history-003673",
-            "history-003672",
-            "history-003671",
-            "history-003669",
-            "history-003594"
-          ],
-          "alternativeTop5": [
-            "history-003222",
-            "history-000276",
-            "history-001478",
-            "history-001282",
-            "history-001024"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 250,
           "alternativeTotal": 245,
-          "baseTop5": [
-            "history-003917",
-            "history-003880",
-            "history-003869",
-            "history-003817",
-            "history-003782"
-          ],
-          "alternativeTop5": [
-            "history-000884",
-            "history-000889",
-            "history-002275",
-            "history-001224",
-            "history-002277"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 13,
           "alternativeTotal": 10,
-          "baseTop5": [
-            "history-003496",
-            "history-003494",
-            "history-003488",
-            "history-003487",
-            "history-003286"
-          ],
-          "alternativeTop5": [
-            "history-003487",
-            "history-003494",
-            "history-003490",
-            "history-003496",
-            "history-003492"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 2,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 9,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-002564",
-            "history-001893",
-            "history-001891",
-            "history-003636",
-            "history-003544"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "initial",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 1078,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-003219"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "initial",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 42,
           "alternativeTotal": 43,
-          "baseTop5": [
-            "history-003673",
-            "history-003672",
-            "history-003671",
-            "history-003669",
-            "history-003594"
-          ],
-          "alternativeTop5": [
-            "history-003222",
-            "history-000276",
-            "history-001478",
-            "history-001282",
-            "history-001024"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "initial",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 249,
           "alternativeTotal": 244,
-          "baseTop5": [
-            "history-003880",
-            "history-003869",
-            "history-003817",
-            "history-003782",
-            "history-003772"
-          ],
-          "alternativeTop5": [
-            "history-000884",
-            "history-000889",
-            "history-002275",
-            "history-001224",
-            "history-002277"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "initial",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 13,
           "alternativeTotal": 10,
-          "baseTop5": [
-            "history-003496",
-            "history-003494",
-            "history-003488",
-            "history-003487",
-            "history-003286"
-          ],
-          "alternativeTop5": [
-            "history-003487",
-            "history-003494",
-            "history-003490",
-            "history-003496",
-            "history-003492"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "initial",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 9,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-002564",
-            "history-001893",
-            "history-001891",
-            "history-003636",
-            "history-003544"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "updated",
-          "query": "What time do I stop checking work emails and messages?",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 1087,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-000640",
-            "history-001084",
-            "history-001489",
-            "history-000004",
-            "history-003223"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "updated",
-          "query": "checking",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 42,
           "alternativeTotal": 43,
-          "baseTop5": [
-            "history-003673",
-            "history-003672",
-            "history-003671",
-            "history-003669",
-            "history-003594"
-          ],
-          "alternativeTop5": [
-            "history-003222",
-            "history-000276",
-            "history-001478",
-            "history-001282",
-            "history-001024"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "updated",
-          "query": "go",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 250,
           "alternativeTotal": 245,
-          "baseTop5": [
-            "history-003917",
-            "history-003880",
-            "history-003869",
-            "history-003817",
-            "history-003782"
-          ],
-          "alternativeTop5": [
-            "history-000884",
-            "history-000889",
-            "history-002275",
-            "history-001224",
-            "history-002277"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "updated",
-          "query": "id",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 13,
           "alternativeTotal": 10,
-          "baseTop5": [
-            "history-003496",
-            "history-003494",
-            "history-003488",
-            "history-003487",
-            "history-003286"
-          ],
-          "alternativeTop5": [
-            "history-003487",
-            "history-003494",
-            "history-003490",
-            "history-003496",
-            "history-003492"
-          ]
+          "baseTop5": [],
+          "alternativeTop5": []
         },
         {
           "targetTokens": 1000000,
           "repetition": 3,
           "phase": "updated",
-          "query": "HTTP HTTPServer",
           "autoSame": false,
           "pagesSame": false,
           "baseTotal": 9,
           "alternativeTotal": 0,
-          "baseTop5": [
-            "history-002564",
-            "history-001893",
-            "history-001891",
-            "history-003636",
-            "history-003544"
-          ],
+          "baseTop5": [],
           "alternativeTop5": []
         }
       ],
@@ -7058,775 +5035,9 @@
   },
   "semantics": [
     {
-      "query": "foo foobar",
-      "expectedB3HitIds": [
-        "history-000000",
-        "history-000001",
-        "history-000002"
-      ],
-      "expectedB3PrimaryHitIds": [
-        "history-000002"
-      ],
-      "expectedB3IncrementalHitIds": [
-        "history-000000",
-        "history-000001",
-        "history-000002",
-        "history-000013"
-      ],
-      "results": {
-        "base": {
-          "initial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ]
-        },
-        "A": {
-          "initial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ]
-        },
-        "B1": {
-          "initial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ]
-        },
-        "B2": {
-          "initial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "B3": {
-          "initial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000002",
-            "history-000013",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ]
-        }
-      }
-    },
-    {
-      "query": "HTTP HTTPServer",
-      "expectedB3HitIds": [
-        "history-000000",
-        "history-000001",
-        "history-000003"
-      ],
+      "expectedB3HitIds": [],
       "expectedB3PrimaryHitIds": [],
-      "expectedB3IncrementalHitIds": [
-        "history-000000",
-        "history-000001",
-        "history-000003"
-      ],
-      "results": {
-        "base": {
-          "initial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "A": {
-          "initial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "B1": {
-          "initial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "B2": {
-          "initial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "B3": {
-          "initial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ]
-        }
-      }
-    },
-    {
-      "query": "go",
-      "expectedB3HitIds": [
-        "history-000000",
-        "history-000001"
-      ],
-      "expectedB3PrimaryHitIds": [
-        "history-000000",
-        "history-000001"
-      ],
-      "expectedB3IncrementalHitIds": [
-        "history-000000",
-        "history-000001",
-        "history-000013"
-      ],
-      "results": {
-        "base": {
-          "initial": [
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "A": {
-          "initial": [
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "B1": {
-          "initial": [
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "B2": {
-          "initial": [
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "B3": {
-          "initial": [
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000001",
-            "history-000000"
-          ]
-        }
-      }
-    },
-    {
-      "query": "id",
-      "expectedB3HitIds": [
-        "history-000000",
-        "history-000003"
-      ],
-      "expectedB3PrimaryHitIds": [
-        "history-000000",
-        "history-000003"
-      ],
-      "expectedB3IncrementalHitIds": [
-        "history-000000",
-        "history-000003"
-      ],
-      "results": {
-        "base": {
-          "initial": [
-            "history-000003",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000000"
-          ]
-        },
-        "A": {
-          "initial": [
-            "history-000003",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000000"
-          ]
-        },
-        "B1": {
-          "initial": [
-            "history-000003",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000000"
-          ]
-        },
-        "B2": {
-          "initial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "B3": {
-          "initial": [
-            "history-000003",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000000"
-          ]
-        }
-      }
-    },
-    {
-      "query": "北京",
-      "expectedB3HitIds": [
-        "history-000000",
-        "history-000001",
-        "history-000002"
-      ],
-      "expectedB3PrimaryHitIds": [
-        "history-000000",
-        "history-000001",
-        "history-000002"
-      ],
-      "expectedB3IncrementalHitIds": [
-        "history-000000",
-        "history-000001",
-        "history-000002",
-        "history-000013"
-      ],
-      "results": {
-        "base": {
-          "initial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "A": {
-          "initial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "B1": {
-          "initial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "B2": {
-          "initial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "B3": {
-          "initial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000013",
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000001",
-            "history-000000"
-          ]
-        }
-      }
-    },
-    {
-      "query": "中文 检索",
-      "expectedB3HitIds": [
-        "history-000000",
-        "history-000002"
-      ],
-      "expectedB3PrimaryHitIds": [
-        "history-000000",
-        "history-000002"
-      ],
-      "expectedB3IncrementalHitIds": [
-        "history-000000",
-        "history-000002"
-      ],
-      "results": {
-        "base": {
-          "initial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "updated": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ]
-        },
-        "A": {
-          "initial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "updated": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ]
-        },
-        "B1": {
-          "initial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "updated": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ]
-        },
-        "B2": {
-          "initial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "updated": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000000",
-            "history-000001"
-          ]
-        },
-        "B3": {
-          "initial": [
-            "history-000002",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000002",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000002",
-            "history-000000"
-          ]
-        }
-      }
-    },
-    {
-      "query": "_private$id",
-      "expectedB3HitIds": [
-        "history-000003"
-      ],
-      "expectedB3PrimaryHitIds": [
-        "history-000003"
-      ],
-      "expectedB3IncrementalHitIds": [
-        "history-000003"
-      ],
-      "results": {
-        "base": {
-          "initial": [
-            "history-000003",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000000"
-          ]
-        },
-        "A": {
-          "initial": [
-            "history-000003",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000000"
-          ]
-        },
-        "B1": {
-          "initial": [
-            "history-000003",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000000"
-          ]
-        },
-        "B2": {
-          "initial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "updated": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ],
-          "autoInitial": [
-            "history-000003",
-            "history-000001",
-            "history-000000"
-          ]
-        },
-        "B3": {
-          "initial": [
-            "history-000003"
-          ],
-          "updated": [
-            "history-000003"
-          ],
-          "autoInitial": [
-            "history-000003"
-          ]
-        }
-      }
-    },
-    {
-      "query": "𠀀𠀁",
-      "expectedB3HitIds": [
-        "history-000003"
-      ],
-      "expectedB3PrimaryHitIds": [
-        "history-000003"
-      ],
-      "expectedB3IncrementalHitIds": [
-        "history-000003"
-      ],
-      "results": {
-        "base": {
-          "initial": [
-            "history-000003"
-          ],
-          "updated": [
-            "history-000003"
-          ],
-          "autoInitial": [
-            "history-000003"
-          ]
-        },
-        "A": {
-          "initial": [
-            "history-000003"
-          ],
-          "updated": [
-            "history-000003"
-          ],
-          "autoInitial": [
-            "history-000003"
-          ]
-        },
-        "B1": {
-          "initial": [
-            "history-000003"
-          ],
-          "updated": [
-            "history-000003"
-          ],
-          "autoInitial": [
-            "history-000003"
-          ]
-        },
-        "B2": {
-          "initial": [
-            "history-000003"
-          ],
-          "updated": [
-            "history-000003"
-          ],
-          "autoInitial": [
-            "history-000003"
-          ]
-        },
-        "B3": {
-          "initial": [
-            "history-000003"
-          ],
-          "updated": [
-            "history-000003"
-          ],
-          "autoInitial": [
-            "history-000003"
-          ]
-        }
-      }
-    },
-    {
-      "query": "网",
-      "expectedB3HitIds": [
-        "history-000004",
-        "history-000005"
-      ],
-      "expectedB3PrimaryHitIds": [
-        "history-000004",
-        "history-000005"
-      ],
-      "expectedB3IncrementalHitIds": [
-        "history-000004",
-        "history-000005"
-      ],
+      "expectedB3IncrementalHitIds": [],
       "results": {
         "base": {
           "initial": [],
@@ -7849,383 +5060,425 @@
           "autoInitial": []
         },
         "B3": {
-          "initial": [
-            "history-000004",
-            "history-000005"
-          ],
-          "updated": [
-            "history-000004",
-            "history-000005"
-          ],
-          "autoInitial": [
-            "history-000004",
-            "history-000005"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         }
       }
     },
     {
-      "query": "网关",
-      "expectedB3HitIds": [
-        "history-000004"
-      ],
-      "expectedB3PrimaryHitIds": [
-        "history-000004"
-      ],
-      "expectedB3IncrementalHitIds": [
-        "history-000004"
-      ],
+      "expectedB3HitIds": [],
+      "expectedB3PrimaryHitIds": [],
+      "expectedB3IncrementalHitIds": [],
       "results": {
         "base": {
-          "initial": [
-            "history-000004"
-          ],
-          "updated": [
-            "history-000004"
-          ],
-          "autoInitial": [
-            "history-000004"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "A": {
-          "initial": [
-            "history-000004"
-          ],
-          "updated": [
-            "history-000004"
-          ],
-          "autoInitial": [
-            "history-000004"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B1": {
-          "initial": [
-            "history-000004"
-          ],
-          "updated": [
-            "history-000004"
-          ],
-          "autoInitial": [
-            "history-000004"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B2": {
-          "initial": [
-            "history-000004"
-          ],
-          "updated": [
-            "history-000004"
-          ],
-          "autoInitial": [
-            "history-000004"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B3": {
-          "initial": [
-            "history-000004"
-          ],
-          "updated": [
-            "history-000004"
-          ],
-          "autoInitial": [
-            "history-000004"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         }
       }
     },
     {
-      "query": "索引",
-      "expectedB3HitIds": [
-        "history-000006"
-      ],
-      "expectedB3PrimaryHitIds": [
-        "history-000006"
-      ],
-      "expectedB3IncrementalHitIds": [
-        "history-000006"
-      ],
+      "expectedB3HitIds": [],
+      "expectedB3PrimaryHitIds": [],
+      "expectedB3IncrementalHitIds": [],
       "results": {
         "base": {
-          "initial": [
-            "history-000006"
-          ],
-          "updated": [
-            "history-000006"
-          ],
-          "autoInitial": [
-            "history-000006"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "A": {
-          "initial": [
-            "history-000006"
-          ],
-          "updated": [
-            "history-000006"
-          ],
-          "autoInitial": [
-            "history-000006"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B1": {
-          "initial": [
-            "history-000006"
-          ],
-          "updated": [
-            "history-000006"
-          ],
-          "autoInitial": [
-            "history-000006"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B2": {
-          "initial": [
-            "history-000006"
-          ],
-          "updated": [
-            "history-000006"
-          ],
-          "autoInitial": [
-            "history-000006"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B3": {
-          "initial": [
-            "history-000006"
-          ],
-          "updated": [
-            "history-000006"
-          ],
-          "autoInitial": [
-            "history-000006"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         }
       }
     },
     {
-      "query": "compaction",
-      "expectedB3HitIds": [
-        "history-000007",
-        "history-000008"
-      ],
-      "expectedB3PrimaryHitIds": [
-        "history-000008"
-      ],
-      "expectedB3IncrementalHitIds": [
-        "history-000007",
-        "history-000008"
-      ],
+      "expectedB3HitIds": [],
+      "expectedB3PrimaryHitIds": [],
+      "expectedB3IncrementalHitIds": [],
       "results": {
         "base": {
-          "initial": [
-            "history-000008",
-            "history-000007"
-          ],
-          "updated": [
-            "history-000008",
-            "history-000007"
-          ],
-          "autoInitial": [
-            "history-000008",
-            "history-000007"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "A": {
-          "initial": [
-            "history-000008",
-            "history-000007"
-          ],
-          "updated": [
-            "history-000008",
-            "history-000007"
-          ],
-          "autoInitial": [
-            "history-000008",
-            "history-000007"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B1": {
-          "initial": [
-            "history-000008",
-            "history-000007"
-          ],
-          "updated": [
-            "history-000008",
-            "history-000007"
-          ],
-          "autoInitial": [
-            "history-000008",
-            "history-000007"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B2": {
-          "initial": [
-            "history-000008",
-            "history-000007"
-          ],
-          "updated": [
-            "history-000008",
-            "history-000007"
-          ],
-          "autoInitial": [
-            "history-000008",
-            "history-000007"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B3": {
-          "initial": [
-            "history-000008",
-            "history-000007"
-          ],
-          "updated": [
-            "history-000008",
-            "history-000007"
-          ],
-          "autoInitial": [
-            "history-000008",
-            "history-000007"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         }
       }
     },
     {
-      "query": "vm",
-      "expectedB3HitIds": [
-        "history-000010"
-      ],
-      "expectedB3PrimaryHitIds": [
-        "history-000010"
-      ],
-      "expectedB3IncrementalHitIds": [
-        "history-000010"
-      ],
+      "expectedB3HitIds": [],
+      "expectedB3PrimaryHitIds": [],
+      "expectedB3IncrementalHitIds": [],
       "results": {
         "base": {
-          "initial": [
-            "history-000010"
-          ],
-          "updated": [
-            "history-000010"
-          ],
-          "autoInitial": [
-            "history-000010"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "A": {
-          "initial": [
-            "history-000010"
-          ],
-          "updated": [
-            "history-000010"
-          ],
-          "autoInitial": [
-            "history-000010"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B1": {
-          "initial": [
-            "history-000010"
-          ],
-          "updated": [
-            "history-000010"
-          ],
-          "autoInitial": [
-            "history-000010"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B2": {
-          "initial": [
-            "history-000010",
-            "history-000009"
-          ],
-          "updated": [
-            "history-000010",
-            "history-000009"
-          ],
-          "autoInitial": [
-            "history-000010",
-            "history-000009"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B3": {
-          "initial": [
-            "history-000010"
-          ],
-          "updated": [
-            "history-000010"
-          ],
-          "autoInitial": [
-            "history-000010"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         }
       }
     },
     {
-      "query": "youer",
-      "expectedB3HitIds": [
-        "history-000011"
-      ],
-      "expectedB3PrimaryHitIds": [
-        "history-000011"
-      ],
-      "expectedB3IncrementalHitIds": [
-        "history-000011"
-      ],
+      "expectedB3HitIds": [],
+      "expectedB3PrimaryHitIds": [],
+      "expectedB3IncrementalHitIds": [],
       "results": {
         "base": {
-          "initial": [
-            "history-000011"
-          ],
-          "updated": [
-            "history-000011"
-          ],
-          "autoInitial": [
-            "history-000011"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "A": {
-          "initial": [
-            "history-000011"
-          ],
-          "updated": [
-            "history-000011"
-          ],
-          "autoInitial": [
-            "history-000011"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B1": {
-          "initial": [
-            "history-000011"
-          ],
-          "updated": [
-            "history-000011"
-          ],
-          "autoInitial": [
-            "history-000011"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B2": {
-          "initial": [
-            "history-000011"
-          ],
-          "updated": [
-            "history-000011"
-          ],
-          "autoInitial": [
-            "history-000011"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         },
         "B3": {
-          "initial": [
-            "history-000011"
-          ],
-          "updated": [
-            "history-000011"
-          ],
-          "autoInitial": [
-            "history-000011"
-          ]
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        }
+      }
+    },
+    {
+      "expectedB3HitIds": [],
+      "expectedB3PrimaryHitIds": [],
+      "expectedB3IncrementalHitIds": [],
+      "results": {
+        "base": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "A": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B1": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B2": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B3": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        }
+      }
+    },
+    {
+      "expectedB3HitIds": [],
+      "expectedB3PrimaryHitIds": [],
+      "expectedB3IncrementalHitIds": [],
+      "results": {
+        "base": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "A": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B1": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B2": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B3": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        }
+      }
+    },
+    {
+      "expectedB3HitIds": [],
+      "expectedB3PrimaryHitIds": [],
+      "expectedB3IncrementalHitIds": [],
+      "results": {
+        "base": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "A": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B1": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B2": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B3": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        }
+      }
+    },
+    {
+      "expectedB3HitIds": [],
+      "expectedB3PrimaryHitIds": [],
+      "expectedB3IncrementalHitIds": [],
+      "results": {
+        "base": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "A": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B1": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B2": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B3": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        }
+      }
+    },
+    {
+      "expectedB3HitIds": [],
+      "expectedB3PrimaryHitIds": [],
+      "expectedB3IncrementalHitIds": [],
+      "results": {
+        "base": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "A": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B1": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B2": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B3": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        }
+      }
+    },
+    {
+      "expectedB3HitIds": [],
+      "expectedB3PrimaryHitIds": [],
+      "expectedB3IncrementalHitIds": [],
+      "results": {
+        "base": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "A": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B1": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B2": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B3": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        }
+      }
+    },
+    {
+      "expectedB3HitIds": [],
+      "expectedB3PrimaryHitIds": [],
+      "expectedB3IncrementalHitIds": [],
+      "results": {
+        "base": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "A": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B1": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B2": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B3": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        }
+      }
+    },
+    {
+      "expectedB3HitIds": [],
+      "expectedB3PrimaryHitIds": [],
+      "expectedB3IncrementalHitIds": [],
+      "results": {
+        "base": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "A": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B1": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B2": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
+        },
+        "B3": {
+          "initial": [],
+          "updated": [],
+          "autoInitial": []
         }
       }
     }
@@ -8233,66 +5486,44 @@
   "compatibility": [
     {
       "variant": "B1",
-      "size": "semantic",
-      "runtime": "v26.7.0",
       "outputMatchesNode24": true,
-      "stderr": "",
       "diskWriteBytes": 0
     },
     {
       "variant": "B1",
       "size": 50000,
-      "runtime": "v26.7.0",
       "outputMatchesNode24": true,
-      "stderr": "",
       "diskWriteBytes": 0
     },
     {
       "variant": "B2",
-      "size": "semantic",
-      "runtime": "v26.7.0",
       "outputMatchesNode24": true,
-      "stderr": "",
       "diskWriteBytes": 0
     },
     {
       "variant": "B2",
       "size": 50000,
-      "runtime": "v26.7.0",
       "outputMatchesNode24": true,
-      "stderr": "",
       "diskWriteBytes": 0
     },
     {
       "variant": "B3",
-      "size": "semantic",
-      "runtime": "v26.7.0",
       "outputMatchesNode24": true,
-      "stderr": "",
       "diskWriteBytes": 0
     },
     {
       "variant": "B3",
       "size": 50000,
-      "runtime": "v26.7.0",
       "outputMatchesNode24": true,
-      "stderr": "",
       "diskWriteBytes": 0
     }
   ],
   "concurrency": {
     "maximumConcurrent": 5,
-    "masks": [
-      "2,3",
-      "4,5",
-      "6,7",
-      "8,9",
-      "10,11"
-    ],
+    "masks": [],
     "memoryPlan": {
       "observedMemAvailableBytes": 21361999872,
       "userEarlierApproxAvailableGiB": 6,
-      "basis": "Current /proc/meminfo MemAvailable snapshot; services unchanged. Conservative extrapolation, not measured 1M RSS.",
       "safetyFloorBytes": 1610612736,
       "perVariant": {
         "base": {
@@ -8326,24 +5557,12 @@
           "projectedPeakRssBytes": 1179457254.1651378
         }
       },
-      "projection": "SDK-startup peak + 1.25 * (50k peak - SDK-startup peak) * (1000000 / smoke compacted tokens); scales worker startup too, deliberately conservative",
       "driverBudgetBytesPerLane": 407218176,
-      "driverBasis": "1.5 times maximum observed smoke driver RSS",
       "additionalReserveBytes": 536870912,
       "projectedFiveJobBytes": 10544066441.739882,
       "projectedFiveJobRemainingBytes": 10817933430.260118,
       "selectedParallelism": 5,
-      "reason": "Five-way projection retains at least 1.5 GiB using current available-memory snapshot",
-      "masks": [
-        "2,3",
-        "4,5",
-        "6,7",
-        "8,9",
-        "10,11"
-      ],
-      "cpu01": "unassigned",
-      "residentServices": "not changed",
-      "smokeDirectory": "smoke"
+      "masks": []
     },
     "waves": [
       {
@@ -9020,70 +6239,47 @@
       }
     ]
   },
-  "methods": {
-    "aggregates": "median across three fresh processes; p50/p95 nearest-rank across 20 hot operations inside each process",
-    "topN": "intersection / number of base top-N ids, micro-weighted; empty base cases excluded and counted separately",
-    "memory": "same point as perf scaling: main GC after one context query; worker stats separately sampled without worker GC; no per-thread RSS exists",
-    "stages": "one separate timing-enabled 1M process per variant; phase start windows; mean per event, total per phase; inclusive nested spans, not additive"
-  },
+  "methods": {},
   "npmLayout": {
     "runs": [
       {
         "node": "v24.18.0",
         "loaded": true,
         "mode": "full",
-        "registeredTools": [
-          "history_recall",
-          "history_grep",
-          "history_expand"
-        ],
+        "registeredTools": [],
         "contextAndPaginatedRecall": true,
         "grepAndExpand": true,
         "shutdownAwaited": true,
-        "stderr": "",
         "workerQuerySpans": 3
       },
       {
         "node": "v24.18.0",
         "loaded": true,
         "mode": "lite",
-        "registeredTools": [
-          "history_grep",
-          "history_expand"
-        ],
+        "registeredTools": [],
         "noWorkerHooks": true,
         "grepAndExpand": true,
         "shutdownAwaited": true,
-        "stderr": "",
         "workerQuerySpans": 0
       },
       {
         "node": "v26.7.0",
         "loaded": true,
         "mode": "full",
-        "registeredTools": [
-          "history_recall",
-          "history_grep",
-          "history_expand"
-        ],
+        "registeredTools": [],
         "contextAndPaginatedRecall": true,
         "grepAndExpand": true,
         "shutdownAwaited": true,
-        "stderr": "",
         "workerQuerySpans": 3
       },
       {
         "node": "v26.7.0",
         "loaded": true,
         "mode": "lite",
-        "registeredTools": [
-          "history_grep",
-          "history_expand"
-        ],
+        "registeredTools": [],
         "noWorkerHooks": true,
         "grepAndExpand": true,
         "shutdownAwaited": true,
-        "stderr": "",
         "workerQuerySpans": 0
       }
     ],

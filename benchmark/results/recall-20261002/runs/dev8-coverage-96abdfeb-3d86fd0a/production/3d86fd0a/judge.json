@@ -9,20 +9,12 @@
     "question_id": "3d86fd0a",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. The notes say Sophia’s “How We Met” location was a coffee shop in the city.\n2. So, you met Sophia at a coffee shop in the city.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 705.5334530305117,
       "firstVisibleTextFromSpawnMs": 28179.619677131996,
-      "firstThinkingFromSpawnMs": null,
       "firstToolDeltaFromSpawnMs": 7887.757609132677,
       "promptToCompleteMs": 31869.353430112824,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +30,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "c43e77896a953b0a838c64ecdd07af467f40d3ca24a144abe23bb6556185a20d",
     "snapshot": {
       "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
@@ -47,7 +38,6 @@
       "compressionSeconds": 118.48971851309761
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 2.9909361829049885,

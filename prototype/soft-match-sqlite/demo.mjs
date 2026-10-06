@@ -23,7 +23,7 @@ if (import.meta.main) {
     ...[
       '网关重启后为什么断连？', '网关', '索引', '索引擎', 'youer',
       '修改youer服务端配置', 'GPU显存', '网', '', 'the AND is please recall',
-      'What time do I stop checking work emails and messages?',
+      'Does the maintenance manual cover motorcycle inspections?',
       'vm', 'kvm', 'compaction', 'CompactionResult', 'moto', 'motorcycle',
       'gatway', 'gateway', 'gateway nonexistentword', '网关 不存在的词',
     ].map(query => ({ name: query || 'empty', query, options: { automatic: true } })),

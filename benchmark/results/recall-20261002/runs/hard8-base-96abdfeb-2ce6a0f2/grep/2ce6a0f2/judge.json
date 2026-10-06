@@ -9,17 +9,12 @@
     "question_id": "2ce6a0f2",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "1. **Relevant information:** You mentioned attending a guided tour at the Modern Art Museum focused on Frida Kahlo and Diego Rivera’s work last weekend.\n2. **Count:** The other events you mentioned were literary or museum visits, not art-related events.\n\n**Answer: 1 art-related event.**",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 823.8577409647405,
       "firstVisibleTextFromSpawnMs": 20482.87861305289,
       "firstThinkingFromSpawnMs": 20294.78057799861,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 20641.058297129348,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "b4f250ece99c30cd45884a12fcb4a5b7f0f840877844fa874bb62562f493b098",
     "snapshot": {
       "fingerprint": "db248508b7da4e0eb68e9e5e6f378301648a5a908aed593c015821ea727c2038",
@@ -44,7 +38,6 @@
       "compressionSeconds": 111.40956617030315
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.749263537814841,

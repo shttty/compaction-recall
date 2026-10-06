@@ -1,1 +1,1 @@
-{"question_id": "982b5123", "outcome": "compression-error", "run_fingerprint": "1dd01ef4ae07f4bfd39e1739ca99dfa574f7eee72a3bf706bb31b41aaef0c620", "error": "ValueError: Conservative context estimate 341237 exceeds 340000 safety ceiling"}
+{"question_id":"982b5123","outcome":"compression-error","run_fingerprint":"1dd01ef4ae07f4bfd39e1739ca99dfa574f7eee72a3bf706bb31b41aaef0c620"}

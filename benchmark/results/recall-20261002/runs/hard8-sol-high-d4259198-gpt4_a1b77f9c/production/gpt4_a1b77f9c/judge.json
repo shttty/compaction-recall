@@ -9,27 +9,13 @@
     "question_id": "gpt4_a1b77f9c",
     "arm": "production",
     "outcome": "answered",
-    "answer": "### 1. Extract the relevant dates\n\n| Book | Started | Finished | Time spent |\n|---|---|---|---|\n| *The Nightingale* — reading | January 1, 2022 | January 15, 2022 | 14 days = **2 weeks** |\n| *Sapiens: A Brief History of Humankind* — listening | February 1, 2022 | March 1, 2022 | 28 days = **4 weeks** |\n| *The Power* — listening | March 6, 2022 | March 20, 2022 | 14 days = **2 weeks** |\n\n### 2. Add the durations\n\n**2 + 4 + 2 = 8 weeks total.**\n\nUsing these start-and-finish dates, you spent **8 weeks** reading and listening to the three books.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_recall"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 684.443922014907,
       "firstVisibleTextFromSpawnMs": 46520.87850589305,
       "firstThinkingFromSpawnMs": 36256.79171597585,
       "firstToolDeltaFromSpawnMs": 9374.681090936065,
       "promptToCompleteMs": 53952.500655082986,
-      "providerTTFTMs": null,
       "modelTurns": 4,
       "toolBatches": 3,
       "toolCalls": 9,
@@ -45,7 +31,6 @@
     },
     "modelCalls": 4,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "e7d6b42dc8064bdf8132619f0e58d11c819bb2ba64306c44e5f366d240690d98",
     "snapshot": {
       "fingerprint": "8f6364fa7669bee31aa28d191980b477eae4b9d4ae6227b66ed9bb55221ee458",
@@ -54,7 +39,6 @@
       "compressionSeconds": 124.69937260216102
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 3.802155321929604,

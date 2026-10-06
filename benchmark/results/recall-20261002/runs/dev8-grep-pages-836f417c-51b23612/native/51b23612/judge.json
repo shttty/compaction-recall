@@ -9,17 +9,11 @@
     "question_id": "51b23612",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant information:** I can’t find a mention in the conversation above of political propaganda, humor, or a Soviet cartoon mocking Western culture.\n\n**Step 2 — Conclusion:** I can’t reliably identify which cartoon you mean from this chat. If you remember a character, scene, or approximate decade, I can help narrow it down.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 686.6321419365704,
       "firstVisibleTextFromSpawnMs": 11795.830585993826,
-      "firstThinkingFromSpawnMs": null,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 11656.14676498808,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +29,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "8b7f09d3e8d9bc4feeaa69c3edee0baa01e73368d868f2e88c6373dd170d2d8d",
     "snapshot": {
       "fingerprint": "3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8",
@@ -44,7 +37,6 @@
       "compressionSeconds": 140.69230400095694
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.6718762840609998,

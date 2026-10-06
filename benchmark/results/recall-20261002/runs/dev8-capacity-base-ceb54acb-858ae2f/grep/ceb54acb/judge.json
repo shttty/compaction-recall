@@ -9,20 +9,12 @@
     "question_id": "ceb54acb",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Step 1: Relevant chat history**  \nYou asked for alternatives to “sexual compulsions.” The assistant suggested four other terms.\n\n**Step 2: The four options**\n1. Sexual fixations  \n2. Problematic sexual behaviors  \n3. Sexual impulsivity  \n4. Compulsive sexuality",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 825.331669067964,
       "firstVisibleTextFromSpawnMs": 29547.454338055104,
-      "firstThinkingFromSpawnMs": null,
       "firstToolDeltaFromSpawnMs": 10514.722773106769,
       "promptToCompleteMs": 29504.424924962223,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +30,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "e26b1c34eddbc7861077976660ac8544934a3ea01669b7203891b92b618e590b",
     "snapshot": {
       "fingerprint": "80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7",
@@ -47,7 +38,6 @@
       "compressionSeconds": 89.44119733083062
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 2.0248681579250842,

@@ -9,17 +9,12 @@
     "question_id": "6d550036",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "1. **Relevant information:** You mentioned that your team completed a major project with Spire, lasting over two years and supporting its hiring and growth through its IPO.\n2. **Reasoning:** That is the only specific project you described. You didn’t mention any projects you’re currently leading, and the chat doesn’t explicitly say you personally led the Spire project.\n3. **Answer:** **One completed project is mentioned; no current projects are specified.**",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 816.6624598670751,
       "firstVisibleTextFromSpawnMs": 14077.15885899961,
       "firstThinkingFromSpawnMs": 11089.952416019514,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 14570.991724031046,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "b6adca12e725e822a3ac5ef734632cef7f03737c847b94263d86201ac323a1e2",
     "snapshot": {
       "fingerprint": "35d650a4cde3361782aa54439b0176370d7333353dcb4ac5be0147f6c0588d75",
@@ -44,7 +38,6 @@
       "compressionSeconds": 76.48786530666985
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.201383450068533,

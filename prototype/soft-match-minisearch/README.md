@@ -44,7 +44,7 @@ index.close();
 | 网关重启后为什么断连？ | a, b |
 | 网关 | b, a；不命中含标点的 c |
 | 索引 / youer | d / e |
-| What time do I stop checking work emails and messages? | k，score 51.07078430797302 |
+| 历史英文demo查询（原题已外置，非当前demo题面） | k，历史score 51.07078430797302 |
 | vm / kvm | g / h, g |
 | compaction / CompactionResult | f / f |
 | result | 无；不额外拆出 Result |

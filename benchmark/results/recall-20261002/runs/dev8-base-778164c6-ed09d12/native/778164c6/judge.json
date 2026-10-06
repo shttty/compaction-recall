@@ -9,17 +9,12 @@
     "question_id": "778164c6",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Relevant information:** I don’t see an earlier discussion of Caribbean dishes or a Jamaican snapper recommendation in the conversation available here.\n\n**Reasoning:** Without that earlier recommendation, I can’t reliably identify the dish. One possibility is **ackee and saltfish**—ackee is a fruit—but it’s traditionally made with saltfish, not snapper, so I can’t say that’s what I recommended.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 673.5564509872347,
       "firstVisibleTextFromSpawnMs": 17859.716281061992,
       "firstThinkingFromSpawnMs": 13853.809159016237,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 18209.744568914175,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "ad0eefca3f82cc61ce29e7cdbf09d1513429c770f24e28fa633ce93ece117e7e",
     "snapshot": {
       "fingerprint": "4af02e7afbc8cefaeaae38265715218a15d1286fbaa3ada81567c702ebd5cdd2",
@@ -44,7 +38,6 @@
       "compressionSeconds": 93.66139406873845
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.4299769368954,

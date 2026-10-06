@@ -9,17 +9,11 @@
     "question_id": "gpt4_65aabe59",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Relevant information:** You mentioned that a programmable or smart thermostat could improve home energy efficiency, but you didn’t say you set one up. The conversation doesn’t mention setting up a mesh network system either.\n\n**Reasoning:** There’s no information showing which device you set up first.\n\n**Answer:** I can’t determine from the conversation.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 823.6595201306045,
       "firstVisibleTextFromSpawnMs": 12862.323755165562,
-      "firstThinkingFromSpawnMs": null,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 16947.803263086826,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +29,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "ac056c54837c0411c77ff11552d717464f7ebafc6a12a8f4bba03c702f3784c8",
     "snapshot": {
       "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
@@ -44,7 +37,6 @@
       "compressionSeconds": 88.37053048610687
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.596217946847901,

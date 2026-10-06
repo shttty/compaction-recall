@@ -9,17 +9,12 @@
     "question_id": "3d86fd0a",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant information:** The conversation mentions your family, friends, and people such as Sarah, but it doesn’t mention Sophia or where you met her.\n\n**Step 2 — Conclusion:** I can’t determine where you met Sophia from the chat history provided.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 687.6078078057617,
       "firstVisibleTextFromSpawnMs": 11319.346986943856,
       "firstThinkingFromSpawnMs": 10751.980244880542,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 11311.317178886384,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "c43e77896a953b0a838c64ecdd07af467f40d3ca24a144abe23bb6556185a20d",
     "snapshot": {
       "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
@@ -44,7 +38,6 @@
       "compressionSeconds": 118.48971851309761
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.982865896075964,

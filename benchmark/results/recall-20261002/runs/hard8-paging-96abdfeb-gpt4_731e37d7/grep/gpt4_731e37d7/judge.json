@@ -9,17 +9,12 @@
     "question_id": "gpt4_731e37d7",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant information:** You mentioned attending a photography workshop at a local art school, a digital marketing workshop, an art workshop at a community center, a vegan cooking class, and a writing workshop at a bookstore. No attendance fees or other costs were given for these events.\n\n**Step 2 — Conclusion:** I can’t determine the total money you spent on workshops in the last four months from the information provided.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 823.0335649568588,
       "firstVisibleTextFromSpawnMs": 11487.070154864341,
       "firstThinkingFromSpawnMs": 11236.079746857285,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 11285.967386094853,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "43bd9cc72c12dc6fabaf9e1bfff935a505860429d81478b54635f0f0ea5e5636",
     "snapshot": {
       "fingerprint": "6a7641195a1d9639b91616f10af65c54a37e195595db4992856305319069b880",
@@ -44,7 +38,6 @@
       "compressionSeconds": 70.90560843213461
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.1770563228055835,

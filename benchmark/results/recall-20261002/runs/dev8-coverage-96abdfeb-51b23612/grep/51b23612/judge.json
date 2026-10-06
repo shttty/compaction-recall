@@ -9,20 +9,13 @@
     "question_id": "51b23612",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Relevant information from our earlier conversation:**\n- I mentioned a Soviet cartoon called **“Nu, pogodi!”** as an example of humor in Soviet propaganda.\n- I described it as mocking Western culture and presenting the Soviet Union as superior.\n\n**Answer:** The cartoon I mentioned was **“Nu, pogodi!”** (“Well, Just You Wait!”). I should correct my earlier description, though: it is best known as a slapstick animated series about a wolf chasing a hare, not as a cartoon specifically designed to mock Western culture. My previous example was inaccurate.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 829.2750520631671,
       "firstVisibleTextFromSpawnMs": 29081.564417108893,
       "firstThinkingFromSpawnMs": 11095.563797978684,
       "firstToolDeltaFromSpawnMs": 11299.31759298779,
       "promptToCompleteMs": 33707.112022908404,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "573cb5b2e7d317b2f9e66a9fb0a19a1330bca097516cfe37812933e198f43d15",
     "snapshot": {
       "fingerprint": "3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8",
@@ -47,7 +39,6 @@
       "compressionSeconds": 140.69230400095694
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 4.96030139317736,

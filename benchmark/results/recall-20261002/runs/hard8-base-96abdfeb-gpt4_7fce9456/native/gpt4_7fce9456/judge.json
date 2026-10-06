@@ -9,17 +9,12 @@
     "question_id": "gpt4_7fce9456",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Step 1: Relevant information**  \nYou mentioned buying a home with your partner and searching for about three months, but you didn’t say how many properties you viewed or identify a townhouse in Brookside.\n\n**Step 2: Answer**  \nI can’t determine how many properties you viewed before making an offer from the conversation provided.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 702.1830449812114,
       "firstVisibleTextFromSpawnMs": 12211.781800957397,
       "firstThinkingFromSpawnMs": 12007.527512963861,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 12022.922146134079,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "bcbf35125ab8fe223a509582fb4bb4c07ac96eab24426bc7253851738b7878cf",
     "snapshot": {
       "fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
@@ -44,7 +38,6 @@
       "compressionSeconds": 112.73651911481284
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.496176925022155,

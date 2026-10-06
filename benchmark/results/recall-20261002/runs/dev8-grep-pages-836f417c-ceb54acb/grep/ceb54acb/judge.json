@@ -9,20 +9,13 @@
     "question_id": "ceb54acb",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant information:** The earlier suggestions included “sexual compulsions,” followed by four alternatives.\n\n**Step 2 — The other four options were:**\n1. Sexual fixations  \n2. Problematic sexual behaviors  \n3. Sexual impulsivity  \n4. Compulsive sexuality",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 813.8347170315683,
       "firstVisibleTextFromSpawnMs": 32645.642955088988,
       "firstThinkingFromSpawnMs": 9451.988426037133,
       "firstToolDeltaFromSpawnMs": 9734.585394151509,
       "promptToCompleteMs": 33865.3906150721,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "e900e9d5f8807b24ef224810c3036245c02ef5e90b1f72d7efff8d4d6b344fce",
     "snapshot": {
       "fingerprint": "80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7",
@@ -47,7 +39,6 @@
       "compressionSeconds": 89.44119733083062
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 1.9981725870165974,

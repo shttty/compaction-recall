@@ -9,21 +9,13 @@
     "question_id": "gpt4_15e38248",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "1. **Bought:** A wooden coffee table with metal legs from West Elm.\n2. **Assembled:** An IKEA bookshelf for your home office.\n3. **Fixed:** A wobbly leg on your kitchen table.\n\nYou haven’t mentioned selling any furniture. **Total: 3 pieces of furniture.**",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep",
-      "history_grep",
-      "history_grep"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 785.4766969103366,
       "firstVisibleTextFromSpawnMs": 43850.929209031165,
       "firstThinkingFromSpawnMs": 9240.405899006873,
       "firstToolDeltaFromSpawnMs": 9522.344627883285,
       "promptToCompleteMs": 43518.58939998783,
-      "providerTTFTMs": null,
       "modelTurns": 4,
       "toolBatches": 3,
       "toolCalls": 3,
@@ -39,7 +31,6 @@
     },
     "modelCalls": 4,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "e24d2f10a6e5e0a2fe650be67a63b2c8cb7220f8367d1c527dbfc9917568fefb",
     "snapshot": {
       "fingerprint": "23e7e9d70cb857784467e4c665f09e50654643dc9e376e730daa56a9ad2d56df",
@@ -48,7 +39,6 @@
       "compressionSeconds": 112.86164950625971
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.867063906043768,

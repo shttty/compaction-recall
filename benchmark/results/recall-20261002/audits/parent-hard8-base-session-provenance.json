@@ -1,39 +1,8 @@
 {
-  "baseline_audit_sha256": "5dcc648c647cb5559590b9ee0e8e684f77dd2d60da00fb956dadd3c6c4d48d3f",
   "validated_sessions": 24,
   "exact_seed_prefix": true,
   "generated_usage_calls_tools_and_answers_match_ledger": true,
   "model_identities": [
-    [
-      "clp",
-      "gpt-6-luna",
-      "openai-responses"
-    ]
-  ],
-  "tracked_artifact_sha256": {
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-gpt4_7fce9456/native/gpt4_7fce9456/session.jsonl": "d05d12be580f52e97029946fd2c3652dbd7579d8354fdbede183e9176545a5d4",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-gpt4_7fce9456/grep/gpt4_7fce9456/session.jsonl": "203014dd6d5a31f4fc12972b659ba09a4f6b79af82d4f646dbf6ae3a73fe6470",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-gpt4_7fce9456/production/gpt4_7fce9456/session.jsonl": "100df2066ffac141da2639c9d7668d481eb59b301c4c03a98500b65e7ece2d66",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-gpt4_a1b77f9c/native/gpt4_a1b77f9c/session.jsonl": "6a29e18d48142ce0f32ceb3c88d6f221937fafda766c8209d888473e5fe23994",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-gpt4_a1b77f9c/grep/gpt4_a1b77f9c/session.jsonl": "10ccb4174806cb7bf4b7de5a7f23cd39ab053b635cb761db3b05c1e3ade4b131",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-gpt4_a1b77f9c/production/gpt4_a1b77f9c/session.jsonl": "f9ca7de10f9164f5fab747993f5ebf608166092e6fb895a92d14c047203f0b48",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-28dc39ac/native/28dc39ac/session.jsonl": "9bc9088f7744b2a2edd71a9787a11a7d399e00a22afdc920605483cfe4c236fc",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-28dc39ac/grep/28dc39ac/session.jsonl": "b04acbecf455409d6012b392b23d074ff7d3db3b0c42de7802cb4363b516a703",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-28dc39ac/production/28dc39ac/session.jsonl": "5372fcadee20d9b6b693f2ecf1ce477911198a51685afa4803f01aef43baa0be",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-gpt4_15e38248/native/gpt4_15e38248/session.jsonl": "31fb710fae3737eb18b31568e5c63d8d70670425f60713c8b897b2418fcd21ae",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-gpt4_15e38248/grep/gpt4_15e38248/session.jsonl": "816c816780adaa212626f515a4dd8262d8fd920ce130f32c70cd815db2e7f55d",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-gpt4_15e38248/production/gpt4_15e38248/session.jsonl": "42fb603c64ab50168f3b491ad8388350a60bb86d0da0c4b6a8275031bbebbd50",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-6d550036/native/6d550036/session.jsonl": "a802e4387f0aea81e112f22363ac3e704ee75005372b3dd7231a7349ecb17693",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-6d550036/grep/6d550036/session.jsonl": "f915b37429b1038e822dca4b6a36e5e00b76189694840fbff7975fde2e90a3c6",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-6d550036/production/6d550036/session.jsonl": "092e992e5b3e8b447a93e5d8fe8fce64ce7d17b460a34ca8718fd63a2ab62f6e",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-2ce6a0f2/native/2ce6a0f2/session.jsonl": "2b8f3e5741c153ef5559d81ce7ea79dc49463e959c1918652fa0f1a647212ff2",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-2ce6a0f2/grep/2ce6a0f2/session.jsonl": "c6d2727041efe5c48ed7fbb2d02b5f8950e0d55377a6c845cfc54050e81030e1",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-2ce6a0f2/production/2ce6a0f2/session.jsonl": "76aac58462d6f333fbce9b012965310805c73b8f4cd6fb653e0908ed2b7520b6",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-9d25d4e0/native/9d25d4e0/session.jsonl": "d91129bd7ba1ab58177a04e1849553329dc9b8534f389d2a2c87347096fdc50a",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-9d25d4e0/grep/9d25d4e0/session.jsonl": "8c9f9a12239a0af7390a7c20c493f2ea8fb6e7c5bd046cecb7b86774b32e3d6a",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-9d25d4e0/production/9d25d4e0/session.jsonl": "890aa1006f61837ac6c9212c5d87b38fd5111732a66fdbc369837657893a22b8",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-gpt4_731e37d7/native/gpt4_731e37d7/session.jsonl": "1ff5584cd2063ef0ec42a061479776f44c0660a165415f37bb9f3e93dbebfabe",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-gpt4_731e37d7/grep/gpt4_731e37d7/session.jsonl": "932759d8d21918385e5a6f59a2c655e996882653b6b94f6993cda58e53209fc0",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-base-96abdfeb-gpt4_731e37d7/production/gpt4_731e37d7/session.jsonl": "2a99080c8b7f66b95c765ecd6326d87e5c7da97843a6427f7b9402fc674534a8"
-  }
+    []
+  ]
 }

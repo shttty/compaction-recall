@@ -1,0 +1,19 @@
+{
+  "question_id": "3d86fd0a",
+  "split": "dev8",
+  "question": "我是在哪里遇见Sophia的？",
+  "question_date": "2023/05/30 (Tue) 23:14",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": true,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "single-session-user",
+  "originalAssetSha256": "0556bfb9919f43858dffc356c6c218270c5e6e65ba48ed8d0463e17d9c6cf0d5",
+  "textUtf8Sha256": "ed41cb200fab3a83ecf2d8d87c288cd83eaf877b0d2d66f35b60868f935af3ae",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "3d86fd0a",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

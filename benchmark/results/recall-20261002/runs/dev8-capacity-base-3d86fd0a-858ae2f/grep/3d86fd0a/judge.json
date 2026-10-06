@@ -9,17 +9,12 @@
     "question_id": "3d86fd0a",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "I can’t determine where you met Sophia from the conversation so far. You haven’t mentioned meeting anyone named Sophia.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 834.5453201327473,
       "firstVisibleTextFromSpawnMs": 20502.274489030242,
       "firstThinkingFromSpawnMs": 18360.59989896603,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 22085.61198785901,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "bd4eea6b820a3947c8bc2f0107b5fd8824600587c5cf816ef88614174d398889",
     "snapshot": {
       "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
@@ -44,7 +38,6 @@
       "compressionSeconds": 118.48971851309761
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.4537684509996325,

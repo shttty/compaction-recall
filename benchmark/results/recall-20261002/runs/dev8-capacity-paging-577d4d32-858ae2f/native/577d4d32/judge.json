@@ -9,17 +9,12 @@
     "question_id": "577d4d32",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant details:** You said you tend to check your phone around **10:30 pm** and then get into bed around **11:15 pm**. A **10:20 pm phone-free cutoff** was suggested, alongside aiming for a bedtime routine around **10–10:30 pm**.\n\n**Step 2 — Answer:** We didn’t set a specific cutoff for work emails and messages. The suggested cutoff for putting your phone away was **10:20 pm**, so that’s the closest agreed time to stop checking them—though you hadn’t explicitly confirmed it.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 696.8725151382387,
       "firstVisibleTextFromSpawnMs": 21512.36849813722,
       "firstThinkingFromSpawnMs": 15410.941381007433,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 25229.02885079384,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "3d9a1896e36cd43dc4fa3bbc2132633c3292d4439c2c5c32ae54bd6476c6c305",
     "snapshot": {
       "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
@@ -44,7 +38,6 @@
       "compressionSeconds": 81.82407163479365
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 6.048725557047874,

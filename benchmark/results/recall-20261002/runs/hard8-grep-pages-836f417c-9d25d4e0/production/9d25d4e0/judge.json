@@ -9,24 +9,13 @@
     "question_id": "9d25d4e0",
     "arm": "production",
     "outcome": "answered",
-    "answer": "**Relevant information from the chat history:**\n- You got a silver necklace with a small pendant on the 15th of the previous month.\n- You got an engagement ring about a month earlier.\n- You bought emerald earrings at a flea market the previous weekend.\n- You bought your sister a silver necklace as a gift.\n\n**Count:** That’s **4 pieces of jewelry acquired** in the last two months, counting the necklace bought for your sister. If you mean jewelry acquired for yourself only, the count is **3**.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_recall",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_recall"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 688.9109020121396,
       "firstVisibleTextFromSpawnMs": 74966.24847594649,
       "firstThinkingFromSpawnMs": 59471.802751068026,
       "firstToolDeltaFromSpawnMs": 7956.2892250251025,
       "promptToCompleteMs": 75533.26138900593,
-      "providerTTFTMs": null,
       "modelTurns": 7,
       "toolBatches": 6,
       "toolCalls": 6,
@@ -42,7 +31,6 @@
     },
     "modelCalls": 7,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "29e8c84a493937b255ae4783d732edec1dc6fbacbaece4aa158b2dcf0b74a1fd",
     "snapshot": {
       "fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
@@ -51,7 +39,6 @@
       "compressionSeconds": 101.38162532495335
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 5.63821454718709,

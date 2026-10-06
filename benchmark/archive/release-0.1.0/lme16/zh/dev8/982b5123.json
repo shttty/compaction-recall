@@ -1,0 +1,19 @@
+{
+  "question_id": "982b5123",
+  "split": "dev8",
+  "question": "我是几个月前订的旧金山 Airbnb？",
+  "question_date": "2023/05/23 (Tue) 01:05",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": true,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "temporal-reasoning",
+  "originalAssetSha256": "7dfcd5b469e1cf27b7c0924a38566b6d77319a8354c1ca099f09e25a50e2b932",
+  "textUtf8Sha256": "d27e0bd74d26ee25c8bbcf0ea86f38440d6464044e2a26cb41729bf74433671b",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "982b5123",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

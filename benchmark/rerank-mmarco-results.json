@@ -2,9 +2,7 @@
   "model": "mmarco",
   "inputSha256": "496aaff6b5276c0387c7826909063172307bfdb8cfc3d94f05c8b2cb1494c213",
   "loadSeconds": 4.5380619619973,
-  "versions": {
-    "onnxruntime": "1.30.0"
-  },
+  "versions": {},
   "threads": 4,
   "batchSize": 4,
   "maxTokens": 512,
@@ -14,11 +12,6 @@
   "peakRssMiB": 1163.2578125,
   "sanity": [
     {
-      "query": "我在哪里遇见小林？",
-      "documents": [
-        "我在市中心的咖啡馆遇见了小林。",
-        "服务器配置文件放在备份目录。"
-      ],
       "expected": 0,
       "scores": [
         6.599207878112793,
@@ -27,11 +20,6 @@
       "top": 0
     },
     {
-      "query": "服务配置文件保存在哪里？",
-      "documents": [
-        "上周末我跑了五公里。",
-        "服务配置文件保存在 /opt/service/config.yaml。"
-      ],
       "expected": 1,
       "scores": [
         -7.477980136871338,
@@ -40,11 +28,6 @@
       "top": 1
     },
     {
-      "query": "周末跑步的距离是多少？",
-      "documents": [
-        "周末我跑了五公里，然后回家休息。",
-        "周末天气预报说可能下雨。"
-      ],
       "expected": 0,
       "scores": [
         -0.4912218451499939,
@@ -1154,6 +1137,5 @@
       "maxInputTokens": 512,
       "cappedAt512": 19
     }
-  ],
-  "tokenLengthNote": "Recomputed non-padding lengths offline; inference scores and timings unchanged."
+  ]
 }

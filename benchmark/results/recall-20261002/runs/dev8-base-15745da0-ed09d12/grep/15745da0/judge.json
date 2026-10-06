@@ -9,17 +9,11 @@
     "question_id": "15745da0",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Relevant information:** You mentioned owning a collection of vintage cameras from the 1970s and 1980s, but you didn’t say when you started collecting them.\n\n**Reasoning:** The cameras’ age doesn’t tell us how long you’ve collected them.\n\n**Answer:** I can’t determine how long you’ve been collecting vintage cameras from the information provided. If you tell me when you began, I can help work it out. Would you like to share that?",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 789.0573919285089,
       "firstVisibleTextFromSpawnMs": 12137.242743046954,
-      "firstThinkingFromSpawnMs": null,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 12771.526856115088,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +29,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "fe835fcdb5f3b2e24a2ef4cba4095c48a447a0d7cf9b7704341d461683fcd613",
     "snapshot": {
       "fingerprint": "dea55d2c378f6dc8e53ddad28092969ac5f94d2a54be8ead40d5a5632edecf6f",
@@ -44,7 +37,6 @@
       "compressionSeconds": 89.64191072480753
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.344292799010873,

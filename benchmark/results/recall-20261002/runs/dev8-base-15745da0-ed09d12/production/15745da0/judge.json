@@ -9,20 +9,13 @@
     "question_id": "15745da0",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. **Relevant information:** You said, “I’ve been collecting vintage cameras for three months now.”\n2. **Answer:** You had been collecting vintage cameras for **three months** at the time you mentioned it.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 690.7828350085765,
       "firstVisibleTextFromSpawnMs": 25674.731937004253,
       "firstThinkingFromSpawnMs": 25635.59841015376,
       "firstToolDeltaFromSpawnMs": 6666.280730161816,
       "promptToCompleteMs": 27022.170004202053,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "fe835fcdb5f3b2e24a2ef4cba4095c48a447a0d7cf9b7704341d461683fcd613",
     "snapshot": {
       "fingerprint": "dea55d2c378f6dc8e53ddad28092969ac5f94d2a54be8ead40d5a5632edecf6f",
@@ -47,7 +39,6 @@
       "compressionSeconds": 89.64191072480753
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 2.410123326117173,

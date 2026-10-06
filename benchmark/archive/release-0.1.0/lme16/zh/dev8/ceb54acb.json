@@ -1,0 +1,19 @@
+{
+  "question_id": "ceb54acb",
+  "split": "dev8",
+  "question": "在我们之前的聊天里，你建议用“性强迫行为”和另外几个选项来替代某些行为的说法。你能提醒我另外四个选项是什么吗？",
+  "question_date": "2023/05/30 (Tue) 23:22",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": true,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "single-session-assistant",
+  "originalAssetSha256": "a593d9b34122c2018e9bead63f1d13308613fa372fe01bb72fa32007979c3c0f",
+  "textUtf8Sha256": "304bdb39597d415be509a2db167d595f86182811ab1cea96e69412723c11262a",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "ceb54acb",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

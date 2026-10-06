@@ -220,6 +220,12 @@ if __name__ == '__main__':
     parser.add_argument('--task', required=True)
     parser.add_argument('--tool-definition-manifest', type=Path, required=True)
     args = parser.parse_args()
+    for name in ('config', 'luna_config', 'sol_config', 'tool_definition_manifest'):
+        if not getattr(args, name).is_file():
+            parser.error(f'missing external input --{name.replace("_", "-")}: {getattr(args, name)}')
+    for name in ('data_root', 'candidate_root'):
+        if not getattr(args, name).is_dir():
+            parser.error(f'missing external input --{name.replace("_", "-")}: {getattr(args, name)}')
     OUT, DATA, PINNED, COMMIT, TASK = args.output, args.data_root, args.candidate_root, args.commit, args.task
     TOOL_DEFINITION_MANIFEST = args.tool_definition_manifest
     CONFIG = args.config

@@ -1,5 +1,4 @@
 {
-  "candidate": "8149e1f6caece71de148c92a88790e5d35212d9e",
   "actual_sessions_verified": 24,
   "guarded_resume_provider_calls": 0,
   "all_historical_artifacts_rehashed_unchanged": true,
@@ -53,14 +52,8 @@
     "production_answer_tokens_with_cache_vs_base": 370708
   },
   "production_verdict_changes_vs_base": {
-    "2ce6a0f2": [
-      "no",
-      "yes"
-    ],
-    "gpt4_731e37d7": [
-      "yes",
-      "no"
-    ]
+    "2ce6a0f2": [],
+    "gpt4_731e37d7": []
   },
   "grep_offset_nonzero_calls": [
     {

@@ -1,0 +1,19 @@
+{
+  "question_id": "gpt4_a1b77f9c",
+  "split": "hard8",
+  "question": "我读《夜莺》和听《人类简史》和《力量》总共花了多少周？",
+  "question_date": "2022/04/30 (Sat) 06:31",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": true,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "temporal-reasoning",
+  "originalAssetSha256": "a18fe1ae82a002ed2639136997631c6274d0115eed985282e87dc1205518b5f8",
+  "textUtf8Sha256": "4e9ff8479131408d7c2fae835549941fd1e1fa351c22b468466c0c21df254306",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "gpt4_a1b77f9c",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

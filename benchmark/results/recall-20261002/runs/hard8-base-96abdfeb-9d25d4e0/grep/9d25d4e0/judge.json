@@ -9,17 +9,12 @@
     "question_id": "9d25d4e0",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "1. The conversation mentions a watch needing a new strap, another watch needing a battery, an aquamarine ring needing polishing, an antique pearl necklace to be appraised, and lost silver stud earrings to replace.\n2. These were described as repairs or planned actions—not as jewelry acquired in the last two months.\n\n**Answer: The number of pieces acquired can’t be determined from the chat; no recent acquisitions were mentioned.**",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 820.1724481768906,
       "firstVisibleTextFromSpawnMs": 10885.589864104986,
       "firstThinkingFromSpawnMs": 10884.242837084457,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 11750.371475005522,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "2c8187ae2cbeac02780989115efccd98a000a99189d2745ae40d62fa4f52cabe",
     "snapshot": {
       "fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
@@ -44,7 +38,6 @@
       "compressionSeconds": 101.38162532495335
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.249864836921915,

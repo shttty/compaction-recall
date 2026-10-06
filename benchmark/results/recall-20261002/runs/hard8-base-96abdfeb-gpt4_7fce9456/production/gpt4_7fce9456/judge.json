@@ -9,28 +9,13 @@
     "question_id": "gpt4_7fce9456",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. The history says you saw the Brookside townhouse on February 22 and made an offer on February 25.\n2. It also mentions other properties you considered, but it never states the total number you viewed before making that offer.\n\nSo I can’t determine the number from the conversation.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand",
-      "history_expand",
-      "history_recall",
-      "history_expand",
-      "history_grep",
-      "history_recall",
-      "history_expand",
-      "history_recall",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 709.5692260190845,
       "firstVisibleTextFromSpawnMs": 118518.82545114495,
       "firstThinkingFromSpawnMs": 40197.801859118044,
       "firstToolDeltaFromSpawnMs": 15314.536769175902,
       "promptToCompleteMs": 119152.57364907302,
-      "providerTTFTMs": null,
       "modelTurns": 10,
       "toolBatches": 9,
       "toolCalls": 10,
@@ -46,7 +31,6 @@
     },
     "modelCalls": 10,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "bcbf35125ab8fe223a509582fb4bb4c07ac96eab24426bc7253851738b7878cf",
     "snapshot": {
       "fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
@@ -55,7 +39,6 @@
       "compressionSeconds": 112.73651911481284
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.8426960550714284,

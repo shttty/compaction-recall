@@ -24,12 +24,12 @@ cleaned release, LongMemEval_S, or oracle-only histories. Upstream now recommend
 a cleaned release; that does not change the source of these frozen historical
 evaluations. The dataset publisher labels the original dataset MIT.
 
-This repository retains selected evaluation excerpts and outputs, not the full
-external dataset. Synthetic offline Node/Python unit-test fixtures are a separate
-test category: this attribution identifies the archived evaluation source, not
-all unit tests. The package runtime has no LongMemEval dependency and does not
-automatically download data. Raw evaluation material is excluded from the npm
-package; its clean historical aggregate identifies the evaluation source.
+This repository publishes source/processing/run metadata and the 16 user-authorized
+frozen Chinese LME16 question translations, not English original questions, reference
+answers, model outputs or retrieved excerpts. Full datasets and fixed evaluation
+artifacts are obtained separately. Synthetic offline tests are a distinct category.
+The runtime has no LongMemEval dependency or automatic dataset download; benchmark
+materials are excluded from npm, whose aggregate contains only historical metrics.
 
 For retained upstream evaluation material, the copyright and license notice is:
 
@@ -67,11 +67,11 @@ notices distributed with Node or the installed native packages.
 
 ## Frozen 0.1 research archive (git only)
 
-The selected LME16/SWE-chat8 questions, model final answers, original strict and
-1–10 judgments, judging source and exact provenance are indexed at
-`benchmark/archive/release-0.1.0/INDEX.md`. They are excluded from the npm package.
-The archive pins LongMemEval's software MIT notice and the **original dataset's**
-independent MIT card; no cleaned-release license is substituted for that source.
+Sources, processing, fixed-input hashes, runner/judge code and non-text metrics
+are indexed at `benchmark/archive/release-0.1.0/INDEX.md`. Only the 16 frozen Chinese
+LME question translations are retained as question text. Original English/SWE
+questions, references, answers and excerpts are not distributed. Software MIT and
+the original LongMemEval dataset's independent MIT declaration remain identified.
 
 Contains information from [SWE-chat](https://huggingface.co/datasets/SALT-NLP/SWE-chat),
 which is made available under the [Open Data Commons Attribution License (ODC-By)
@@ -79,12 +79,10 @@ v1.0](https://opendatacommons.org/licenses/by/1-0/). Citation: Baumann, Padmakum
 Li, Yang, Yang and Koyejo, *SWE-chat: Real-World AI Coding Sessions in the Wild*,
 COLM 2026, <https://arxiv.org/abs/2604.20779v2>.
 
-ODC-By covers database rights, not automatically the copyright/privacy/personality
-rights of individual transcript contents or transcript-derived excerpts. No
-separate contents license was identified in the pinned card. The source download
-revision is also unverified; local source hashes and the observed card revision
-are recorded separately. Resolve individual-content/derived-material rights
-before redistributing the git-only SWE materials. Source software licenses do
-not imply transcript permission. The archive's `source/license/primary-evidence.json`
-and `manifest.licenses` retain precise evidence and gaps. No private full histories,
-profiles, credentials or provider wire are bundled.
+ODC-By identifies SWE-chat database rights, not an inferred license over every
+transcript's contents; the source download revision is recorded as unknown.
+We do not distribute SWE questions, answers or transcript excerpts. Obtain required
+data upstream under its applicable license and provide matching external
+derived/frozen inputs for exact replay. Software MIT and dataset attribution remain
+separate. The benchmark manifest records hashes/provenance without credentials,
+profiles, private absolute paths, full histories or provider wire.

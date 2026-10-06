@@ -1,0 +1,19 @@
+{
+  "question_id": "gpt4_65aabe59",
+  "split": "dev8",
+  "question": "智能恒温器和网状网络系统，我先装的是哪个？",
+  "question_date": "2023/05/21 (Sun) 04:28",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": true,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "temporal-reasoning",
+  "originalAssetSha256": "921c33866691f6e8652b2fde0db7ad03afccaef46174129a9fe16d2508df8078",
+  "textUtf8Sha256": "317b3e89976776d1847cd441d55991deebebec74c65d9a28df3bc9b054ebe6c2",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "gpt4_65aabe59",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

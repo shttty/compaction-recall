@@ -9,17 +9,12 @@
     "question_id": "9d25d4e0",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. The conversation mentions jewelry you own or need to repair: two watches, an aquamarine ring, and an antique pearl necklace.\n2. You also mentioned wanting to replace lost silver stud earrings, but didn’t say you had bought a replacement.\n3. No jewelry purchases during the last two months were stated.\n\n**Answer: The number of pieces you acquired in the last two months isn’t specified.**",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 692.3172059468925,
       "firstVisibleTextFromSpawnMs": 13511.92031800747,
       "firstThinkingFromSpawnMs": 12637.931562028825,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 16131.55792397447,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "2c8187ae2cbeac02780989115efccd98a000a99189d2745ae40d62fa4f52cabe",
     "snapshot": {
       "fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
@@ -44,7 +38,6 @@
       "compressionSeconds": 101.38162532495335
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 6.3620315350126475,

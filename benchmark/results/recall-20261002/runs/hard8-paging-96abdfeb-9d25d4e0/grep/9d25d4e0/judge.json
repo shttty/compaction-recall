@@ -9,17 +9,12 @@
     "question_id": "9d25d4e0",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Relevant information:** You mentioned a watch needing a new strap, another watch needing a battery, an aquamarine ring needing polishing, an antique pearl necklace needing an appraisal, and replacing lost silver stud earrings. You didn’t say when you acquired these items.\n\n**Conclusion:** The chat doesn’t provide enough information to determine how many pieces of jewelry you acquired in the last two months.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 833.205726929009,
       "firstVisibleTextFromSpawnMs": 13779.376270016655,
       "firstThinkingFromSpawnMs": 12792.18459688127,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 14947.897806065157,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "cc2f1d21b1fc00b40fd8f506733446ba42a5372d8303125761221eb1ae72c015",
     "snapshot": {
       "fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
@@ -44,7 +38,6 @@
       "compressionSeconds": 101.38162532495335
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.281001114053652,

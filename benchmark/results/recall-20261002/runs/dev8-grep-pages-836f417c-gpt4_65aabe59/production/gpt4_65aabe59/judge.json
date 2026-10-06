@@ -9,21 +9,13 @@
     "question_id": "gpt4_65aabe59",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. You said you set up your smart thermostat about a month ago.\n2. You said you upgraded to a mesh network system about three weeks ago.\n3. Since a month ago was earlier, you set up the **smart thermostat first**.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 693.1354340631515,
       "firstVisibleTextFromSpawnMs": 30118.379661114886,
       "firstThinkingFromSpawnMs": 30009.451965102926,
       "firstToolDeltaFromSpawnMs": 9248.231641948223,
       "promptToCompleteMs": 30280.162448994815,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 3,
@@ -39,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "0e85f5691ea038832a7e0427b8922d0069a09b20bd2d6b777ea37bd5860fe45a",
     "snapshot": {
       "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
@@ -48,7 +39,6 @@
       "compressionSeconds": 88.37053048610687
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 2.7180134640075266,

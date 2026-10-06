@@ -9,17 +9,12 @@
     "question_id": "3d86fd0a",
     "arm": "native",
     "outcome": "answered",
-    "answer": "Answer (step by step):\n\n1. I checked the conversation for mentions of Sophia and where you met her.\n2. The chat mentions Sarah at a Bible study and other friends, but it doesn’t say where you met Sophia.\n\nSo I can’t determine where you met Sophia from the information here.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 691.5093569550663,
       "firstVisibleTextFromSpawnMs": 19065.006338059902,
       "firstThinkingFromSpawnMs": 18918.01417293027,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 19530.4494490847,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "73423bcfcb0000723630917001135f073f821b395db7c1692bc1895fe4d17097",
     "snapshot": {
       "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
@@ -44,7 +38,6 @@
       "compressionSeconds": 118.48971851309761
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.587472161045298,

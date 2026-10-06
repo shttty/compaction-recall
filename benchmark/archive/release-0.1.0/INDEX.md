@@ -1,76 +1,51 @@
-# 0.1.0 — frozen benchmark materials
+# 0.1 benchmark：来源、处理与复现边界
 
-This is a small, offline archive of already-completed runs, not new evaluation and not proof of stable model accuracy. No model calls, paid rejudging, new compression, profile changes or dataset downloads were performed for archival. Historical benchmark files elsewhere remain unchanged. All benchmark material must remain excluded from npm (the release package allowlist is owned by the integrator).
+公开索引是 [manifest.json](manifest.json)。保留七轮、96个完成case的非正文指标与原输入/输出hash；不公开英文原题、参考/gold正文、模型答案、裁判理由、检索摘录或全文会话。唯一题面例外是用户授权的 [LME16中文冻结译文](lme16/zh/)，16题逐字UTF-8 hash及原question ID在manifest中。所有benchmark材料排除在npm之外。
 
-## Navigation and byte preservation
+## 来源
 
-- [manifest.json](manifest.json): complete archive-material inventory (excluding this index and the manifest itself), source paths, SHA-256, byte counts, per-run models/efforts, candidate commits/archive hashes, prompt hashes, snapshot provenance and original execution-source inventories. The separately added validator is `test/test_release_benchmark_archive.py`.
-- `lme16/en/<run>/` and `lme16/zh/<run>/`: readable `questions-and-references.json`, compact `summary.json`, and unchanged `originals/inputs`, `originals/results`, `originals/judge-v2`, `originals/grade-1to10`.
-- `swe-chat8/en/<run>/`: the same answer/judgment hierarchy. Questions/gold are byte-frozen once in [material/questions.json](swe-chat8/en/material/questions.json) and [material/gold.json](swe-chat8/en/material/gold.json), shared by both runs.
-- [LME gold coordinates](lme16/material/gold-evidence-coordinates.json): all 51 marked source session/turn coordinates and original dataset SHA-256. No corpus text or histories are included.
-- [Minimal historical baseline index](lme16/material/baseline-index.json): native, Chinese rawfts and token-loss-reject sources with manifest/aggregate hashes. These are links/identity/score records only, not overwritten or relabeled experiments.
-- [SWE native binding projection](swe-chat8/en/material/native-bindings.compact.json): six source-file hashes, native compaction IDs/cut points/summary hashes, snapshots and four families. Huge branch-entry arrays are represented by counts; the unchanged external original has its own SHA-256.
-- [Current source authority](swe-chat8/en/material/CURRENT-SOURCE.md), [candidate selection](swe-chat8/en/material/pi-selected-cap5.json), [historical family selection](swe-chat8/en/material/selected-families.json). The latter two are historical discovery assets, not authorization to expand this pool: the candidate selection contains extra sessions and the family list contains an out-of-pool session. The six bindings and CURRENT-SOURCE determine this archive. No OMP200 or pi-mono pool is used.
-- [Construction provenance checks](provenance-checked.json): read-only equality checks for all six actual SWE source files/native snapshots and frozen small question/gold assets; no session bytes copied.
+- 原始 [LongMemEval_M](https://huggingface.co/datasets/xiaowu0162/longmemeval/tree/2ec2a557f339b6c0369619b1ed5793734cc87533)：`longmemeval_m`，SHA-256 `fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9`。不是cleaned版本。固定DEV8加`hard8-turn-label-v2`共16个ID；原英文题及原始历史可按ID从外部数据提取。
+- [上游软件/判题prompt](https://github.com/xiaowu0162/LongMemEval/tree/9e0b455f4ef0e2ab8f2e582289761153549043fc)与原始数据分别声明MIT；保留[软件notice](source/LongMemEval-prompt-notice.md)及[来源许可证据](source/license/primary-evidence.json)。
+- [SWE-chat](https://huggingface.co/datasets/SALT-NLP/SWE-chat)：观察card revision为`202b071f18e03c79df5a7287565ce2ebc5ee7756`，下载revision未知。SWE-chat8是用户授权、从六份本地Pi session派生的八道回忆题，**不是上游现成QA题集**。六源池去重为四个使用家族，每家族两题；manifest保留文件/hash、native compaction、firstKeptEntryId和证据坐标，不保留正文。ODC-By数据库归属与软件MIT不混用；数据按上游适用许可另取。
 
-`originals/` means byte-for-byte copies, never reformatted JSON. Each original row in manifest records its actual external source and source-identical SHA-256. Raw original `result.json` records retain frozen final-answer text, machine verdict/rawVerdict and original binding/attempt metadata, including bounded retrieved tool excerpts. They do not contain full session/wire files. `questions-and-references.json`, compact native metadata, summaries and the manifest are separate curated projections, not originals. Absolute external coordinates are provenance only, not packaged corpus or an instruction to read profiles.
+## 处理与固定输入
 
-## Recorded results
+LME按会话时间排序，保持原question date；四段历史、三次native Pi compaction，复用真实snapshot。中文由deepseek-flash翻译并有冻结复核，2026-10-03冻结；本树只分发最终中文题面，不含翻译历史语料。公开题面不替代runner需要的`corpus.json`、`corpus-zh.json`、`question-zh.json`完整外部输入。
 
-Judges in every run: Luna `clp/gpt-6-luna/xhigh`; Sol `clp/gpt-6.1-sol/medium`. Compression was historical native snapshot reuse, not new release evaluation. All answer/strict/graded cases below are present: **96 answers, 192 strict judgments and 192 1–10 judgments** across seven runs (80 LME answers, 16 SWE answers). LME has 16 questions per language (dev8 + hard8); SWE has eight questions over four correlated families, not eight independent samples.
+`778164c6`参考修订的版本/hash与旧中文grading input分开；没有重判。SWE派生题面、标准答案和坐标在运行前冻结，构造题集前provider调用为0，没有新压缩调用。七轮candidate、SDK、tool/prompt配置、model/effort/concurrency、snapshot和判分输入hash分开记录，不能合称同一版本实验。
 
-| Run | Answer model / effort | Candidate | Luna strict | Sol strict | Luna graded | Sol graded |
-|---|---|---|---:|---:|---:|---:|
-| lme16-en-warning-jieba-20261006 | gpt-6-luna / high | 0ecff723 | 10/16 | 11/16 | 127/160 | 128/160 |
-| lme16-en-sol-high-warning-jieba-20261006 | gpt-6.1-sol / high | 0ecff723 | 9/16 | 9/16 | 129/160 | 131/160 |
-| lme16-en-luna-aggregation-prompt-20261006 | gpt-6-luna / high | 78200477 | 7/16 | 7/16 | 112/160 | 119/160 |
-| lme16-en-sol-aggregation-prompt-20261006 | gpt-6.1-sol / high | 78200477 | 8/15 | 8/16 | 135/160 | 134/160 |
-| lme16-zh-warning-jieba-20261006 | gpt-6-luna / high | 0ecff723 | 9/16 | 9/16 | 123/160 | 123/160 |
-| swechat-dev8-warning-jieba-20261006 | gpt-6-luna / high | 0ecff723 | 6/8 | 6/8 | 78/80 | 76/80 |
-| swechat-dev8-aggregation-prompt-20261006-real | gpt-6-luna / high | 78200477 | 7/8 | 7/8 | 74/80 | 75/80 |
+原始strict/1–10机器指标保留；judge-error不是答错，也不补造得分。SWE最新strict仍为两裁判各7/8；sw08人工接受独立列入`humanReview`，不改称机器8/8。旧性能JSON仅作历史，白名单投影去正文/个人路径，原数字未重标为当前SQLite性能。
 
-Candidate/prompt conditions differ. `0ecff723` is warning+jieba; `78200477` adds the authorized English aggregation paragraph. Full commit/archive and judge-prompt hashes are in each run's manifest entry; raw judgment `inputSha256` binds question/reference/model-answer prompts. Configuration metadata records Porter + Han bigrams, autoGate 280, snippet 240, query timeout 5000ms and jieba. No score change here establishes a causal improvement.
+## 现有命令及外部前提
 
-### Reference disputes and human review
+这里保留实际用过的runner闭包：[source/latest-used/benchmark/](source/latest-used/benchmark/)。不是新下载器或恢复框架。`sourceVersions`记录每轮原代码hash；最新闭包并不覆盖所有旧轮的逐字源码。CLI仅增加外部输入缺失检查，原冻结源码hash不改写。逐字回放须自行提供匹配hash的旧代码、candidate包、snapshot、输入及配置；上游链接不能恢复96份冻结答案。
 
-- **Current reusable reference for `778164c6`, for both language views:** [frozen revised snapper answer.json](lme16/en/lme16-en-warning-jieba-20261006/originals/inputs/dev8/778164c6/answer.json), version `dev8-778164c6-reference-fix-20261006`, SHA-256 `83f7afe4cf30ec34beb8389d298af2d99b052491aa021d3edc1adef3d821d49b`; [frozen judging reference/rule](lme16/en/lme16-en-warning-jieba-20261006/originals/inputs/dev8/778164c6/judge.json), SHA-256 `5f88f2e65e02c98a77b4b29f0f6af5e0344df24af3de38e55f0f02227e3be75a`. It identifies Grilled Snapper with Mango Salsa and explains that the specifically Jamaican Escovitch Fish recommendation is a different clue. All other gold is unchanged.
-- **Historical Chinese grading input, not the current reference:** [original Chinese-run answer.json](lme16/zh/lme16-zh-warning-jieba-20261006/originals/inputs/dev8/778164c6/answer.json), SHA-256 `ce3810aa9252521789f13530b3fd6eaf685835d9d32902d0e2926e76618f9edf`. The recorded original input path was later changed; these historical bytes were recovered from the authorized reference-fix backup. Actual backup coordinates are recorded as the source, rather than claiming the mutable original path still matches. Every per-run `questions-and-references.json` displays that run's actual grading inputs; the older Chinese row must not be mistaken for or replace the current reusable reference above. Frozen machine judgments remain unchanged.
-- Date/time/wording/reference disputes are annotation only. Question dates stay original. No gold repair beyond the already-frozen English snapper revision, and no rejudging.
-- [sw08 user manual review](swe-chat8/en/material/sw08-human-review.json) accepts the latest answer as semantically correct: it names fix commit `9ae87932b` but says the installed program does not yet include it. This human acceptance is not a machine verdict. Both latest machine strict results remain **7/8**; sw08 remains machine-incorrect. Never label these machine results 8/8.
-- Only `swechat-dev8-aggregation-prompt-20261006/real` is a valid latest SWE accuracy run. Initial root outputs were a local serialization/description blocker before provider requests; they are not included in the accuracy denominator or copied as answers.
-
-## Judging rules and actually used source
-
-[Latest used source](source/latest-used/benchmark/coding-recall/e2e/) preserves the actual LME native-answer / strict-v2 / immutable 1–10 flow and its imported dependencies, in the original relative layout. It is archival source, not production `src` and not a new runner platform. Entry is `lme-zh-run.py` (`--stage flow`); strict judging uses `rejudge-v2.py` + `judge-v2.py`; 1–10 judging uses `lme-grade-run.py` + `retrieval-score-answers.py`. SDK transports, configuration validation, observer, context estimator, native builder, tool/context evidence helpers and reporting imports are retained. The imported historical `omp-rpc.py` is retained as a dependency; that does not authorize the old OMP dataset route.
-
-Strict-v2 evaluates the already-written final answer, using only question, reference, full final answer and original question date; guesses/hedging and malformed verdicts are separately represented. The exact prompt/parser is in [judge-v2.py](source/latest-used/benchmark/coding-recall/e2e/judge-v2.py). The 1–10 prompt/parser is in [retrieval-score-answers.py](source/latest-used/benchmark/retrieval-score-answers.py). Strict correctness is never inferred from a score threshold. Missing/provider/parser/answer failures are unscored, not silently wrong/zero. No prior/peer verdict or retrieval report is supplied to judges. Full prompt hashes and answer-file hashes remain in original verdicts.
-
-SWE actual task runner is preserved unchanged as [latest used](source/originals/run-swechat.latest-used.py) and [baseline](source/originals/run-swechat.baseline.py). Its original task-only defaults reused external prior config files. The derived copy [run-swechat.py](source/latest-used/benchmark/coding-recall/e2e/run-swechat.py) makes paths relative to the archived source layout and **requires explicit external `--config`, `--luna-config`, `--sol-config`, output/data/candidate/commit/task/tool-definition arguments**. This is a minimal configuration cutover of that existing script, not execution evidence or a new release platform. Provider/model/effort defaults are not bundled. The reusable source is separately hashed as curated material; immutable original bytes are untouched.
-
-The external helper `lme-bench/bench.py` is **not** copied wholesale: only the existing `evaluation-config.py` allowlist of chronology functions and ASK/JUDGE/ABSTAIN constants is projected into [lme-helper.py](source/latest-used/benchmark/lme-helper.py). Source hash and exact source line ranges are in `helperProjection`; provider defaults and unrelated configuration are excluded.
-
-`sourceVersions` records each frozen run's source inventory. Some older mutable codingbench source versions are no longer present at their recorded paths (Chinese warning run and first English warning run). Their historical hashes remain explicit; latest-used source is never passed off as those old byte versions. Baseline SWE runner was recoverable from the frozen backup. External helper version is represented by its safe projection, not an unchanged module copy. This gap does not change frozen answers/verdicts or their hashes.
-
-## Offline reuse and boundaries
-
-From the repository root, integrator runs once:
+先在本机另行准备显式路径：`DATA_ROOT`完整题集、`CONFIG`主评测JSON、`LUNA_CONFIG`/`SOL_CONFIG`裁判配置、`CANDIDATE`候选manifest、`PINS`锁定来源、`PREFLIGHT`授权预检、`SNAPSHOT_SOURCE`冻结snapshot树、`TASK_ID`、`COMMIT`、`ARCHIVE_SHA256`。配置含SDK/helper、模型/provider与协议；凭据不入git。执行还要求原runner的8-GiB/no-swap cgroup条件及可用Pi SDK。**下面只是命令，不是本次授权进行模型运行。**
 
 ```sh
-PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_release_benchmark_archive.py'
+RUNNER=benchmark/archive/release-0.1.0/source/latest-used/benchmark
+PYTHONDONTWRITEBYTECODE=1 python3 "$RUNNER/coding-recall/e2e/lme-zh-run.py" --help
+PYTHONDONTWRITEBYTECODE=1 python3 "$RUNNER/coding-recall/e2e/run-swechat.py" --help
+
+# 原英文LME原题按固定ID准备：现有prepare读取显式外部配置。
+# CONFIG中data_path指向外部原始M数据、helper_path指向匹配helper、output_dir指向新外部目录。
+PYTHONDONTWRITEBYTECODE=1 python3 benchmark/evaluate.py prepare --set both --config "$CONFIG"
+
+# 实际LME运行入口；完整外部历史/题集及native snapshot需提前提供。
+PYTHONDONTWRITEBYTECODE=1 python3 "$RUNNER/coding-recall/e2e/lme-zh-run.py" \
+  --data-root "$DATA_ROOT" --config "$CONFIG" \
+  --luna-config "$LUNA_CONFIG" --sol-config "$SOL_CONFIG" \
+  --candidate "$CANDIDATE" --pins "$PINS" --preflight "$PREFLIGHT" \
+  --commit "$COMMIT" --archive-sha256 "$ARCHIVE_SHA256" --task "$TASK_ID" \
+  --snapshot-source "$SNAPSHOT_SOURCE" --output "$OUT/lme16" \
+  --language en --arm pi-restored-grep --han-phrase-trial jieba --workers 8 --stage flow
+
+# SWE本地派生冻结题集及选定snapshot必须由使用者提供，不能只下载上游还原。
+PYTHONDONTWRITEBYTECODE=1 python3 "$RUNNER/coding-recall/e2e/run-swechat.py" \
+  --data-root "$SWE_DATA_ROOT" --candidate-root "$CANDIDATE_ROOT" \
+  --config "$SWE_CONFIG" --luna-config "$LUNA_CONFIG" --sol-config "$SOL_CONFIG" \
+  --tool-definition-manifest "$TOOL_DEFINITION_MANIFEST" \
+  --commit "$COMMIT" --task "$TASK_ID" --output "$OUT/swe-chat8"
 ```
 
-The validator requires no external corpus, profiles, SDK, credentials, network or provider. It checks all archived hashes/byte counts, run coverage, answer-to-judgment SHA binding, recomputed machine summaries and separate sw08 human acceptance. It was **not run by the archival worker**, per the one final integration-check contract. Hash/source equality was checked during copy construction, not claimed as a test run.
-
-Read or reuse archived questions/references/answers/judgments directly for offline comparison. Do not run historical report scripts against the reduced archive: those original scripts correctly expect full external run/session/hash inventories, intentionally excluded here. Re-running live evaluation needs separately authorized external corpus/native snapshots, candidate/pins/preflight, installed SDK, dependency lock/install and **explicit external configuration**, in a new external output directory. Existing `benchmark/evaluate.py` remains the canonical public external-config interface. No instruction here grants paid-run authorization or permits overwriting frozen runs. Use the release repository's lock/install for dependencies; the source snapshot alone is not an installable package.
-
-## Licenses and precise evidence gaps
-
-- Repository-authored runner/judging code: MIT, under the release repository's existing `LICENSE`.
-- LongMemEval prompt/software code: MIT, copyright 2024 Di Wu; [pinned upstream LICENSE](source/license/LongMemEval-LICENSE.txt), software revision `9e0b455f4ef0e2ab8f2e582289761153549043fc`. Existing [local third-party notice](source/LongMemEval-prompt-notice.md) remains unchanged.
-- LongMemEval **original dataset**: [original dataset card](source/license/longmemeval-original-card.txt) independently declares `license: mit`, pinned at `2ec2a557f339b6c0369619b1ed5793734cc87533` in [xiaowu0162/longmemeval](https://huggingface.co/datasets/xiaowu0162/longmemeval). Local `lme-bench/README.md` line39 explicitly identifies this original dataset. The upstream tree API's `longmemeval_m` LFS SHA-256 is `fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9`, exactly matching archived original dataset provenance. This dataset license finding is independent of the software MIT license. Upstream marks it deprecated; the [replacement cleaned card](source/license/longmemeval-cleaned-card.txt), revision `98d7416c24c778c2fee6e6f3006e7a073259d48f`, is also MIT but is **not substituted** for the frozen original data. Chinese translations/local revised reference still lack a separate local license declaration; upstream attribution is retained without inventing a new copyright grant.
-- SWE-chat **database**: the genuine local `sessions.parquet` viewer URL metadata identifies [SALT-NLP/SWE-chat](https://huggingface.co/datasets/SALT-NLP/SWE-chat); no source URL was guessed. Its [pinned dataset card](source/license/swe-chat-card.txt), revision `202b071f18e03c79df5a7287565ce2ebc5ee7756`, declares `license: odc-by`. All six selected transcript filenames are present in this pinned dataset's primary API metadata. The original local download revision remains unverified (local bytes retain their frozen SHA-256); the observed card revision is not misrepresented as the download revision. Anonymous raw-card fetch initially returned HTTP401; pinned resolve succeeded without credentials.
-- Attribution: **Contains information from [SWE-chat](https://huggingface.co/datasets/SALT-NLP/SWE-chat), which is made available under the [Open Data Commons Attribution License (ODC-By) v1.0](https://opendatacommons.org/licenses/by/1-0/).** Card citation: Baumann, Padmakumar, Li, Yang, Yang and Koyejo, *SWE-chat: Real-World AI Coding Sessions in the Wild*, COLM 2026, [paper](https://arxiv.org/abs/2604.20779v2).
-- **Remaining SWE content-rights gap:** ODC-By's preamble and sections2.2(a)/2.4 explicitly distinguish Database rights from individual Contents copyright/privacy/personality rights. The database license is not asserted as permission over individual transcript contents or local authored derivatives, nor is a source repository's software license inferred as transcript permission. No separate contents license was identified in the fetched card. Resolve these rights before redistributing transcript-derived excerpts.
-- [Primary evidence record](source/license/primary-evidence.json) retains pinned URLs, exact fetched document hashes, dataset/software revisions, upstream LFS identity and the six selected-file membership checks. Only small license/card metadata was fetched; no corpus or transcript was downloaded.
-
-Verified licenses and remaining precise gaps are recorded in `manifest.licenses`; preserve attribution and resolve remaining derived-material/content-rights questions before redistributing this git-only research archive. These licenses do not authorize private sessions or credentials. No full private corpus, config/profile/auth, provider wire, huge aggregate/report body, dependency installation or model call is included. The earlier selected-payload scan found no `sk-`, `ghp_` or long Bearer-token signatures; this bounded check is not a claim of a comprehensive secret audit.
+逐字复现缺口：翻译历史/复核过程、修订参考、SWE自制题集、旧轮源码、candidate包、native snapshot及原始输出均需匹配`externalArtifacts`/`sourceVersions`的外部资产。模型重跑即使输入一致也不保证逐字答案一致。公开中文题面可校验16题译文；公开元数据可核对机器分数/错误、人工复核分离及来源绑定，不能重建被外置的正文。

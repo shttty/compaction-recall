@@ -9,17 +9,12 @@
     "question_id": "gpt4_65aabe59",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "1. I don’t see a message in the conversation saying when you set up either device.\n2. A smart thermostat was mentioned as a general suggestion, but not as something you set up. The mesh network system wasn’t discussed.\n\nSo I can’t determine which one you set up first from the available chat history.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 803.4851648844779,
       "firstVisibleTextFromSpawnMs": 12790.642600040883,
       "firstThinkingFromSpawnMs": 12513.47613404505,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 12759.760057087988,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "0e85f5691ea038832a7e0427b8922d0069a09b20bd2d6b777ea37bd5860fe45a",
     "snapshot": {
       "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
@@ -44,7 +38,6 @@
       "compressionSeconds": 88.37053048610687
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 7.80101987789385,

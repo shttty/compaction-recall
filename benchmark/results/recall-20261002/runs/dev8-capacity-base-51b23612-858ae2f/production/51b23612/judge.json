@@ -9,20 +9,13 @@
     "question_id": "51b23612",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. **Relevant detail from our earlier conversation:** The Soviet cartoon mentioned was **“Nu, pogodi!”**\n2. **How it was described:** The earlier answer said it mocked Western culture and portrayed the Soviet Union as superior.\n3. **Answer:** The cartoon you’re thinking of is **“Nu, pogodi!”** A clarification: that earlier description may have overstated its political role; it’s best known as a comic chase series, rather than primarily as anti-Western propaganda.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 717.9058459587395,
       "firstVisibleTextFromSpawnMs": 27193.89835605398,
       "firstThinkingFromSpawnMs": 25655.538022052497,
       "firstToolDeltaFromSpawnMs": 6310.09463313967,
       "promptToCompleteMs": 28734.902259893715,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "1269257a49afd2ff54d08814bd9638e6d140c62edf0bc4429587cdab1acad1b7",
     "snapshot": {
       "fingerprint": "3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8",
@@ -47,7 +39,6 @@
       "compressionSeconds": 140.69230400095694
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 3.7355835121124983,

@@ -1,0 +1,19 @@
+{
+  "question_id": "28dc39ac",
+  "split": "hard8",
+  "question": "我总共花了多少小时玩游戏？",
+  "question_date": "2023/05/30 (Tue) 22:11",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": false,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "multi-session",
+  "originalAssetSha256": "723583b1d050dc69d3f40a6ae2a9b62e0d934d8a84c98a8cc3ae938d0806923e",
+  "textUtf8Sha256": "b5fe82f5a5df886492188deb0fd4e33c39f7d0171ded0d44613fbedda52529d0",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "28dc39ac",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

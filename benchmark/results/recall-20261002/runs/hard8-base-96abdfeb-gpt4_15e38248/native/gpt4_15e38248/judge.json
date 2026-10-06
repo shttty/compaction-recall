@@ -9,17 +9,12 @@
     "question_id": "gpt4_15e38248",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant information:** The conversation mentions moving apartments and decluttering, but it doesn’t mention buying, assembling, selling, or fixing any furniture.\n\n**Step 2 — Answer:** **0 pieces of furniture are documented** in the conversation.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 686.455839080736,
       "firstVisibleTextFromSpawnMs": 11125.51927799359,
       "firstThinkingFromSpawnMs": 9999.317492125556,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 10765.660495962948,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "893ebcf2bb67393668f0d12655a220fa920fe1267689f33f09c187ad3fdb8deb",
     "snapshot": {
       "fingerprint": "23e7e9d70cb857784467e4c665f09e50654643dc9e376e730daa56a9ad2d56df",
@@ -44,7 +38,6 @@
       "compressionSeconds": 112.86164950625971
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.525509821018204,

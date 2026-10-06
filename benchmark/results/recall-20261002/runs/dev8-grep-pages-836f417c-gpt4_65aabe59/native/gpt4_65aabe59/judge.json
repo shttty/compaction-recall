@@ -9,17 +9,12 @@
     "question_id": "gpt4_65aabe59",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. **Relevant information:** The conversation mentions a smart thermostat only as a general energy-efficiency suggestion. It doesn’t mention you setting one up, or setting up a mesh network system.\n2. **Conclusion:** I can’t tell which device you set up first from the chat history.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 672.2482182085514,
       "firstVisibleTextFromSpawnMs": 10689.821978099644,
       "firstThinkingFromSpawnMs": 10478.403366170824,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 12899.40572809428,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "0e85f5691ea038832a7e0427b8922d0069a09b20bd2d6b777ea37bd5860fe45a",
     "snapshot": {
       "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
@@ -44,7 +38,6 @@
       "compressionSeconds": 88.37053048610687
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 6.570996236987412,

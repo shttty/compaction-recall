@@ -9,17 +9,11 @@
     "question_id": "gpt4_7fce9456",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. **Relevant information:** The conversation mentions that you and your partner were buying a home and had been looking for about three months, but it does not say how many properties you viewed or mention a townhouse in Brookside.\n2. **Answer:** I can’t determine the number from the chat history provided.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 661.7189741227776,
       "firstVisibleTextFromSpawnMs": 10475.240471074358,
-      "firstThinkingFromSpawnMs": null,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 10513.034297153354,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +29,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "17debe5f5778fe4ed6e86542034ebb5793ed47f78eb4b598c5045a794494c420",
     "snapshot": {
       "fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
@@ -44,7 +37,6 @@
       "compressionSeconds": 112.73651911481284
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.884941539959982,

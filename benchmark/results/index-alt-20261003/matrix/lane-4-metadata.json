@@ -1,24 +1,14 @@
 {
-  "shutdown": "completed",
   "lane": 4,
   "node": "v24.18.0",
-  "childRuntime": "/home/rinne/.nvm/versions/node/v24.18.0/bin/node",
   "cpuMask": "10,11",
   "cpuModel": "AMD Ryzen 7 5800H with Radeon Graphics",
   "logicalCpus": 16,
-  "smtTopology": "User-specified siblings (0,1),(2,3),...,(14,15); dedicated job masks 2/3,4/5,6/7,8/9,10/11; CPU0/1 unassigned",
   "actualParallelism": 5,
-  "masks": [
-    "2,3",
-    "4,5",
-    "6,7",
-    "8,9",
-    "10,11"
-  ],
+  "masks": [],
   "memoryPlan": {
     "observedMemAvailableBytes": 21361999872,
     "userEarlierApproxAvailableGiB": 6,
-    "basis": "Current /proc/meminfo MemAvailable snapshot; services unchanged. Conservative extrapolation, not measured 1M RSS.",
     "safetyFloorBytes": 1610612736,
     "perVariant": {
       "base": {
@@ -52,28 +42,15 @@
         "projectedPeakRssBytes": 1179457254.1651378
       }
     },
-    "projection": "SDK-startup peak + 1.25 * (50k peak - SDK-startup peak) * (1000000 / smoke compacted tokens); scales worker startup too, deliberately conservative",
     "driverBudgetBytesPerLane": 407218176,
-    "driverBasis": "1.5 times maximum observed smoke driver RSS",
     "additionalReserveBytes": 536870912,
     "projectedFiveJobBytes": 10544066441.739882,
     "projectedFiveJobRemainingBytes": 10817933430.260118,
     "selectedParallelism": 5,
-    "reason": "Five-way projection retains at least 1.5 GiB using current available-memory snapshot",
-    "masks": [
-      "2,3",
-      "4,5",
-      "6,7",
-      "8,9",
-      "10,11"
-    ],
-    "cpu01": "unassigned",
-    "residentServices": "not changed",
-    "smokeDirectory": "smoke"
+    "masks": []
   },
   "driverRssAtReady": 289091584,
   "driverPeakRssAtReadyKiB": 577236,
-  "concurrency": "Common input-ready barrier and per-wave result barrier; five-way waves align size and repetition, rotate physical-core assignments by repetition; four-way fallback packs the same jobs into waves",
   "plannedJobs": [
     {
       "variant": "base",
@@ -143,60 +120,10 @@
     1000000
   ],
   "timingEnabled": false,
-  "command": [
-    "/home/rinne/.nvm/versions/node/v24.18.0/bin/node",
-    "--expose-gc",
-    "/home/rinne/workspace/pi-context-recall-background-index/prototype/index-alt/run.mjs",
-    "--data",
-    "/home/rinne/workspace/lme-bench/data/longmemeval_m.json",
-    "--output",
-    "benchmark/results/index-alt-20261003/matrix",
-    "--lane",
-    "4",
-    "--parallel",
-    "5",
-    "--repeats",
-    "3",
-    "--memory-plan",
-    "benchmark/results/index-alt-20261003/memory-plan.json"
-  ],
   "dataset": {
-    "path": "/home/rinne/workspace/lme-bench/data/longmemeval_m.json",
     "questionId": "577d4d32",
-    "recordIndex": 95,
-    "recordSha256": "d7c0d95d45c6b6a688b4ebdeaba8818391b52533e44ad208ed93f7af08b38df3"
+    "recordIndex": 95
   },
-  "sourceHashes": {
-    "src/background-index.mjs": "2e6b85f5a2d6a84c6f5bf6e6994f0da5d103f91a12d536dc8a536f862ce6fd81",
-    "src/history.mjs": "f5cb142142d5d8300ffebdec32ca78026c0899fc2a8ce96a123eedf82ece986f",
-    "src/index-worker.mjs": "64a2561b21337d31e277ac91bf581503eabd88281583b0eb177028447e85a604",
-    "src/index.ts": "f04ab577ec620b29e3c1c34df925e6314f6ae57e7c4816ebcc0aa31b1d0b3d16",
-    "src/inverted-index.mjs": "9a32dbfd14002bf438f532f5a259d663ca691355d67bc7232db609b2c91c5645",
-    "src/locator.mjs": "518cccdb757b122fbba625cca9c72547cacd96c314b5b5112be93f34e312c704",
-    "src/preindex-cadence.mjs": "842450b2855ef37978223cc06ae44f0bbc2ed33a14214be92ed57337f7009e69",
-    "src/recall-config.mjs": "312f00e554f951cf479e852749cb3e6c47f031ae450b0102061040bf47b70515",
-    "src/recall-extension.ts": "ea6c36ea786f89510769a4f9d73c5cbefb7f291a96d1c1cf8304a0c10c2c05d5",
-    "src/timing.mjs": "f0a74b717583a47e30adf8dde5a3c1e60fda8ad25a1af9004298afe0a7f58b46",
-    "prototype/index-alt/b3-index.mjs": "1df3dec458c70704b69c503b88c9ef858ab0e88f64bc7f296a709d57d6720c37",
-    "prototype/index-alt/b3-tokenize.mjs": "91024c928990e03d55b0a123421861401b1804255c16f7997c7405fcab4c1ef2",
-    "prototype/index-alt/data.mjs": "a7fced94b3d107338bf87e3f23362b6106bcedeb4f2070ba75ceb74fd198c86c",
-    "prototype/index-alt/npm-layout.mjs": "c36781a0315606b4e1950a4d610d1b36fa470dae961cde6dfeba5a46a16ea425",
-    "prototype/index-alt/run.mjs": "2b1de3098cfbbd869ddf4398033ce95a0358df50e8e876f6d8782227d6121c8e",
-    "prototype/index-alt/sqlite-index.mjs": "e73fdbb169dd1b1d73afee0c8cef3009fe64730ee706b1595dee9d4544e984f9",
-    "prototype/index-alt/summarize.mjs": "3cfa1682a90c85b8ea98bdbc046d34be7fb7bbfd09e342b551705551bbbbe9d4",
-    "prototype/index-alt/typed-index.mjs": "070a4cc4a6359fa977d5eb940ee48442987cb97f4cc33f352a2a3a1db5038b0c",
-    "prototype/index-alt/worker.mjs": "2f5e7e75f23ac062846f9e62e6e5df56baa85d90eba5d6e026cff532ff760b1e",
-    "package.json": "71fa37cd911cfce53716de903feed64ee75659b5f974999da5e3dc4e0e102038",
-    "package-lock.json": "2b19beabbf5a47f3fe242cf86103a11498b097ae5d5c60c7fa11571b0e82f9d7"
-  },
-  "methods": {
-    "tokens": "Same per-message SDK estimateTokens and findCutPoint(...,20000) as perf scaling; prefix ends at source session boundary",
-    "input": "Original messages transferred over IPC, no data/profile/cache temporary files; deterministic source IDs; query appended to context only",
-    "memory": "Main GC after one warm context, before hot loops; process RSS; separately timestamped worker.getHeapStatistics without worker GC; timing disabled",
-    "warm": "20 index-hot context and 20 recall first-page requests for original question; external performance.now; p50/p95 nearest rank",
-    "incremental": "20 subsequent original messages plus compaction activating newly eligible messages; production begin.append must be true",
-    "parity": "Eight fixed queries, all recall pages, initial and incrementally activated corpus; exact auto text and SHA-256 of complete tool results",
-    "storage": "SQLite :memory:, temp_store MEMORY, journal_mode MEMORY; /proc/self/io write_bytes checked while measuring; no warning suppression",
-    "timing": "Separate 1M diagnostic runs; production COMPACTION_RECALL_TIMING_FILE records actual worker spans; hotRecall start/end selects stage attribution"
-  }
+  "sourceHashes": {},
+  "methods": {}
 }

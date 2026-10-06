@@ -9,17 +9,11 @@
     "question_id": "982b5123",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. **Relevant information:** The conversation mentions an Airbnb in Portland’s Pearl District, but it does not mention booking an Airbnb in San Francisco or when such a booking occurred.\n2. **Conclusion:** I can’t determine how many months ago you booked an Airbnb in San Francisco from the information here.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 683.6125371046364,
       "firstVisibleTextFromSpawnMs": 15580.477971117944,
-      "firstThinkingFromSpawnMs": null,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 15782.251545926556,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +29,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "ce50ed47f9255eb7cf0c8f7d42c4ff55a360eec7a754de2d3b34b33a809f4854",
     "snapshot": {
       "fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
@@ -44,7 +37,6 @@
       "compressionSeconds": 90.14432884985581
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 6.935187373077497,

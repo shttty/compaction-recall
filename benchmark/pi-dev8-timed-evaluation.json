@@ -1,140 +1,91 @@
 {
-  "method": "Assistant reference review of these exact completed answers; no independent judge",
   "answers": {
     "778164c6": {
       "native": {
-        "correct": false,
-        "reason": "Does not supply the reference answer from history",
-        "answerSha256": "991217c844d7cacc790d1685be58733db1fef9f7a01566d96714665d87706916"
+        "correct": false
       },
       "grep": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "78f1c7f10fefd63c60582012805662b1a6c3591ea7cab998670a120a829ce5db"
+        "correct": true
       },
       "indexed": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "216489298eed10f598248f7338b36e4505b93c96723dd93de250c922941c21b1"
+        "correct": true
       }
     },
     "51b23612": {
       "native": {
-        "correct": false,
-        "reason": "Does not supply the reference answer from history",
-        "answerSha256": "01f03c90dcda7af7a5af531594c601c093c86a02bcf971cec3360be5660bf161"
+        "correct": false
       },
       "grep": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "b89f413de7641fdc204162666cea4d834a5396d0fb89bf50254e642b994cc0c2"
+        "correct": true
       },
       "indexed": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "b4b64b85fe89928074bc72481ccc4057d2564115031ff2e720a8ff697bef4d25"
+        "correct": true
       }
     },
     "ceb54acb": {
       "native": {
-        "correct": false,
-        "reason": "Does not supply the reference answer from history",
-        "answerSha256": "20def6181b775fbfaae472c32f9bfd4b6ff1a16d371607c1a8579c373a2dc536"
+        "correct": false
       },
       "grep": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "ee9950d0454f8bbb0985415dec8db4c00bd236b7e8c0cead61de99d8d47ee15e"
+        "correct": true
       },
       "indexed": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "226d1285217db6c855acd508e7e173f3caa7e32df07916de255dbb6b5e7e58cf"
+        "correct": true
       }
     },
     "577d4d32": {
       "native": {
-        "correct": false,
-        "reason": "Does not supply the reference answer from history",
-        "answerSha256": "6022f30d1b4ad0e05a7c876a1fb7af6482af47bbb27cb9820d71b4b345a03153"
+        "correct": false
       },
       "grep": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "6c5ed702682050f421719cd5e599f87db925873ed8c855eb8ad87ed289613946"
+        "correct": true
       },
       "indexed": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "946157d2f1fcea92df26f2026bb0b374a4fd47eaf0947390c453ea8808bcd668"
+        "correct": true
       }
     },
     "3d86fd0a": {
       "native": {
-        "correct": false,
-        "reason": "Does not supply the reference answer from history",
-        "answerSha256": "74c725a768baa95efe60e891201a812ab0e85a8fb3387755e027e36bc45e9c6c"
+        "correct": false
       },
       "grep": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "0c311933545021755a4a06ca0fff9344cae0a3bc5fe4f89dc648116cf6769bfb"
+        "correct": true
       },
       "indexed": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "5908c2a897070cc9a5b78f82e6fb6dcce3340466123f57e6b3243f66c5d4d781"
+        "correct": true
       }
     },
     "15745da0": {
       "native": {
-        "correct": false,
-        "reason": "Does not supply the reference answer from history",
-        "answerSha256": "2e1bebafd609fc4439fe6a70c8dc5421f0cd08c5511c47721909fea169eb3318"
+        "correct": false
       },
       "grep": {
-        "correct": false,
-        "reason": "Did not recover the three-month collecting duration; no search tool used",
-        "answerSha256": "54684034e38354acb92626f3342b0b305365a9ae2a2b26c68cf57d3f50240e53"
+        "correct": false
       },
       "indexed": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "2d4766b158570a2db14b394b9617a53f2ee671fd92b7a560cbcf680597b21cd5"
+        "correct": true
       }
     },
     "gpt4_65aabe59": {
       "native": {
-        "correct": false,
-        "reason": "Does not supply the reference answer from history",
-        "answerSha256": "904936cec3f37c177e256d34f232d53e73a29f29b058a83f75e639b59270712a"
+        "correct": false
       },
       "grep": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "3adbbf33429d71e9162ff9505be01a478b42fb55822a138610f44fa3ffa3e4fe"
+        "correct": true
       },
       "indexed": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "2a658b1c688f8c42fca8c90161c77650701a9cf9aab4f1667f51c1599cc1bd35"
+        "correct": true
       }
     },
     "982b5123": {
       "native": {
-        "correct": false,
-        "reason": "Does not supply the reference answer from history",
-        "answerSha256": "d51909aa492effb6119a358007dc25ccb1f4d2e910becbc7d42c99be47cc71dd"
+        "correct": false
       },
       "grep": {
-        "correct": false,
-        "reason": "Gives three-month booking lead time, not the five-month elapsed answer",
-        "answerSha256": "7c905e5215bfde762a7535e390eb265229b6b0de8145238eacd9f00237783bbc"
+        "correct": false
       },
       "indexed": {
-        "correct": true,
-        "reason": "Contains the required reference answer",
-        "answerSha256": "f835193c3159278e145dcec9b59e08cb34cb1bd552b099c39353c70623ea9001"
+        "correct": true
       }
     }
   }

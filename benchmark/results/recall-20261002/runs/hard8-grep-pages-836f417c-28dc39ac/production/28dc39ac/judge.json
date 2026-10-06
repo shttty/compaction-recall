@@ -9,23 +9,13 @@
     "question_id": "28dc39ac",
     "arm": "production",
     "outcome": "answered",
-    "answer": "**Relevant information**\n- You reported spending about **30 hours** playing *The Last of Us Part II*.\n- You also reported a **5-hour Overwatch session** on a Saturday.\n- Separately, you mentioned about **5 gaming sessions in the past month**, each lasting **2–3 hours**—that’s **10–15 hours**.\n\n**Calculation**\n- If all these periods were separate: 30 + 5 + 10–15 = **45–50 hours total**.\n- If the 5-hour Overwatch session was included in those five sessions, the total would instead be **40–45 hours**.\n\nSo, based on the available details, your total is **about 40–50 hours**, depending on whether those gaming sessions overlap.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_recall",
-      "history_expand",
-      "history_expand",
-      "history_grep"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 682.0971870329231,
       "firstVisibleTextFromSpawnMs": 82879.8806311097,
       "firstThinkingFromSpawnMs": 21016.25625998713,
       "firstToolDeltaFromSpawnMs": 7288.717732997611,
       "promptToCompleteMs": 89492.35772411339,
-      "providerTTFTMs": null,
       "modelTurns": 5,
       "toolBatches": 4,
       "toolCalls": 5,
@@ -41,7 +31,6 @@
     },
     "modelCalls": 5,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "0636108cefd4c50ce496f28c84e512ba563b53f06995b5c8574de18287602d22",
     "snapshot": {
       "fingerprint": "ad72fa9de904445a76551cab6ab0e306784a28be5a1344ecc3d70d15474c1146",
@@ -50,7 +39,6 @@
       "compressionSeconds": 113.73524570930749
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 9.160367344971746,

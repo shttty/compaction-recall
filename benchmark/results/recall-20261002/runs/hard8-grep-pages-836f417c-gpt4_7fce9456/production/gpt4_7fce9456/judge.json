@@ -9,31 +9,13 @@
     "question_id": "gpt4_7fce9456",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. **Relevant information:** You mentioned seeing the 3-bedroom townhouse in Brookside on February 22 and making an offer on February 25.\n2. **What’s not stated:** The conversation doesn’t say how many other properties you viewed before making that offer.\n3. **Answer:** I can’t determine the total number from the available chat history.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand",
-      "history_recall",
-      "history_expand",
-      "history_grep",
-      "history_recall",
-      "history_expand",
-      "history_recall",
-      "history_grep",
-      "history_recall",
-      "history_grep",
-      "history_recall",
-      "history_grep"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 680.7773942127824,
       "firstVisibleTextFromSpawnMs": 155122.29161313735,
       "firstThinkingFromSpawnMs": 10276.992803206667,
       "firstToolDeltaFromSpawnMs": 10458.145995158702,
       "promptToCompleteMs": 154965.92166111805,
-      "providerTTFTMs": null,
       "modelTurns": 14,
       "toolBatches": 13,
       "toolCalls": 13,
@@ -49,7 +31,6 @@
     },
     "modelCalls": 14,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "17debe5f5778fe4ed6e86542034ebb5793ed47f78eb4b598c5045a794494c420",
     "snapshot": {
       "fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
@@ -58,7 +39,6 @@
       "compressionSeconds": 112.73651911481284
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.109241377795115,

@@ -9,31 +9,13 @@
     "question_id": "2ce6a0f2",
     "arm": "production",
     "outcome": "answered",
-    "answer": "**Step by step:**\n\n1. **Art-related events with dates or clear recent timing:**\n   - Guided tour at the History Museum on **February 24**.\n   - Lecture on the evolution of street art on **March 3**.\n   - Guided tour at the Modern Art Museum focused on Frida Kahlo and Diego Rivera, described as happening **last weekend**.\n\n2. **Another event mentioned:**\n   - A lecture on Renaissance art at the University Art Gallery. You called it a recent experience, but didn’t give its date.\n\n**Answer:** I can identify **three events clearly within the past month**, plus the Renaissance art lecture, whose timing isn’t specified. So the total is **likely four**, if that lecture was also within the past month. The “Women in Art” exhibition was described as happening a few months ago, so I wouldn’t include it.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_recall",
-      "history_expand",
-      "history_expand",
-      "history_recall",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_recall",
-      "history_grep",
-      "history_grep",
-      "history_grep",
-      "history_recall"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 688.8472060672939,
       "firstVisibleTextFromSpawnMs": 160790.07013398223,
       "firstThinkingFromSpawnMs": 11699.9265991617,
       "firstToolDeltaFromSpawnMs": 11808.830413036048,
       "promptToCompleteMs": 165778.58894481324,
-      "providerTTFTMs": null,
       "modelTurns": 10,
       "toolBatches": 9,
       "toolCalls": 13,
@@ -49,7 +31,6 @@
     },
     "modelCalls": 10,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "b455a072ac8df7421570dab6ddb911577ea93050797dd7804a86fede84cfbe43",
     "snapshot": {
       "fingerprint": "db248508b7da4e0eb68e9e5e6f378301648a5a908aed593c015821ea727c2038",
@@ -58,7 +39,6 @@
       "compressionSeconds": 111.40956617030315
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 11.393336649052799,

@@ -9,17 +9,12 @@
     "question_id": "577d4d32",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. You said you’re aiming to get ready for bed around **10:00–10:30 pm**.\n2. The earlier plan set **10:20 pm** as your phone-free time.\n\nSo, stop checking work emails and messages at **10:20 pm** and leave them until morning.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 671.4692669920623,
       "firstVisibleTextFromSpawnMs": 19960.835616802797,
       "firstThinkingFromSpawnMs": 16214.531278936192,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 21517.549765994772,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "6b8f2f90e9069d9e30230c0d3d11c57c7f2f6a4caf9680c7836703e586778fec",
     "snapshot": {
       "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
@@ -44,7 +38,6 @@
       "compressionSeconds": 81.82407163479365
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 6.7394869609270245,

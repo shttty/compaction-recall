@@ -12,7 +12,7 @@
 
 ## 被测对象
 
-- 工作区：`/home/rinne/workspace/pi-context-recall-background-index`，分支 `feat/background-index`
+- 历史分支：`feat/background-index`；运行工作树由显式外部路径指定。
 - 两个原型并行，不要求互相兼容：
   - `prototype/soft-match-sqlite`：内存 SQLite FTS5，原生 BM25
   - `prototype/soft-match-minisearch`：MiniSearch 7.2.0，默认 OR、prefix 开、fuzzy 0.2
@@ -21,8 +21,8 @@
 
 ## 数据
 
-- 16 题：`/home/rinne/workspace/pi-context-recall-dev/benchmark/data/{dev8,hard8}/<id>/`，每题有 `corpus.json`（英文）、`corpus-zh.json`（中文）和 `question-zh.json`（中英问句，已审核冻结）。
-- Gold：`~/.hermes/task-runs/recall-soft-match-20261003/zh-retrieval/gold.json`，16 题共 50 条（47 user、3 assistant）。来源 `longmemeval_m.json`，sha256 `fb5413e3…daff2d9`。
+- 16题外部输入：`$DATA_ROOT/{dev8,hard8}/<id>/`，含英文`corpus.json`、中文`corpus-zh.json`与冻结`question-zh.json`；公开树只保留授权的中文题面，不含完整语料。
+- 外部Gold：`$GOLD`；16题50条（47 user、3 assistant），来源`longmemeval_m.json`，sha256 `fb5413e3…daff2d9`，公开元数据只保留证据坐标。
 - 中文、英文各跑一遍，英文用来对照翻译带来的影响。中英 corpus 的 gold 位置必须先校验一致，对不上就报错，不出分。
 
 ## 分组

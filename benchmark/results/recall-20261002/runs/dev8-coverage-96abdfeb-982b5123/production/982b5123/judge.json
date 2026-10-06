@@ -9,23 +9,13 @@
     "question_id": "982b5123",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. You said you stayed in Haight-Ashbury for your best friend’s wedding and had to book the Airbnb **three months in advance**.\n2. The conversation doesn’t specify the booking date relative to today, so I can’t determine how many months ago you booked it. It only tells us you booked it three months before the wedding.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_recall",
-      "history_recall",
-      "history_recall",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 702.1208500955254,
       "firstVisibleTextFromSpawnMs": 71038.40436204337,
       "firstThinkingFromSpawnMs": 22547.545504989102,
       "firstToolDeltaFromSpawnMs": 8509.873230941594,
       "promptToCompleteMs": 71629.12761000916,
-      "providerTTFTMs": null,
       "modelTurns": 6,
       "toolBatches": 5,
       "toolCalls": 5,
@@ -41,7 +31,6 @@
     },
     "modelCalls": 6,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "ce50ed47f9255eb7cf0c8f7d42c4ff55a360eec7a754de2d3b34b33a809f4854",
     "snapshot": {
       "fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
@@ -50,7 +39,6 @@
       "compressionSeconds": 90.14432884985581
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.961140146944672,

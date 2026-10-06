@@ -41,7 +41,7 @@ A 不能只留 offset：`lex('fooBar')` 先产生 `foobar@(0, order 0)`，再产
 
 B1 的 ASCII tokenizer 对当前 lex 字母表保留 `_`、`$` 和非 ASCII 字符，不使用会再次拆词或折叠的默认 unicode61。B2 **不是原文 trigram 表**：按要求比较预分词输入，且不做 B1 式精确词法过滤；若原文找不到该 term，保留命中并使用 offset 0，统计 offsetFallbacks。B2 仍沿用 base queryTerms：中文单字根本不生成 token，不能被其短词 fallback 挽救。
 
-B3 的 `b3-tokenize.mjs` 是只去掉 TypeScript 类型的逻辑移植，权威来源为只读的 `/home/rinne/workspace/pi-lossless-context/src/tokenize.ts`，SHA-256 `e0e37663df3855be6bb7b28ce67035e7feb9e141b1af8e000465de060cf34d7b`；路由依据 `PLAN.md` 的“分词与查询路由”。中文单字走 uni、双字走 bi、1–2 字符英文整词；长词同时查两表，混合查询的短词约束仍经 bi/uni 过滤。健康索引零命中不回退 LIKE。没有原生扩展或 loadExtension。
+B3的`b3-tokenize.mjs`是仅去掉TypeScript类型的历史逻辑移植，权威来源为`pi-lossless-context/src/tokenize.ts`，SHA-256 `e0e37663df3855be6bb7b28ce67035e7feb9e141b1af8e000465de060cf34d7b`。路由依据`PLAN.md`的“分词与查询路由”；原外部源由使用者显式提供，不依赖个人工作树路径。中文单字走uni、双字走bi、1–2字符英文整词；长词查两表，混合短词仍过滤。健康索引零命中不回退LIKE，无原生扩展或loadExtension。
 
 B3 在 worker 内预生成 bi/uni，启用后删除缓存，不额外跑 base lex。SQLite 自身的 unicode61/trigram 分词发生在 INSERT/启用阶段，不能把 3.33 ms 的 JS 预处理当成 B3 全部分词成本。两张表不存正文；候选原文来自已有 worker entry 引用。B3 只对跨表 rowid 去重，不套用 base 的 snippet 去重/机械重排；手动页沿用相同 JSON schema、码点预算及全候选 snippet 物化工作，但保持 BM25 tier 顺序。
 
@@ -61,7 +61,7 @@ RSS 在一次 context 预热后、主线程显式 GC 后采样；worker 单独�
 
 RSS 属于共享进程，不能给主线程/worker 各算一份相加。heap 不包含全部 native/TypedArray 内存；worker external 已包含 A buffer，不能再把“索引分配量”加一遍。A 的 4.06 MiB 是 buffer capacity，B1/B2/B3 的 0.51/6.21/13.05 MiB 是 `page_count * page_size`，不含 SQLite connection/cache/native 开销，也不含 JS 会话数据。
 
-历史 `/home/rinne/workspace/pi-lossless-context/prototype/tokenizer-bench/FINDINGS.md` 的约 22 MB 双表结果来自真实中文 Pi/OMP 会话，是数据库索引体积，不是 worker V8 heap 或进程 RSS；语料、排除项、结构和口径均不同，**不可与本表直接相除比较**。本轮 LongMemEval 以英文为主；中文边界只由下面的合成用例证明，不声称得到中文真实负载的速度/排名结论。
+历史`pi-lossless-context/prototype/tokenizer-bench/FINDINGS.md`约22MB双表结果来自真实中文Pi/OMP会话，是数据库索引体积，不是worker V8 heap或进程RSS。语料、排除项、结构和口径不同，不可与本表直接相除。本轮LME以英文为主；中文边界只由合成用例证明，不声称中文真实负载速度/排名。
 
 ## 四档端到端结果
 
@@ -105,7 +105,7 @@ Top-N 为与 **base 返回结果**的集合覆盖，不是正确答案召回率�
 
 | 查询（初始 1M） | base | A | B1 | B2 | B3 |
 | --- | --- | --- | --- | --- | --- |
-| What time do I stop checking work emails and messages? | 1078 | 1078 | 1078 | 1459 | 0 |
+| LME原题`577d4d32`（题面外置） | 1078 | 1078 | 1078 | 1459 | 0 |
 | checking | 42 | 42 | 42 | 42 | 43 |
 | go | 249 | 249 | 249 | 1577 | 244 |
 | id | 13 | 13 | 13 | 2190 | 10 |
@@ -178,12 +178,12 @@ base/A 的热点是去重与全候选 snippet/分页渲染，而不是倒排查�
 
 ### 重现
 
-原始执行参数在 metadata.command 和每条 launchCommand 中；结果写入使用 exclusive create，不覆盖冻结输出。重跑必须使用新的结果目录。五并发 matrix 分别启动 lane 0–4，且为驱动使用对应 taskset；同一父目录下共享 barrier。先用 `--sizes semantic,50000` 得到 memory gate，确认当前内存后再跑全矩阵。timing 使用 `--sizes 1000000 --timing`，跨版本使用 `--variants B1,B2,B3 --runtime /home/rinne/.hermes/tools/node-26.7.0-linux-x64/bin/node --sizes semantic,50000`。
+原始执行参数及逐字输出保留外部备份；公开metadata只留非正文数字/hash。结果以exclusive create写入，新运行须使用新外部目录。五并发matrix启动lane 0–4，驱动按taskset分配，同父目录共享barrier。先`--sizes semantic,50000`测memory gate，再运行矩阵。timing用`--sizes 1000000 --timing`，跨版本用`--variants B1,B2,B3 --runtime "$NODE26" --sizes semantic,50000`。
 
 本次完整聚合校验命令：
 
 ```sh
-/home/rinne/.nvm/versions/node/v24.18.0/bin/node prototype/index-alt/summarize.mjs benchmark/results/index-alt-20261003
+node prototype/index-alt/summarize.mjs "$EXTERNAL_RESULTS"
 ```
 
 该命令已通过并生成 summary；不要对已有 summary 再运行并覆盖证据。

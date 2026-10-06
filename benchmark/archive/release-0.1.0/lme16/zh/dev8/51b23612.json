@@ -1,0 +1,19 @@
+{
+  "question_id": "51b23612",
+  "split": "dev8",
+  "question": "我在翻我们之前聊政治宣传和幽默的那段对话，想问问你能不能帮我回忆一下你提到的那个讽刺西方文化的苏联动画片？",
+  "question_date": "2023/05/30 (Tue) 23:50",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": true,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "single-session-assistant",
+  "originalAssetSha256": "139a1ed33d769142ff01e595ca9e357bed90bb118b28ae5a9574d6d18dd6519c",
+  "textUtf8Sha256": "bb3e8422c15323a724448991151465432a0ecb3eea44acd7dfbd1c7cecf42821",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "51b23612",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

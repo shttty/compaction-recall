@@ -9,30 +9,13 @@
     "question_id": "gpt4_15e38248",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. **Bought:** One coffee table from West Elm.  \n2. **Assembled:** One IKEA bookshelf for your home office.  \n3. **Fixed:** One wobbly leg on your kitchen table.  \n4. **Sold:** No furniture sales were mentioned.\n\n**Total: 3 distinct pieces of furniture** were bought, assembled, or fixed. The coffee table was mentioned more than once, but it appears to be the same table.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_recall",
-      "history_recall",
-      "history_recall",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_recall",
-      "history_recall",
-      "history_recall",
-      "history_recall"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 689.6957058925182,
       "firstVisibleTextFromSpawnMs": 54251.0893070139,
       "firstThinkingFromSpawnMs": 39944.25360788591,
       "firstToolDeltaFromSpawnMs": 8303.489136975259,
       "promptToCompleteMs": 54310.29715901241,
-      "providerTTFTMs": null,
       "modelTurns": 5,
       "toolBatches": 4,
       "toolCalls": 12,
@@ -48,7 +31,6 @@
     },
     "modelCalls": 5,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "e24d2f10a6e5e0a2fe650be67a63b2c8cb7220f8367d1c527dbfc9917568fefb",
     "snapshot": {
       "fingerprint": "23e7e9d70cb857784467e4c665f09e50654643dc9e376e730daa56a9ad2d56df",
@@ -57,7 +39,6 @@
       "compressionSeconds": 112.86164950625971
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.722014538012445,

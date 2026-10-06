@@ -5,8 +5,6 @@
     "3d86fd0a"
   ],
   "data_sha256": "fb5413e3b077c62927daab794836991a2fcfa61ceacab57dc679fb02daaff2d9",
-  "questions_file_sha256": "ebd6f11a63514820611093d99c62fd5dab6ec8dda50fa73f56f69ff54225e4ad",
-  "gold_file_sha256": "c768cb9808e067d29789ee8d927345f810a9d66c1519ddac7357117f78b7fe64",
   "provider": "clp",
   "answer_model": "gpt-6-luna",
   "answer_effort": "high",
@@ -20,24 +18,8 @@
   ],
   "segments": 4,
   "compactions": 3,
-  "system_prompt": "You are a helpful assistant.",
-  "selection_manifest_sha256": "f808d35f1dde6007e5f0c8e8feda1ea29b18886a7ac3b8683f6bf4841b6bb7c2",
-  "plugin_ref": "f5715d1901b6bedf19811030f18f3733eefb7bc4",
   "plugin_commit": "f5715d1901b6bedf19811030f18f3733eefb7bc4",
-  "plugin_archive_sha256": "f8723e75de30d2ff0cb576f81170867f7f9c0eb7b4e4e496b441336272ca6496",
-  "plugin_closure_sha256": "b5a112294ad7f191d254e1e6d2d343b92a205f430ce7cafbcf9a6a5eb18c6bc4",
-  "plugin_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/plugins/f5715d1901b6bedf19811030f18f3733eefb7bc4",
-  "candidate_sha256": {
-    "history.ts": "9d92ed13681576c72f0bc6e960ad252bcd2511599d71cd5d441600070892bbbb",
-    "index.ts": "f04ab577ec620b29e3c1c34df925e6314f6ae57e7c4816ebcc0aa31b1d0b3d16",
-    "locator.ts": "0daa32f3312b52e1116d2655b53a252923ac726bf6a4fd4f83c4bfba81627fd8",
-    "package-lock.json": "61407c39e7f0a197927e15af51a2ad92151538f68bfc5a6365fe53e3c62a5bc8",
-    "package.json": "9810a119352627887e3abf712abd593b3c15020e30544e84e158196a41fa1e51",
-    "recall-extension.ts": "545d09bc586cc3b72553d766461def879d3af8a7b63897648d09d9766ca6baf6",
-    "timing.ts": "1fdfefb6081e7e9937636665e8dbc4a2ba693e7877841860c31464ed4041d375"
-  },
-  "eval_wrapper_sha256": "c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72",
-  "eval_wrapper_path": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/wrappers/c32866134ce8f482d98fe4ac6e43cb0e8b2dfd35b72f558352a61de8a04d2d72.mjs",
+  "candidate_sha256": {},
   "runner_sha256": "1047402ee8402de8a501d1d1be4c53ba9a72d6d443e14709a17dfc6c82ebddee",
   "fingerprint": "bd4eea6b820a3947c8bc2f0107b5fd8824600587c5cf816ef88614174d398889"
 }

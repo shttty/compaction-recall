@@ -9,17 +9,12 @@
     "question_id": "gpt4_15e38248",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant information:** You discussed moving, decluttering, and possibly needing tools to assemble furniture, but you didn’t say you actually bought, assembled, sold, or repaired any furniture.\n\n**Step 2 — Count:** Based on what you shared, the number is **0 pieces**.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 666.0504599567503,
       "firstVisibleTextFromSpawnMs": 10210.785283939913,
       "firstThinkingFromSpawnMs": 10135.493061039597,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 11273.45513785258,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "e24d2f10a6e5e0a2fe650be67a63b2c8cb7220f8367d1c527dbfc9917568fefb",
     "snapshot": {
       "fingerprint": "23e7e9d70cb857784467e4c665f09e50654643dc9e376e730daa56a9ad2d56df",
@@ -44,7 +38,6 @@
       "compressionSeconds": 112.86164950625971
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.421513631008565,

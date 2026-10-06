@@ -9,30 +9,13 @@
     "question_id": "28dc39ac",
     "arm": "production",
     "outcome": "answered",
-    "answer": "**Step 1: Collect the distinct gaming times you mentioned**\n\n- *The Last of Us Part II*: 25 hours on normal difficulty and 30 hours on hard difficulty.\n- *Celeste*: 10 hours.\n- *Hyper Light Drifter*: 5 hours.\n- *Assassin’s Creed Odyssey*: about 70 hours.\n- Overwatch: 5 hours on one Saturday.\n- Five gaming sessions in the past month: about 2–3 hours each, or **10–15 hours total**.\n- You mentioned the 30-hour *Last of Us Part II* playthrough twice, so I count it only once.\n\n**Step 2: Add them**\n\n25 + 30 + 10 + 5 + 70 + 5 + 10–15 = **155–160 hours**.\n\nSo, based on all the distinct durations mentioned, your total is **about 155–160 hours**—assuming the Overwatch session was separate from those five recent sessions and the two *Last of Us Part II* durations refer to separate playthroughs. If any of those overlap, the total would be lower.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_grep",
-      "history_recall",
-      "history_expand",
-      "history_grep",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_grep",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 709.204396000132,
       "firstVisibleTextFromSpawnMs": 163037.18191897497,
       "firstThinkingFromSpawnMs": 20986.755145946518,
       "firstToolDeltaFromSpawnMs": 28530.858222860843,
       "promptToCompleteMs": 167975.73631396517,
-      "providerTTFTMs": null,
       "modelTurns": 7,
       "toolBatches": 6,
       "toolCalls": 12,
@@ -48,7 +31,6 @@
     },
     "modelCalls": 7,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "0a2a1823a2f7af418d369f157f2b882ee2ec73d8b3fbd8f3bb6cb874a6215ed9",
     "snapshot": {
       "fingerprint": "ad72fa9de904445a76551cab6ab0e306784a28be5a1344ecc3d70d15474c1146",
@@ -57,7 +39,6 @@
       "compressionSeconds": 113.73524570930749
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.680688341148198,

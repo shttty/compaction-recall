@@ -1,6 +1,4 @@
 {
-  "runner": "ed09d12718eb164a6e94836e5bb4c138062320f5",
-  "tested_plugin": "f5715d1901b6bedf19811030f18f3733eefb7bc4",
   "selected_questions": [
     "778164c6",
     "51b23612",
@@ -15,22 +13,16 @@
   "compression_failures": [
     {
       "question_id": "gpt4_65aabe59",
-      "error": "ValueError: Conservative context estimate 343768 exceeds 340000 safety ceiling",
       "fingerprint": "9c33d319a06568e595002ccd4b7b2046963b2779eb65e7e2df3c0bfff207bcf7",
       "nextStage": 1,
-      "checkpoint_state": "inflight",
       "completed_compactions": 1,
-      "build": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/9c33d319a06568e595002ccd4b7b2046963b2779eb65e7e2df3c0bfff207bcf7/build.jsonl",
       "checkpoint_bytes_match": true
     },
     {
       "question_id": "982b5123",
-      "error": "ValueError: Conservative context estimate 341237 exceeds 340000 safety ceiling",
       "fingerprint": "e17077663e3e9a2b249c65ebb16df2652bcba6a833bcfd59fe2adf1e08aa6a29",
       "nextStage": 1,
-      "checkpoint_state": "inflight",
       "completed_compactions": 1,
-      "build": "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/snapshots/e17077663e3e9a2b249c65ebb16df2652bcba6a833bcfd59fe2adf1e08aa6a29/build.jsonl",
       "checkpoint_bytes_match": true
     }
   ],
@@ -49,21 +41,12 @@
         "grep": {
           "correct": false,
           "answer_seconds": 53.3377559450455,
-          "tools": [
-            "history_grep",
-            "history_grep",
-            "history_expand"
-          ]
+          "tools": []
         },
         "production": {
           "correct": true,
           "answer_seconds": 66.71819318109192,
-          "tools": [
-            "history_recall",
-            "history_expand",
-            "history_expand",
-            "history_recall"
-          ]
+          "tools": []
         }
       }
     },
@@ -81,18 +64,12 @@
         "grep": {
           "correct": true,
           "answer_seconds": 35.71028449595906,
-          "tools": [
-            "history_grep",
-            "history_expand"
-          ]
+          "tools": []
         },
         "production": {
           "correct": true,
           "answer_seconds": 32.54159574396908,
-          "tools": [
-            "history_recall",
-            "history_expand"
-          ]
+          "tools": []
         }
       }
     },
@@ -110,18 +87,12 @@
         "grep": {
           "correct": true,
           "answer_seconds": 28.884731305995956,
-          "tools": [
-            "history_grep",
-            "history_expand"
-          ]
+          "tools": []
         },
         "production": {
           "correct": true,
           "answer_seconds": 30.573537174146622,
-          "tools": [
-            "history_recall",
-            "history_expand"
-          ]
+          "tools": []
         }
       }
     },
@@ -139,18 +110,12 @@
         "grep": {
           "correct": true,
           "answer_seconds": 30.203956915065646,
-          "tools": [
-            "history_grep",
-            "history_expand"
-          ]
+          "tools": []
         },
         "production": {
           "correct": true,
           "answer_seconds": 26.21875665895641,
-          "tools": [
-            "history_recall",
-            "history_expand"
-          ]
+          "tools": []
         }
       }
     },
@@ -168,17 +133,12 @@
         "grep": {
           "correct": true,
           "answer_seconds": 18.171234413981438,
-          "tools": [
-            "history_grep"
-          ]
+          "tools": []
         },
         "production": {
           "correct": true,
           "answer_seconds": 22.003826931118965,
-          "tools": [
-            "history_recall",
-            "history_expand"
-          ]
+          "tools": []
         }
       }
     },
@@ -201,10 +161,7 @@
         "production": {
           "correct": true,
           "answer_seconds": 27.808344831923023,
-          "tools": [
-            "history_recall",
-            "history_expand"
-          ]
+          "tools": []
         }
       }
     }
@@ -252,6 +209,5 @@
       "total_answer_tokens": 5253997,
       "average_answer_seconds": 34.31070908686767
     }
-  },
-  "acceptance": "BLOCKED: eight questions accounted for but two fail compression preflight; preserve raw all-eight denominator, not complete clean DEV8 nor candidate improvement evidence."
+  }
 }

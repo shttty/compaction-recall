@@ -9,21 +9,13 @@
     "question_id": "gpt4_a1b77f9c",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "### Step 1: Extract the relevant dates\n\n| Book | Started | Finished |\n|---|---|---|\n| *The Nightingale* by Kristin Hannah | January 1, 2022 | January 15, 2022 |\n| *Sapiens: A Brief History of Humankind* by Yuval Noah Harari | February 1, 2022 | March 1, 2022 |\n| *The Power* by Naomi Alderman | March 6, 2022 | March 20, 2022 |\n\n### Step 2: Calculate each duration\n\n- **The Nightingale:** 14 days = **2 weeks**\n- **Sapiens:** 28 days = **4 weeks**\n- **The Power:** 14 days = **2 weeks**\n\n### Step 3: Add the durations\n\n**2 + 4 + 2 = 8 weeks in total.**\n\nThese calculations use your January start-and-finish dates for *The Nightingale*; you also mentioned a separate, shorter reading period later in the chat.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep",
-      "history_grep",
-      "history_grep"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 795.5931050237268,
       "firstVisibleTextFromSpawnMs": 39785.31484212726,
       "firstThinkingFromSpawnMs": 38183.42199199833,
       "firstToolDeltaFromSpawnMs": 9161.702016135678,
       "promptToCompleteMs": 46270.20891709253,
-      "providerTTFTMs": null,
       "modelTurns": 4,
       "toolBatches": 3,
       "toolCalls": 3,
@@ -39,7 +31,6 @@
     },
     "modelCalls": 4,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "e7d6b42dc8064bdf8132619f0e58d11c819bb2ba64306c44e5f366d240690d98",
     "snapshot": {
       "fingerprint": "8f6364fa7669bee31aa28d191980b477eae4b9d4ae6227b66ed9bb55221ee458",
@@ -48,7 +39,6 @@
       "compressionSeconds": 124.69937260216102
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 4.125211993930861,

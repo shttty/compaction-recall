@@ -9,20 +9,13 @@
     "question_id": "51b23612",
     "arm": "production",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant information:** In our earlier conversation, the cartoon named was **“Nu, pogodi!”**\n\n**Step 2 — Clarification:** I should correct the earlier description: **“Nu, pogodi!”** is a well-known Soviet comedy cartoon about a wolf chasing a hare. It is not generally known as a propaganda cartoon mocking Western culture. My earlier claim overstated its political role.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 683.6093470919877,
       "firstVisibleTextFromSpawnMs": 31881.51838304475,
       "firstThinkingFromSpawnMs": 10581.194986123592,
       "firstToolDeltaFromSpawnMs": 10704.628476174548,
       "promptToCompleteMs": 31771.356048993766,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "aef2ca53d76b94246ce1f5df94dc82735c67bf0f4507a051ffb46a416dc4ac14",
     "snapshot": {
       "fingerprint": "682ae8a10ec373022c37440749940221a9c91e0c7ebb8ffaa2604276e26aa434",
@@ -47,7 +39,6 @@
       "compressionSeconds": 143.6763677529525
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 4.337393891997635,

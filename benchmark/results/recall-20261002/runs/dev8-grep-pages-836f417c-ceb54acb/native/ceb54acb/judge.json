@@ -9,17 +9,12 @@
     "question_id": "ceb54acb",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant information:** I can’t find an earlier message in the chat history provided that mentions “sexual compulsions” or lists alternative terms.\n\n**Step 2 — Conclusion:** I can’t reliably recall the other four options without that context. If you paste the earlier message or describe the behaviors, I can help identify or suggest suitable terms.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 684.3649640213698,
       "firstVisibleTextFromSpawnMs": 12277.182004181668,
       "firstThinkingFromSpawnMs": 12146.292590070516,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 12510.64796000719,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "e900e9d5f8807b24ef224810c3036245c02ef5e90b1f72d7efff8d4d6b344fce",
     "snapshot": {
       "fingerprint": "80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7",
@@ -44,7 +38,6 @@
       "compressionSeconds": 89.44119733083062
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.260081772925332,

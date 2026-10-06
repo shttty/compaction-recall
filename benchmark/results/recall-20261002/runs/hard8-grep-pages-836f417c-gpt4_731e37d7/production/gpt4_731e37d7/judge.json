@@ -9,29 +9,13 @@
     "question_id": "gpt4_731e37d7",
     "arm": "production",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant workshop expenses in the four months before February 26, 2023:**\n\n- November writing workshop: **$200**\n- December 12 mindfulness workshop: **$20**\n- February 22 photography workshop: **Free**\n- January entrepreneurship workshop: attended, but **no cost was given**\n\n**Step 2 — Total from the amounts provided:**\n\n$200 + $20 + $0 = **$220**.\n\nSo, you spent **at least $220** on workshops in that period. The total could be higher because the January workshop’s cost wasn’t specified. I’ve excluded the digital marketing workshop listed as March 15–16, since that date is after February 26.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_recall",
-      "history_grep"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 692.462608916685,
       "firstVisibleTextFromSpawnMs": 82058.3946290426,
       "firstThinkingFromSpawnMs": 22358.121369965374,
       "firstToolDeltaFromSpawnMs": 9456.623980076984,
       "promptToCompleteMs": 84927.6924598962,
-      "providerTTFTMs": null,
       "modelTurns": 5,
       "toolBatches": 4,
       "toolCalls": 11,
@@ -47,7 +31,6 @@
     },
     "modelCalls": 5,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "6ab222bd4990d8d3dceadb32693d73e4605327535e51f9ddc49dc46e5c45a7a9",
     "snapshot": {
       "fingerprint": "6a7641195a1d9639b91616f10af65c54a37e195595db4992856305319069b880",
@@ -56,7 +39,6 @@
       "compressionSeconds": 70.90560843213461
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 6.113355370005593,

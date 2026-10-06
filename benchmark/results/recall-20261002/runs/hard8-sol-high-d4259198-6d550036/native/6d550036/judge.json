@@ -9,17 +9,12 @@
     "question_id": "6d550036",
     "arm": "native",
     "outcome": "answered",
-    "answer": "### Step 1: Extract the relevant information\n\n| Activity | What you said | Status |\n|---|---|---|\n| **One-act play about identity** | “I've started writing a script for my own one-act play.” You later planned to draft a character’s monologue. | Already underway |\n| **Upcoming Bible study on Matthew** | “I'm looking for some guidance on a Bible study I'm leading next week.” | Explicitly leading and preparing |\n| **Previous Bible study** | You said you “did a Bible study on this same topic” on December 17. | Participation confirmed, but leadership not specified |\n| **Family-history book or website** | You discussed gathering relatives’ photos and stories and organizing them into a timeline. | Planned; you said, “I think I'll start…” |\n| **Modern corporate adaptation of Hamlet** | “I'm thinking of writing a play inspired by ‘Hamlet’,” followed by character and theme development. | In planning/development |\n| **#SweatWithSamantha Transformation Challenge** | “I'd like to host a ‘Transformation Challenge’.” | Proposed; not confirmed as launched |\n| **Spire recruitment project** | Your outreach copy said your team completed a two-plus-year recruitment project with Spire. | Completed team project, but your individual leadership was not established |\n\n### Step 2: Reason over the information\n\nCounting projects that you have **clearly started or are actively preparing to lead**, rather than every proposed activity:\n\n1. Your **one-act play about identity** is underway.\n2. Your **Matthew Bible study** is an explicitly stated leadership responsibility.\n\n**Answer: 2 clearly supported ongoing projects**, with **1 explicitly described as a leadership role**. Your family-history project, Hamlet adaptation, and fitness challenge are additional planned projects. The history does not establish whether you led the earlier Bible study or the Spire project, so I would not count those as confirmed leadership projects.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 671.1907458957285,
       "firstVisibleTextFromSpawnMs": 46021.56955492683,
       "firstThinkingFromSpawnMs": 23543.726126896217,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 57332.33322319575,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "4baecd1a4311fcd20b6f76d775d839c9d375df564dbe0c24360688f88f7a3e46",
     "snapshot": {
       "fingerprint": "35d650a4cde3361782aa54439b0176370d7333353dcb4ac5be0147f6c0588d75",
@@ -44,7 +38,6 @@
       "compressionSeconds": 76.48786530666985
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 9.03614329895936,

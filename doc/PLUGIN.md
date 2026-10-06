@@ -103,4 +103,4 @@ npm run check
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'
 ```
 
-离线行为/隔离 SDK/真实 worker 检查不证明模型准确率；当前发布没有付费重判或新性能矩阵。`benchmark/archive/release-0.1.0/INDEX.md` 是本轮小材料索引，冻结答案、机器严格/1–10 判题和来源版本分开。sw08 人工认可与机器7/8独立；鲷鱼 current revised reference 与旧中文 grading input 分开。旧 JS 的性能/评分只作历史，原报告与探索不重标。npm 仅含 production src、双语 README、许可证与 clean aggregate，benchmark/test/session/profile/controller 资料不打包。MIT/LICENSE/THIRD_PARTY_NOTICES 保留。
+离线行为/隔离SDK/worker检查不证明模型准确率；本次未付费重判或重测性能。`benchmark/archive/release-0.1.0/INDEX.md` 公开来源、处理、运行hash、判分代码与非正文指标，并保留授权的16题中文译文。英文原题、参考、最终回答、裁判理由、检索摘录及全文会话留外部；逐字复现需对应外部输入，不能只凭来源链接恢复冻结回答。sw08人工认可与机器7/8独立，修订参考版本/hash与旧中文grading input分开。旧性能数字未重标；npm仍只含src、双语README、许可证和clean aggregate。

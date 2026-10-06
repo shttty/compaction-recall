@@ -9,17 +9,12 @@
     "question_id": "9d25d4e0",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Relevant information:** You mentioned a watch needing a new strap, another watch needing a battery, an aquamarine ring needing polishing, an antique pearl necklace to be appraised, and replacement silver stud earrings you were considering buying.\n\n**Answer:** You didn’t mention acquiring any jewelry in the last two months, so the number confirmed from the conversation is **0**.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 670.5126201268286,
       "firstVisibleTextFromSpawnMs": 13142.40017416887,
       "firstThinkingFromSpawnMs": 12408.396756043658,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 13393.707158975303,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "29e8c84a493937b255ae4783d732edec1dc6fbacbaece4aa158b2dcf0b74a1fd",
     "snapshot": {
       "fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
@@ -44,7 +38,6 @@
       "compressionSeconds": 101.38162532495335
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.398425034014508,

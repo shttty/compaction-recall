@@ -1,6 +1,0 @@
-{
- "question_id": "gpt4_731e37d7",
- "answer": "$720 (photography workshop on February 22: free; mindfulness workshop on December 12: $20; writing workshop in November: $200; digital marketing workshop: $500). Also correct: $220, if the answer explicitly excludes the $500 digital marketing workshop because its stated date (March 15-16) falls after the question date.",
- "original_answer": "$720",
- "revision": "2026-10-04: the evidence session is dated 2023-02-26 (same day as the question) but says the user 'just attended' the digital marketing workshop 'on March 15-16'. Including it ($720, the original reference) and excluding it on the date conflict ($220) are both accepted. Unchanged in the cleaned LongMemEval release."
-}

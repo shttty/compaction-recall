@@ -9,20 +9,13 @@
     "question_id": "51b23612",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant information from our earlier conversation:** The Soviet cartoon mentioned was **“Nu, pogodi!”** (“Well, Just You Wait!”).\n\n**Step 2 — Answer:** That was the title I gave before. I should clarify, though: describing **“Nu, pogodi!”** as a cartoon that mocked Western culture was likely inaccurate. It is best known as a Soviet comedy about a wolf chasing a hare, rather than as political satire targeting the West.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 826.3449380174279,
       "firstVisibleTextFromSpawnMs": 26058.761526830494,
       "firstThinkingFromSpawnMs": 25959.012576844543,
       "firstToolDeltaFromSpawnMs": 10167.09235101007,
       "promptToCompleteMs": 25958.322203019634,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "cc75b510645b5459b90e8d959c6de981b155d935cdf7ffbc44a90af637546100",
     "snapshot": {
       "fingerprint": "3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8",
@@ -47,7 +39,6 @@
       "compressionSeconds": 140.69230400095694
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 3.3714946238324046,

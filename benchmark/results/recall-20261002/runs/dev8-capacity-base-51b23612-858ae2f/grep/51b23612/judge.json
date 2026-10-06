@@ -9,19 +9,13 @@
     "question_id": "51b23612",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Relevant information:** In our earlier discussion, I mentioned a Soviet cartoon that was said to mock Western culture and portray the Soviet Union as superior.\n\n**Answer:** The cartoon was *Nu, pogodi!* I should clarify that my earlier description was too broad: the series is best known as a slapstick comedy about a wolf chasing a hare, rather than as a cartoon specifically mocking Western culture.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 823.950279969722,
       "firstVisibleTextFromSpawnMs": 17357.4044900015,
       "firstThinkingFromSpawnMs": 7944.0158230718225,
       "firstToolDeltaFromSpawnMs": 8044.7240569628775,
       "promptToCompleteMs": 21363.386161858216,
-      "providerTTFTMs": null,
       "modelTurns": 2,
       "toolBatches": 1,
       "toolCalls": 1,
@@ -37,7 +31,6 @@
     },
     "modelCalls": 2,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "1269257a49afd2ff54d08814bd9638e6d140c62edf0bc4429587cdab1acad1b7",
     "snapshot": {
       "fingerprint": "3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8",
@@ -46,7 +39,6 @@
       "compressionSeconds": 140.69230400095694
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 5.335822107037529,

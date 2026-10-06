@@ -9,17 +9,12 @@
     "question_id": "gpt4_a1b77f9c",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. **Extract the relevant information:**\n   - **The Power:** On **March 20, 2022**, you said you had finished listening to it that day. You didn’t specify when you started.\n   - **The Nightingale:** It was recommended in the conversation, but you didn’t provide dates or a duration for reading it.\n   - **Sapiens: A Brief History of Humankind:** No listening dates or duration appear in the provided history.\n\n2. **Reason from that information:** To calculate the total number of weeks, we need the time you spent on each book. A completion date alone doesn’t establish a duration.\n\n**Answer:** There isn’t enough information in the provided chat history to determine the total number of weeks.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 683.234787080437,
       "firstVisibleTextFromSpawnMs": 13318.368681939319,
       "firstThinkingFromSpawnMs": 12138.046257896349,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 16354.874106124043,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "e7d6b42dc8064bdf8132619f0e58d11c819bb2ba64306c44e5f366d240690d98",
     "snapshot": {
       "fingerprint": "8f6364fa7669bee31aa28d191980b477eae4b9d4ae6227b66ed9bb55221ee458",
@@ -44,7 +38,6 @@
       "compressionSeconds": 124.69937260216102
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.6047973290551454,

@@ -9,20 +9,12 @@
     "question_id": "3d86fd0a",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. The relevant history says Sophia’s “How We Met” location was recorded as **“Coffee Shop (City).”**\n2. So, you met Sophia at a **coffee shop in the city**.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 715.3700920753181,
       "firstVisibleTextFromSpawnMs": 32222.034954931587,
-      "firstThinkingFromSpawnMs": null,
       "firstToolDeltaFromSpawnMs": 11529.879044974223,
       "promptToCompleteMs": 34074.390694033355,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +30,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "bd4eea6b820a3947c8bc2f0107b5fd8824600587c5cf816ef88614174d398889",
     "snapshot": {
       "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
@@ -47,7 +38,6 @@
       "compressionSeconds": 118.48971851309761
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 3.865665344055742,

@@ -9,19 +9,13 @@
     "question_id": "gpt4_65aabe59",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Relevant information**\n- You said you set up the smart thermostat “a month ago.”\n- You later said you “recently upgraded” your Wi‑Fi router to a mesh network system.\n\n**Reasoning**\n- “A month ago” indicates the thermostat was set up earlier than the recent mesh-system upgrade.\n\n**Answer:** You set up the **smart thermostat** first.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 826.8738929182291,
       "firstVisibleTextFromSpawnMs": 20762.0894650463,
       "firstThinkingFromSpawnMs": 10792.236171895638,
       "firstToolDeltaFromSpawnMs": 11061.235251836479,
       "promptToCompleteMs": 20515.181144932285,
-      "providerTTFTMs": null,
       "modelTurns": 2,
       "toolBatches": 1,
       "toolCalls": 1,
@@ -37,7 +31,6 @@
     },
     "modelCalls": 2,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "4ae685600f1214174b7d20dc016853dbf3aa4217a1cf56ad54696dddb83be7f5",
     "snapshot": {
       "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
@@ -46,7 +39,6 @@
       "compressionSeconds": 88.37053048610687
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 2.116176215931773,

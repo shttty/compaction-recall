@@ -9,21 +9,13 @@
     "question_id": "982b5123",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. You said the San Francisco wedding trip was **two months ago**.\n2. You booked the Airbnb **three months in advance**.\n3. So you booked it about **five months ago**.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 711.6615520790219,
       "firstVisibleTextFromSpawnMs": 39291.1781698931,
       "firstThinkingFromSpawnMs": 16722.109739901498,
       "firstToolDeltaFromSpawnMs": 7453.159459866583,
       "promptToCompleteMs": 39759.198506129906,
-      "providerTTFTMs": null,
       "modelTurns": 4,
       "toolBatches": 3,
       "toolCalls": 3,
@@ -39,7 +31,6 @@
     },
     "modelCalls": 4,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "e6de00e327157e15b804a7e6da5cb5d1d57ba0d980e22947ddbd422925d62a86",
     "snapshot": {
       "fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
@@ -48,7 +39,6 @@
       "compressionSeconds": 90.14432884985581
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 6.120977078098804,

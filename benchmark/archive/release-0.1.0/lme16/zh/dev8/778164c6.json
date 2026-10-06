@@ -1,0 +1,19 @@
+{
+  "question_id": "778164c6",
+  "split": "dev8",
+  "question": "我回头看了我们之前关于加勒比菜肴的对话，想问问，你推荐我用鲷鱼试的那道带水果的牙买加菜叫什么来着？",
+  "question_date": "2023/05/30 (Tue) 23:58",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": true,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "single-session-assistant",
+  "originalAssetSha256": "d842d8de4b08e1c0700aaeed19a317044c218c9a98030b5f637c4c059cf2fd94",
+  "textUtf8Sha256": "7d814c1b9b828fc42266e2e12c21a852cdf6639d23be48dd0c4323d6bc16a2ed",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "778164c6",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

@@ -9,20 +9,13 @@
     "question_id": "577d4d32",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. You said you’re trying to stop checking work emails and messages by **7 pm**.\n2. You said this helps separate work from personal time and lets you relax.\n\nSo, you stop checking work emails and messages at **7 pm**.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 699.583237990737,
       "firstVisibleTextFromSpawnMs": 28969.49700010009,
       "firstThinkingFromSpawnMs": 28861.748924013227,
       "firstToolDeltaFromSpawnMs": 7888.575281016529,
       "promptToCompleteMs": 29928.761739982292,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "6b8f2f90e9069d9e30230c0d3d11c57c7f2f6a4caf9680c7836703e586778fec",
     "snapshot": {
       "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
@@ -47,7 +39,6 @@
       "compressionSeconds": 81.82407163479365
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 3.2165513709187508,

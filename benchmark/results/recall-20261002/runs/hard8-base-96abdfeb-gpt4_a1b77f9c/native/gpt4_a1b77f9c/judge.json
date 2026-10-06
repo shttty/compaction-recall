@@ -9,17 +9,12 @@
     "question_id": "gpt4_a1b77f9c",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Relevant information from the conversation**\n- You said you finished listening to *The Power* on March 20, 2022, but didn’t mention when you started.\n- *The Nightingale* was recommended to you, but you didn’t say that you read it or how long it took.\n- *Sapiens: A Brief History of Humankind* wasn’t mentioned.\n\n**Conclusion**\nI can’t calculate the total weeks spent on all three books from the conversation. I’d need the start and finish dates—or the time spent—for each one.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 683.9589450974017,
       "firstVisibleTextFromSpawnMs": 13422.417093999684,
       "firstThinkingFromSpawnMs": 12223.742092959583,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 14684.02464990504,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "286fa358459233d9cab508df075da22a430da05da94cd42668f9be48f5da716b",
     "snapshot": {
       "fingerprint": "8f6364fa7669bee31aa28d191980b477eae4b9d4ae6227b66ed9bb55221ee458",
@@ -44,7 +38,6 @@
       "compressionSeconds": 124.69937260216102
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.256666212808341,

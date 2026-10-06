@@ -9,17 +9,12 @@
     "question_id": "28dc39ac",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Relevant information:**\n- You mentioned playing Overwatch for **5 hours on a Saturday**.\n- You also said you had about **5 gaming sessions in the past month**, each lasting **2–3 hours**—that’s **10–15 hours**.\n\n**Calculation:** If the 5-hour Overwatch session was separate from those five sessions, your total is **15–20 hours**. If it was one of the five, the total would instead be **10–15 hours**; the conversation doesn’t clarify whether it overlaps.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 838.7633280362934,
       "firstVisibleTextFromSpawnMs": 15192.828936967999,
       "firstThinkingFromSpawnMs": 12623.437979957089,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 17692.85891484469,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "0a2a1823a2f7af418d369f157f2b882ee2ec73d8b3fbd8f3bb6cb874a6215ed9",
     "snapshot": {
       "fingerprint": "ad72fa9de904445a76551cab6ab0e306784a28be5a1344ecc3d70d15474c1146",
@@ -44,7 +38,6 @@
       "compressionSeconds": 113.73524570930749
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.535943438997492,

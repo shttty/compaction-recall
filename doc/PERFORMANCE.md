@@ -115,14 +115,14 @@ Node 24 的 `Worker.getHeapStatistics()` 可用。主线程 GC 后先采 RSS/主
 ```sh
 # Parent directory must exist; each --output directory must be new.
 node benchmark/benchmark-scaling.mjs \
-  --data /home/rinne/workspace/lme-bench/data/longmemeval_m.json \
+  --data "$LME_M" \
   --question 577d4d32 --sizes 50000 --repeats 1 --keep 20000 \
-  --output benchmark/results/perf-20261003/smoke-sdk-cut
+  --output "$OUT/smoke-sdk-cut"
 
 node benchmark/benchmark-scaling.mjs \
-  --data /home/rinne/workspace/lme-bench/data/longmemeval_m.json \
+  --data "$LME_M" \
   --question 577d4d32 --sizes 50000,200000,500000,1000000 \
-  --repeats 3 --keep 20000 --output benchmark/results/perf-20261003/final
+  --repeats 3 --keep 20000 --output "$OUT/final"
 ```
 
 驱动自动给每个子进程加 `--expose-gc`，依次运行并轮换 arm 顺序，临时目录退出时删除；不覆盖既有结果。测量期间没有并行执行测试。此前冻结的 benchmark、src/test 和两份 README 均未修改。

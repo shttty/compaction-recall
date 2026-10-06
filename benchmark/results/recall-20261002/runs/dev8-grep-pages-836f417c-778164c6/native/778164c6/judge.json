@@ -9,17 +9,12 @@
     "question_id": "778164c6",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. **Relevant history:** I don’t see a previous discussion here about Caribbean dishes or a Jamaican snapper dish with fruit.\n2. **Conclusion:** I can’t identify the dish from the conversation available to me.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 686.7394880391657,
       "firstVisibleTextFromSpawnMs": 11459.67055298388,
       "firstThinkingFromSpawnMs": 10132.450855104253,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 11432.964658131823,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "edf1668b5367aa34291e73b03d3968ae2d74b124a8f442b9eaca348607e6e0c0",
     "snapshot": {
       "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
@@ -44,7 +38,6 @@
       "compressionSeconds": 117.88170368992724
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.14702298399061,

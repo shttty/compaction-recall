@@ -9,17 +9,12 @@
     "question_id": "2ce6a0f2",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant events mentioned:**\n- A book reading at a local bookstore\n- A guided tour at the Modern Art Museum focused on Frida Kahlo and Diego Rivera\n- A book reading at the local library\n- A literary festival where you volunteered and helped with author panels\n\n**Step 2 — Count:** Counting literary events as art-related, you mentioned **four distinct events** in roughly the past month.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 685.9693529549986,
       "firstVisibleTextFromSpawnMs": 48183.93556587398,
       "firstThinkingFromSpawnMs": 13655.020650010556,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 51377.91559193283,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "b4f250ece99c30cd45884a12fcb4a5b7f0f840877844fa874bb62562f493b098",
     "snapshot": {
       "fingerprint": "db248508b7da4e0eb68e9e5e6f378301648a5a908aed593c015821ea727c2038",
@@ -44,7 +38,6 @@
       "compressionSeconds": 111.40956617030315
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 4.059930172981694,

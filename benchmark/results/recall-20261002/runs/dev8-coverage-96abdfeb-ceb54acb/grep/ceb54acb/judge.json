@@ -9,20 +9,12 @@
     "question_id": "ceb54acb",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Relevant information:** The earlier chat suggested “sexual compulsions,” followed by four alternatives: “sexual fixations,” “problematic sexual behaviors,” “sexual impulsivity,” and “compulsive sexuality.”\n\n**Answer:** The other four options were:\n1. Sexual fixations\n2. Problematic sexual behaviors\n3. Sexual impulsivity\n4. Compulsive sexuality",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 833.0647971015424,
       "firstVisibleTextFromSpawnMs": 23599.42600596696,
-      "firstThinkingFromSpawnMs": null,
       "firstToolDeltaFromSpawnMs": 7100.903875892982,
       "promptToCompleteMs": 24124.196741031483,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +30,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "1c5eb9711a7e8ebc1e0a54bb177927bc891ad38fa302a92974eda276aa54df33",
     "snapshot": {
       "fingerprint": "80a1c38a5a78cef1b4220e698d2f4488b2d46d34a0ce261d1989d141752aa3d7",
@@ -47,7 +38,6 @@
       "compressionSeconds": 89.44119733083062
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 4.845415411051363,

@@ -9,17 +9,12 @@
     "question_id": "28dc39ac",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "### 1. Extract the relevant information\n- You said you spent **5 hours playing Overwatch on Saturday**. You mentioned this session several times, so it counts **only once**.\n- You also reported **around 5 gaming sessions in the past month**, each lasting **2–3 hours**.\n\n### 2. Calculate the total\n- Five sessions: **5 × 2–3 hours = 10–15 hours**\n- Add the Overwatch session: **10–15 + 5 = 15–20 hours**\n\n**Estimated total: 15–20 hours**, or approximately **17.5 hours** using the midpoint—assuming the Overwatch session was separate from those five sessions.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 790.6021738890558,
       "firstVisibleTextFromSpawnMs": 17837.102545890957,
       "firstThinkingFromSpawnMs": 15773.96195102483,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 20166.78920784034,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "1483068c623386b67e521bc5335ea88ee6ca728fe8317a12a319aba09d854171",
     "snapshot": {
       "fingerprint": "ad72fa9de904445a76551cab6ab0e306784a28be5a1344ecc3d70d15474c1146",
@@ -44,7 +38,6 @@
       "compressionSeconds": 113.73524570930749
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 6.924927228828892,

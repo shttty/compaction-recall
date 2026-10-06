@@ -4,7 +4,7 @@ Plan and frozen prompts: `doc/SOFT_MATCH_EVAL_PLAN.md` and `doc/SOFT_MATCH_PROMP
 
 ## Inputs and corpus
 
-`loadEvaluationCases({ dataRoot, goldPath })` from `benchmark/retrieval-eval-core.mjs` loads the explicit dataset root `/home/rinne/workspace/pi-context-recall-dev/benchmark/data` and explicit gold file `/home/rinne/.hermes/task-runs/recall-soft-match-20261003/zh-retrieval/gold.json`. It reads `.gold`, requires 16 keys of the form `{dev8,hard8}/<id>`, and reads only `corpus.json`, `corpus-zh.json`, and `question-zh.json` beneath those keys. The bilingual question fields are `question_en` and `question`. Every gold coordinate must exist in both languages and its role must equal the frozen gold role. All 16 bilingual cases validate before filtering a run or returning any cases; a mismatch throws, with no report or scores written.
+`loadEvaluationCases({ dataRoot, goldPath })` loads caller-supplied external paths. It reads `.gold`, requires 16 `{dev8,hard8}/<id>` keys, and reads `corpus.json`, `corpus-zh.json`, `question-zh.json` beneath those keys. Bilingual fields are `question_en` and `question`. Every gold coordinate must exist in both languages with the frozen role. All 16 cases validate before filtering; mismatch throws without scores. Public materials contain only IDs, coordinates, hashes and authorized Chinese question translations, not the required corpora or gold text.
 
 The returned 32 cases contain `{ key, questionId, language, question, questionDate, branch, documents, positions, goldIds }`. Gold and positions are scorer-side data, never engine/model input. Engine input is only `documents: [{ id, text }]`; renderer metadata comes from `branch`. Question and branch fields are explicitly allowlisted. No answer, judge, label, provenance or `has_answer` fields are copied from input objects.
 
@@ -88,9 +88,9 @@ A production arm is an explicit, fixed, read-only package root with `package.jso
 ```sh
 node benchmark/retrieval-group1.mjs \
   --engine /absolute/path/to/engine.mjs \
-  --data /home/rinne/workspace/pi-context-recall-dev/benchmark/data \
-  --gold /home/rinne/.hermes/task-runs/recall-soft-match-20261003/zh-retrieval/gold.json \
-  --output /home/rinne/.hermes/task-runs/recall-soft-match-20261003/runs/s0/group1.json \
+  --data "$DATA_ROOT" \
+  --gold "$GOLD" \
+  --output "$OUT/group1.json" \
   --prototype explicit-arm-name
 ```
 
@@ -101,12 +101,12 @@ All five flags are required. Optional `--question split/id` (or unique id) and `
 ```sh
 python benchmark/retrieval-group2.py \
   --config /absolute/path/to/evaluation-config.json \
-  --data /home/rinne/workspace/pi-context-recall-dev/benchmark/data \
-  --gold /home/rinne/.hermes/task-runs/recall-soft-match-20261003/zh-retrieval/gold.json \
+  --data "$DATA_ROOT" \
+  --gold "$GOLD" \
   --engine /absolute/path/to/engine.mjs \
   --adapter-package /absolute/path/to/read-only-adapter-package \
   --prototype explicit-arm-name \
-  --output /home/rinne/.hermes/task-runs/recall-soft-match-20261003/runs/s0/group2
+  --output "$OUT/group2"
 ```
 
 `--question split/id` and `--language en|zh` may each repeat. Output must be a new directory within configuration `output_dir`. A package manifest can declare `{"type":"module","pi":{"extensions":["./adapter.ts"]}}`; a read-only production-source copy instead declares `{"pi":{"extensions":["./src/index.ts"]}}` and includes that entry's source dependency closure. Package location is explicitly supplied, not guessed from a prototype name. The SDK uses `--arm production --plugin-dir PACKAGE` to load the manifest-declared extension. Profile files and the package remain read-only.
@@ -118,7 +118,7 @@ Configuration uses the existing strict `benchmark/evaluation-config.py` schema, 
   "sdk_path": "/absolute/path/to/sdk-package",
   "helper_path": "/absolute/path/to/historical-helper.py",
   "data_path": "/absolute/path/to/source-dataset.json",
-  "output_dir": "/home/rinne/.hermes/task-runs/recall-soft-match-20261003/runs/s0",
+  "output_dir": "/absolute/external/output",
   "candidate_repo": "/absolute/path/to/candidate-repository",
   "system_prompt": "Explicit benchmark system prompt",
   "protocol": { "segments": 2, "reserve_tokens": 0, "overhead_tokens": 0 },

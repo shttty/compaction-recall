@@ -9,20 +9,13 @@
     "question_id": "51b23612",
     "arm": "production",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant information:** In our earlier conversation about political propaganda using humor or satire, I named the Soviet cartoon **“Nu, pogodi!”** (“Well, Just You Wait!”).\n\n**Step 2 — Clarification:** I should correct my earlier description: **“Nu, pogodi!”** is best known as a comic chase cartoon about a wolf pursuing a hare. Calling it a cartoon that mocked Western culture was likely inaccurate.\n\n**Answer:** The cartoon I mentioned was **“Nu, pogodi!”**, but my earlier claim about its purpose was mistaken.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 698.1130379717797,
       "firstVisibleTextFromSpawnMs": 31944.923328002915,
       "firstThinkingFromSpawnMs": 28540.7696289476,
       "firstToolDeltaFromSpawnMs": 8574.021714972332,
       "promptToCompleteMs": 37356.26117698848,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "573cb5b2e7d317b2f9e66a9fb0a19a1330bca097516cfe37812933e198f43d15",
     "snapshot": {
       "fingerprint": "3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8",
@@ -47,7 +39,6 @@
       "compressionSeconds": 140.69230400095694
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 5.489406687906012,

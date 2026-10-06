@@ -9,20 +9,13 @@
     "question_id": "778164c6",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. The Jamaican snapper dish I recommended trying was **Escovitch fish**—fried snapper topped with spicy, pickled vegetables.\n2. The dish with fruit was **grilled snapper with mango salsa**. It was listed separately as a Caribbean snapper dish, not specifically as Jamaican.\n\nSo you may be thinking of **grilled snapper with mango salsa**.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 700.1254300121218,
       "firstVisibleTextFromSpawnMs": 27327.38980301656,
       "firstThinkingFromSpawnMs": 24820.839420193806,
       "firstToolDeltaFromSpawnMs": 7481.165764154866,
       "promptToCompleteMs": 27484.84340705909,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "1c6c7bdd10c477270e2ea9f325760b760146e8e04202ee3a6fc5b4539b8d8542",
     "snapshot": {
       "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
@@ -47,7 +39,6 @@
       "compressionSeconds": 117.88170368992724
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 4.393347697099671,

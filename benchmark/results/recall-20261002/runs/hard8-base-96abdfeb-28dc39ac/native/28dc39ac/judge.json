@@ -9,17 +9,12 @@
     "question_id": "28dc39ac",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. You mentioned about **5 gaming sessions** in the past month, each lasting **2–3 hours**:  \n   **5 × 2–3 = 10–15 hours**.\n2. You also mentioned a **5-hour Overwatch session** on a Saturday.\n\nSo, if that Overwatch session was separate, your total was **15–20 hours**. If it was included among those five sessions, the total was **10–15 hours**; the chat doesn’t clarify whether it was separate.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 684.2189799062908,
       "firstVisibleTextFromSpawnMs": 19731.85319895856,
       "firstThinkingFromSpawnMs": 13190.879811998457,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 21622.846852056682,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "efc99d2411ba36b0a1075d131b7c60c58c1e56e98bd60c13815918152adaf784",
     "snapshot": {
       "fingerprint": "ad72fa9de904445a76551cab6ab0e306784a28be5a1344ecc3d70d15474c1146",
@@ -44,7 +38,6 @@
       "compressionSeconds": 113.73524570930749
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 7.220765097998083,

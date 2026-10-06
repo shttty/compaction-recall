@@ -9,28 +9,13 @@
     "question_id": "28dc39ac",
     "arm": "production",
     "outcome": "answered",
-    "answer": "### Step 1: Extract the gaming time you mentioned\n\n| Game or activity | Time spent |\n|---|---:|\n| *The Last of Us Part II* — normal difficulty | 25 hours |\n| *The Last of Us Part II* — hard difficulty | 30 hours |\n| *Celeste* | 10 hours |\n| *Hyper Light Drifter* | 5 hours |\n| *Assassin’s Creed Odyssey* | Approximately 70 hours |\n| *Overwatch* — Saturday session | 5 hours |\n| Five gaming sessions in the past month, each lasting 2–3 hours | 10–15 hours |\n\nRepeated mentions of the same playthrough or session are counted only once.\n\n### Step 2: Add the hours\n\nThe individually reported game times total:\n\n**25 + 30 + 10 + 5 + 70 + 5 = 145 hours**\n\nAdding the five other gaming sessions:\n\n**145 + 10–15 = 155–160 hours**\n\n### Answer\n\nYou’ve reported **approximately 155–160 hours of gaming**, or **about 157.5 hours** using the midpoint of the session-length range.\n\nThis assumes the five gaming sessions were separate from the other playtime listed. If they overlap, the total would be lower. Games you mentioned without a duration aren’t included.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_grep",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_grep",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_recall"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 693.9687482081354,
       "firstVisibleTextFromSpawnMs": 65360.51747901365,
       "firstThinkingFromSpawnMs": 47187.55352310836,
       "firstToolDeltaFromSpawnMs": 11772.163495188579,
       "promptToCompleteMs": 75807.95397609472,
-      "providerTTFTMs": null,
       "modelTurns": 5,
       "toolBatches": 4,
       "toolCalls": 10,
@@ -46,7 +31,6 @@
     },
     "modelCalls": 5,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "1483068c623386b67e521bc5335ea88ee6ca728fe8317a12a319aba09d854171",
     "snapshot": {
       "fingerprint": "ad72fa9de904445a76551cab6ab0e306784a28be5a1344ecc3d70d15474c1146",
@@ -55,7 +39,6 @@
       "compressionSeconds": 113.73524570930749
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.234992210986093,

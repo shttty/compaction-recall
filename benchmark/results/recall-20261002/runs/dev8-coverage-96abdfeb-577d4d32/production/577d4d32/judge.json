@@ -9,20 +9,13 @@
     "question_id": "577d4d32",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. **Relevant information:** You said you’ve been stopping work emails and messages by **7 pm** to separate work from personal time.\n2. **Answer:** Your cutoff is **7 pm**.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 721.9215708319098,
       "firstVisibleTextFromSpawnMs": 33534.56360497512,
       "firstThinkingFromSpawnMs": 33398.34962785244,
       "firstToolDeltaFromSpawnMs": 6831.831062911078,
       "promptToCompleteMs": 33536.70532791875,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "fbdb377926917b9d04bc3dd560b03292149c6e9b6dafb2842ec3ab930b80b83a",
     "snapshot": {
       "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
@@ -47,7 +39,6 @@
       "compressionSeconds": 81.82407163479365
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 2.0849333410151303,

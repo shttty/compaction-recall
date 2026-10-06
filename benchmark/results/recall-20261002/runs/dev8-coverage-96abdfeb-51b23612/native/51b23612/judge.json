@@ -9,17 +9,12 @@
     "question_id": "51b23612",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. **Relevant information:** The conversation history shown here does not mention political propaganda, humor, or a Soviet cartoon mocking Western culture.\n2. **Conclusion:** I can’t identify which cartoon was mentioned earlier from this history. If you share another clue—such as a character, plot, or approximate decade—I can help narrow it down.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 709.8382830154151,
       "firstVisibleTextFromSpawnMs": 13365.03863404505,
       "firstThinkingFromSpawnMs": 12015.157206915319,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 13595.851466991007,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "573cb5b2e7d317b2f9e66a9fb0a19a1330bca097516cfe37812933e198f43d15",
     "snapshot": {
       "fingerprint": "3c65eda85833c39813443ffbe6c0c7a052ecbcb51844df8dbfa7fefce4d115b8",
@@ -44,7 +38,6 @@
       "compressionSeconds": 140.69230400095694
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.9330111721064895,

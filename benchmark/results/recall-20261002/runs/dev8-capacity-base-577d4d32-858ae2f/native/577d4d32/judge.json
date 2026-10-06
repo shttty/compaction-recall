@@ -9,17 +9,12 @@
     "question_id": "577d4d32",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. **Relevant information:** You mentioned checking your phone around **10:30 pm**, which often led to scrolling, and getting into bed around **11:15 pm**. You also discussed trying to wind down earlier, but didn’t specify a cutoff for work emails or messages.\n2. **Answer:** You haven’t said what time you stop checking work emails and messages. The only specific time you gave was about **10:30 pm for checking your phone**.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 689.0349490568042,
       "firstVisibleTextFromSpawnMs": 16951.24964695424,
       "firstThinkingFromSpawnMs": 13432.93413403444,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 17428.597210906446,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "d0a94084e206cb09158a25cb7dff2ff94f49954f0627bd4438b88405264efb79",
     "snapshot": {
       "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
@@ -44,7 +38,6 @@
       "compressionSeconds": 81.82407163479365
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.194386277813464,

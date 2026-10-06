@@ -9,20 +9,12 @@
     "question_id": "577d4d32",
     "arm": "production",
     "outcome": "answered",
-    "answer": "- You said you stop checking work emails and messages at **7 pm**.\n- You noted that this boundary helps you separate work from personal time and relax.\n\nSo, your cutoff is **7 pm**.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 699.3034319020808,
       "firstVisibleTextFromSpawnMs": 30241.196418879554,
-      "firstThinkingFromSpawnMs": null,
       "firstToolDeltaFromSpawnMs": 9147.313999943435,
       "promptToCompleteMs": 31231.77519789897,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +30,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "d0a94084e206cb09158a25cb7dff2ff94f49954f0627bd4438b88405264efb79",
     "snapshot": {
       "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
@@ -47,7 +38,6 @@
       "compressionSeconds": 81.82407163479365
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 2.007026428123936,

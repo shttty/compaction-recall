@@ -9,17 +9,12 @@
     "question_id": "6d550036",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "1. You said you’re **leading a Bible study on Matthew next week**.\n2. You also mentioned writing a play inspired by *Hamlet*, but didn’t say you’re leading that project.\n\n**Answer: 1 project explicitly described as one you’re leading.**",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 798.4343459829688,
       "firstVisibleTextFromSpawnMs": 17477.603137958795,
       "firstThinkingFromSpawnMs": 13535.71934089996,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 18495.230692904443,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "9e80a7f87a563047fa8452061066cf4d74f99909d53a11f08d1f4f5f9376f6e3",
     "snapshot": {
       "fingerprint": "35d650a4cde3361782aa54439b0176370d7333353dcb4ac5be0147f6c0588d75",
@@ -44,7 +38,6 @@
       "compressionSeconds": 76.48786530666985
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.284087328007445,

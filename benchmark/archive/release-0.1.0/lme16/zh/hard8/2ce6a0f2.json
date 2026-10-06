@@ -1,0 +1,19 @@
+{
+  "question_id": "2ce6a0f2",
+  "split": "hard8",
+  "question": "在过去一个月里我参加了多少个不同的艺术相关活动？",
+  "question_date": "2023/03/08 (Wed) 23:58",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": false,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "multi-session",
+  "originalAssetSha256": "fec20b617c6e74c86cc4cabdb53f004921c540531bd07e412bc9c713b30f856a",
+  "textUtf8Sha256": "ae988fc79b1fac1c4ae20e7a83e9c81227519828bf770814861c726f8bfe2876",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "2ce6a0f2",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

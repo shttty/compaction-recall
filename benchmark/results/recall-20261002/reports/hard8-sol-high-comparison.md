@@ -35,5 +35,5 @@ Runner SHA-256：`d4259198e3290ffca46a3aa9245a74213aa076e8867b7079e8d70f96b6af3b
 
 ## 审计文件
 
-- `/home/rinne/.hermes/task-runs/recall-20261002/parent-hard8-sol-high-audit.json` SHA-256 `052d61e3a2571783f0ed4dde55213039efae51ff2e6981d4b75f9fb9a6d10145`
-- `/home/rinne/.hermes/task-runs/recall-20261002/parent-hard8-grep-pages-audit.json` SHA-256 `153b90b1a2be8f255397ddd2097a43192abf749763ca6869c650ca438e814a4f`
+- 外部`parent-hard8-sol-high-audit.json`，原字节SHA-256 `052d61e3a2571783f0ed4dde55213039efae51ff2e6981d4b75f9fb9a6d10145`。
+- 外部`parent-hard8-grep-pages-audit.json`，原字节SHA-256 `153b90b1a2be8f255397ddd2097a43192abf749763ca6869c650ca438e814a4f`。

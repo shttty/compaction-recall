@@ -1,0 +1,19 @@
+{
+  "question_id": "6d550036",
+  "split": "hard8",
+  "question": "我领导过或正在领导多少个项目？",
+  "question_date": "2023/05/30 (Tue) 23:55",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": false,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "multi-session",
+  "originalAssetSha256": "788616cd55c9839254fb87d9355279524ad48096f9c87c61dceed1a7a942bcea",
+  "textUtf8Sha256": "80a2844cef094fe15de1111c633b3437d5faac68b8a040696355ddc35b8bf789",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "6d550036",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

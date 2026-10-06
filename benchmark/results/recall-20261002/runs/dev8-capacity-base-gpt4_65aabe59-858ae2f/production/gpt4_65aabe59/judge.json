@@ -9,21 +9,13 @@
     "question_id": "gpt4_65aabe59",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. **Smart thermostat:** You said you had set it up “a month ago.”\n2. **Mesh network:** Later, you said you had “recently upgraded” your Wi‑Fi router to a mesh system, without giving an earlier date.\n\n**Answer:** You set up the smart thermostat first.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 714.9032328743488,
       "firstVisibleTextFromSpawnMs": 29636.9086119812,
       "firstThinkingFromSpawnMs": 29005.836554802954,
       "firstToolDeltaFromSpawnMs": 8015.115661779419,
       "promptToCompleteMs": 29326.572466176003,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 3,
@@ -39,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "9ca32cbea35ac7afa804f11fda28973b5492e9fb59dc413264f474aa036bcdac",
     "snapshot": {
       "fingerprint": "042a9719f97cd7d3ffeab0189fde7b32594f139ac23aeb47eba5ed4e84bee5cb",
@@ -48,7 +39,6 @@
       "compressionSeconds": 88.37053048610687
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 2.506844853051007,

@@ -19,7 +19,7 @@ export const documents = [
 export const queries = [
   '网关重启后为什么断连？', '网关', '索引', '索引擎', 'youer',
   '网', '', 'the AND is please',
-  'What time do I stop checking work emails and messages?',
+  'Does the maintenance manual cover motorcycle inspections?',
   'vm', 'kvm', 'compaction', 'CompactionResult', 'result',
   'moto', 'motorcycle', 'gatway', 'gateway',
   'gateway qzxwvvnonexistent', '网关火星独角兽', 'GPU集群', 'gpt',

@@ -2,10 +2,7 @@
   "model": "qwen",
   "inputSha256": "496aaff6b5276c0387c7826909063172307bfdb8cfc3d94f05c8b2cb1494c213",
   "loadSeconds": 6.8470159329990565,
-  "versions": {
-    "torch": "2.14.0+cpu",
-    "transformers": "5.17.0"
-  },
+  "versions": {},
   "threads": 4,
   "batchSize": 2,
   "maxTokens": 512,
@@ -15,11 +12,6 @@
   "peakRssMiB": 3888.171875,
   "sanity": [
     {
-      "query": "我在哪里遇见小林？",
-      "documents": [
-        "我在市中心的咖啡馆遇见了小林。",
-        "服务器配置文件放在备份目录。"
-      ],
       "expected": 0,
       "scores": [
         9.688240051269531,
@@ -28,11 +20,6 @@
       "top": 0
     },
     {
-      "query": "服务配置文件保存在哪里？",
-      "documents": [
-        "上周末我跑了五公里。",
-        "服务配置文件保存在 /opt/service/config.yaml。"
-      ],
       "expected": 1,
       "scores": [
         -11.772482872009277,
@@ -41,11 +28,6 @@
       "top": 1
     },
     {
-      "query": "周末跑步的距离是多少？",
-      "documents": [
-        "周末我跑了五公里，然后回家休息。",
-        "周末天气预报说可能下雨。"
-      ],
       "expected": 0,
       "scores": [
         6.626153945922852,

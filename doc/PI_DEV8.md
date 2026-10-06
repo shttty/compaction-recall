@@ -4,20 +4,20 @@ Completed 2026-09-30. Pi **0.99.1**, subscription provider **openai-codex/gpt-6-
 
 ## Findings
 
-Direct post-run comparison against reference answers finds **6/8 target answers in grep** and **7/8 in indexed recall**. This is a manual, single-run reference comparison, not an independent blind/model-judge accuracy measurement. Both retrieval arms missed the Airbnb temporal answer (five months ago). Indexed recall recovered the camera-collection duration (three months), whereas grep did not. Native has seven clear misses and one explicitly uncertain snapper guess containing the reference; do not present this as an unambiguous 0/8 or 1/8 formal score. Both retrieval answers on the snapper question also include caveats about which dish was specifically described as Jamaican.
+Direct post-run reference comparison found **6/8** target matches for grep and **7/8** for indexed recall. This was manual, single-run comparison, not independent model judging. Native had seven clear misses and one uncertain match; it is not an unambiguous formal 0/8 or 1/8. Wording and reference details remain external.
 
 | Question | Native | Grep + expand | Indexed recall + grep + expand |
 |---|---|---|---|
-| 778164c6, snapper | Correct candidate, explicitly unverified guess | Target present, caveat | Target present, caveat |
-| 51b23612, Soviet cartoon | Missing | Target present | Target present |
-| ceb54acb, four terms | Missing | All four | All four |
-| 577d4d32, email cutoff | Wrong, 10pm | 7pm | 7pm |
-| 3d86fd0a, Sophia | Missing | Coffee shop | Coffee shop |
-| 15745da0, cameras | Missing | Missing | Three months |
-| gpt4_65aabe59, devices | Missing | Thermostat first | Thermostat first |
-| 982b5123, Airbnb | Missing | Lead time, not five months ago | Lead time, not five months ago |
+| 778164c6 | Unverified match | Match with caveat | Match with caveat |
+| 51b23612 | No match | Match | Match |
+| ceb54acb | No match | Match | Match |
+| 577d4d32 | No match | Match | Match |
+| 3d86fd0a | No match | Match | Match |
+| 15745da0 | No match | No match | Match |
+| gpt4_65aabe59 | No match | Match | Match |
+| 982b5123 | No match | No match | No match |
 
-Complete answers, reference strings, tool arguments, token usage, session paths and snapshot hashes are in [pi-dev8-results.json](../benchmark/pi-dev8-results.json). References were added only during post-run reporting, never supplied to answer processes.
+Public [pi-dev8-results.json](../benchmark/pi-dev8-results.json) retains non-text metrics and identities. Complete answers, references, tool arguments and original records remain external; references were not supplied to answer processes.
 
 ## Observed answer speed
 
@@ -54,7 +54,7 @@ The indexed adapter is prototype-only; production recall still scans. Automatic 
 
 ## Context configuration and recoveries
 
-Initial six-segment runs used the catalog's 272,000 context metadata and 240,000 conservative preflight ceiling including a 5,000-token prompt/tool reserve. Safety blocked two Sophia retrieval attempts and an intermediate device-history compaction. User then requested **372,000** metadata; supported project-profile `models.json` modelOverrides changed only openai-codex/gpt-6-luna, verified offline. Guard became **340,000**, same reserve. No model substitution or segmentation change.
+Initial six-segment runs used 272,000 context metadata and a 240,000 preflight ceiling including a 5,000-token reserve. Safety blocked two retrieval attempts and one intermediate compaction. The authorized context metadata became **372,000**, guard **340,000**, with the same reserve, model and segmentation.
 
 Two histories hit a harness Unicode splitting bug: Python splitlines() incorrectly split U+2028 inside JSON strings. Fixed with existing benchmark newline-only parsing and an offline regression. Saved raw history prefixes/content were verified before resuming. Remaining work was **10 compactions + 11 answer sessions**, reusing completed summaries and successful answers rather than rebuilding them. Individual answer records identify the 272k/240k or 372k/340k configuration. This mixed metadata history is a limitation even though all final observed input counts were below272k.
 

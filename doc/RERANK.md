@@ -53,7 +53,7 @@ For example (placeholders, not a runnable model configuration):
 {"retrieval":"retrieval.json","inputs":"candidates.private.json","data":"questions.json","output":"new-summary.json","models":{"external_run":"external-results.json"}}
 ```
 
-Candidate windows stay outside the repository. Historical result files below retain their original model labels, bytes and source hashes. The removed fixed-model runner is not hidden in an archive or compatibility path.
+Candidate windows and original frozen result bytes stay external. Public results retain historical model labels, source hashes and non-text metrics through schema projection. The removed fixed-model runner is not hidden in an archive or compatibility path.
 
 ## Results
 
@@ -85,9 +85,9 @@ Source windows were shortened from longer entries for 18–36 candidates per que
 
 ### What changed in evidence coverage
 
-Both rerankers recovered the easy email-time evidence and the Sophia/camera facts missing from the mechanical top five. Qwen's extra marked turn was the Airbnb temporal question: it returned both marked turns, while mMiniLM returned one. For thermostat-versus-mesh ordering, both returned only one of three marked turns; the fixed pool itself held only two. A hit is therefore insufficient to claim a fully supported answer.
+Both rerankers recovered marked evidence for IDs `577d4d32`, `3d86fd0a` and `15745da0` missed by the mechanical top five. For `982b5123`, Qwen returned both marked turns and mMiniLM one; for `gpt4_65aabe59`, both returned one of three, while the pool held two. A hit is not a fully supported answer.
 
-One shared-text hit comes from a duplicate in another stacked history, explaining the lower strict own-source hit counts. Literal reference-answer strings were found in pool windows for eight questions, **including degree and commute despite their marked target evidence being absent**, while some annotated-support cases lacked an exact reference string. Literal matching was not used to score retrieval success.
+One shared-text hit was a duplicate under another history. Reference strings appeared in pool windows for eight questions, including two whose marked evidence was absent; other annotated-support cases lacked a literal match. Those strings remain external and were not the scoring rule.
 
 Both models chose the intended passage in all three tiny Chinese smoke pairs. These easy hand-authored checks establish basic execution on Chinese text only; the main ten-question results remain English-only and do not establish multilingual or cross-lingual quality.
 

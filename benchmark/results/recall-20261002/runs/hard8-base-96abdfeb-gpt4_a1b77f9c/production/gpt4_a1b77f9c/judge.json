@@ -9,27 +9,13 @@
     "question_id": "gpt4_a1b77f9c",
     "arm": "production",
     "outcome": "answered",
-    "answer": "### Relevant dates\n- **The Nightingale:** Started January 1 and finished January 15 — **2 weeks**.\n- **Sapiens: A Brief History of Humankind:** Started February 1 and finished March 1 — **4 weeks**.\n- **The Power:** Started March 6 and finished March 20 — **2 weeks**.\n\n### Total\n**2 + 4 + 2 = 8 weeks** spent reading or listening to the three books.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_recall",
-      "history_recall",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 712.3237841296941,
       "firstVisibleTextFromSpawnMs": 50102.81900502741,
       "firstThinkingFromSpawnMs": 47784.30143301375,
       "firstToolDeltaFromSpawnMs": 8220.386601053178,
       "promptToCompleteMs": 50789.82890979387,
-      "providerTTFTMs": null,
       "modelTurns": 4,
       "toolBatches": 3,
       "toolCalls": 9,
@@ -45,7 +31,6 @@
     },
     "modelCalls": 4,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "286fa358459233d9cab508df075da22a430da05da94cd42668f9be48f5da716b",
     "snapshot": {
       "fingerprint": "8f6364fa7669bee31aa28d191980b477eae4b9d4ae6227b66ed9bb55221ee458",
@@ -54,7 +39,6 @@
       "compressionSeconds": 124.69937260216102
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 3.2556795158889145,

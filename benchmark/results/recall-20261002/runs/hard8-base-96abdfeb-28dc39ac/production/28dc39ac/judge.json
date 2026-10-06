@@ -9,30 +9,13 @@
     "question_id": "28dc39ac",
     "arm": "production",
     "outcome": "answered",
-    "answer": "**Step 1 — Hours you explicitly mentioned:**\n\n- *The Last of Us Part II*: **30 hours**\n- *Assassin’s Creed Odyssey*: **about 70 hours**\n- *Celeste*: **10 hours**\n- *Hyper Light Drifter*: **5 hours**\n- Overwatch session: **5 hours**\n- Five recent gaming sessions at 2–3 hours each: **about 10–15 hours**\n\n**Step 2 — Add them:**  \n30 + 70 + 10 + 5 + 5 + 10–15 = **about 130–135 hours**.\n\nThat estimate assumes the five-session total doesn’t include the 5-hour Overwatch session or the other game-play totals. Since those reports could overlap, the exact total isn’t clear from the chat.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand",
-      "history_expand",
-      "history_grep",
-      "history_expand",
-      "history_expand",
-      "history_expand",
-      "history_recall",
-      "history_recall",
-      "history_recall",
-      "history_recall",
-      "history_grep"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 714.124257909134,
       "firstVisibleTextFromSpawnMs": 109177.24887700751,
       "firstThinkingFromSpawnMs": 20023.597119841725,
       "firstToolDeltaFromSpawnMs": 10160.448235925287,
       "promptToCompleteMs": 111787.01823786832,
-      "providerTTFTMs": null,
       "modelTurns": 7,
       "toolBatches": 6,
       "toolCalls": 12,
@@ -48,7 +31,6 @@
     },
     "modelCalls": 7,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "efc99d2411ba36b0a1075d131b7c60c58c1e56e98bd60c13815918152adaf784",
     "snapshot": {
       "fingerprint": "ad72fa9de904445a76551cab6ab0e306784a28be5a1344ecc3d70d15474c1146",
@@ -57,7 +39,6 @@
       "compressionSeconds": 113.73524570930749
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.222527465084568,

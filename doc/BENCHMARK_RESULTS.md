@@ -2,7 +2,7 @@
 
 This is a clean aggregate of the frozen **2026-10-02** LongMemEval experiments, not a new evaluation of `pi-context-recall@0.1.0`. Counts below reproduce the original audits; no answers were regraded and no model, compression or benchmark runs were performed to prepare this document. Model identifiers describe historical evidence, not recommended or default configuration.
 
-**Evidence access:** `shttty/pi-context-recall` is a **private GitHub repository**. All evidence links below require repository access; they do not imply public availability. Raw audits, reports, run records and provenance are **not included in the npm package**. This aggregate intentionally excludes question text, answers, sessions, personal configuration and raw provenance JSON. Links use the repository's `main` branch; the SHA-256 digests below identify the frozen bytes independently of a moving branch.
+**Evidence access:** Repository links below now lead to non-text public metadata or historical reports, not raw questions, answers or sessions. Original frozen bytes remain external; SHA-256 digests here identify those original records, not byte identity of the projected public JSON. Figures were not rejudged or remeasured. These materials are excluded from npm except this clean aggregate; no personal configuration or raw provenance is packaged.
 
 ## Dataset and protocol
 

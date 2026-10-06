@@ -9,17 +9,12 @@
     "question_id": "gpt4_7fce9456",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. **Relevant information:** You mentioned that you and your partner had been looking for a home for about three months and were getting close to closing. You also said things moved quickly after you got pre-approved for a mortgage.\n\n2. **Answer:** The available chat history does not mention a townhouse in Brookside or how many properties you viewed before making an offer, so I can’t determine the number.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 663.0627298727632,
       "firstVisibleTextFromSpawnMs": 12595.527617959306,
       "firstThinkingFromSpawnMs": 11035.802145022899,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 13437.76070792228,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "23ffed5a60e1214caf39c28c02810049d0c00534401969e60cffe0bba2ce6228",
     "snapshot": {
       "fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
@@ -44,7 +38,6 @@
       "compressionSeconds": 112.73651911481284
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.651457521133125,

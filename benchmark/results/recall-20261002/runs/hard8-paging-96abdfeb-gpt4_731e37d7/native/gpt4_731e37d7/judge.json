@@ -9,17 +9,12 @@
     "question_id": "gpt4_731e37d7",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant information:** You mentioned attending a ceramic art workshop at a community center, a one-day photography workshop at a local art school, a digital marketing workshop, and a writing workshop at a bookstore. You also mentioned skills-training sessions.\n\n**Step 2 — Check for costs:** The conversation does not state how much you paid for any of these workshops or sessions.\n\n**Answer:** I can’t calculate the total spent from the information provided; no workshop expenses were specified.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 699.377384968102,
       "firstVisibleTextFromSpawnMs": 11092.783607076854,
       "firstThinkingFromSpawnMs": 10931.453149067238,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 11214.929257985204,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "43bd9cc72c12dc6fabaf9e1bfff935a505860429d81478b54635f0f0ea5e5636",
     "snapshot": {
       "fingerprint": "6a7641195a1d9639b91616f10af65c54a37e195595db4992856305319069b880",
@@ -44,7 +38,6 @@
       "compressionSeconds": 70.90560843213461
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.141741547035053,

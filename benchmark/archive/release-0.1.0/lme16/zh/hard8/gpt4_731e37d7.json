@@ -1,0 +1,19 @@
+{
+  "question_id": "gpt4_731e37d7",
+  "split": "hard8",
+  "question": "过去四个月我总共花了多少钱参加研讨会？",
+  "question_date": "2023/02/26 (Sun) 23:59",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": false,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "multi-session",
+  "originalAssetSha256": "f275fe8671f5c21b8eb46fa92884c1985caf3584719e7635a82e44735e6ce564",
+  "textUtf8Sha256": "be7e97327363bdb99d06646473d221553f02baee7cb452b541afd03d77275d86",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "gpt4_731e37d7",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

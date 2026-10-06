@@ -1,0 +1,19 @@
+{
+  "question_id": "15745da0",
+  "split": "dev8",
+  "question": "我收集老式相机有多久了？",
+  "question_date": "2023/05/30 (Tue) 23:55",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": false,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "single-session-user",
+  "originalAssetSha256": "818e1106fbdcf08559036971f74d864ccde04779d5577a365dd23aee91c532c5",
+  "textUtf8Sha256": "149b28e30b31ced8aceffe01008163046018e3146641f6a64289f2452b870c1e",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "15745da0",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

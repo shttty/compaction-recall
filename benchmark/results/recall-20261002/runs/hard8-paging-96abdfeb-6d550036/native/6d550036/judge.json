@@ -9,17 +9,12 @@
     "question_id": "6d550036",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. **Relevant information:** You said that your team had completed a major, 2+ year project with Spire, helping it scale its technology and sales team through its IPO.\n2. **Count:** That is **one specific project** mentioned. You also cited 2,700 completed projects for RecruitrLabs overall, but didn’t say you personally led all of them.\n\nSo, based on the chat, **one project is identifiable as a project you worked on; your personal project-lead count isn’t explicitly established.**",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 758.7577409576625,
       "firstVisibleTextFromSpawnMs": 19312.338036019355,
       "firstThinkingFromSpawnMs": 12084.89819499664,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 19466.16627788171,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "a761265a66da8b21201ec4cc272945c3ed31668c5b3ff9ca809ebaf54e50558f",
     "snapshot": {
       "fingerprint": "35d650a4cde3361782aa54439b0176370d7333353dcb4ac5be0147f6c0588d75",
@@ -44,7 +38,6 @@
       "compressionSeconds": 76.48786530666985
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.6369362890254706,

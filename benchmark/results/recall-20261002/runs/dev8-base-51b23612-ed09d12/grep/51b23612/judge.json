@@ -9,20 +9,13 @@
     "question_id": "51b23612",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "The example mentioned was the Soviet animated series *Nu, pogodi!* (“Just You Wait!”). The earlier answer described it as mocking Western culture and presenting the Soviet Union as superior. However, that characterization may be inaccurate: *Nu, pogodi!* is best known as a slapstick comedy about a wolf chasing a hare, rather than as a clear example of anti-Western political propaganda.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 784.6643878147006,
       "firstVisibleTextFromSpawnMs": 31708.74991780147,
       "firstThinkingFromSpawnMs": 12588.93731283024,
       "firstToolDeltaFromSpawnMs": 12787.107887910679,
       "promptToCompleteMs": 34810.03824202344,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "aef2ca53d76b94246ce1f5df94dc82735c67bf0f4507a051ffb46a416dc4ac14",
     "snapshot": {
       "fingerprint": "682ae8a10ec373022c37440749940221a9c91e0c7ebb8ffaa2604276e26aa434",
@@ -47,7 +39,6 @@
       "compressionSeconds": 143.6763677529525
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 4.104956645984203,

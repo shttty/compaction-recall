@@ -6,18 +6,9 @@ This experiment concatenates ten distinct **original LongMemEval_M** question hi
 
 Deterministic order: original DEV8 with `577d4d32` first, followed by the first two additional `single-session-user` records in the complete dataset's existing file order. No answers are used for selection or query construction.
 
-1. `577d4d32`: What time do I stop checking work emails and messages?
-2. `778164c6`: Jamaican snapper dish previously recommended
-3. `51b23612`: Soviet cartoon previously mentioned
-4. `ceb54acb`: Four alternatives to “sexual compulsions”
-5. `3d86fd0a`: Where did I meet Sophia?
-6. `15745da0`: How long have I collected vintage cameras?
-7. `gpt4_65aabe59`: Smart thermostat or mesh network set up first?
-8. `982b5123`: Months since booking the San Francisco Airbnb
-9. `e47becba`: What degree did I graduate with?
-10. `118b2229`: How long is my daily commute to work?
+Selected IDs, in order: `577d4d32`, `778164c6`, `51b23612`, `ceb54acb`, `3d86fd0a`, `15745da0`, `gpt4_65aabe59`, `982b5123`, `e47becba`, `118b2229`.
 
-These labels abbreviate some long questions only for this report. Retrieval uses each complete, unchanged original question. Exact questions, source hash and selection recipe are in `stacked-provenance.json`.
+Retrieval used complete original questions obtained externally by ID. Public `stacked-provenance.json` retains IDs, source hash and selection metadata, not question wording.
 
 Corpus accounting:
 

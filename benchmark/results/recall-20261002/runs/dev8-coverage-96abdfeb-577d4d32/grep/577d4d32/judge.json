@@ -9,17 +9,12 @@
     "question_id": "577d4d32",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "1. You said you often checked your phone around **10:30 pm**, then scrolled until getting into bed at about **11:15 pm**.\n2. You planned to put your phone away around **10:20 pm** and aim for bed at **10:30 pm**.\n3. You didn’t specify a separate cutoff time for **work emails and messages**.\n\nSo, based on what you’ve shared, **10:20 pm is the latest cutoff you planned for phone use**, but you haven’t said whether that includes work messages.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 827.6054938323796,
       "firstVisibleTextFromSpawnMs": 17179.56417496316,
       "firstThinkingFromSpawnMs": 15709.630392026156,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 18822.549865115434,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "fbdb377926917b9d04bc3dd560b03292149c6e9b6dafb2842ec3ab930b80b83a",
     "snapshot": {
       "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
@@ -44,7 +38,6 @@
       "compressionSeconds": 81.82407163479365
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.539460271829739,

@@ -1,0 +1,19 @@
+{
+  "question_id": "577d4d32",
+  "split": "dev8",
+  "question": "我每天几点之后就不再看工作邮件和消息？",
+  "question_date": "2023/05/30 (Tue) 23:18",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": true,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "single-session-user",
+  "originalAssetSha256": "35734ab54251282d5a00775c2eab50d050ba4918909bdade04839727f799718e",
+  "textUtf8Sha256": "398dc6da41949176e6dedd5dfa56e15639c131cd7bff7cba6dcfed383b6489a6",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "577d4d32",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

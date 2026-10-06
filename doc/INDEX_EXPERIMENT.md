@@ -4,7 +4,7 @@ Status: isolated, offline prototype. Production still uses `buildLocator`'s scan
 
 ## Real question and scope
 
-Question: DEV8 `577d4d32`, “What time do I stop checking work emails and messages?”
+Question identity: original LongMemEval_M DEV8 `577d4d32`; its wording is obtained externally, not distributed here.
 
 Chosen because it is a direct, single-session-user fact with one evidence turn, without multi-hop reasoning or time arithmetic. This is an easy-case selection rationale, not proof it is the easiest DEV8 question. The DEV8 IDs come from the existing sibling lme-bench `bench.py`. Corpus is the official **original LongMemEval_M**, not the smaller S dataset, cleaned version, or oracle-only history. The selected full question contains 501 sessions, 4,888 converted messages, and 4,869,499 UTF-16 text units. The original question is the only query. Gold answer/evidence annotations are never fed into retrieval; they are used only to check whether an evidence entry appears afterward.
 
@@ -68,7 +68,7 @@ First-query scan/index timings by stage: 189.21/2.98 ms, 334.63/3.60 ms, 564.19/
 
 Retained host-record heap was approximately 6.70 MiB above process/module baseline. The index added approximately 8.27, 15.60 and 22.26 MiB of retained heap at the three boundaries. At the final stage, RSS was about 58.97 MiB above host baseline for the index process versus 41.25 MiB for the scan process. RSS includes allocator/JIT/transient high-water effects and is not a precise measure of retained index bytes.
 
-Exact output parity passed. The answer-bearing entry `00000005` appeared in the top five at every stage (rank four in the final stage), including the actual “7 pm” text. This is evidence-location coverage on one question, not an end-to-end model correctness result.
+Exact output parity passed. Marked evidence entry `00000005` appeared in the top five at every stage (rank four in the final stage). This is one-question evidence-location coverage, not end-to-end model correctness; evidence wording remains external.
 
 ## Interpretation
 

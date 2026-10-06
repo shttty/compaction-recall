@@ -9,17 +9,12 @@
     "question_id": "3d86fd0a",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Relevant information:** The conversation mentions your aunt, your friend, family members, and people such as Sarah and Dr. Smith, but it doesn’t say where you met anyone named Sophia.\n\n**Answer:** I can’t determine where you met Sophia from the conversation provided.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 674.6751270256937,
       "firstVisibleTextFromSpawnMs": 10302.86478297785,
       "firstThinkingFromSpawnMs": 10209.68349603936,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 11040.090502006933,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "dfb132af0d65ded9a3fc0a72a39a2b1be966074769862092d0be7768e1f5b097",
     "snapshot": {
       "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
@@ -44,7 +38,6 @@
       "compressionSeconds": 118.48971851309761
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.384937707800418,

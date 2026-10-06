@@ -9,17 +9,12 @@
     "question_id": "982b5123",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Relevant information:** The conversation mentions Airbnb generally, but there’s no information about you booking an Airbnb in San Francisco or when you booked it.\n\n**Reasoning:** Without a booking date, I can’t calculate how many months ago it was.\n\n**Answer:** I can’t determine that from the chat history.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 687.2024750337005,
       "firstVisibleTextFromSpawnMs": 9760.164544917643,
       "firstThinkingFromSpawnMs": 9421.69048707001,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 9565.726069035009,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "e6de00e327157e15b804a7e6da5cb5d1d57ba0d980e22947ddbd422925d62a86",
     "snapshot": {
       "fingerprint": "09e57887d2980d85a9b82cdd114c105dc62c54abb6809aac8791917bd9c06ff5",
@@ -44,7 +38,6 @@
       "compressionSeconds": 90.14432884985581
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.503316555870697,

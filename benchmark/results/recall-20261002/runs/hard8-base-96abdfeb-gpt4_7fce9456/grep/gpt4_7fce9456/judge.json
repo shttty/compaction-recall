@@ -9,22 +9,13 @@
     "question_id": "gpt4_7fce9456",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "1. The chat says you viewed the 3-bedroom townhouse in Brookside on February 22 and made an offer on February 25.\n2. It does not say how many other properties you viewed before making that offer.\n\nSo, I can’t determine the number from the information provided.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep",
-      "history_expand",
-      "history_grep",
-      "history_grep"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 837.5468018930405,
       "firstVisibleTextFromSpawnMs": 45371.112431865185,
       "firstThinkingFromSpawnMs": 13071.97493687272,
       "firstToolDeltaFromSpawnMs": 13727.769769029692,
       "promptToCompleteMs": 46593.74324581586,
-      "providerTTFTMs": null,
       "modelTurns": 4,
       "toolBatches": 3,
       "toolCalls": 4,
@@ -40,7 +31,6 @@
     },
     "modelCalls": 4,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "bcbf35125ab8fe223a509582fb4bb4c07ac96eab24426bc7253851738b7878cf",
     "snapshot": {
       "fingerprint": "33fc90a32615c59ce1107cae93816034fb2e47789ccd3b6d6e0e673ae6acbb61",
@@ -49,7 +39,6 @@
       "compressionSeconds": 112.73651911481284
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.886448692996055,

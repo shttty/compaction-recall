@@ -9,17 +9,11 @@
     "question_id": "gpt4_731e37d7",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. **Relevant information:** You mentioned attending a one-day photography workshop at a local art school, a digital marketing workshop, an art workshop at a community center, and a vegan cooking class at a culinary school. You also mentioned skills-training sessions.\n2. **Costs:** You didn’t state how much any of these workshops or sessions cost.\n3. **Answer:** I can’t calculate the total spent from the information provided.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 687.7346278633922,
       "firstVisibleTextFromSpawnMs": 11478.816689923406,
-      "firstThinkingFromSpawnMs": null,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 12367.415311047807,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +29,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "dcfaecc9935482eefbe19c202e12066b911b61579727f79b2f5223fdae0a4f07",
     "snapshot": {
       "fingerprint": "6a7641195a1d9639b91616f10af65c54a37e195595db4992856305319069b880",
@@ -44,7 +37,6 @@
       "compressionSeconds": 70.90560843213461
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.226293216925114,

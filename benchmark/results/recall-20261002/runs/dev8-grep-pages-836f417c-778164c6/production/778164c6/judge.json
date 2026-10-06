@@ -9,20 +9,13 @@
     "question_id": "778164c6",
     "arm": "production",
     "outcome": "answered",
-    "answer": "1. **Relevant details:** I listed *Escovitch Fish* as the Jamaican snapper dish and recommended it as the first one to try. I also mentioned *Grilled Snapper with Mango Salsa* as a Caribbean snapper dish featuring fruit.\n2. **Putting that together:** The fruit-containing dish you’re thinking of was **grilled snapper with mango salsa**. It wasn’t identified as specifically Jamaican; the Jamaican dish was **Escovitch Fish**.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_recall",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 695.489204954356,
       "firstVisibleTextFromSpawnMs": 36410.23851791397,
       "firstThinkingFromSpawnMs": 11147.82157400623,
       "firstToolDeltaFromSpawnMs": 11255.51761686802,
       "promptToCompleteMs": 37732.83655801788,
-      "providerTTFTMs": null,
       "modelTurns": 3,
       "toolBatches": 2,
       "toolCalls": 2,
@@ -38,7 +31,6 @@
     },
     "modelCalls": 3,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "edf1668b5367aa34291e73b03d3968ae2d74b124a8f442b9eaca348607e6e0c0",
     "snapshot": {
       "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
@@ -47,7 +39,6 @@
       "compressionSeconds": 117.88170368992724
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 5.722213675035164,

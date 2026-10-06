@@ -9,17 +9,12 @@
     "question_id": "9d25d4e0",
     "arm": "native",
     "outcome": "answered",
-    "answer": "### 1. Extract the relevant information\nYou mentioned these jewelry items:\n- A watch needing a new leather strap.\n- Another watch needing a battery replacement.\n- An aquamarine ring needing polishing.\n- An antique pearl necklace that you already own and want appraised.\n- Lost silver stud earrings that you **planned to replace**, but you didn’t confirm buying a replacement pair.\n\n### 2. Determine which were acquired in the last two months\nFor the period **March 30–May 30, 2023**, none of those items was explicitly described as newly purchased, received, or otherwise acquired.\n\n### Answer\n**0 confirmed jewelry acquisitions are recorded in our chat for the last two months.** Your actual total is unknown because you haven’t mentioned acquisition dates or completed jewelry purchases.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 671.0353831294924,
       "firstVisibleTextFromSpawnMs": 16603.26284612529,
       "firstThinkingFromSpawnMs": 15219.670437043533,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 22396.25621889718,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "b9f4af6174d0941373c103619110c506f9256acbaf1e46ba772543dcb9e352b0",
     "snapshot": {
       "fingerprint": "2d766e668d99d82513aa7739c762618356e76ef9c97ba20307403ffe9dc6b1e6",
@@ -44,7 +38,6 @@
       "compressionSeconds": 101.38162532495335
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.8406679339241236,

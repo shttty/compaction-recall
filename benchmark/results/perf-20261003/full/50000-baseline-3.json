@@ -1,15 +1,6 @@
 {
   "repetition": 3,
   "arm": "baseline",
-  "command": [
-    "/home/rinne/.nvm/versions/node/v24.18.0/bin/node",
-    "--expose-gc",
-    "/home/rinne/workspace/pi-context-recall-background-index/benchmark/benchmark-scaling.mjs",
-    "--arm",
-    "baseline",
-    "--fixture",
-    "/tmp/compaction-recall-scaling-ULgDW7/50000.json"
-  ],
   "pid": 3893591,
   "stats": {
     "targetTokens": 50000,
@@ -23,27 +14,20 @@
     "compactedEntries": 134,
     "retainedEntries": 84,
     "liveBatchTokens": 4851,
-    "liveBatchEntries": 20,
-    "querySha256": "c053b4b871008fa79e72ca6d196b3745f9abd599c459dec1df945e7bd7bcd090",
-    "grepPattern": "checking"
+    "liveBatchEntries": 20
   },
   "memory": {
     "mainAtMs": 635.990957,
     "mainGc": true,
     "rssBytes": 147795968,
     "mainHeapUsedBytes": 34055528,
-    "mainExternalBytes": 4977350,
-    "worker": null,
-    "workerSamplingNote": "No worker in this arm."
+    "mainExternalBytes": 4977350
   },
   "background": {
     "wallMs": 0.37344199999995453,
     "maxEventLoopDelayMs": 0.1108520000000226,
-    "heartbeatSamples": 2,
-    "value": null
+    "heartbeatSamples": 2
   },
-  "liveBatch": null,
-  "coldRequest": null,
   "warm": {
     "context": {
       "samplesMs": [
@@ -76,6 +60,5 @@
   "locatorCount": 0,
   "workerQueryReplies": 0,
   "peakRssKiB": 144544,
-  "shutdown": "completed",
   "timingFileEnabled": false
 }

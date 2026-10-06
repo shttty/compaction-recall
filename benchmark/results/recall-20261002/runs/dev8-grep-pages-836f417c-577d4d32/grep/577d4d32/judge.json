@@ -9,17 +9,12 @@
     "question_id": "577d4d32",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "1. **What you’ve said:** You aim to get ready for bed around **10–10:30 pm** and have found that checking your phone around **10:30 pm** can lead to prolonged scrolling.\n2. **What was suggested:** Set a phone-free cutoff at about **10:20 pm** and use that time to wind down instead.\n3. **Answer:** You haven’t specified a separate cutoff for work emails and messages, but **10:20 pm** is the suggested time to stop checking them too—earlier if you want a full screen-free hour before bed.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 795.1421269681305,
       "firstVisibleTextFromSpawnMs": 20008.866908960044,
       "firstThinkingFromSpawnMs": 14296.024078968912,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 24737.21905099228,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "6b8f2f90e9069d9e30230c0d3d11c57c7f2f6a4caf9680c7836703e586778fec",
     "snapshot": {
       "fingerprint": "f8f1ee4321ab12aec3ff45838fe21ca0e837540369ac0336e708b639d69841da",
@@ -44,7 +38,6 @@
       "compressionSeconds": 81.82407163479365
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.202921472955495,

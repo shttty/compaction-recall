@@ -610,6 +610,13 @@ if __name__ == '__main__':
     parser.add_argument('--answer-model', help='Answer-only model override for English; preserve provider, effort and native compression identity')
     parser.add_argument('--stage', choices=('preflight', 'pilot', 'all', 'flow'), default='flow')
     args = parser.parse_args()
+    for name in ('config', 'luna_config', 'sol_config', 'candidate', 'pins', 'preflight'):
+        if not getattr(args, name).is_file():
+            parser.error(f'missing external input --{name.replace("_", "-")}: {getattr(args, name)}')
+    if not args.data_root.is_dir():
+        parser.error(f'missing external input --data-root: {args.data_root}')
+    if args.snapshot_source is not None and not args.snapshot_source.is_dir():
+        parser.error(f'missing external input --snapshot-source: {args.snapshot_source}')
     value = flow(args) if args.stage == 'flow' else run(args)
     print(json.dumps({'state': value['state'], 'completed': len(value.get('completed', [])), 'failures': len(value.get('failures', {}))}), flush=True)
     if value['state'] == 'pilot-blocked': raise SystemExit(1)

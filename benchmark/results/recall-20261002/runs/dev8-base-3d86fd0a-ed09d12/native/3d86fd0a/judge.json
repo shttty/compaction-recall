@@ -9,17 +9,12 @@
     "question_id": "3d86fd0a",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant information:** You mentioned attending Sunday Mass at St. Mary’s Church and having a conversation with Sarah at a weekly Bible study. I don’t see any mention of Sophia or where you met her.\n\n**Step 2 — Conclusion:** I can’t determine where you met Sophia from the conversation so far.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 675.2001799177378,
       "firstVisibleTextFromSpawnMs": 10504.558996995911,
       "firstThinkingFromSpawnMs": 10372.815665090457,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 11965.44816205278,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "feececb5c0c1934aed56252ba8b0934a53492a2ffb10fe18cbb7c720b3412f54",
     "snapshot": {
       "fingerprint": "56ff2e6a1fa8d31558e1dd8eab11d3d9368ac8056f90a79163d825843ef92345",
@@ -44,7 +38,6 @@
       "compressionSeconds": 118.81680696690455
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 2.4630747800692916,

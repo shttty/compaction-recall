@@ -9,17 +9,12 @@
     "question_id": "577d4d32",
     "arm": "native",
     "outcome": "answered",
-    "answer": "1. **What you’ve said:** You’re aiming to get ready for bed around **10:00–10:30 pm**, and reading for 20–30 minutes helps you wind down.\n2. **What wasn’t specified:** You haven’t mentioned an exact time for stopping work emails or messages.\n3. **A practical cutoff:** Stop checking them by **9:00–9:30 pm**—ideally at least an hour before bed—so they don’t disrupt your wind-down routine.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 658.9550781063735,
       "firstVisibleTextFromSpawnMs": 14231.473881052807,
       "firstThinkingFromSpawnMs": 11884.615193121135,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 14777.649358846247,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "e95b478bc8dd237b61d4ea931af067b536e12937029fa90d22ca3fcd42a8bf89",
     "snapshot": {
       "fingerprint": "728377e49d7ae65eeefc2d0ba2370455db60ad66817f9313a21297cee3abaf72",
@@ -44,7 +38,6 @@
       "compressionSeconds": 90.46668021590449
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.8252888480201364,

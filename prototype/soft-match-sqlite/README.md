@@ -99,7 +99,7 @@ a–m 共同样本的 S1 v1 实测结果，id 按当时 demo 排序；v2 保留�
 | youer | e |
 | 修改youer服务端配置 | e, b（b 只共享“配置”） |
 | GPU显存 | m |
-| What time do I stop checking work emails and messages? | k，score = -7.8939042424680315；不存在的 time/messages 不阻断候选 |
+| 历史英文demo查询（原题已外置，非当前demo题面） | k，历史score = -7.8939042424680315 |
 | vm / kvm | 分别仅 g / h |
 | compaction / CompactionResult | 分别无 / f |
 | moto / motorcycle | 分别无 / l |

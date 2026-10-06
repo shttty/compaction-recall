@@ -9,17 +9,12 @@
     "question_id": "2ce6a0f2",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Step 1 — Relevant events mentioned:**\n- You attended a book-reading event at a local bookstore last month.\n- You attended a guided tour at the Modern Art Museum last weekend, focused on Frida Kahlo and Diego Rivera.\n\n**Step 2 — Count:**\nCounting the literary event and the art-museum tour as art-related, you attended **2 art-related events** in the past month.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 693.0641911458224,
       "firstVisibleTextFromSpawnMs": 22830.303902039304,
       "firstThinkingFromSpawnMs": 12276.6635119915,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 25142.982217948884,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "2a32adce8c0be41be322f9e378601f8e78732a593b5d9eb7f6226e1676e5fdba",
     "snapshot": {
       "fingerprint": "db248508b7da4e0eb68e9e5e6f378301648a5a908aed593c015821ea727c2038",
@@ -44,7 +38,6 @@
       "compressionSeconds": 111.40956617030315
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.576050841016695,

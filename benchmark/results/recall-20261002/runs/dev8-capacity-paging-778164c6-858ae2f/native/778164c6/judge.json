@@ -9,17 +9,12 @@
     "question_id": "778164c6",
     "arm": "native",
     "outcome": "answered",
-    "answer": "I can’t find that earlier recommendation in the conversation history available to me, so I don’t know which dish I named.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 691.5166599210352,
       "firstVisibleTextFromSpawnMs": 14172.737083863467,
       "firstThinkingFromSpawnMs": 12891.92690094933,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 14910.150283016264,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "1c6c7bdd10c477270e2ea9f325760b760146e8e04202ee3a6fc5b4539b8d8542",
     "snapshot": {
       "fingerprint": "559752855ac85662d2020e5f0927d238f4c32cecfcff00b406ba54bb383bf3af",
@@ -44,7 +38,6 @@
       "compressionSeconds": 117.88170368992724
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 3.414129478856921,

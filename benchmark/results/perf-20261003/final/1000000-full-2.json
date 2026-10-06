@@ -1,15 +1,6 @@
 {
   "repetition": 2,
   "arm": "full",
-  "command": [
-    "/home/rinne/.nvm/versions/node/v24.18.0/bin/node",
-    "--expose-gc",
-    "/home/rinne/workspace/pi-context-recall-background-index/benchmark/benchmark-scaling.mjs",
-    "--arm",
-    "full",
-    "--fixture",
-    "/tmp/compaction-recall-scaling-0r5o5R/1000000.json"
-  ],
   "pid": 3897612,
   "stats": {
     "targetTokens": 1000000,
@@ -23,9 +14,7 @@
     "compactedEntries": 3888,
     "retainedEntries": 87,
     "liveBatchTokens": 7931,
-    "liveBatchEntries": 20,
-    "querySha256": "c053b4b871008fa79e72ca6d196b3745f9abd599c459dec1df945e7bd7bcd090",
-    "grepPattern": "checking"
+    "liveBatchEntries": 20
   },
   "memory": {
     "mainAtMs": 1387.440492,
@@ -53,8 +42,7 @@
         "used_global_handles_size": 3232,
         "external_memory": 3607957
       }
-    },
-    "workerSamplingNote": "Quiescent after same query, separately timestamped; no explicit worker GC; do not sum heaps."
+    }
   },
   "background": {
     "wallMs": 656.541847,
@@ -75,8 +63,7 @@
     }
   },
   "coldRequest": {
-    "wallMs": 602.5990080000001,
-    "scenario": "First request immediately after session_tree invalidates the index"
+    "wallMs": 602.5990080000001
   },
   "warm": {
     "context": {
@@ -191,6 +178,5 @@
   "locatorCount": 1,
   "workerQueryReplies": 43,
   "peakRssKiB": 382236,
-  "shutdown": "completed",
   "timingFileEnabled": false
 }

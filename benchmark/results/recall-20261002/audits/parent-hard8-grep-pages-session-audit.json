@@ -4,7 +4,6 @@
   "all_runtime_pin_fields_match": true,
   "checks": {
     "gpt4_7fce9456/native": {
-      "session_sha256": "efa48b79616078635ba26faec5adecd9b533bfc0d5fc8de0b92bb1f692375565",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -17,7 +16,6 @@
       "tools": []
     },
     "gpt4_7fce9456/grep": {
-      "session_sha256": "205a00307c4223e6d091493a7ea02e8f4e7953e27ca88225d0d0cfece8e92430",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -30,7 +28,6 @@
       "tools": []
     },
     "gpt4_7fce9456/production": {
-      "session_sha256": "8e770f522cff4480dc95d2b553ca56dc681e604dd94155a2e6a1d3ea4bb9a71d",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 14,
@@ -40,24 +37,9 @@
         "cacheRead": 3850752,
         "cacheWrite": 0
       },
-      "tools": [
-        "history_recall",
-        "history_expand",
-        "history_recall",
-        "history_expand",
-        "history_grep",
-        "history_recall",
-        "history_expand",
-        "history_recall",
-        "history_grep",
-        "history_recall",
-        "history_grep",
-        "history_recall",
-        "history_grep"
-      ]
+      "tools": []
     },
     "gpt4_a1b77f9c/native": {
-      "session_sha256": "8b7bd47a3b949da02fc6d9a8f63895331934b3beda927df3367318c0a1bca9b9",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -70,7 +52,6 @@
       "tools": []
     },
     "gpt4_a1b77f9c/grep": {
-      "session_sha256": "668599865e4a60a0750756cb5c46084daea9057d43dab386f541a84a6ab004db",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 5,
@@ -80,15 +61,9 @@
         "cacheRead": 1142784,
         "cacheWrite": 0
       },
-      "tools": [
-        "history_grep",
-        "history_grep",
-        "history_grep",
-        "history_grep"
-      ]
+      "tools": []
     },
     "gpt4_a1b77f9c/production": {
-      "session_sha256": "6a84392d40ea279ced422cde9cd4b45f518276670fadc70fae95e8e7c246a5e7",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 5,
@@ -98,20 +73,9 @@
         "cacheRead": 1137664,
         "cacheWrite": 0
       },
-      "tools": [
-        "history_recall",
-        "history_recall",
-        "history_recall",
-        "history_expand",
-        "history_expand",
-        "history_expand",
-        "history_expand",
-        "history_expand",
-        "history_expand"
-      ]
+      "tools": []
     },
     "28dc39ac/native": {
-      "session_sha256": "67d0400fa813ab3c651daa7db1fdf00137b4801763a47d496b3cb054e8305a53",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -124,7 +88,6 @@
       "tools": []
     },
     "28dc39ac/grep": {
-      "session_sha256": "b1930353313b664a34b33f57a85959b1789c6d4aedac85d39f30af161fe5bfb5",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -137,7 +100,6 @@
       "tools": []
     },
     "28dc39ac/production": {
-      "session_sha256": "38f7552683f8dd1eee21bd4c668b77a2cefddef8d4c54baf3d755ca67ac56849",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 5,
@@ -147,16 +109,9 @@
         "cacheRead": 1141760,
         "cacheWrite": 0
       },
-      "tools": [
-        "history_recall",
-        "history_recall",
-        "history_expand",
-        "history_expand",
-        "history_grep"
-      ]
+      "tools": []
     },
     "gpt4_15e38248/native": {
-      "session_sha256": "43d85dedac1bc5a992c5922ec37aa644f1d24efa39a21843aa051570a3810bf1",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -169,7 +124,6 @@
       "tools": []
     },
     "gpt4_15e38248/grep": {
-      "session_sha256": "451819c4c9f9f17d10e0872f9bf79e908aa3ad043b8f43352c918411706ae957",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 4,
@@ -179,14 +133,9 @@
         "cacheRead": 835072,
         "cacheWrite": 0
       },
-      "tools": [
-        "history_grep",
-        "history_grep",
-        "history_grep"
-      ]
+      "tools": []
     },
     "gpt4_15e38248/production": {
-      "session_sha256": "20704ae2f6cacbaf7a82e57cc896fb3f79936338a2ac24be158ba42ec2ba7eda",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 5,
@@ -196,23 +145,9 @@
         "cacheRead": 1119232,
         "cacheWrite": 0
       },
-      "tools": [
-        "history_recall",
-        "history_recall",
-        "history_recall",
-        "history_recall",
-        "history_expand",
-        "history_expand",
-        "history_expand",
-        "history_expand",
-        "history_recall",
-        "history_recall",
-        "history_recall",
-        "history_recall"
-      ]
+      "tools": []
     },
     "6d550036/native": {
-      "session_sha256": "bed1c1b92638fdeaa951acf12c1446541ce1104d0118ef021c22a12ba9b7924b",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -225,7 +160,6 @@
       "tools": []
     },
     "6d550036/grep": {
-      "session_sha256": "0fd8831d151c140d80161cd161571a6e0887000a0b59e7e575fd064349008931",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -238,7 +172,6 @@
       "tools": []
     },
     "6d550036/production": {
-      "session_sha256": "bcc542ce677eb4679ab0d554d9f3a0643add8abc74ae7a3cd8db77ba2181d4d6",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 6,
@@ -248,16 +181,9 @@
         "cacheRead": 1458688,
         "cacheWrite": 0
       },
-      "tools": [
-        "history_recall",
-        "history_recall",
-        "history_expand",
-        "history_grep",
-        "history_expand"
-      ]
+      "tools": []
     },
     "2ce6a0f2/native": {
-      "session_sha256": "6a85daaa2e2947544962ecbda8a0353626f3ab6cb3f1b8a1db8e50b891894ed4",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -270,7 +196,6 @@
       "tools": []
     },
     "2ce6a0f2/grep": {
-      "session_sha256": "4474d743dcc5a1a3fd68c6df21ecf76bd35be357ee8059b9a8a97dc9830fe20e",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -283,7 +208,6 @@
       "tools": []
     },
     "2ce6a0f2/production": {
-      "session_sha256": "d38d59f3711ed3a08cd63f0eb56efb926a8265017746c3c4fb2060ca8451161f",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 10,
@@ -293,24 +217,9 @@
         "cacheRead": 2518528,
         "cacheWrite": 0
       },
-      "tools": [
-        "history_recall",
-        "history_recall",
-        "history_expand",
-        "history_expand",
-        "history_recall",
-        "history_expand",
-        "history_expand",
-        "history_expand",
-        "history_recall",
-        "history_grep",
-        "history_grep",
-        "history_grep",
-        "history_recall"
-      ]
+      "tools": []
     },
     "9d25d4e0/native": {
-      "session_sha256": "e2212c2ab23ef2ecc4a47b9b4eed2f98a5c92fe19f2658dde1d6790ca5088c37",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -323,7 +232,6 @@
       "tools": []
     },
     "9d25d4e0/grep": {
-      "session_sha256": "4809813ab997d98e366e02d456c13599f7d5e8e8f530c1807b359748dfa77e7f",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -336,7 +244,6 @@
       "tools": []
     },
     "9d25d4e0/production": {
-      "session_sha256": "85829e9a91fdf50f7500a2347af57556196cde79b366318729ce595a6733f166",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 7,
@@ -346,17 +253,9 @@
         "cacheRead": 1692672,
         "cacheWrite": 0
       },
-      "tools": [
-        "history_recall",
-        "history_recall",
-        "history_expand",
-        "history_expand",
-        "history_expand",
-        "history_recall"
-      ]
+      "tools": []
     },
     "gpt4_731e37d7/native": {
-      "session_sha256": "d0d2355d9ab1d9713c847ab4f7c73fd3f463c2951946e5e8fa4501d2b4a335d9",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -369,7 +268,6 @@
       "tools": []
     },
     "gpt4_731e37d7/grep": {
-      "session_sha256": "3a8a5f54abb30e077790f99f3ceb8b0d61a298d318ddc1c89002c24d0552fe1a",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 1,
@@ -382,7 +280,6 @@
       "tools": []
     },
     "gpt4_731e37d7/production": {
-      "session_sha256": "ce09155f5b071a7f831d011b18a342ab2a12191ab1ab36b1aae1efdb2d7b8c16",
       "exact_question_and_answer_match": true,
       "actual_calls_and_result_ids_match": true,
       "model_calls": 5,
@@ -392,46 +289,8 @@
         "cacheRead": 1132544,
         "cacheWrite": 0
       },
-      "tools": [
-        "history_recall",
-        "history_expand",
-        "history_expand",
-        "history_expand",
-        "history_expand",
-        "history_expand",
-        "history_expand",
-        "history_expand",
-        "history_expand",
-        "history_recall",
-        "history_grep"
-      ]
+      "tools": []
     }
-  },
-  "tracked_session_sha256": {
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-gpt4_7fce9456/native/gpt4_7fce9456/session.jsonl": "efa48b79616078635ba26faec5adecd9b533bfc0d5fc8de0b92bb1f692375565",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-gpt4_7fce9456/grep/gpt4_7fce9456/session.jsonl": "205a00307c4223e6d091493a7ea02e8f4e7953e27ca88225d0d0cfece8e92430",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-gpt4_7fce9456/production/gpt4_7fce9456/session.jsonl": "8e770f522cff4480dc95d2b553ca56dc681e604dd94155a2e6a1d3ea4bb9a71d",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-gpt4_a1b77f9c/native/gpt4_a1b77f9c/session.jsonl": "8b7bd47a3b949da02fc6d9a8f63895331934b3beda927df3367318c0a1bca9b9",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-gpt4_a1b77f9c/grep/gpt4_a1b77f9c/session.jsonl": "668599865e4a60a0750756cb5c46084daea9057d43dab386f541a84a6ab004db",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-gpt4_a1b77f9c/production/gpt4_a1b77f9c/session.jsonl": "6a84392d40ea279ced422cde9cd4b45f518276670fadc70fae95e8e7c246a5e7",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-28dc39ac/native/28dc39ac/session.jsonl": "67d0400fa813ab3c651daa7db1fdf00137b4801763a47d496b3cb054e8305a53",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-28dc39ac/grep/28dc39ac/session.jsonl": "b1930353313b664a34b33f57a85959b1789c6d4aedac85d39f30af161fe5bfb5",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-28dc39ac/production/28dc39ac/session.jsonl": "38f7552683f8dd1eee21bd4c668b77a2cefddef8d4c54baf3d755ca67ac56849",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-gpt4_15e38248/native/gpt4_15e38248/session.jsonl": "43d85dedac1bc5a992c5922ec37aa644f1d24efa39a21843aa051570a3810bf1",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-gpt4_15e38248/grep/gpt4_15e38248/session.jsonl": "451819c4c9f9f17d10e0872f9bf79e908aa3ad043b8f43352c918411706ae957",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-gpt4_15e38248/production/gpt4_15e38248/session.jsonl": "20704ae2f6cacbaf7a82e57cc896fb3f79936338a2ac24be158ba42ec2ba7eda",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-6d550036/native/6d550036/session.jsonl": "bed1c1b92638fdeaa951acf12c1446541ce1104d0118ef021c22a12ba9b7924b",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-6d550036/grep/6d550036/session.jsonl": "0fd8831d151c140d80161cd161571a6e0887000a0b59e7e575fd064349008931",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-6d550036/production/6d550036/session.jsonl": "bcc542ce677eb4679ab0d554d9f3a0643add8abc74ae7a3cd8db77ba2181d4d6",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-2ce6a0f2/native/2ce6a0f2/session.jsonl": "6a85daaa2e2947544962ecbda8a0353626f3ab6cb3f1b8a1db8e50b891894ed4",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-2ce6a0f2/grep/2ce6a0f2/session.jsonl": "4474d743dcc5a1a3fd68c6df21ecf76bd35be357ee8059b9a8a97dc9830fe20e",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-2ce6a0f2/production/2ce6a0f2/session.jsonl": "d38d59f3711ed3a08cd63f0eb56efb926a8265017746c3c4fb2060ca8451161f",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-9d25d4e0/native/9d25d4e0/session.jsonl": "e2212c2ab23ef2ecc4a47b9b4eed2f98a5c92fe19f2658dde1d6790ca5088c37",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-9d25d4e0/grep/9d25d4e0/session.jsonl": "4809813ab997d98e366e02d456c13599f7d5e8e8f530c1807b359748dfa77e7f",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-9d25d4e0/production/9d25d4e0/session.jsonl": "85829e9a91fdf50f7500a2347af57556196cde79b366318729ce595a6733f166",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-gpt4_731e37d7/native/gpt4_731e37d7/session.jsonl": "d0d2355d9ab1d9713c847ab4f7c73fd3f463c2951946e5e8fa4501d2b4a335d9",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-gpt4_731e37d7/grep/gpt4_731e37d7/session.jsonl": "3a8a5f54abb30e077790f99f3ceb8b0d61a298d318ddc1c89002c24d0552fe1a",
-    "/home/rinne/.hermes/task-runs/recall-20261002/evaluation/runs/hard8-grep-pages-836f417c-gpt4_731e37d7/production/gpt4_731e37d7/session.jsonl": "ce09155f5b071a7f831d011b18a342ab2a12191ab1ab36b1aae1efdb2d7b8c16"
   },
   "guarded_resume_provider_calls": 0,
   "all_session_bytes_unchanged": true,
@@ -440,12 +299,6 @@
     {
       "question_id": "gpt4_7fce9456",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "townhouse Brookside neighborhood properties viewed offer",
-        "limit": 10,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 360,
@@ -457,27 +310,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_7fce9456",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000d97",
-        "before": 5,
-        "after": 5,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000d92",
@@ -488,25 +325,11 @@
         "nextOffset": 316,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_7fce9456",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "viewed houses properties before offer townhouse",
-        "limit": 20,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 629,
@@ -518,27 +341,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_7fce9456",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000d8d",
-        "before": 10,
-        "after": 3,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000d83",
@@ -549,25 +356,11 @@
         "nextOffset": 337,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_7fce9456",
       "arm": "production",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "(viewed|saw|looked at|properties|houses).{0,100}(townhouse|Brookside)|(?:townhouse|Brookside).{0,100}(viewed|saw|properties|houses)",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 1,
@@ -575,36 +368,17 @@
         "offset": 0,
         "limit": 50,
         "returned": 1,
-        "nextOffset": null,
         "hasMore": false,
         "snippets": 1,
         "covered": 0,
         "omitted": 0,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_7fce9456",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "house hunting properties viewed before offer visited homes",
-        "limit": 20,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 668,
@@ -616,27 +390,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_7fce9456",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000c41",
-        "before": 5,
-        "after": 5,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000c3c",
@@ -647,25 +405,11 @@
         "nextOffset": 267,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_7fce9456",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "\"Brookside\" \"viewed\" \"February\" townhouse number homes",
-        "limit": 20,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 148,
@@ -677,26 +421,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_7fce9456",
       "arm": "production",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "Brookside|Cedar Creek",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 11,
@@ -704,36 +433,17 @@
         "offset": 0,
         "limit": 50,
         "returned": 10,
-        "nextOffset": null,
         "hasMore": false,
         "snippets": 11,
         "covered": 0,
         "omitted": 0,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_7fce9456",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "how many properties viewed before offer townhouse",
-        "limit": 20,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 863,
@@ -745,26 +455,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_7fce9456",
       "arm": "production",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "(?:viewed|visited|toured|looked at).{0,80}(?:homes|houses|properties|townhouse)|(?:homes|houses|properties|townhouse).{0,80}(?:viewed|visited|toured|looked at)",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 0,
@@ -772,36 +467,17 @@
         "offset": 0,
         "limit": 50,
         "returned": 0,
-        "nextOffset": null,
         "hasMore": false,
         "snippets": 0,
         "covered": 0,
         "omitted": 0,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_7fce9456",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "house hunting viewed several homes real estate offer Brookside townhouse Feb 22",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 577,
@@ -813,26 +489,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_7fce9456",
       "arm": "production",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "(?:viewed|saw|visited|toured|looked at).{0,60}\\b(?:\\d+|several|multiple|few)\\b.{0,40}(?:properties|homes|houses|townhouse)|\\b(?:\\d+|several|multiple|few)\\b.{0,40}(?:properties|homes|houses|townhouse).{0,60}(?:viewed|saw|visited|toured)",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 1,
@@ -840,36 +501,17 @@
         "offset": 0,
         "limit": 50,
         "returned": 1,
-        "nextOffset": null,
         "hasMore": false,
         "snippets": 1,
         "covered": 0,
         "omitted": 0,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_a1b77f9c",
       "arm": "grep",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "Nightingale|Sapiens|Power'|listening to",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 90,
@@ -884,29 +526,11 @@
         "omitted": 58,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_a1b77f9c",
       "arm": "grep",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "Sapiens|The Power|finished listening|weeks|week",
-        "limit": 50,
-        "offset": 30
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 423,
@@ -921,29 +545,11 @@
         "omitted": 389,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_a1b77f9c",
       "arm": "grep",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "Sapiens|The Power|Power by Naomi|Nightingale",
-        "limit": 50,
-        "offset": 60
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 111,
@@ -951,36 +557,17 @@
         "offset": 60,
         "limit": 50,
         "returned": 17,
-        "nextOffset": null,
         "hasMore": false,
         "snippets": 22,
         "covered": 0,
         "omitted": 89,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_a1b77f9c",
       "arm": "grep",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "Brief History of Humankind|Yuval|Sapiens",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 18,
@@ -988,36 +575,17 @@
         "offset": 0,
         "limit": 50,
         "returned": 9,
-        "nextOffset": null,
         "hasMore": false,
         "snippets": 11,
         "covered": 5,
         "omitted": 2,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_a1b77f9c",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "\"The Nightingale\" weeks reading Sapiens \"The Power\" listening duration",
-        "limit": 10,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 381,
@@ -1029,26 +597,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_a1b77f9c",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "Nightingale finished reading weeks Kristin Hannah started book",
-        "limit": 20,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 406,
@@ -1060,26 +613,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_a1b77f9c",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "\"Sapiens\" listening \"weeks\" \"The Power\" listening time",
-        "limit": 30,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 815,
@@ -1091,27 +629,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_a1b77f9c",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000051",
-        "before": 2,
-        "after": 4,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "0000004f",
@@ -1122,26 +644,11 @@
         "nextOffset": 268,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_a1b77f9c",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000341",
-        "before": 2,
-        "after": 4,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "0000033f",
@@ -1152,26 +659,11 @@
         "nextOffset": 301,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_a1b77f9c",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "000007bd",
-        "before": 2,
-        "after": 5,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "000007bb",
@@ -1182,26 +674,11 @@
         "nextOffset": 292,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_a1b77f9c",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000a2f",
-        "before": 2,
-        "after": 4,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000a2d",
@@ -1212,26 +689,11 @@
         "nextOffset": 320,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_a1b77f9c",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000cfb",
-        "before": 2,
-        "after": 5,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000cf9",
@@ -1242,26 +704,11 @@
         "nextOffset": 449,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_a1b77f9c",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000000",
-        "before": 0,
-        "after": 0,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {},
       "details_keys": []
@@ -1269,12 +716,6 @@
     {
       "question_id": "28dc39ac",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "Overwatch 5 hours gaming Saturday gameplay time, gaming sessions hours, played games duration",
-        "limit": 10,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 888,
@@ -1286,26 +727,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "28dc39ac",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "\"5 hours\" Overwatch Saturday stressful gaming session",
-        "limit": 10,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 512,
@@ -1317,27 +743,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "28dc39ac",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "000000bd",
-        "before": 2,
-        "after": 2,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "000000bb",
@@ -1348,26 +758,11 @@
         "nextOffset": 420,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "28dc39ac",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "0000082a",
-        "before": 1,
-        "after": 2,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000829",
@@ -1378,25 +773,11 @@
         "nextOffset": 598,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "28dc39ac",
       "arm": "production",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "5 gaming sessions|5 sessions|2-3 hours|2–3 hours|5 hours playing Overwatch|spent 5 hours",
-        "limit": 20,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 4,
@@ -1404,36 +785,17 @@
         "offset": 0,
         "limit": 20,
         "returned": 2,
-        "nextOffset": null,
         "hasMore": false,
         "snippets": 4,
         "covered": 0,
         "omitted": 0,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "grep",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "furniture|assembled|assembly|sold|fix(ed)?",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 75,
@@ -1448,29 +810,11 @@
         "omitted": 41,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "grep",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "furniture|assembled|assembly|sold|fix(ed)?",
-        "limit": 50,
-        "offset": 30
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 75,
@@ -1485,29 +829,11 @@
         "omitted": 42,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "grep",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "(bought|purchased|assembled|put together|sold|fixed|repaired|got).*?(sofa|couch|table|chair|desk|shelf|bookshelf|bookcase|dresser|furniture|bed)|(?:sofa|couch|table|chair|desk|shelf|bookshelf|bookcase|dresser|furniture|bed).*?(bought|purchased|assembled|put together|sold|fixed|repaired|got)",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 21,
@@ -1515,36 +841,17 @@
         "offset": 0,
         "limit": 50,
         "returned": 21,
-        "nextOffset": null,
         "hasMore": false,
         "snippets": 21,
         "covered": 0,
         "omitted": 0,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "furniture bought assembled sold fixed repaired furniture pieces",
-        "limit": 10,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 107,
@@ -1556,26 +863,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "bought a furniture piece purchase furniture chair table desk couch",
-        "limit": 20,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 216,
@@ -1587,26 +879,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "assembled IKEA bookshelf wobbly leg fixed chair furniture repair",
-        "limit": 20,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 83,
@@ -1618,26 +895,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "sold furniture sold piece furniture",
-        "limit": 20,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 68,
@@ -1649,27 +911,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "000003ed",
-        "before": 1,
-        "after": 2,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "000003ec",
@@ -1680,26 +926,11 @@
         "nextOffset": 354,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000c59",
-        "before": 1,
-        "after": 2,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000c58",
@@ -1710,26 +941,11 @@
         "nextOffset": 599,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "000003ef",
-        "before": 1,
-        "after": 2,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "000003ee",
@@ -1740,26 +956,11 @@
         "nextOffset": 262,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000c57",
-        "before": 1,
-        "after": 2,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000c56",
@@ -1770,25 +971,11 @@
         "nextOffset": 237,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "bought purchased new coffee table furniture desk table couch",
-        "limit": 30,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 773,
@@ -1800,26 +987,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "assembled furniture put together IKEA bookshelf built furniture",
-        "limit": 30,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 303,
@@ -1831,26 +1003,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "sold furniture sold chair table couch marketplace",
-        "limit": 30,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 110,
@@ -1862,26 +1019,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_15e38248",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "fixed repaired furniture wobbly leg table chair furniture",
-        "limit": 30,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 119,
@@ -1893,26 +1035,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "6d550036",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "projects led leading project management led projects",
-        "limit": 10,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 280,
@@ -1924,26 +1051,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "6d550036",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "\"I led\" project projects \"leading\"",
-        "limit": 20,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 225,
@@ -1955,27 +1067,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "6d550036",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "000006a7",
-        "before": 3,
-        "after": 3,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "000006a4",
@@ -1986,25 +1082,11 @@
         "nextOffset": 506,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "6d550036",
       "arm": "production",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "(I|we).{0,80}(led|leading).{0,80}project|project.{0,80}(led|leading)|projects I led|currently leading",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 3,
@@ -2012,37 +1094,17 @@
         "offset": 0,
         "limit": 50,
         "returned": 3,
-        "nextOffset": null,
         "hasMore": false,
         "snippets": 3,
         "covered": 0,
         "omitted": 0,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "6d550036",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "0000015c",
-        "before": 4,
-        "after": 4,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000158",
@@ -2053,25 +1115,11 @@
         "nextOffset": 2331,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "2ce6a0f2",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "art event attended museum festival gallery art walk",
-        "limit": 10,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 389,
@@ -2083,26 +1131,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "2ce6a0f2",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "attended event art museum gallery lecture festival reading last month",
-        "limit": 20,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 583,
@@ -2114,27 +1147,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "2ce6a0f2",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000b4b",
-        "before": 2,
-        "after": 2,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000b49",
@@ -2145,26 +1162,11 @@
         "nextOffset": 291,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "2ce6a0f2",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000193",
-        "before": 2,
-        "after": 2,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000191",
@@ -2175,25 +1177,11 @@
         "nextOffset": 346,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "2ce6a0f2",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "Modern Art Museum guided tour Frida Diego attended last weekend",
-        "limit": 10,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 529,
@@ -2205,27 +1193,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "2ce6a0f2",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "000005b6",
-        "before": 3,
-        "after": 3,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "000005b3",
@@ -2236,26 +1208,11 @@
         "nextOffset": 2751,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "2ce6a0f2",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000a41",
-        "before": 3,
-        "after": 3,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000a3e",
@@ -2266,26 +1223,11 @@
         "nextOffset": 238,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "2ce6a0f2",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000b4f",
-        "before": 2,
-        "after": 2,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000b4d",
@@ -2296,25 +1238,11 @@
         "nextOffset": 338,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "2ce6a0f2",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "Modern Art Museum last weekend guided tour Frida Kahlo Diego Rivera tour guide",
-        "limit": 10,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 576,
@@ -2326,26 +1254,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "2ce6a0f2",
       "arm": "production",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "Modern Art Museum|Frida Kahlo and Diego Rivera|guided tour focused on Frida",
-        "limit": 10,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 7,
@@ -2353,36 +1266,17 @@
         "offset": 0,
         "limit": 10,
         "returned": 5,
-        "nextOffset": null,
         "hasMore": false,
         "snippets": 6,
         "covered": 1,
         "omitted": 0,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "2ce6a0f2",
       "arm": "production",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "Frida|Diego Rivera|last weekend.*tour|guided tour.*art",
-        "limit": 30,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 139,
@@ -2397,29 +1291,11 @@
         "omitted": 104,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "2ce6a0f2",
       "arm": "production",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "Frida.*guided tour|tour.*Frida|Modern Art Museum",
-        "limit": 50,
-        "offset": 30
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 5,
@@ -2427,36 +1303,17 @@
         "offset": 4,
         "limit": 50,
         "returned": 0,
-        "nextOffset": null,
         "hasMore": false,
         "snippets": 0,
         "covered": 0,
         "omitted": 5,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "2ce6a0f2",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "Modern Art Museum guided tour Frida Rivera works last weekend",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 640,
@@ -2468,26 +1325,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "9d25d4e0",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "jewelry acquired bought purchased earrings necklace ring last two months",
-        "limit": 10,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 381,
@@ -2499,26 +1341,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "9d25d4e0",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "new jewelry got bought acquired last month necklace ring earrings bracelet",
-        "limit": 20,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 886,
@@ -2530,27 +1357,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "9d25d4e0",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "000000fd",
-        "before": 2,
-        "after": 3,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "000000fb",
@@ -2561,26 +1372,11 @@
         "nextOffset": 349,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "9d25d4e0",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000aaf",
-        "before": 1,
-        "after": 2,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000aae",
@@ -2591,26 +1387,11 @@
         "nextOffset": 355,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "9d25d4e0",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "000009ff",
-        "before": 1,
-        "after": 2,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "000009fe",
@@ -2621,25 +1402,11 @@
         "nextOffset": 529,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "9d25d4e0",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "got new jewelry necklace earrings ring bought acquired jewelry last week",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 905,
@@ -2651,26 +1418,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_731e37d7",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "workshop attended cost paid dollars fee price workshop class seminar",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 333,
@@ -2682,27 +1434,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_731e37d7",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "0000048f",
-        "before": 4,
-        "after": 4,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "0000048b",
@@ -2713,26 +1449,11 @@
         "nextOffset": 430,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_731e37d7",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "0000048b",
-        "before": 4,
-        "after": 4,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000487",
@@ -2743,26 +1464,11 @@
         "nextOffset": 404,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_731e37d7",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "000002d1",
-        "before": 4,
-        "after": 4,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "000002cd",
@@ -2773,26 +1479,11 @@
         "nextOffset": 959,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_731e37d7",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "000009b9",
-        "before": 3,
-        "after": 3,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "000009b6",
@@ -2803,26 +1494,11 @@
         "nextOffset": 410,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_731e37d7",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000c67",
-        "before": 3,
-        "after": 3,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "00000c64",
@@ -2833,26 +1509,11 @@
         "nextOffset": 350,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_731e37d7",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "00000491",
-        "before": 3,
-        "after": 3,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "0000048e",
@@ -2863,26 +1524,11 @@
         "nextOffset": 527,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_731e37d7",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "000002cf",
-        "before": 3,
-        "after": 3,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "000002cc",
@@ -2893,26 +1539,11 @@
         "nextOffset": 296,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_731e37d7",
       "arm": "production",
-      "name": "history_expand",
-      "arguments": {
-        "id": "000002c7",
-        "before": 3,
-        "after": 3,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "from": "000002c4",
@@ -2923,25 +1554,11 @@
         "nextOffset": 368,
         "hasMore": false
       },
-      "details_keys": [
-        "from",
-        "to",
-        "offset",
-        "total",
-        "returned",
-        "nextOffset",
-        "hasMore"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_731e37d7",
       "arm": "production",
-      "name": "history_recall",
-      "arguments": {
-        "query": "workshop attended paid $ workshop cost paid to attend fee",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 236,
@@ -2953,26 +1570,11 @@
         "budgetChars": 16000,
         "budgetExceeded": false
       },
-      "details_keys": [
-        "total",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "budgetChars",
-        "budgetExceeded"
-      ]
+      "details_keys": []
     },
     {
       "question_id": "gpt4_731e37d7",
       "arm": "production",
-      "name": "history_grep",
-      "arguments": {
-        "pattern": "workshop.{0,200}(?:\\$\\d+|paid|free)|(?:\\$\\d+|paid|free).{0,200}workshop",
-        "limit": 50,
-        "offset": 0
-      },
       "result_is_error": false,
       "details_summary": {
         "total": 9,
@@ -2980,26 +1582,13 @@
         "offset": 0,
         "limit": 50,
         "returned": 7,
-        "nextOffset": null,
         "hasMore": false,
         "snippets": 9,
         "covered": 0,
         "omitted": 0,
         "metadataSkipped": false
       },
-      "details_keys": [
-        "total",
-        "totalEntries",
-        "offset",
-        "limit",
-        "returned",
-        "nextOffset",
-        "hasMore",
-        "snippets",
-        "covered",
-        "omitted",
-        "metadataSkipped"
-      ]
+      "details_keys": []
     }
   ],
   "causal_gain_claim": false

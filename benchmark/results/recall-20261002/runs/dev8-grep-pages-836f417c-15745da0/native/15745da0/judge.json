@@ -9,17 +9,12 @@
     "question_id": "15745da0",
     "arm": "native",
     "outcome": "answered",
-    "answer": "**Relevant information:** You said you have a collection of old cameras from the 1970s and 1980s that you’re considering selling.\n\n**Reasoning:** You didn’t say when you started collecting them or how long you’ve had them.\n\n**Answer:** I can’t determine how long you’ve been collecting vintage cameras from the information provided.",
-    "terminalStopReason": "stop",
-    "providerError": null,
     "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 672.8829310741276,
       "firstVisibleTextFromSpawnMs": 9388.377306051552,
       "firstThinkingFromSpawnMs": 9167.522025061771,
-      "firstToolDeltaFromSpawnMs": null,
       "promptToCompleteMs": 9289.056344889104,
-      "providerTTFTMs": null,
       "modelTurns": 1,
       "toolBatches": 0,
       "toolCalls": 0,
@@ -35,7 +30,6 @@
     },
     "modelCalls": 1,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "fd5de2f7e5ed2532141e982e7da96c646a300a30c00e259296972dc7aa274c30",
     "snapshot": {
       "fingerprint": "059e46e9c0ca276ea258fc78fd2b982383b354e07d25cfaed4b0692ef6c6c57f",
@@ -44,7 +38,6 @@
       "compressionSeconds": 93.741309504956
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.755186290014535,

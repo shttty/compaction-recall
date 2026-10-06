@@ -9,19 +9,13 @@
     "question_id": "3d86fd0a",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Relevant information:** You said you met Sophia at a coffee shop in the city.\n\n**Answer:** You met Sophia at a **coffee shop in the city**.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 813.5764009784907,
       "firstVisibleTextFromSpawnMs": 16188.753346912563,
       "firstThinkingFromSpawnMs": 8852.878079051152,
       "firstToolDeltaFromSpawnMs": 9340.625962009653,
       "promptToCompleteMs": 17270.69271192886,
-      "providerTTFTMs": null,
       "modelTurns": 2,
       "toolBatches": 1,
       "toolCalls": 1,
@@ -37,7 +31,6 @@
     },
     "modelCalls": 2,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "feececb5c0c1934aed56252ba8b0934a53492a2ffb10fe18cbb7c720b3412f54",
     "snapshot": {
       "fingerprint": "56ff2e6a1fa8d31558e1dd8eab11d3d9368ac8056f90a79163d825843ef92345",
@@ -46,7 +39,6 @@
       "compressionSeconds": 118.81680696690455
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 3.2327894340269268,

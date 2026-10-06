@@ -1,0 +1,19 @@
+{
+  "question_id": "9d25d4e0",
+  "split": "hard8",
+  "question": "我在过去两个月里获得了多少件珠宝？",
+  "question_date": "2023/05/30 (Tue) 23:48",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": false,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "multi-session",
+  "originalAssetSha256": "b134442a85b973ebb8c2009beda3fc0fc6c846ff436ec45b01371ea343b56db0",
+  "textUtf8Sha256": "67a083ee6dcd639098d2a6b08e575a798f74d39afd0e9736deaa3f4c7d669deb",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "9d25d4e0",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "question_id": "gpt4_15e38248",
+  "split": "hard8",
+  "question": "在过去的几个月里，我买、组装、卖或修了多少件家具？",
+  "question_date": "2023/05/30 (Tue) 23:21",
+  "translation": {
+    "model": "deepseek-flash",
+    "edited_by_review": false,
+    "frozen_at": "2026-10-03T18:47+08:00"
+  },
+  "sourceQuestionType": "multi-session",
+  "originalAssetSha256": "7b0a0b7a433991b81901ee206f4ae7f27736c93db574d87a65493de0052767cb",
+  "textUtf8Sha256": "d3f5aaebcb836db2fb5dc4491a7d43e2bde08b31f6d6d49e995c02e7db642c7c",
+  "source": {
+    "dataset": "longMemEval",
+    "questionId": "gpt4_15e38248",
+    "datasetRevision": "2ec2a557f339b6c0369619b1ed5793734cc87533"
+  }
+}

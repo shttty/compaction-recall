@@ -9,22 +9,13 @@
     "question_id": "gpt4_15e38248",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "**Relevant details from the conversation:**\n- You bought **one coffee table** from West Elm.\n- You assembled **one IKEA bookshelf** for your home office.\n- I don’t see any mention of selling or fixing furniture.\n\n**Total: 2 pieces of furniture.**",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep",
-      "history_expand",
-      "history_grep",
-      "history_grep"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 822.4681289866567,
       "firstVisibleTextFromSpawnMs": 52585.308999056,
       "firstThinkingFromSpawnMs": 10503.894928144291,
       "firstToolDeltaFromSpawnMs": 10964.428598992527,
       "promptToCompleteMs": 54823.15161917359,
-      "providerTTFTMs": null,
       "modelTurns": 5,
       "toolBatches": 4,
       "toolCalls": 4,
@@ -40,7 +31,6 @@
     },
     "modelCalls": 5,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "fd153dba6ec47fb127cbc70d48e155572dd3995b7f50ed6d0c47a829c5202301",
     "snapshot": {
       "fingerprint": "23e7e9d70cb857784467e4c665f09e50654643dc9e376e730daa56a9ad2d56df",
@@ -49,7 +39,6 @@
       "compressionSeconds": 112.86164950625971
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 4.224977194098756,

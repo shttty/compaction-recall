@@ -9,19 +9,13 @@
     "question_id": "3d86fd0a",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "1. Your notes say you met Sophia at a coffee shop.\n2. The location was described only as “a coffee shop in the city”; no specific café was named.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 820.0057020876557,
       "firstVisibleTextFromSpawnMs": 22853.45191601664,
       "firstThinkingFromSpawnMs": 12709.87984794192,
       "firstToolDeltaFromSpawnMs": 13068.134244997054,
       "promptToCompleteMs": 23145.51729685627,
-      "providerTTFTMs": null,
       "modelTurns": 2,
       "toolBatches": 1,
       "toolCalls": 1,
@@ -37,7 +31,6 @@
     },
     "modelCalls": 2,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "73423bcfcb0000723630917001135f073f821b395db7c1692bc1895fe4d17097",
     "snapshot": {
       "fingerprint": "19e5389bf1f026b858796e375623e3dbfec52f019aad66e7fc9a2ffbecc4da80",
@@ -46,7 +39,6 @@
       "compressionSeconds": 118.48971851309761
     },
     "judge": {
-      "verdict": "yes",
       "correct": true,
       "status": "graded",
       "seconds": 3.9517157380469143,

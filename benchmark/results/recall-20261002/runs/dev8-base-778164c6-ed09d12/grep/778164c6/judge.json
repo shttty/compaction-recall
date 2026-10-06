@@ -9,21 +9,13 @@
     "question_id": "778164c6",
     "arm": "grep",
     "outcome": "answered",
-    "answer": "1. The Jamaican snapper dish I recommended earlier was **escovitch fish**—fried snapper topped with spicy pickled vegetables.\n2. The Jamaican dish I mentioned that contains a fruit was **ackee and saltfish**. Ackee is a fruit, but that dish is usually made with salted cod, not snapper.\n\nSo you may be combining the two: **escovitch fish** is the snapper dish; **ackee and saltfish** is the one with fruit.",
-    "terminalStopReason": "stop",
-    "providerError": null,
-    "tool_calls": [
-      "history_grep",
-      "history_grep",
-      "history_expand"
-    ],
+    "tool_calls": [],
     "timing": {
       "startupToRpcReadyMs": 801.3142291456461,
       "firstVisibleTextFromSpawnMs": 51570.39369805716,
       "firstThinkingFromSpawnMs": 11289.763817097992,
       "firstToolDeltaFromSpawnMs": 11470.44753911905,
       "promptToCompleteMs": 52438.05372295901,
-      "providerTTFTMs": null,
       "modelTurns": 4,
       "toolBatches": 3,
       "toolCalls": 3,
@@ -39,7 +31,6 @@
     },
     "modelCalls": 4,
     "rc": 0,
-    "error": null,
     "run_fingerprint": "ad0eefca3f82cc61ce29e7cdbf09d1513429c770f24e28fa633ce93ece117e7e",
     "snapshot": {
       "fingerprint": "4af02e7afbc8cefaeaae38265715218a15d1286fbaa3ada81567c702ebd5cdd2",
@@ -48,7 +39,6 @@
       "compressionSeconds": 93.66139406873845
     },
     "judge": {
-      "verdict": "no",
       "correct": false,
       "status": "graded",
       "seconds": 5.247961899964139,
