@@ -75,13 +75,11 @@ for (const entry of corpus.branch) { rows.push({ ...entry, parentId }); parentId
 writeFileSync(sessionPath, rows.map(row => JSON.stringify(row)).join('\n') + '\n', { flag: 'wx', mode: 0o600 });
 const { createEngine } = await import(engineUrl.href);
 const engine = await createEngine(corpus.documents);
-let autoResults, literalResult;
+let autoResults;
 try {
   autoResults = await searchAutomatic(engine, question);
-  literalResult = await engine.search({ concepts: [['*']] });
+  await assert.rejects(engine.search({ concepts: [['*']] }), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
 } finally { await engine.dispose?.(); }
-assert.equal(literalResult.total, 0);
-assert.deepEqual(literalResult.results, []);
 assert.equal(autoResults.length, 2);
 const expectedIds = [corpus.positions.get('0:2'), corpus.positions.get('0:1')];
 assert.deepEqual(autoResults.map(row => row.id), expectedIds, 'Equal-score matches rank newest first');
@@ -161,11 +159,9 @@ modelRuntime.registerProvider('sqlite-smoke', {
         args = { concepts: [['*']], limit: 1 };
       } else {
         assert.equal(turn, 5, 'Exactly four provider-selected tool calls');
-        assert.equal(result.isError, false);
-        const page = readPage(result);
-        assert.equal(page.total, 0);
-        assert.equal(page.returned, 0);
-        checks.push('zero-token literal surface returns an ordinary empty page, then completion');
+        assert.equal(result.isError, true);
+        assert.ok(text(result).includes('A surface form produced no searchable terms'));
+        checks.push('zero-token surface preserves author EMPTY_ANALYSIS rejection');
       }
     }
     const message = {
@@ -230,11 +226,9 @@ for (const [index, event] of traces.entries()) {
   if (index < 2) assert.deepEqual(event.result.ids, seenPages[index].ids);
 }
 assert.deepEqual(traces[2].error, rejectionError);
-assert.deepEqual(traces[3].result.ids, []);
-assert.equal(traces[3].result.total, 0);
-assert.equal(traces[3].result.fallback.ranking, 'rarity');
-assert.deepEqual(traces[3].result.fallback.surfaces, ['*']);
-checks.push('shared trace correlates four calls and records hybrid fallback only on the literal request');
+assert.equal(traces[3].error.name, 'QueryError');
+assert.equal(traces[3].error.code, 'EMPTY_ANALYSIS');
+checks.push('shared trace correlates four calls and records strict compiler errors');
 const memory = events.filter(event => event.type === 'mark' && event.stage === 'index_memory');
 assert.ok(memory.length > 0, 'BackgroundIndex emits index_memory');
 for (const event of memory) {

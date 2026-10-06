@@ -11,9 +11,12 @@ import { selectFts5Range } from '../../benchmark/fts5-snippet.mjs';
 import { measured } from '../../src/timing.mjs';
 import { sqliteRecallPage } from '../../benchmark/retrieval-sqlite-page.mjs';
 import { createHanPhraseTrial } from './han-phrase-trial.mjs';
-import { prepareRecallQuery, matchRecallFallback } from './recall-fallback.mjs';
+import { compileFts5, parseQuery, QueryError } from './concept-query-compiler.mjs';
 export { STOPWORDS, tokenize, tokenizeSpans } from './lexical.mjs';
 const HAN = /\p{Script=Han}/u;
+const meaningful = /[\p{L}\p{N}\p{M}]/u;
+const safeQueryData = value => JSON.stringify(value).replace(/[<>&\u2028\u2029]/g,
+  point => `\\u${point.charCodeAt(0).toString(16).padStart(4, '0')}`);
 
 export function weightedLength(text) {
   let length = 0;
@@ -148,20 +151,11 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
       return terms;
     };
   }
-  function codepointHit(text, hit, check) {
-    let units = 0, points = 0, start;
-    for (const char of text) {
-      if ((points & 255) === 0) check?.();
-      if (units === hit.start) start = points;
-      units += char.length; points++;
-      if (units === hit.end) return { term: hit.term, start, end: points };
-    }
-  }
   function materialize(native, snippetTerms, timer, check) {
     const exact = new Set(snippetTerms.filter(term => !term.prefix).map(({ term }) => term));
     const prefixes = [...new Set(snippetTerms.filter(term => term.prefix).map(({ term }) => term))];
     let snippetMatch;
-    const results = measured(timer, 'candidate_materialization', () => native.map(({ rowid, score, anchors }) => {
+    const results = measured(timer, 'candidate_materialization', () => native.map(({ rowid, score }) => {
         const document = corpus[rowid - 1];
       let rendered;
       return {
@@ -170,8 +164,6 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
             check?.();
           if (rendered !== undefined) return rendered;
           const hits = measured(timer, 'snippet_hits', () => {
-            // A literal hit must be visible even beside unrelated FTS windows.
-            if (anchors?.length) return anchors.map(hit => codepointHit(document.text, hit, check));
             snippetMatch ??= stem ? compileOperands(snippetTerms, check) : undefined;
             document.spans ??= lemma ? tokenizeSpans(document.text).map(span => ({ ...span, term: lemma.normalize(span.term) })) : tokenizeSpans(document.text);
             const found = [];
@@ -207,7 +199,6 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
     check?.(); // SQLite is synchronous and cannot check a deadline inside MATCH.
     return { total, results: materialize(native, snippetTerms, timer, check) };
   }
-  let surfaceMatches;
   function automaticRows(query, automatic, timer, limit, offset = 0) {
     const text = extractText(query);
     if (automatic && weightedLength(text) > autoGate) return { skipped: true, total: 0, results: [], queryTerms: [] };
@@ -226,30 +217,30 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
     const found = collect(expression, expanded, timer, undefined, { limit, offset });
     return { skipped: false, ...found, queryTerms };
   }
-  const analyze = surface => {
-    const terms = tokenize(surface).filter(term => term !== '\ue000').map(term => lemma ? lemma.normalize(term) : term);
-    return terms.length ? [terms] : [];
-  };
   function conceptRows(query, timer, check, options) {
     check?.();
-    const plan = measured(timer, 'concept_query_compile', () => prepareRecallQuery(query, tokenizeSpans, analyze, check));
-    // Only indexed positive surfaces can anchor an FTS snippet; literal hits
-    // use their original offsets instead. Exclusions never select windows.
-    const terms = new Set(plan.query.concepts.flatMap(group => group.flatMap(surface => plan.predicates.get(surface).analysis?.flat() ?? [])));
+    const normalized = parseQuery(query), analyses = new Map();
+    const plan = measured(timer, 'concept_query_compile', () => compileFts5(normalized, surface => {
+      const spans = tokenizeSpans(surface);
+      const terms = spans.map(span => lemma ? lemma.normalize(span.term) : span.term);
+      analyses.set(surface, { spans, terms });
+      return terms.length ? [terms] : [];
+    }));
+    // Compile first so zero-token surfaces retain the author's original error.
+    // The loss gate precedes every count/MATCH for concepts and exclusions alike.
+    for (const [surface, { spans, terms }] of analyses) {
+      check?.();
+      const chars = Array.from(surface), covered = new Uint8Array(chars.length);
+      for (const span of spans) covered.fill(1, span.start, span.end);
+      if (chars.some((point, at) => meaningful.test(point) && !covered[at])) {
+        throw new QueryError('TOKENIZATION_LOSS', `Tokenization loss: ${safeQueryData(surface)} → ${safeQueryData([...new Set(terms)])}. Suggestion: revise query terms or use history_grep.`);
+      }
+    }
+    // Only positive terms select snippets; exclusions remain in MATCH alone.
+    const terms = new Set(normalized.concepts.flatMap(group => group.flatMap(surface => analyses.get(surface).terms)));
     const snippets = [...terms].map(term => ({ term, prefix: false }));
     check?.();
-    if (!plan.fallback) return collect(plan.match, snippets, timer, check, options);
-    const found = matchRecallFallback(plan, corpus, function* (expression) {
-      surfaceMatches ??= db.prepare('SELECT rowid FROM terms WHERE terms MATCH ?');
-      for (const { rowid } of surfaceMatches.iterate(expression)) yield rowid;
-    }, () => {
-      const hashes = new Map();
-      for (const { rowid, hash } of db.prepare('SELECT rowid, hex(content_hash) AS hash FROM messages').iterate()) {
-        check?.(); hashes.set(rowid, hash);
-      }
-      return hashes;
-    }, timer, check, options);
-    return { total: found.total, results: materialize(found.rows, snippets, timer, check), fallback: found.fallback };
+    return collect(plan.match, snippets, timer, check, options);
   }
   const ranks = rows => rows.map(({ id, score }) => ({ id, score }));
   return {
@@ -274,12 +265,11 @@ export function createIndex(documents, { arm = 'off', autoGate = 210, snippetBud
       if (!Number.isSafeInteger(offset) || offset < 0) throw new RangeError('offset must be a nonnegative safe integer');
       const found = conceptRows(query, timer, check, { limit, offset });
       const page = sqliteRecallPage(found.results, options, { total: found.total, baseOffset: offset });
-      if (found.fallback) page.details.fallback = found.fallback;
       // Independent jieba ranking remains outside this selected BM25 protocol.
       if (trial.jieba) page.details.jiebaRankingPending = true;
       check?.();
       const ids = found.results.slice(0, page.details.returned).map(row => row.id);
-      return { total: found.total, page, ids, ...(found.fallback ? { fallback: found.fallback } : {}) };
+      return { total: found.total, page, ids };
     },
     search(query, { automatic = false, limit = 20 } = {}) {
       if (!Number.isSafeInteger(limit) || limit < 0) throw new RangeError('limit must be a non-negative safe integer');

@@ -83,9 +83,7 @@ test('SDK concept tool pages, validates strictly, excludes records and remains u
   ]) await assert.rejects(recall.execute('invalid', params, undefined, undefined, ctx), { name: 'QueryError', code });
   const recovered = await recall.execute('recover', { concepts: [['beta']] }, undefined, undefined, ctx);
   assert.deepEqual(ids(recovered), ['match']);
-  const single = await recall.execute('single', { concepts: [['x']] }, undefined, undefined, ctx);
-  assert.equal(single.details.total, 0);
-  assert.deepEqual(single.details.fallback, { surfaces: ['x'], scannedDocuments: 2, ranking: 'rarity' });
+  await assert.rejects(recall.execute('single', { concepts: [['x']] }, undefined, undefined, ctx), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
   const expand = extension.tools.get('history_expand').definition;
   const expanded = await expand.execute('expand', { id: 'match', before: 0, after: 0 }, undefined, undefined, ctx);
   assert.match(expanded.content[0].text, /alpha beta gamma delta epsilon zeta tailneedle/);
@@ -133,9 +131,7 @@ test('SDK independent grep finds regex neighbors, pages counts and respects curr
   const expanded = await expand.execute('expand-grep-id', { id: ids(last)[0], before: 0, after: 0 }, undefined, undefined, ctx);
   assert.match(expanded.content[0].text, /\$375 approved/);
   assert.doesNotMatch(expanded.content[0].text, /oldamount/);
-  const literal = await extension.tools.get('history_recall').definition.execute('recall-literal', { concepts: [['晨']] }, undefined, undefined, ctx);
-  assert.equal(literal.details.total, 1);
-  assert.deepEqual(literal.details.fallback, { surfaces: ['晨'], scannedDocuments: 4, ranking: 'rarity' });
+  await assert.rejects(extension.tools.get('history_recall').definition.execute('zero-token', { concepts: [['晨']] }, undefined, undefined, ctx), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
   branch = [message('fork', 'telescope grant $450 fork'), message('fork-live', 'retained'),
     { type: 'compaction', id: 'fork-compact', timestamp, firstKeptEntryId: 'fork-live', summary: '', tokensBefore: 10 }];
   const fork = await run({ pattern });
@@ -143,57 +139,6 @@ test('SDK independent grep finds regex neighbors, pages counts and respects curr
   assert.equal(fork.details.total, 1);
 });
 
-test('SDK registered recall routes whole literal surfaces and composes mixed groups before paging', async t => {
-  const previousArm = process.env.COMPACTION_RECALL_SQLITE_ARM;
-  process.env.COMPACTION_RECALL_SQLITE_ARM = 'off';
-  t.after(() => {
-    if (previousArm === undefined) delete process.env.COMPACTION_RECALL_SQLITE_ARM;
-    else process.env.COMPACTION_RECALL_SQLITE_ARM = previousArm;
-  });
-  const { discoverAndLoadExtensions } = await import('@earendil-works/pi-coding-agent');
-  const loaded = await discoverAndLoadExtensions([fileURLToPath(new URL('../benchmark/retrieval-sqlite-adapter.ts', import.meta.url))], process.cwd(), process.env.PI_CODING_AGENT_DIR);
-  assert.deepEqual(loaded.errors, []);
-  const extension = loaded.extensions[0];
-  const timestamp = '2026-10-06T00:00:00Z';
-  const message = (id, content) => ({ type: 'message', id, timestamp, message: { role: 'user', content } });
-  const branch = [
-    message('literal', 'alpha 网 café 7:30 x.*y x  y'),
-    message('other', 'beta 网 café 8:30 xZZy x y'),
-    message('token-only', 'alpha 30 x.*z'),
-    message('live', 'alpha 网 café 7:30 retained'),
-    { type: 'compaction', id: 'compact', timestamp, firstKeptEntryId: 'live', summary: '', tokensBefore: 10 },
-  ];
-  const ctx = { sessionManager: { getSessionId: () => 'literal-fixture', getBranch: () => branch } };
-  t.after(async () => { for (const handler of extension.handlers.get('session_shutdown') ?? []) await handler({ type: 'session_shutdown', reason: 'quit' }, ctx); });
-  const recall = extension.tools.get('history_recall').definition;
-  const execute = params => recall.execute('literal', params, undefined, undefined, ctx);
-  const rowsOf = page => page.content[0].text.split('\n').filter(line => line.startsWith('{')).map(JSON.parse);
-  const ids = page => rowsOf(page).map(row => row.id).sort();
-  for (const [surface, expected] of [['网', ['literal', 'other']], ['CAFÉ', ['literal', 'other']], ['  7:30  ', ['literal']], ['x.*y', ['literal']], [' x  y ', ['literal']]]) {
-    const page = await execute({ concepts: [[surface]] });
-    assert.deepEqual(ids(page), expected);
-    assert.deepEqual(page.details.fallback, { surfaces: [surface.trim()], scannedDocuments: 3, ranking: 'rarity' });
-    for (const row of rowsOf(page)) assert.ok(row.snippet.toLowerCase().includes(surface.trim().toLowerCase()));
-  }
-  assert.deepEqual(ids(await execute({ concepts: [['alpha'], ['网']], match: 'all' })), ['literal']);
-  assert.deepEqual(ids(await execute({ concepts: [['beta'], ['7:30']] })), ['literal', 'other']);
-  assert.deepEqual(ids(await execute({ concepts: [['missing', '7:30']] })), ['literal']);
-  const excluded = await execute({ concepts: [['alpha']], exclude: ['7:30'] });
-  assert.deepEqual(ids(excluded), ['token-only']);
-  assert.deepEqual(excluded.details.fallback, { surfaces: ['7:30'], scannedDocuments: 3, ranking: 'rarity' });
-  const first = await execute({ concepts: [['网']], limit: 1 });
-  const next = await execute({ concepts: [['网']], limit: 1, offset: first.details.nextOffset });
-  assert.equal(first.details.total, 2);
-  assert.equal(next.details.nextOffset, null);
-  assert.deepEqual([...ids(first), ...ids(next)].sort(), ['literal', 'other']);
-  assert.deepEqual(first.details.fallback, next.details.fallback);
-  const pure = await execute({ concepts: [['alpha beta']] });
-  assert.equal(pure.details.total, 0); // Fully representable co-occurrence does not become an OR or substring scan.
-  assert.equal('fallback' in pure.details, false);
-  for (const params of [{ concepts: [['网']], mode: 'literal' }, { concepts: [['网']], pattern: '网' }]) {
-    await assert.rejects(execute(params), { name: 'QueryError', code: 'UNKNOWN_FIELD' });
-  }
-});
 
 test('SDK loads file gate/timeout once; lifecycle rebuilds retain them over later file/environment changes', async t => {
   const keys = ['COMPACTION_RECALL_SQLITE_ARM', 'COMPACTION_RECALL_AUTO_GATE', 'COMPACTION_RECALL_QUERY_TIMEOUT_MS', 'PI_RETRIEVAL_INPUT_FILE'];
@@ -297,7 +242,8 @@ test('SDK concept traces correlate original model input and extension mutation w
   }
   await assert.rejects(recall.execute('invalid', { concepts: [] }, undefined, undefined, ctx), { name: 'QueryError', code: 'INVALID_ARRAY' });
   await recall.execute('after-error', { concepts: [['alpha']] }, undefined, undefined, ctx);
-  const hybrid = await recall.execute('hybrid', { concepts: [['7:30']] }, undefined, undefined, ctx);
+  await assert.rejects(recall.execute('token-loss', { concepts: [['7:30']] }, undefined, undefined, ctx), { name: 'QueryError', code: 'TOKENIZATION_LOSS',
+    message: 'Tokenization loss: "7:30" → ["30"]. Suggestion: revise query terms or use history_grep.' });
   await emit('before_provider_request', { type: 'before_provider_request', payload: { apiKey: 'SECRET_CREDENTIAL', thinking: 'SECRET_REASONING', reasoning_effort: 'high' } });
   await emit('agent_end', { type: 'agent_end', messages: [] });
   const raw = readFileSync(tracePath, 'utf8');
@@ -316,8 +262,8 @@ test('SDK concept traces correlate original model input and extension mutation w
   assert.equal('fallback' in calls[0].result, false);
   assert.equal('fallback' in calls[1].result, false);
   assert.equal('fallback' in calls[3].result, false);
-  assert.deepEqual(calls[4].result.fallback, { surfaces: ['7:30'], scannedDocuments: 1, ranking: 'rarity' });
-  assert.deepEqual(calls[4].result.fallback, hybrid.details.fallback);
+  assert.equal(calls[4].error.code, 'TOKENIZATION_LOSS');
+  assert.equal(calls[4].error.message, 'Tokenization loss: "7:30" → ["30"]. Suggestion: revise query terms or use history_grep.');
   assert.deepEqual(events.find(event => event.type === 'sqlite_provider_evidence'), { type: 'sqlite_provider_evidence', sessionId: 'trace-fixture', locatorPresent: false, locator: null, effort: 'high' });
   assert.doesNotMatch(raw, /SECRET_CREDENTIAL|SECRET_REASONING/);
 });

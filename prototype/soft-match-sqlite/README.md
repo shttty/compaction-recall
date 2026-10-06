@@ -1,19 +1,19 @@
 # SQLite FTS5 soft-match 原型
 
-## 当前覆盖契约：独立 grep、literal fallback 与 rarity（2026-10-06）
+## 当前覆盖契约：主动 FTS、token 损失拒绝与独立 grep（2026-10-06）
 
 本节优先于下文历史接口、切词、候选 arm 和提示词说明。历史评估数字及验证正文保持原文，不代表本轮已重跑。本轮为 SQLite 原型 / benchmark 接入，不是生产发布；不请求 provider 或模型评测。共享 `src/recall-trace.mjs` 仅增加可选结构输入模式，`src/index-worker.mjs` / `src/background-index.mjs` 仅保留自定义引擎错误 code；生产入口、schema、默认字符串 trace 及输出字节契约不变。
 
 - **工具具名字段**：`history_recall({concepts:string[][],match?:'any'|'all',exclude?:string[],limit?,offset?})`。1..5 组，每组 1..4 个替代词面；默认 `any` 组间 OR，`all` 要求各组在同一索引记录命中。组内词面是 OR 替代，每个词面的分析路径外 OR、路径内词项 AND：只要求共现，不要求顺序、相邻或 phrase。词面是 literal 数据，不是 FTS / SQL / 任意 AST；不要求模型手切双字或写原生 MATCH。旧 `query` / `must` / `prefer` / raw 手动入口不兼容。
-- **严格作者编译器与路由**：纯 JS `concept-query-compiler.mjs` 仍由未修改作者 TypeScript 源码生成；原 parse 校验、限额、纯 FTS 编译保持不变。非空 trimmed 词面每个最多 256 Unicode 码点、总计 2048，非法文本/未知字段拒绝，不截断。实际 tokenizer spans 必须覆盖词面全部 Unicode Letter/Number/Mark 字符才走 FTS；忽略标点和大小写不等于要求 phrase。零 token 或丢失任一这些字符时，整个 trimmed 词面走 case-insensitive literal substring，包括内部原空白、标点和 regex 元字符；不拆残留词项、不解释 regex。正常 FTS 零命中不会触发扫描，错误不 fallback。
-- **排除与片段**：`exclude` 最多 5 个 literal 词面，同样按覆盖路由；任意命中硬排除整条记录。FTS 仍为路径外 OR、路径内 AND 共现；literal 为整词面子串；任意/all/组内替代语义在混合请求中保持完整。正向 literal 片段必须露出实际 literal 证据；排除不引导片段。UTF-16 命中偏移转为 codepoint 锚点，不新增第二正文缓存或索引。
-- **排名边界**：纯 FTS 保留原生 BM25/SQL 分页；只要任一正向或排除词面需要 literal，整个请求在完整匹配后使用 rarity。每个 surface 权重 `1+log((N+1)/(surfaceDF+1))`；每正向组取命中替代的最大权重，各组相加，同分按命中组数、timestamp、recency、stable rowid。N/DF 按 eligible corpus 行计数，先于 all/exclude/page；live 不计，最终按 content_hash 去重。不是相关性概率、不按出现次数加分、不与 BM25 分数跨路线比较；普通可索引查询不会因零命中或低分进入新路线。
-- **自动与分页**：auto 的机器选词、210/配置 gate、cadence、生命周期及排名算法不变；manual 无自动 gate。默认/最大 50、16000 码点页、240 加权 snippet 单位、nextOffset 和超长元数据进度例外不变。只有真实 total=0 提示检查概念组/any/all/词面，正 total 空 offset 页不误报。hybrid queryRows/queryPage 额外返回 `fallback:{surfaces,scannedDocuments,ranking:'rarity'}`，page.details 同对象；surfaces 含正向和排除 literal，scannedDocuments=N。纯 FTS 不添加 fallback 字段。deadline 覆盖 literal 扫描、DF、排名、去重、片段与分页，native MATCH 仍不可抢占，健康 worker 不清缓存。
-- **工具与 trace**：SQLite 注册 `history_recall`、`history_grep`、`history_expand` 三工具。自动 locator → recall → expand 核验后若证据不足，可主动用独立 grep 补充，不强制调用。`history_grep({pattern,limit?,offset?})` 复用生产 lite 的真实执行器：case-insensitive JavaScript regex，非法 regex 按字面搜索；按分支顺序分页，默认 30 / 最大 50 个 entry；原 raw-match 计数、片段预算和 branch/context_edit 隔离不变。grep 的 `pattern` 与 recall 自动整词面 literal 路由相互独立；recall 不新增 mode/pattern 参数。共享 renderer 使用原型 header seam，生产默认 header 与注册不变。SQLite structured trace 保留完整 recall params/model arguments 与 input_identical；仅 hybrid 成功结果额外记录 fallback，不记录 SQL/内部权重/思考/凭据。生产默认 trace 不变；冻结两工具评测仍属于原版本，不重标为本次三工具结果。
+- **严格编译与拒绝**：未修改作者生成的纯 JS compiler；主动查询只走 parse/compileFts5 → SQLite BM25。零 token 保留原 `QueryError/EMPTY_ANALYSIS`。任意正向或 exclude 词面的实际 tokenizer spans 丢失 Letter/Number/Mark 时，整次请求在 MATCH/计数之前抛 `QueryError/TOKENIZATION_LOSS`，不跳过坏词、不返回部分结果、不扫描兜底。声明忽略的标点/大小写和合法词形归一不误拒绝。
+- **短错误**：`Tokenization loss: "7:30" → ["30"]. Suggestion: revise query terms or use history_grep.` 原词面和实际词项安全 JSON 编码；这是错误，不是 warning 后继续查询。
+- **排名与分页**：只保留原生 FTS BM25、SQL/full-content 去重分页、原 time ties；混合 rarity 和自动 literal 执行模块移除，没有开关。正常 FTS 零命中仍是零结果。any/all/exclude、50 条上限、16000 码点页预算和 nextOffset 机制不变；排除不引导片段。
+- **自动与超时**：自动选词、210/配置 gate、cadence 和算法不变。主动期限仍覆盖准备/排队、编译与搜索/渲染，native MATCH 不可抢占，健康 worker 缓存保留。
+- **三工具与 trace**：recall/grep/expand 保留。独立 `history_grep({pattern,limit?,offset?})` 复用生产 lite 原正则执行器、非法 regex 字面回退、预算、分支分页和 context_edit 隔离；证据不足可主动使用，不强制调用。recall 不新增参数。结构 trace 保留原模型/执行入参；成功结果不再有旧 fallback metadata。生产默认不变。
 
 初轮两工具离线验收（历史记录）：`npm run check` 的 338 项 JS 与 28 项 Python 回归通过，另以空临时 profile 实际加载 SDK/worker/SQLite 验证两工具、literal/rarity、自动提示和结构 trace（0 provider 请求）。纯 FTS 的独立合成完整 IDs/score/order 与该轮基线一致；小规模合成工具耗时/内存只记录在授权执行产物目录，不代表大库/线上性能或模型准确率。
 
-独立 grep 恢复是上述初轮两工具验收后的后续变更；旧结果与 5728284 冻结评测保持不变。本次可复跑合成 SDK smoke 验证 grep 正则、计数、分页、expand、资格隔离及 worker recall literal/rarity，无 provider 请求；具体命令与实际结果记录在授权恢复任务目录，不据此宣称模型效果。
+此前独立 grep 恢复及 literal/rarity 验收属于历史记录，旧结果与冻结评测不重标。本次关闭 recall 自动字面兜底，并按最新授权拒绝信息损失；当前最低实跑与日志见授权关闭任务目录。
 
 后文 `searchRaw`、implicit OR、原生手写 MATCH、自动 Porter/长 Han、mixed index 等接口和说明均为历史设计 / 评估证据，不覆盖本节当前手动概念组协议。
 
@@ -208,7 +208,7 @@ shared `history_recall_trace` 保留 toolCallId、模型 / execute 原始 query 
 根键 `snippetBudget` 与优先环境变量 `COMPACTION_RECALL_SNIPPET_BUDGET` 加载一次：文件接受正安全整数，环境接受严格十进制正安全整数字符串；缺省/非法所选值回退 240 加权单位，非法环境不回取有效文件值。所有有效预算都按 Han 2 / 其他码点 1 计算，自动和手动共用；没有旧 120 码点默认分支或兼容开关。省略号、自动提示整体预算和工具页预算不变。
 
 
-显式 recall 的协作式 JavaScript deadline 从父线程请求起始计时，覆盖索引准备、排队、MATCH 与后处理（含 literal 扫描/DF/排序/去重/片段/分页）；自动提示不增加超时。到检查点抛 TimeoutError 并丢弃过期结果。同步 native MATCH 不可抢占，允许超过名义期限直到返回检查点；不是硬停止承诺。超时不 terminate/reset worker、不清空索引/惰性跨度缓存、不取消其他排队请求、不回退同步主线程扫描；后续请求复用 healthy worker caches。
+显式 recall 的协作式 JavaScript deadline 从父线程请求起始计时，覆盖索引准备、排队、编译/损失拒绝、MATCH 与后处理（排序/去重/片段/分页）；自动提示不增加超时。到检查点抛 TimeoutError 并丢弃过期结果。同步 native MATCH 不可抢占，允许超过名义期限直到返回检查点；不是硬停止承诺。超时不 terminate/reset worker、不清空索引/惰性跨度缓存、不取消其他排队请求、不回退同步主线程扫描；后续请求复用 healthy worker caches。
 
 中断能力已按当前 **Node 24.18.0 / Bun 1.4.2** 查官方文档、发布标签源码和实际 API：均无公开 interrupt / progress handler。SQLite C 本身有 [sqlite3_interrupt](https://www.sqlite.org/c3ref/interrupt.html) / [progress handler](https://www.sqlite.org/c3ref/progress_handler.html)，但 JS 绑定未提供。Node 的构造参数 timeout 是锁等待 busy timeout，不是执行期限（[版本文档](https://nodejs.org/download/release/v24.18.0/docs/api/sqlite.html#new-databasesyncpath-options)、[绑定源码](https://github.com/nodejs/node/blob/v24.18.0/src/node_sqlite.cc)）；Bun 的 handle 是数组编号而非可传给 FFI 的 sqlite3 指针（[官方文档](https://bun.sh/docs/runtime/sqlite)、[1.4.2 类型声明](https://github.com/oven-sh/bun/blob/bun-v1.4.2/packages/bun-types/sqlite.d.ts)、[原生注册表](https://github.com/oven-sh/bun/blob/bun-v1.4.2/src/jsc/bindings/sqlite/JSSQLStatement.cpp)）。
 

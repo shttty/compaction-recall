@@ -34,7 +34,7 @@ export class SQLiteBackgroundIndex extends BackgroundIndex {
  }
  /** @param {unknown} query @param {import('@earendil-works/pi-coding-agent').SessionEntry[]} branch
   * @param {{limit?: number, offset?: number}} options
-  * @returns {Promise<{total: number, page: ReturnType<typeof import('./retrieval-sqlite-page.mjs').sqliteRecallPage>, ids: string[], fallback?: {surfaces: string[], scannedDocuments: number, ranking: 'rarity'}}>} */
+  * @returns {Promise<{total: number, page: ReturnType<typeof import('./retrieval-sqlite-page.mjs').sqliteRecallPage>, ids: string[]}>} */
  async queryPage(query, branch, options = {}) {
   return /** @type {any} */ (await this.queryRanked(query, branch, { mode: 'manual', options: { ...options, page: true } }));
  }

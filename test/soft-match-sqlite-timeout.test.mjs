@@ -8,8 +8,6 @@ import { pathToFileURL } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import { DatabaseSync } from 'node:sqlite';
 import { SQLiteBackgroundIndex } from '../benchmark/sqlite-background-index.mjs';
-import { createIndex } from '../prototype/soft-match-sqlite/index.mjs';
-import { createQueryCheck, queryNow } from '../prototype/soft-match-sqlite/deadline.mjs';
 import { initialBranch, msg } from './corpus.mjs';
 
 // Native SQLite is non-preemptible; check after it returns, keep the connection
@@ -90,68 +88,6 @@ test('cooperative native/JS deadlines discard late results without resetting or 
     error => error.name === expected.name && error.code === expected.code && error.message === expected.message);
   assert.equal((await index.queryRanked({ concepts: [['alpha']] }, branch, { mode: 'manual' })).cacheHit, true);
   assert.equal(index.worker, worker);
-  assert.equal(index.generation, generation);
-  assert.equal(index.failed, false);
-  assert.equal(index.ready, true);
-});
-
-test('real SQLite literal scan checks its deadline inside a large document and leaves the index usable', t => {
-  const index = createIndex([
-    { id: 'large-history', text: '.'.repeat(2 * 1024 * 1024) + '中' },
-    { id: 'short-history', text: 'recoveryneedle evidence' },
-  ]);
-  t.after(() => index.close());
-  let activeStage, scanChecks = 0;
-  const timer = {
-    run(stage, work) {
-      const previous = activeStage;
-      activeStage = stage;
-      try { return work(); } finally { activeStage = previous; }
-    },
-  };
-  assert.throws(() => index.queryRows({ concepts: [['中']] }, {
-    timer,
-    check() {
-      if (activeStage === 'fallback_scan' && ++scanChecks === 8) {
-        // Expire the real deadline only after repeatedly entering the actual
-        // literal scan, so a pre-query guard cannot satisfy this regression.
-        createQueryCheck(queryNow() - 1, 25)();
-      }
-    },
-  }), { name: 'TimeoutError' });
-  assert.equal(scanChecks, 8);
-  const recovered = index.queryRows({ concepts: [['recoveryneedle']] });
-  assert.deepEqual(recovered.results.map(row => row.id), ['short-history']);
-  assert.match(recovered.results[0].snippet, /recoveryneedle evidence/);
-  const completed = index.queryRows({ concepts: [['中']] });
-  assert.equal(completed.total, 1);
-  assert.deepEqual(completed.results.map(row => row.id), ['large-history']);
-  assert.deepEqual(completed.fallback, { surfaces: ['中'], scannedDocuments: 2, ranking: 'rarity' });
-});
-
-test('real large-history fallback timeout preserves the SQLite worker and the queued next query', { timeout: 30000 }, async t => {
-  const index = new SQLiteBackgroundIndex();
-  t.after(() => index.dispose());
-  // Eight million UTF16 units, almost entirely punctuation: actual history
-  // scanning is substantial without expensive token postings or a provider.
-  const padding = '.'.repeat(256 * 1024);
-  const history = Array.from({ length: 32 }, (_, i) => msg(`large-${i}`, padding + ` row${i}`));
-  history.push(msg('recovery', 'recoveryneedle evidence'));
-  const branch = initialBranch(history);
-  await index.prepare(branch, { preindexLive: true });
-  assert.deepEqual((await index.queryRanked({ concepts: [['recoveryneedle']] }, branch, { mode: 'manual' }))
-    .results.map(row => row.id), ['mrecovery']);
-  const worker = index.worker, threadId = worker.threadId, generation = index.generation;
-  const expired = assert.rejects(index.queryRanked({ concepts: [['中']] }, branch, { mode: 'manual', timeoutMs: 1 }),
-    { name: 'TimeoutError' });
-  const queued = index.queryRanked({ concepts: [['recoveryneedle']] }, branch, { mode: 'manual' });
-  await expired;
-  const recovered = await queued;
-  assert.deepEqual(recovered.results.map(row => row.id), ['mrecovery']);
-  assert.match(recovered.results[0].snippet, /recoveryneedle evidence/);
-  assert.equal(Object.hasOwn(recovered, 'fallback'), false);
-  assert.equal(index.worker, worker);
-  assert.equal(worker.threadId, threadId);
   assert.equal(index.generation, generation);
   assert.equal(index.failed, false);
   assert.equal(index.ready, true);
