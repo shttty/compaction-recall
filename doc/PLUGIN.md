@@ -13,7 +13,7 @@ The public entry point is `src/index.ts`; `src/recall-extension.ts` is an altern
 | Behavior | `full` (default) | `lite` |
 |---|---|---|
 | Tools | `history_recall`, `history_grep`, `history_expand` | `history_grep`, `history_expand` |
-| Automatic hints | Provides short excerpts of relevant history and entry IDs before a response | Adds no automatic hints |
+| Automatic hints | Provides short excerpts of relevant history and entry IDs before a response, wrapped in `<compacted-history-hints>` so the model can tell them from user text | Adds no automatic hints |
 | Retrieval index | In-memory SQLite FTS5 database in a Node worker | Creates no index or worker |
 | Prewarming | Maintains the index on session switches, compaction, and the configured interaction cadence | No prewarming |
 | Optional timing | Indexing, queries, and tool calls | grep / expand tool calls |

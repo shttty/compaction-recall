@@ -13,7 +13,7 @@ compaction-recall 目前支持 Pi，不替换宿主的压缩机制，不持久�
 | 行为 | `full`（默认） | `lite` |
 |---|---|---|
 | 工具 | `history_recall`、`history_grep`、`history_expand` | `history_grep`、`history_expand` |
-| 自动提示 | 回答前提供相关历史的短片段和条目 ID | 不添加自动提示 |
+| 自动提示 | 回答前提供相关历史的短片段和条目 ID，用 `<compacted-history-hints>` 包裹，便于模型与用户原话区分 | 不添加自动提示 |
 | 检索索引 | Node worker 中的 SQLite FTS5 内存库 | 不创建索引或 worker |
 | 预热 | 在会话切换、压缩和配置的交互节奏下维护索引 | 无预热 |
 | 可选计时 | 索引、查询和工具调用 | grep / expand 工具调用 |

@@ -41,6 +41,8 @@ function safeJSON(value) {
 
 /**
  * Already-filtered/ranked results: top five first, then the fixed display budget.
+ * The tag marks the automatic hint as injected history, not user text; safeJSON
+ * escapes `<`/`>` in rows, so history content can never close the tag early.
  * @param {LocatorRow[]} rows
  * @param {string} [header]
  * @returns {string | undefined}
@@ -52,7 +54,7 @@ export function formatLocatorRows(rows, header = HEADER) {
     if (Array.from(result + line).length > LOCATOR_CHARS) continue;
     result += line; count++;
   }
-  return count ? result : undefined;
+  return count ? `<compacted-history-hints>\n${result}</compacted-history-hints>` : undefined;
 }
 
 
