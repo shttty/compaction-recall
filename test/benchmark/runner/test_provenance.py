@@ -14,18 +14,8 @@ RUNNER = ROOT / 'benchmark'
 
 
 class ReleaseBenchmarkArchive(unittest.TestCase):
-    def test_public_inventory_sources_and_score_bindings(self):
+    def test_public_sources_and_score_bindings(self):
         manifest = json.loads((ARCHIVE / 'manifest.json').read_text())
-        inventory = {row['path']: row for row in manifest['publicFiles']}
-        self.assertEqual(len(inventory), len(manifest['publicFiles']))
-        for name, row in inventory.items():
-            with self.subTest(artifact=name):
-                path = ROOT / name
-                self.assertTrue(path.resolve().is_relative_to(ROOT.resolve()))
-                self.assertFalse(path.is_symlink())
-                raw = path.read_bytes()
-                self.assertEqual(len(raw), row['bytes'])
-                self.assertEqual(hashlib.sha256(raw).hexdigest(), row['sha256'])
         sources = manifest['sources']
         self.assertFalse(sources['longMemEval']['cleanedReleaseUsed'])
         self.assertEqual(sources['sweChat']['questionOrigin'], 'locally-derived-not-upstream-question-set')

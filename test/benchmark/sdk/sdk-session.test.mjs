@@ -176,3 +176,27 @@ test('SDK read-only auth store rejects OAuth refresh persistence', async t => {
   await assert.rejects(storage.modify('synthetic-offline', () => ({ type: 'oauth', access: 'fake', refresh: 'fake', expires: 0 })), /read.only/i);
   assert.deepEqual(f.hashFiles(f.profile), before);
 });
+
+test('judge describe applies native provider overrides before validating xhigh effort', t => {
+  const f = fixture(t);
+  const modelsPath = path.join(f.profile, 'models.json');
+  const models = JSON.parse(readFileSync(modelsPath, 'utf8'));
+  const base = models.providers['synthetic-offline'].models[0];
+  models.providers['synthetic-offline'].models.push({ ...base, id: 'gpt-6-luna', name: 'Synthetic Luna', reasoning: true });
+  writeFileSync(modelsPath, JSON.stringify(models));
+  Object.assign(f.config.judge, { model: 'gpt-6-luna', effort: 'xhigh' });
+  f.save();
+  const before = f.hashFiles(f.profile);
+  const judge = fileURLToPath(new URL('../../../benchmark/sdk/judge.mjs', import.meta.url));
+  const args = f.args('--phase', 'judge', '--describe');
+  args[2] = judge;
+  const result = spawnSync(process.execPath, args, { encoding: 'utf8', env: f.env, timeout: 30000 });
+  assert.equal(result.status, 0, result.stderr);
+  const descriptor = JSON.parse(result.stdout);
+  assert.equal(descriptor.provider, 'synthetic-offline');
+  assert.equal(descriptor.model, 'gpt-6-luna');
+  assert.equal(descriptor.effort, 'xhigh');
+  assert.equal(descriptor.contextWindow, base.contextWindow);
+  assert.equal(descriptor.maxTokens, base.maxTokens);
+  assert.deepEqual(f.hashFiles(f.profile), before);
+});

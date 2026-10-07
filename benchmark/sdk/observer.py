@@ -1,7 +1,7 @@
 """Parent-side monotonic RPC observation; never logs message content or provider payloads."""
 import json,subprocess,time,threading,queue,pathlib
 
-def run_rpc(command,env,cwd,prompt=None,timeout=900,settle_only=False,collect_memory=False):
+def run_rpc(command,env,cwd,prompt=None,timeout=900,settle_only=False,collect_memory=False,request=None):
  start=time.monotonic();p=subprocess.Popen(command,cwd=cwd,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
  events=queue.Queue();stderr=[]
  def read():
@@ -16,7 +16,7 @@ def run_rpc(command,env,cwd,prompt=None,timeout=900,settle_only=False,collect_me
  p.stdin.write('{"id":"ready","type":"get_state"}\n');p.stdin.flush()
  metrics={'startupToRpcReadyMs':None,'firstVisibleTextFromSpawnMs':None,'firstThinkingFromSpawnMs':None,'firstToolDeltaFromSpawnMs':None,'promptToCompleteMs':None,'providerTTFTMs':None,'modelTurns':0,'toolBatches':0,'toolCalls':0,'userMessages':0}
  prompt_start=None;outcome='incomplete';settle_deadline=None
- peak_rss=None
+ response=None;peak_rss=None
  try:
   while time.monotonic()-start<timeout:
    if collect_memory:
@@ -34,7 +34,9 @@ def run_rpc(command,env,cwd,prompt=None,timeout=900,settle_only=False,collect_me
     metrics['startupToRpcReadyMs']=(at-start)*1000
     if settle_only:settle_deadline=at+2
     else:
-     prompt_start=time.monotonic();p.stdin.write(json.dumps({'id':'answer','type':'prompt','message':prompt})+'\n');p.stdin.flush()
+     prompt_start=time.monotonic();p.stdin.write(json.dumps(request or {'id':'answer','type':'prompt','message':prompt})+'\n');p.stdin.flush()
+   if request and e.get('id')==request['id'] and e.get('type')=='response':
+    response=e;outcome='completed' if e.get('success') else 'request-error';break
    if e.get('id')=='answer' and e.get('type')=='response' and not e.get('success'):outcome='prompt-error';break
    kind=e.get('type')
    if kind=='message_end' and e.get('message',{}).get('role')=='user':metrics['userMessages']+=1
@@ -56,4 +58,5 @@ def run_rpc(command,env,cwd,prompt=None,timeout=900,settle_only=False,collect_me
  metrics['processWallMs']=(time.monotonic()-start)*1000
  result={'rc':p.returncode,'outcome':outcome,'timing':metrics,'stderr':''.join(stderr)[-2000:]}
  if collect_memory:result['memory']={'peakObservedRssKiB':peak_rss,'method':'sampled /proc VmHWM; process incl. worker threads'}
+ if request:result['response']=response
  return result

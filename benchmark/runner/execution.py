@@ -25,6 +25,8 @@ def run(args):
     sdk.serialization(output, config, pins, manifest, rpc_runner=resource.measured_rpc)
     resource.persist()
     print('CURRENT_SCOPE_READY ' + json.dumps({'manifest': str(output / 'manifest.json'), 'scope': scope.name, 'stage': args.stage}), flush=True)
+    if args.stage == 'preflight':
+        return manifest
     pilot = manifest['questions'][0]
     case(pilot)
     if resource.capacity_stop.is_set():
@@ -68,7 +70,7 @@ def flow(args):
 def run_arms(args):
     original_output, selected_arm = args.output.resolve(), args.arm
     args.shared_output = original_output
-    arms = preparation.ARMS if selected_arm == 'all' else (selected_arm,)
+    arms = preparation.NATIVE_ARMS if selected_arm == 'all' else (selected_arm,)
     results = []
     for arm in arms:
         args.arm = arm

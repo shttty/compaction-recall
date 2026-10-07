@@ -17,9 +17,9 @@ LABELS = preparation.LABELS
 def load_inputs(original):
     manifest = json.loads((original / 'manifest.json').read_text())
     if (manifest['state'] != 'complete' or manifest['fingerprint'] != common.object_sha(manifest['identity'])
-            or common.object_sha(manifest['questions']) != manifest['identity']['questionsSha256']
-            or common.object_sha(manifest['snapshots']) != manifest['identity']['snapshotsSha256']):
+            or common.object_sha(manifest['questions']) != manifest['identity']['questionsSha256']):
         raise ValueError('Requires complete identity-bound answer/strict run')
+    preparation.verify_snapshot_bindings(manifest, original)
     preparation.verify_files(manifest['identity']['inputs'])
     preparation.verify_files(manifest['identity']['snapshotSource']['filesSha256'])
     arm = manifest['arms'][0]

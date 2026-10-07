@@ -123,7 +123,7 @@ live = run.module('offline_cli_arguments', Path(sys.argv[1]) / 'run.py')
 args = live.parser().parse_args(sys.argv[2:])
 args.shared_output = args.output.resolve()
 counts = []
-for arm in prepare.ARMS:
+for arm in prepare.NATIVE_ARMS:
     args.arm, args.output = arm, args.shared_output / arm
     output, config, pins, manifest, _, _ = prepare.prepare(args)
     sdk.serialization(output, config, pins, manifest)
