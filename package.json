@@ -1,6 +1,6 @@
 {
   "name": "pi-compaction-recall",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Lexical recall for Pi's compacted history, with automatic locators and bounded grep/expand tools",
   "license": "MIT",
   "author": "shttty",
