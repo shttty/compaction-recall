@@ -103,7 +103,7 @@ def package_inventory(root):
     return files, links
 
 
-def freeze_package(source, output):
+def freeze_package(source, output, *, index=None):
     source = source.resolve(strict=True)
     metadata = json.loads((source / 'package.json').read_text())
     entries = metadata.get('pi', {}).get('extensions')
@@ -120,10 +120,10 @@ def freeze_package(source, output):
         if not (source / 'node_modules' / name / 'package.json').is_file():
             raise ValueError('Package dependencies must be installed inside package root: ' + name)
     hashes, links = package_inventory(source)
-    target = output / 'package'
+    target = output / 'package' if index is None else output / 'packages' / str(index)
     identity = {'sourceRoot': str(source), 'path': str(target), 'extensions': entries, 'skills': skills,
                 'filesSha256': hashes, 'symlinks': links, 'treeSha256': common.object_sha({'files': hashes, 'symlinks': links})}
-    identity_path = output / 'package.json'
+    identity_path = output / 'package.json' if index is None else output / 'packages' / (str(index) + '.json')
     if identity_path.exists():
         if json.loads(identity_path.read_text()) != identity:
             raise ValueError('Package source/hash identity changed; refusing resume')
@@ -140,6 +140,18 @@ def freeze_package(source, output):
                 path.chmod(path.stat().st_mode & ~0o222)
         frozen_json(identity_path, identity)
     return identity
+
+
+def freeze_packages(sources, output):
+    if len(sources) == 1:
+        if (output / 'packages.json').exists():
+            raise ValueError('Package set identity changed; refusing resume')
+        return {'package': freeze_package(sources[0], output)}
+    if not sources or (output / 'package.json').exists():
+        raise ValueError('Package set identity changed; refusing resume')
+    packages = [freeze_package(source, output, index=index) for index, source in enumerate(sources, 1)]
+    frozen_json(output / 'packages.json', packages)
+    return {'packages': packages}
 
 
 def model_config(path, candidate, output):
@@ -366,8 +378,9 @@ def prepare(args):
     data = args.data_root.resolve(strict=True)
     if not 1 <= args.workers <= 8 or args.arm not in ARMS:
         raise ValueError('Current arm and 1–8 workers required')
-    required_inputs = (source, data, args.config.resolve()) + tuple(p.resolve() for p in (
-        args.snapshot_source, getattr(args, 'package_root', None), getattr(args, 'baseline_source', None)) if p is not None)
+    package_roots = getattr(args, 'package_root', None) or []
+    required_inputs = (source, data, args.config.resolve(), *[p.resolve() for p in package_roots]) + tuple(p.resolve() for p in (
+        args.snapshot_source, getattr(args, 'baseline_source', None)) if p is not None)
     for path in required_inputs:
         if output == path or output.is_relative_to(path) or path.is_relative_to(output):
             raise ValueError('Output must be external and disjoint from all inputs')
@@ -396,7 +409,7 @@ def prepare(args):
     shared_output.mkdir(parents=True, exist_ok=True, mode=0o700)
     candidate = freeze_candidate(source, shared_output)
     config, configs, paths = model_config(args.config.resolve(), candidate, output)
-    package = freeze_package(args.package_root, shared_output) if args.arm == 'package' else None
+    package = freeze_packages(package_roots, shared_output) if args.arm == 'package' else None
     compression = getattr(args, 'compression', 'native')
     if compression == 'package' and (package is None or not dataset.startswith('LME16-')):
         raise ValueError('Package compression requires --arm package and an LME16 dataset')
@@ -432,7 +445,7 @@ def prepare(args):
                 'resourcePolicy': {'wholeRunMemoryMaxBytes': 14 * 1024 ** 3, 'wholeRunMemorySwapMaxBytes': 0,
                                    'maxConcurrentSessions': args.workers, 'authorizedSessionCeiling': 8}}
     if package:
-        identity.update(package=package, compressionMode=compression)
+        identity.update(**package, compressionMode=compression)
     if baseline:
         identity['baselineSource'] = baseline
     fingerprint = common.object_sha(identity)
@@ -452,4 +465,4 @@ def prepare(args):
                     'completed': [], 'failures': {}, 'pilot': None}
         common.write_json(path, manifest)
     common.CONFIG, common.CONFIG_PATH = config, output / 'config.json'
-    return output, config, {'sqlite': candidate, **({'package': package} if package else {})}, manifest, configs, paths
+    return output, config, {'sqlite': candidate, **(package or {})}, manifest, configs, paths

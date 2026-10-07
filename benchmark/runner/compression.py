@@ -132,6 +132,9 @@ def compress(output, config, pins, manifest, question, *, rpc_runner=None):
             events = common.transcript(folder / 'compaction-events.jsonl')
             if len(events) != stage + 1 or events[-1].get('fromExtension') is not True:
                 raise ValueError('SDK compaction was not extension-provided')
+            hooks = common.transcript(folder / 'compaction-hooks.jsonl')
+            if sum(hook.get('fromExtension') is True for hook in hooks) != stage + 1:
+                raise ValueError('Package compaction takeover conflict; refusing competing hook results')
             if (folder / 'wire-requests.jsonl').exists():
                 raise ValueError('Package compression must make zero model requests')
             entry = entries[-1]

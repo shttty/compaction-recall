@@ -8,7 +8,7 @@ import { parseArgs } from 'node:util';
 
 const HELP = `Usage: node benchmark/sdk/session.mjs --config PATH --phase compression|answer|judge --describe
        node benchmark/sdk/session.mjs --config PATH --phase PHASE --session PATH
-         [--arm native|production|package] [--plugin-dir PATH] [--home PATH]
+         [--arm native|production|package] [--plugin-dir PATH ...] [--home PATH]
          [--recall-config PATH --timing-file PATH] (answer only)
 
 Uses the explicitly configured Pi SDK and read-only phase profile. No default model,
@@ -82,7 +82,7 @@ export async function main({ appendSystemPrompt = '', configureModelRuntime, obs
   options: {
    help: { type: 'boolean' }, config: { type: 'string' }, phase: { type: 'string' },
    describe: { type: 'boolean' }, session: { type: 'string' }, arm: { type: 'string' },
-   'plugin-dir': { type: 'string' }, home: { type: 'string' },
+   'plugin-dir': { type: 'string', multiple: true }, home: { type: 'string' },
    'recall-config': { type: 'string' }, 'timing-file': { type: 'string' },
   }, strict: true, allowPositionals: false
  });
@@ -135,20 +135,25 @@ export async function main({ appendSystemPrompt = '', configureModelRuntime, obs
  const extensionPaths = [];
  const skillPaths = [];
  if (!values.describe && arm !== 'native') {
-  const plugin = realpathSync(text(values['plugin-dir'], '--plugin-dir'));
-  const manifestPath = path.join(plugin, 'package.json');
-  const manifest = json(arm === 'package' ? immutableFile(manifestPath) : manifestPath);
-  const entries = manifest.pi?.extensions;
-  if (arm === 'production' && (!Array.isArray(entries) || entries.length !== 1 || typeof entries[0] !== 'string')) throw new Error('Pinned package must declare exactly one pi.extensions entry');
-  for (const [kind, declared, targets] of [['extensions', entries ?? [], extensionPaths],
-   ['skills', arm === 'package' ? manifest.pi?.skills ?? [] : [], skillPaths]]) {
-   if (!Array.isArray(declared) || declared.some(entry => typeof entry !== 'string' || !entry.trim())) throw new Error(`Pinned package pi.${kind} must be an array of paths`);
-   for (const entry of declared) {
-    const target = realpathSync(path.resolve(plugin, entry));
-    if (!inside(target, plugin)) throw new Error(`Pinned ${kind} path escapes package`);
-    if (statSync(target).isFile()) immutableFile(target);
-    else if (!statSync(target).isDirectory() || arm === 'production') throw new Error(`Pinned ${kind} path must be a file or directory`);
-    targets.push(target);
+  const plugins = values['plugin-dir'] ?? [];
+  if (!plugins.length) throw new Error('--plugin-dir is required');
+  if (arm === 'production' && plugins.length !== 1) throw new Error('Production arm requires exactly one --plugin-dir');
+  for (const directory of plugins) {
+   const plugin = realpathSync(text(directory, '--plugin-dir'));
+   const manifestPath = path.join(plugin, 'package.json');
+   const manifest = json(arm === 'package' ? immutableFile(manifestPath) : manifestPath);
+   const entries = manifest.pi?.extensions;
+   if (arm === 'production' && (!Array.isArray(entries) || entries.length !== 1 || typeof entries[0] !== 'string')) throw new Error('Pinned package must declare exactly one pi.extensions entry');
+   for (const [kind, declared, targets] of [['extensions', entries ?? [], extensionPaths],
+    ['skills', arm === 'package' ? manifest.pi?.skills ?? [] : [], skillPaths]]) {
+    if (!Array.isArray(declared) || declared.some(entry => typeof entry !== 'string' || !entry.trim())) throw new Error(`Pinned package pi.${kind} must be an array of paths`);
+    for (const entry of declared) {
+     const target = realpathSync(path.resolve(plugin, entry));
+     if (!inside(target, plugin)) throw new Error(`Pinned ${kind} path escapes package`);
+     if (statSync(target).isFile()) immutableFile(target);
+     else if (!statSync(target).isDirectory() || arm === 'production') throw new Error(`Pinned ${kind} path must be a file or directory`);
+     targets.push(target);
+    }
    }
   }
  }

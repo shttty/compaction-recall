@@ -20,8 +20,10 @@ def package_command(output, config, pins, folder, session, *, phase='answer', ho
     if offline or phase == 'compression' or stop:
         command.extend(['--import', str(HERE / 'sdk/no-network.mjs')])
     command.extend([str(HERE / 'sdk/package.mjs'), '--config', str(output / 'config.json'), '--phase', phase,
-                    '--session', str(session), '--arm', 'package', '--plugin-dir', pins['package']['path'],
-                    '--home', str(home)])
+                    '--session', str(session), '--arm', 'package', '--home', str(home)])
+    packages = pins['packages'] if 'packages' in pins else [pins['package']]
+    for package in packages:
+        command.extend(['--plugin-dir', package['path']])
     if phase == 'answer':
         command.extend(['--append-system-prompt', str(folder / 'answer-system.txt')])
         if evidence:

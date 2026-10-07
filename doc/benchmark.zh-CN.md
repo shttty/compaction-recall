@@ -125,6 +125,8 @@ systemd-run --user --scope \
 
 准备阶段将完整已安装目录（含 `node_modules`）冻结到 `OUT/package`，文件字节只读。SDK 只加载 package 声明的 `pi.extensions` 和 `pi.skills`，不猜入口，也不加载个人 profile 中的环境扩展。工具动态发现，全部已注册工具描述符保留到序列化请求；答题恢复必须与冻结 preflight 证据相同。裁判不加载扩展。
 
+可重复传入 `--package-root FIRST --package-root SECOND`，按命令行顺序加载：每个目录分别冻结、哈希到 `OUT/packages/<序号>` 并记录有序身份，压缩与答题加载同一组完整工具和钩子，不做筛选。
+
 压缩和答题共享 `OUT/homes/<question-id>`，package 状态可跨恢复保留。序列化预检在 `OUT/serialization/<question-id>` 下使用私有 HOME 克隆，不改变题目的持久 HOME。压缩证据独立保存在 `OUT/compression/<question-id>/snapshot.json`，因此离线子集可以已有压缩记录但没有答卷。SDK 证据包括 `tools.json`、`sdk-registration.json`、压缩钩子 / 事件、工具执行及上下文 / 实际传输 payload 观察。
 
 `--compression native` 复用冻结原生快照；`--compression package` 在相同三个原生切点上调用 package 处理源历史，并始终要求零模型压缩，付费答题阶段也不例外。压缩器尝试访问服务商时明确失败，不回退到原生快照或伪造摘要；压缩需要模型的包应选用 `native`。

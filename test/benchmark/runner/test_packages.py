@@ -40,6 +40,35 @@ class PackageBoundaries(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, '(identity|hash) changed|hash/inventory changed'):
                     prepare.freeze_package(source, output)
 
+    def test_multiple_packages_freeze_ordered_independent_trees_and_reject_drift(self):
+        for drift in ('source', 'frozen', 'order', 'removal'):
+            with self.subTest(drift=drift), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                source, output = self.package(root)
+                second = root / 'second'
+                second.mkdir()
+                (second / 'package.json').write_text(json.dumps({'pi': {'extensions': ['./entry.mjs']}}))
+                (second / 'entry.mjs').write_text('export default pi => pi.on("context", () => {});\n')
+                sources = [second, source]
+                frozen = prepare.freeze_packages(sources, output)['packages']
+                self.assertEqual([item['sourceRoot'] for item in frozen], [str(second), str(source)])
+                for item in frozen:
+                    self.assertEqual(prepare.package_inventory(Path(item['path']))[0], item['filesSha256'])
+                    self.assertEqual(item['treeSha256'], prepare.common.object_sha({
+                        'files': item['filesSha256'], 'symlinks': item['symlinks']}))
+                self.assertEqual(prepare.freeze_packages(sources, output)['packages'], frozen)
+                if drift in ('source', 'frozen'):
+                    target = second if drift == 'source' else Path(frozen[0]['path'])
+                    entry = target / 'entry.mjs'
+                    entry.chmod(0o600)
+                    entry.write_text('export default () => {};\n')
+                elif drift == 'order':
+                    sources.reverse()
+                else:
+                    sources.pop()
+                with self.assertRaisesRegex(ValueError, 'changed'):
+                    prepare.freeze_packages(sources, output)
+
     def test_package_requires_installed_declared_dependencies(self):
         with tempfile.TemporaryDirectory() as temporary:
             source, output = self.package(Path(temporary))

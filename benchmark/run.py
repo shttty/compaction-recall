@@ -15,7 +15,7 @@ def parser(dataset='LME16-English'):
     value.add_argument('--snapshot-source', type=Path, help='Required for LME16; SWE defaults to question-bound snapshot paths')
     value.add_argument('--dataset', choices=('LME16-English', 'LME16-Chinese', 'SWE-chat'), default=dataset)
     value.add_argument('--source-root', type=Path, default=common.ROOT)
-    value.add_argument('--package-root', type=Path, help='Installed unpacked Pi package; required by --arm package')
+    value.add_argument('--package-root', type=Path, action='append', help='Repeatable installed Pi package roots, loaded in command-line order; required by --arm package')
     value.add_argument('--compression', choices=('native', 'package'), default='native')
     value.add_argument('--baseline-source', type=Path, help='External corresponding baseline; required for Chinese prompt/reference identity')
     value.add_argument('--question-id', action='append', help='Repeatable offline prepare/preflight subset; paid stages remain fixed datasets')
@@ -36,8 +36,8 @@ def main(dataset='LME16-English'):
         arguments.error('missing source root --source-root: ' + str(args.source_root))
     if args.dataset.startswith('LME16-') and args.snapshot_source is None:
         arguments.error('LME16 requires --snapshot-source')
-    if args.arm == 'package' and (args.package_root is None or not args.package_root.is_dir()):
-        arguments.error('--arm package requires an installed --package-root directory')
+    if args.arm == 'package' and (not args.package_root or any(not root.is_dir() for root in args.package_root)):
+        arguments.error('--arm package requires installed --package-root directories')
     if args.arm != 'package' and (args.package_root is not None or args.compression != 'native'):
         arguments.error('--package-root and package compression require --arm package')
     if args.dataset == 'LME16-Chinese' and args.baseline_source is None:

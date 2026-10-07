@@ -162,6 +162,47 @@ test('actual native loading observes multiple/dynamic tools, persists home, comp
   assert.equal(existsSync(join(dirname(mismatch), 'tools.json')), false);
 });
 
+test('separate packages preserve hook order and every tool across compression and frozen serialization', async t => {
+  const f = fixture(t), second = join(f.output, 'second-package');
+  mkdirSync(second);
+  const files = {
+    'package.json': JSON.stringify({ name: 'second-package', version: '1', type: 'module', pi: { extensions: ['./entry.mjs'] } }),
+    'entry.mjs': `export default pi => {
+      pi.on('session_start', (event, ctx) => {
+        if (!pi.getAllTools().some(tool => tool.name === 'static_fixture')) throw new Error('First package not registered');
+      });
+      pi.registerTool({ name: 'stack_fixture', description: 'Second package exact description.', parameters: { type: 'object', properties: {} },
+        execute: async () => ({ content: [{ type: 'text', text: 'stack' }] }) });
+    };`,
+  };
+  for (const [name, content] of Object.entries(files)) {
+    const target = join(second, name); writeFileSync(target, content); chmodSync(target, 0o444);
+  }
+  const home = join(f.output, 'homes', 'stack');
+  const compacted = f.session('stack-compression');
+  const compact = await rpc(f.args(compacted, 'compression', home, '--plugin-dir', second), { id: 'compact', type: 'compact' });
+  assert.equal(compact.code, 0, compact.stderr);
+  assert.equal(compact.events.find(event => event.id === 'compact')?.success, true, compact.stdout);
+  assert.equal(rows(join(dirname(compacted), 'compaction-events.jsonl'))[0].compactionEntry.summary, 'Synthetic exact compaction.');
+  const registration = readJson(join(dirname(compacted), 'sdk-registration.json'));
+  assert.deepEqual(registration.products.map(product => product.name), ['arbitrary-fixture', 'second-package']);
+  assert.deepEqual(registration.extensions.map(extension => extension.path), [join(f.product, 'first.mjs'), join(f.product, 'second.mjs'), join(second, 'entry.mjs')]);
+  const preflight = f.session('stack-preflight');
+  const stopped = await rpc(f.args(preflight, 'answer', home, '--plugin-dir', second, '--stop-after-serialization'),
+    { id: 'question', type: 'prompt', message: 'Inspect both packages.' }, true);
+  assert.equal(stopped.code, 2, stopped.stderr + stopped.stdout);
+  const frozen = join(dirname(preflight), 'tools.json'), tools = readJson(frozen);
+  assert.deepEqual(tools.registered.map(tool => tool.name), ['dynamic_fixture', 'other_fixture', 'stack_fixture', 'static_fixture']);
+  assert.deepEqual(tools.serialized, tools.registered);
+  const driftEntry = join(second, 'entry.mjs'); chmodSync(driftEntry, 0o600);
+  writeFileSync(driftEntry, files['entry.mjs'].replace('Second package exact description.', 'Changed descriptor.')); chmodSync(driftEntry, 0o444);
+  const mismatch = f.session('stack-mismatch');
+  const rejected = await rpc(f.args(mismatch, 'answer', home, '--plugin-dir', second, '--expected-tools', frozen, '--stop-after-serialization'),
+    { id: 'question', type: 'prompt', message: 'Inspect both packages.' }, true);
+  assert.doesNotMatch(rejected.stderr, /ROUND2_STOP_AFTER_SERIALIZATION/);
+  assert.equal(existsSync(join(dirname(mismatch), 'tools.json')), false);
+});
+
 test('compression refuses all public model methods and judge cannot accept package or persistent home', async t => {
   const f = fixture(t), session = f.session('guards'), home = join(f.output, 'homes', 'guard');
   const driver = join(f.root, 'compression-check.mjs');

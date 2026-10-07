@@ -31,7 +31,7 @@ function observerOptions(argv) {
   if (stopAt >= 0) argv.splice(stopAt, 1);
   const value = flag => { const at = argv.indexOf(flag); return at < 0 ? undefined : argv[at + 1]; };
   options.phaseName = value('--phase');
-  options.packageRoot = value('--plugin-dir');
+  options.packageRoots = argv.flatMap((flag, index) => flag === '--plugin-dir' ? [argv[index + 1]] : []);
   if ((options.evidencePath || options.expectedPath || options.appendSystemPromptPath || options.stopAfterSerialization)
     && options.phaseName !== 'answer') throw new Error('Package serialization flags are answer-only');
   if (!argv.includes('--help') && value('--arm') !== 'package') throw new Error('Package observer requires --arm package');
@@ -110,9 +110,12 @@ export function createPackageObserver(options = {}) {
 
   async function observeExtensions(runtime) {
     observed = runtime;
-    const packageJson = options.packageRoot ? JSON.parse(readFileSync(join(options.packageRoot, 'package.json'), 'utf8')) : {};
-    identity = { product: { name: packageJson.name ?? null, version: packageJson.version ?? null,
-      declaredExtensions: packageJson.pi?.extensions ?? [], declaredSkills: packageJson.pi?.skills ?? [] },
+    const products = (options.packageRoots ?? []).map(root => {
+      const metadata = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
+      return { name: metadata.name ?? null, version: metadata.version ?? null,
+        declaredExtensions: metadata.pi?.extensions ?? [], declaredSkills: metadata.pi?.skills ?? [] };
+    });
+    identity = { ...(products.length === 1 ? { product: products[0] } : { products }),
       home: runtime.home, sdkPath: runtime.sdkPath, phase: runtime.phaseName,
       configuredModel: { provider: runtime.phase.provider, model: runtime.phase.model, effort: runtime.phase.effort },
       skills: runtime.resourceLoader.getSkills().skills.map(skill => ({ name: skill.name, path: skill.filePath,

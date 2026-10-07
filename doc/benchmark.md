@@ -125,6 +125,8 @@ Supply installed runtime dependencies before freezing: use `npm ci --omit=dev` w
 
 Preparation freezes the entire installed tree, including `node_modules`, under `OUT/package`, with read-only file bytes. The SDK loads only the package's declared `pi.extensions` and `pi.skills`, not guessed entry points or an ambient user profile. Registered tools are discovered dynamically; every registered descriptor is preserved in serialization, and answer resume must match frozen preflight evidence. Judges run without extensions.
 
+Repeat `--package-root FIRST --package-root SECOND` to load both in command-line order: each tree is independently frozen and hashed under `OUT/packages/<index>`, the ordered identities are recorded, and compression / answer load the same complete tool and hook set without filtering.
+
 Compression and answer share `OUT/homes/<question-id>` so package state survives resume. Serialization preflight uses a private clone under `OUT/serialization/<question-id>` and cannot mutate the question's persistent HOME. Compression evidence is saved independently in `OUT/compression/<question-id>/snapshot.json`, so an offline subset can have recorded compactions without any answers. SDK evidence includes `tools.json`, `sdk-registration.json`, compaction hooks / events, tool executions, and context / wire payload observations.
 
 `--compression native` reuses frozen native snapshots. `--compression package` invokes the package over the source history at the same three native cuts and always requires zero-model compression, including paid answer stages: a package that tries to contact a provider fails explicitly, with no native or fake-summary fallback. Use `native` for packages whose compression needs a model.
