@@ -1,4 +1,4 @@
-// Han position boundaries and optional worker-only dictionary ranking.
+// Han position boundaries and optional worker-only long-word ranking (jieba, else Intl.Segmenter).
 import { createRequire } from 'node:module';
 import { isMainThread } from 'node:worker_threads';
 import { tokenizeSpans as lexicalSpans } from './sqlite-lexical.mjs';
@@ -20,20 +20,28 @@ const tokenizer = {
 
 export function createHanRanking(enabled = !isMainThread) {
   if (typeof enabled !== 'boolean') throw new TypeError('jieba must be a boolean');
-  let jieba;
+  let cut;
   if (enabled) {
     if (isMainThread) throw new Error('jieba ranking is worker-only');
-    const require = createRequire(import.meta.url);
-    const { Jieba } = require('@node-rs/jieba');
-    const { dict } = require('@node-rs/jieba/dict');
-    jieba = Jieba.withDict(dict);
+    try {
+      const require = createRequire(import.meta.url);
+      const { Jieba } = require('@node-rs/jieba');
+      const { dict } = require('@node-rs/jieba/dict');
+      const jieba = Jieba.withDict(dict);
+      cut = run => jieba.cutForSearch(run, true);
+    } catch (error) {
+      // Some hosts (e.g. compiled OMP extension workers) cannot resolve the native binding package.
+      process.stderr.write(`compaction-recall: jieba unavailable (${String(error?.message ?? error).split('\n')[0]}); ranking long Chinese words with Intl.Segmenter\n`);
+      const segmenter = new Intl.Segmenter('zh', { granularity: 'word' });
+      cut = run => Array.from(segmenter.segment(run), part => part.segment);
+    }
   }
   return {
-    tokenizer, jieba: enabled,
+    tokenizer, longWordRanking: enabled,
     longWords(text) {
       const words = new Set();
-      if (jieba) for (const [run] of text.matchAll(/\p{Script=Han}+/gu)) {
-        for (const word of jieba.cutForSearch(run, true)) if (HAN.test(word) && Array.from(word).length >= 3) words.add(word);
+      if (cut) for (const [run] of text.matchAll(/\p{Script=Han}+/gu)) {
+        for (const word of cut(run)) if (HAN.test(word) && Array.from(word).length >= 3) words.add(word);
       }
       return words;
     },

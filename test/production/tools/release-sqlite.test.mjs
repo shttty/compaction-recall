@@ -106,3 +106,18 @@ test('released worker keeps manual literals separate from automatic Porter alias
     }
   } finally { await index.dispose(); }
 });
+
+test('unloadable jieba falls back to Intl.Segmenter long-word ranking instead of failing the worker', async () => {
+  const { SQLiteBackgroundIndex } = await import('../../../src/worker/sqlite-background-index.mjs');
+  const saved = process.env.NAPI_RS_NATIVE_LIBRARY_PATH;
+  process.env.NAPI_RS_NATIVE_LIBRARY_PATH = '/nonexistent/jieba.node'; // Workers inherit env; napi-rs then has no loadable binding.
+  const index = new SQLiteBackgroundIndex({ jieba: true });
+  const query = { concepts: [['南京市'], ['长江大桥']], match: 'all' };
+  try {
+    const page = await index.queryPage(query, branch);
+    assert.deepEqual(page.ids, ['long', 'pieces']); // Intl splits 南京市长江大桥 into 南京市/长江/大/桥, so only long matches 南京市.
+  } finally {
+    if (saved === undefined) delete process.env.NAPI_RS_NATIVE_LIBRARY_PATH; else process.env.NAPI_RS_NATIVE_LIBRARY_PATH = saved;
+    await index.dispose();
+  }
+});

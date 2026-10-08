@@ -83,6 +83,8 @@ Available only in `full`. Use concept groups to specify what to find, alternativ
 
 The index uses English stemming and Chinese character bigrams. FTS selects candidates; records with identical normalized full text are deduplicated. With jieba enabled, records are sorted first by the number of distinct long Chinese words matched, then by BM25 and recency, and finally paginated. jieba reranks matched records only. It does not expand synonyms or recover records that did not match.
 
+If the jieba native binding cannot be loaded in the worker (for example, OMP's compiled extension host does not resolve the platform binding package), the plugin writes one warning to stderr and ranks long words with the runtime's built-in `Intl.Segmenter` instead. Its word boundaries are coarser and yield fewer long words than jieba, but candidates and pagination behave the same.
+
 Automatic queries usually use Chinese character bigram terms, which may not contain long words eligible for jieba ranking, so toggling jieba does not guarantee a change to every automatic hint.
 
 ### `history_grep`: regular-expression search

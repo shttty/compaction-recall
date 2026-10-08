@@ -69,7 +69,7 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     const insert = db.prepare('INSERT INTO terms(rowid, tokens, stems) VALUES (?, ?, ?)');
     const insertMessage = db.prepare('INSERT INTO messages VALUES (?, ?, ?, ?)');
     let insertLongWord;
-    if (ranking.jieba) {
+    if (ranking.longWordRanking) {
       db.exec('CREATE TABLE han_rank(rowid INTEGER NOT NULL, term TEXT NOT NULL, PRIMARY KEY(rowid, term)) WITHOUT ROWID');
       insertLongWord = db.prepare('INSERT INTO han_rank VALUES (?, ?)');
     }
@@ -162,7 +162,7 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     const total = measured(timer, 'native_count', () => count.get(expression).total);
     check?.();
     const native = measured(timer, 'native_query', () => {
-      if (!ranking.jieba || !longWords.length) return match.all(expression, limit, offset);
+      if (!ranking.longWordRanking || !longWords.length) return match.all(expression, limit, offset);
       // Reuse the candidate SQL: fix base MATCH representatives before long-word ranking.
       const ranked = db.prepare(`${rankedSql} SELECT rowid, score,
         (SELECT count(*) FROM han_rank WHERE han_rank.rowid = ranked.rowid AND term IN (${longWords.map(() => '?').join(',')})) AS long_word_score
@@ -181,7 +181,7 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     if (!queryTerms.length) return { skipped: false, total: 0, results: [], queryTerms };
     const terms = queryTerms.map(term => ({ term, stem: true }));
     const expression = terms.map(({ term }) => porterTerm(term, stem)).join(' OR ');
-    const longWords = ranking.jieba ? queryTerms.filter(term => /^\p{Script=Han}{3,}$/u.test(term)) : [];
+    const longWords = ranking.longWordRanking ? queryTerms.filter(term => /^\p{Script=Han}{3,}$/u.test(term)) : [];
     const found = collect(expression, terms, timer, undefined, { limit, offset }, longWords);
     return { skipped: false, ...found, queryTerms };
   }
@@ -208,7 +208,7 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     const terms = new Set(normalized.concepts.flatMap(group => group.flatMap(surface => analyses.get(surface).terms)));
     const snippets = [...terms].map(term => ({ term }));
     check?.();
-    const longWords = ranking.jieba ? [...new Set(normalized.concepts.flat().filter(surface => /^\p{Script=Han}{3,}$/u.test(surface)))] : [];
+    const longWords = ranking.longWordRanking ? [...new Set(normalized.concepts.flat().filter(surface => /^\p{Script=Han}{3,}$/u.test(surface)))] : [];
     return { ...collect(plan.match, snippets, timer, check, options, longWords), warnings };
   }
   return {
