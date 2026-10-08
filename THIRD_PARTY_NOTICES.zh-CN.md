@@ -1,8 +1,8 @@
 # 第三方声明
 
-[English](THIRD_PARTY_NOTICES.md) | [简体中文](THIRD_PARTY_NOTICES.zh-CN.md)
+[English](https://github.com/shttty/compaction-recall/blob/main/THIRD_PARTY_NOTICES.md) | [简体中文](https://github.com/shttty/compaction-recall/blob/main/THIRD_PARTY_NOTICES.zh-CN.md)
 
-compaction-recall 自身代码使用 [MIT 许可证](LICENSE)，Copyright (c) 2026 shttty。
+compaction-recall 自身代码使用 [MIT 许可证](https://github.com/shttty/compaction-recall/blob/main/LICENSE)，Copyright (c) 2026 shttty。
 下列第三方代码和评测材料保留各自的许可证与署名。
 
 ## @node-rs/jieba

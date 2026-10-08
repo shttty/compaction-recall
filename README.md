@@ -1,6 +1,6 @@
 # compaction-recall
 
-[English](README.md) | [简体中文](README.zh-CN.md)
+[English](https://github.com/shttty/compaction-recall/blob/main/README.md) | [简体中文](https://github.com/shttty/compaction-recall/blob/main/README.zh-CN.md)
 
 An extension that helps AI agents recover details from compacted conversations.
 
@@ -104,4 +104,4 @@ Tests use synthetic fixtures and isolated agent directories. Live benchmarks nee
 
 ## License
 
-[MIT](LICENSE). Third-party software and dataset attribution are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+[MIT](https://github.com/shttty/compaction-recall/blob/main/LICENSE). Third-party software and dataset attribution are listed in [THIRD_PARTY_NOTICES.md](https://github.com/shttty/compaction-recall/blob/main/THIRD_PARTY_NOTICES.md).

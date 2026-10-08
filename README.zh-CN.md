@@ -1,6 +1,6 @@
 # compaction-recall
 
-[English](README.md) | [简体中文](README.zh-CN.md)
+[English](https://github.com/shttty/compaction-recall/blob/main/README.md) | [简体中文](https://github.com/shttty/compaction-recall/blob/main/README.zh-CN.md)
 
 一个让 AI agent 从已压缩对话中找回细节的扩展。
 
@@ -104,4 +104,4 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s test -p 'test_*.py'
 
 ## 许可
 
-[MIT](LICENSE)。第三方软件与数据集的归属说明见 [第三方声明](THIRD_PARTY_NOTICES.zh-CN.md)。
+[MIT](https://github.com/shttty/compaction-recall/blob/main/LICENSE)。第三方软件与数据集的归属说明见 [第三方声明](https://github.com/shttty/compaction-recall/blob/main/THIRD_PARTY_NOTICES.zh-CN.md)。

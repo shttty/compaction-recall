@@ -1,8 +1,8 @@
 # Third-party notices
 
-[English](THIRD_PARTY_NOTICES.md) | [简体中文](THIRD_PARTY_NOTICES.zh-CN.md)
+[English](https://github.com/shttty/compaction-recall/blob/main/THIRD_PARTY_NOTICES.md) | [简体中文](https://github.com/shttty/compaction-recall/blob/main/THIRD_PARTY_NOTICES.zh-CN.md)
 
-compaction-recall's own code is licensed under the [MIT License](LICENSE),
+compaction-recall's own code is licensed under the [MIT License](https://github.com/shttty/compaction-recall/blob/main/LICENSE),
 Copyright (c) 2026 shttty. The third-party code and evaluation materials below
 retain their respective licenses and attribution.
 
