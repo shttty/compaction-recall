@@ -51,9 +51,10 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
       timestamp: document.timestamp ?? document.date ?? '',
     });
   });
+  const indexedIds = new Set(byId.keys());
   const corpus = [...byId.values()].filter(document => document.text !== '');
   const db = new DatabaseSync(':memory:');
-  let match, count, stem, rankedSql;
+  let match, count, stem, rankedSql, insert, insertMessage, insertLongWord;
   try {
     db.exec(`
       PRAGMA temp_store = MEMORY;
@@ -66,9 +67,8 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
       BEGIN;
     `);
     stem = createStemmer(db);
-    const insert = db.prepare('INSERT INTO terms(rowid, tokens, stems) VALUES (?, ?, ?)');
-    const insertMessage = db.prepare('INSERT INTO messages VALUES (?, ?, ?, ?)');
-    let insertLongWord;
+    insert = db.prepare('INSERT INTO terms(rowid, tokens, stems) VALUES (?, ?, ?)');
+    insertMessage = db.prepare('INSERT INTO messages VALUES (?, ?, ?, ?)');
     if (ranking.jieba) {
       db.exec('CREATE TABLE han_rank(rowid INTEGER NOT NULL, term TEXT NOT NULL, PRIMARY KEY(rowid, term)) WITHOUT ROWID');
       insertLongWord = db.prepare('INSERT INTO han_rank VALUES (?, ?)');
@@ -84,14 +84,43 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     // MATERIALIZED keeps FTS5's bm25 auxiliary call inside its MATCH cursor.
     const scored = `SELECT terms.rowid, bm25(terms, 1.0, 0.5) AS score,
       messages.content_hash, messages.timestamp, messages.recency
-      FROM terms JOIN messages ON messages.rowid = terms.rowid WHERE terms MATCH ?`;
+      FROM terms JOIN messages ON messages.rowid = terms.rowid
+      WHERE terms MATCH ? AND (? < 0 OR messages.recency < ?)`;
     rankedSql = `WITH hits AS MATERIALIZED (${scored}), ranked AS (
       SELECT *, row_number() OVER (PARTITION BY content_hash ORDER BY score, timestamp DESC, recency DESC, rowid DESC) AS representative FROM hits
     )`;
     match = db.prepare(`${rankedSql} SELECT rowid, score FROM ranked WHERE representative = 1
       ORDER BY score, timestamp DESC, recency DESC, rowid DESC LIMIT ? OFFSET ?`);
-    count = db.prepare('SELECT count(DISTINCT content_hash) AS total FROM terms JOIN messages ON messages.rowid = terms.rowid WHERE terms MATCH ?');
+    count = db.prepare('SELECT count(DISTINCT content_hash) AS total FROM terms JOIN messages ON messages.rowid = terms.rowid WHERE terms MATCH ? AND (? < 0 OR messages.recency < ?)');
   } catch (error) { db.close(); throw error; }
+  function appendDocuments(additions) {
+    const seen = new Set(indexedIds);
+    const normalized = additions.map((document, index) => {
+      if (seen.has(document.id)) throw new Error('Cannot append duplicate index document id');
+      seen.add(document.id);
+      const recency = document.sourcePosition ?? document.recency ?? corpus.length + index;
+      return { id: document.id, text: document.text, date: document.date, role: document.role, recency, timestamp: document.timestamp ?? document.date ?? '' };
+    });
+    const added = normalized.filter(document => document.text !== '');
+    db.exec('BEGIN');
+    try {
+      added.forEach((document, index) => {
+        const rowid = corpus.length + index + 1;
+        const tokens = tokenize(document.text);
+        insert.run(rowid, tokens.join(' '), tokens.map(stem).filter(Boolean).join(' '));
+        const hash = createHash('sha256').update(document.text.replace(/\s+/g, ' ').trim()).digest();
+        insertMessage.run(rowid, hash, document.timestamp, document.recency);
+        if (insertLongWord) for (const word of ranking.longWords(document.text)) insertLongWord.run(rowid, word);
+      });
+      db.exec('COMMIT');
+    } catch (error) {
+      db.exec('ROLLBACK');
+      throw error;
+    }
+    for (const document of normalized) indexedIds.add(document.id);
+    corpus.push(...added);
+  }
+
 
   function compileOperands(operands, check) {
     const raw = new Map(), stems = new Map(), widths = new Set(), cache = new Map();
@@ -157,23 +186,24 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     check?.();
     return results;
   }
-  function collect(expression, snippetTerms, timer, check, { limit = -1, offset = 0 } = {}, longWords = []) {
+  function collect(expression, snippetTerms, timer, check, { limit = -1, offset = 0, eligibleCount = -1 } = {}, longWords = []) {
     check?.();
-    const total = measured(timer, 'native_count', () => count.get(expression).total);
+    const eligible = Number.isSafeInteger(eligibleCount) && eligibleCount >= 0 ? eligibleCount : -1;
+    const total = measured(timer, 'native_count', () => count.get(expression, eligible, eligible).total);
     check?.();
     const native = measured(timer, 'native_query', () => {
-      if (!ranking.jieba || !longWords.length) return match.all(expression, limit, offset);
+      if (!ranking.jieba || !longWords.length) return match.all(expression, eligible, eligible, limit, offset);
       // Reuse the candidate SQL: fix base MATCH representatives before long-word ranking.
       const ranked = db.prepare(`${rankedSql} SELECT rowid, score,
         (SELECT count(*) FROM han_rank WHERE han_rank.rowid = ranked.rowid AND term IN (${longWords.map(() => '?').join(',')})) AS long_word_score
         FROM ranked WHERE representative = 1
         ORDER BY long_word_score DESC, score, timestamp DESC, recency DESC, rowid DESC LIMIT ? OFFSET ?`);
-      return ranked.all(expression, ...longWords, limit, offset);
+      return ranked.all(expression, eligible, eligible, ...longWords, limit, offset);
     });
     check?.(); // SQLite is synchronous and cannot check a deadline inside MATCH.
     return { total, results: materialize(native, snippetTerms, timer, check) };
   }
-  function automaticRows(query, timer, limit, offset = 0) {
+  function automaticRows(query, timer, limit, offset = 0, eligibleCount = -1) {
     const text = extractText(query);
     if (weightedLength(text) > autoGate) return { skipped: true, total: 0, results: [], queryTerms: [] };
     if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) throw new RangeError('limit must be a non-negative safe integer');
@@ -182,7 +212,7 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     const terms = queryTerms.map(term => ({ term, stem: true }));
     const expression = terms.map(({ term }) => porterTerm(term, stem)).join(' OR ');
     const longWords = ranking.jieba ? queryTerms.filter(term => /^\p{Script=Han}{3,}$/u.test(term)) : [];
-    const found = collect(expression, terms, timer, undefined, { limit, offset }, longWords);
+    const found = collect(expression, terms, timer, undefined, { limit, offset, eligibleCount }, longWords);
     return { skipped: false, ...found, queryTerms };
   }
   function conceptRows(query, timer, check, options) {
@@ -212,15 +242,16 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     return { ...collect(plan.match, snippets, timer, check, options, longWords), warnings };
   }
   return {
-    size: corpus.length,
-    queryRows(query, { mode = 'manual', timer, check, limit, offset = 0 } = {}) {
-      return mode === 'auto' ? automaticRows(query, timer, limit, offset) : conceptRows(query, timer, check, { limit, offset });
+    get size() { return corpus.length; },
+    append(documents) { appendDocuments(documents); },
+    queryRows(query, { mode = 'manual', timer, check, limit, offset = 0, eligibleCount = -1 } = {}) {
+      return mode === 'auto' ? automaticRows(query, timer, limit, offset, eligibleCount) : conceptRows(query, timer, check, { limit, offset, eligibleCount });
     },
     queryPage(query, options = {}, { timer, check } = {}) {
       const limit = options.limit ?? 50, offset = options.offset ?? 0;
       if (!Number.isInteger(limit) || limit < 1 || limit > 50) throw new RangeError('limit must be an integer from 1 to 50');
       if (!Number.isSafeInteger(offset) || offset < 0) throw new RangeError('offset must be a nonnegative safe integer');
-      const found = conceptRows(query, timer, check, { limit, offset });
+      const found = conceptRows(query, timer, check, { limit, offset, eligibleCount: options.eligibleCount });
       const page = sqliteRecallPage(found.results, options, { total: found.total, baseOffset: offset, warnings: found.warnings });
       check?.();
       const ids = found.results.slice(0, page.details.returned).map(row => row.id);

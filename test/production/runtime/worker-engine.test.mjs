@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Worker } from 'node:worker_threads';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { SQLiteBackgroundIndex } from '../../../src/worker/sqlite-background-index.mjs';
@@ -61,6 +61,29 @@ test('worker creation and released engine initialization failures fail closed wi
       assert.equal(index.failed, true);
       assert.equal(index.worker, null);
     } finally { await index.dispose(); }
+  }
+});
+
+test('jieba native initialization failure is returned as a worker error without hanging or restarting', async () => {
+  const directory = mkdtempSync(join(tmpdir(), 'worker-jieba-init-'));
+  const preload = join(directory, 'reject-jieba.cjs');
+  writeFileSync(preload, `const Module = require('node:module');\nconst load = Module._load;\nModule._load = function(request, ...args) { if (request === '@node-rs/jieba') throw new Error('synthetic jieba native init failure'); return load.call(this, request, ...args); };\n`);
+  let starts = 0;
+  const index = new SQLiteBackgroundIndex({ workerFactory: options => {
+    starts++;
+    return new Worker(workerURL, { workerData: options, execArgv: ['--require', preload] });
+  } });
+  try {
+    const branch = initialBranch([msg('native-init', '杭州西湖')]);
+    for (let attempt = 0; attempt < 2; attempt++) {
+      await assert.rejects(index.queryRanked('杭州西湖', branch), /synthetic jieba native init failure/);
+    }
+    assert.equal(starts, 1);
+    assert.equal(index.failed, true);
+    assert.equal(index.worker, null);
+  } finally {
+    await index.dispose();
+    rmSync(directory, { recursive: true, force: true });
   }
 });
 
