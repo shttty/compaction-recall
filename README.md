@@ -66,9 +66,9 @@ An empty result does not prove a detail was never mentioned. Verify important fa
 
 ## Benchmarks
 
-Evaluation uses selected [LongMemEval](https://huggingface.co/datasets/xiaowu0162/longmemeval) cases and recall questions derived from [SWE-chat](https://huggingface.co/datasets/SALT-NLP/SWE-chat) coding sessions. The repository includes 16 Chinese question translations, source identifiers, processing notes, result metrics and reproduction scripts; original corpora and other full-text evaluation inputs are obtained separately.
+Evaluation uses selected [LongMemEval](https://huggingface.co/datasets/xiaowu0162/longmemeval) cases. The repository includes 16 Chinese question translations, source identifiers, processing notes, result metrics and reproduction scripts; original corpora and other full-text evaluation inputs are obtained separately.
 
-Answering model: `gpt-6-luna` (high); judge: `gpt-6-luna` (xhigh). Scores are correct answers / questions, split into DEV8 and HARD8 (eight questions each).
+Answering model: `gpt-6-luna` (high). Scores are correct answers / questions, split into DEV8 and HARD8 (eight questions each).
 
 ### Historical best
 
@@ -80,7 +80,7 @@ Answering model: `gpt-6-luna` (high); judge: `gpt-6-luna` (xhigh). Scores are co
 
 ### Random test run
 
-A single run on the fixed English LongMemEval_M set on 2026-10-06, not a new random sample or a best-of-repeat selection. All three modes use the same questions, references and native Pi compaction snapshots. The native baseline has retained context only, without history-retrieval tools.
+A single run on the fixed English LongMemEval_M set. The native baseline has retained context only, without history-retrieval tools.
 
 | Mode | DEV8 | HARD8 | Total |
 |---|---:|---:|---:|

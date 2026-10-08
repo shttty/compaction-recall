@@ -30,28 +30,27 @@ pi install npm:pi-compaction-recall
 
 `full` 模式会在回答前附上简短的历史定位提示，由模型决定是否继续搜索或展开。
 
-| 工具 | 作用 |
-|---|---|
-| `history_recall` | 用概念组、替代词和排除词检索已压缩历史。 |
-| `history_expand` | 按 ID 读取原始条目，可包含相邻条目并翻页。 |
-| `history_grep` | 独立使用 JavaScript 正则表达式搜索历史。 |
+| 工具               | 作用                         |
+| ---------------- | -------------------------- |
+| `history_recall` | 用概念组、替代词和排除词检索已压缩历史。       |
+| `history_expand` | 按 ID 读取原始条目，可包含相邻条目并翻页。    |
+| `history_grep`   | 独立使用 JavaScript 正则表达式搜索历史。 |
 
 ## 配置
 
 未填项用默认值，环境变量优先于配置文件，修改后重载。
 
-| 配置项 | 默认值 | 说明 | 环境变量覆盖 |
-|---|---|---|---|
-| `mode` | `"full"` | `full` 提供自动提示和三个工具；`lite` 只保留 grep/expand。 | `COMPACTION_RECALL_MODE`（`full`/`lite`） |
-| `jieba` | `true` | 按中文长词命中重排已有 FTS 候选，先排序再分页。 | `COMPACTION_RECALL_JIEBA`（`on`/`off`） |
-| `autoGate` | `280` | 用户消息超过此长度时，按长任务指示处理，跳过自动召回以避免带入无关历史；模型仍可主动调用工具查询（汉字计 2，其余码点计 1）。 | `COMPACTION_RECALL_AUTO_GATE` |
-| `snippetBudget` | `240` | 控制自动提示和 `history_recall` 每条结果展示的原文片段长度，越大允许展示的片段越长（汉字计 2，其余码点计 1）。 | `COMPACTION_RECALL_SNIPPET_BUDGET` |
-| `recallTimeoutMs` | `5000` | 主动 recall 超时门槛，单位毫秒，不能抢占 native MATCH。 | `COMPACTION_RECALL_QUERY_TIMEOUT_MS` |
-| `preindex.userCycles` | `10` | 完成多少轮用户交互后预热，范围 `1`–`100`，两个预热门槛满足任一即触发。 | `COMPACTION_RECALL_PREINDEX_TURNS` |
-| `preindex.toolRounds` | `10` | 完成多少批工具调用后预热，范围 `1`–`100`，同批并行调用只计一次。 | `COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS` |
-| `trace` | `false` | 记录带内容的 recall 诊断，需同时指定计时文件，日志应私密保存。 | 仅文件配置 |
-| `COMPACTION_RECALL_TIMING_FILE` | 未设置 | JSONL 计时日志路径，不设则不记录计时。 | 仅环境变量 |
-
+| 配置项                             | 默认值      | 说明                                                                 | 环境变量覆盖                                   |
+| ------------------------------- | -------- | ------------------------------------------------------------------ | ---------------------------------------- |
+| `mode`                          | `"full"` | `full` 提供自动提示和三个工具；`lite` 只保留 grep/expand。                         | `COMPACTION_RECALL_MODE`（`full`/`lite`）  |
+| `jieba`                         | `true`   | 按中文长词命中重排已有 FTS 候选，先排序再分页。                                         | `COMPACTION_RECALL_JIEBA`（`on`/`off`）    |
+| `autoGate`                      | `280`    | 用户消息超过此长度时，按长任务指示处理，跳过自动召回以避免带入无关历史；模型仍可主动调用工具查询（汉字计 2，其余码点计 1）。   | `COMPACTION_RECALL_AUTO_GATE`            |
+| `snippetBudget`                 | `240`    | 控制自动提示和 `history_recall` 每条结果展示的原文片段长度，越大允许展示的片段越长（汉字计 2，其余码点计 1）。 | `COMPACTION_RECALL_SNIPPET_BUDGET`       |
+| `recallTimeoutMs`               | `5000`   | 主动 recall 超时门槛，单位毫秒，不能抢占 native MATCH。                             | `COMPACTION_RECALL_QUERY_TIMEOUT_MS`     |
+| `preindex.userCycles`           | `10`     | 完成多少轮用户交互后预热，范围 `1`–`100`，两个预热门槛满足任一即触发。                           | `COMPACTION_RECALL_PREINDEX_TURNS`       |
+| `preindex.toolRounds`           | `10`     | 完成多少批工具调用后预热，范围 `1`–`100`，同批并行调用只计一次。                              | `COMPACTION_RECALL_PREINDEX_TOOL_ROUNDS` |
+| `trace`                         | `false`  | 记录带内容的 recall 诊断，需同时指定计时文件，日志应私密保存。                                | 仅文件配置                                    |
+| `COMPACTION_RECALL_TIMING_FILE` | 未设置      | JSONL 计时日志路径，不设则不记录计时。                                             | 仅环境变量                                    |
 
 检索、预热和 trace 配置只对 `full` 模式生效。细节见 [配置与行为参考](https://github.com/shttty/compaction-recall/blob/main/doc/PLUGIN.zh-CN.md)。
 
@@ -66,27 +65,27 @@ pi install npm:pi-compaction-recall
 
 ## 评测
 
-评测使用 [LongMemEval](https://huggingface.co/datasets/xiaowu0162/longmemeval) 的部分题目，以及基于 [SWE-chat](https://huggingface.co/datasets/SALT-NLP/SWE-chat) 代码会话构造的回忆题。仓库包含 16 道中文题面译文、来源标识、处理说明、结果指标和复现脚本；原始语料及其他完整评测输入需另行获取。
+评测使用 [LongMemEval](https://huggingface.co/datasets/xiaowu0162/longmemeval) 的部分题目。仓库包含 16 道中文题面译文、来源标识、处理说明、结果指标和复现脚本；原始语料及其他完整评测输入需另行获取。
 
-答题模型：`gpt-6-luna`（high）；判题模型：`gpt-6-luna`（xhigh）。表中为答对题数 / 总题数，DEV8 和 HARD8 各 8 题。
+答题模型：`gpt-6-luna`（high）。表中为答对题数 / 总题数，DEV8 和 HARD8 各 8 题。
 
 ### 历史最佳
 
-| 模式 | DEV8 | HARD8 | 峰值合计 |
-|---|---:|---:|---:|
-| Pi 原生 | 2/8 | 0/8 | 2/16 |
-| lite | 2/8 | 0/8 | 2/16 |
-| full | 8/8 | 3/8 | 11/16 |
+| 模式    | DEV8 | HARD8 | 峰值合计  |
+| ----- | ----:| -----:| -----:|
+| Pi 原生 | 2/8  | 0/8   | 2/16  |
+| lite  | 2/8  | 0/8   | 2/16  |
+| full  | 8/8  | 3/8   | 11/16 |
 
 ### 随机测试
 
-2026-10-06 在固定英文 LongMemEval_M 题集上单轮实测，非重新随机抽题，也未从多轮结果中择优。三组使用相同题目、参考答案和原生 Pi 压缩快照；原生基线仅使用压缩后保留的上下文，不提供历史检索工具。
+固定英文 LongMemEval_M 题集上的单轮实测。原生基线仅使用压缩后保留的上下文，不提供历史检索工具。
 
-| 模式 | DEV8 | HARD8 | 合计 |
-|---|---:|---:|---:|
-| Pi 原生 | 0/8 | 0/8 | 0/16 |
-| lite | 2/8 | 0/8 | 2/16 |
-| full | 7/8 | 3/8 | 10/16 |
+| 模式    | DEV8 | HARD8 | 合计    |
+| ----- | ----:| -----:| -----:|
+| Pi 原生 | 0/8  | 0/8   | 0/16  |
+| lite  | 2/8  | 0/8   | 2/16  |
+| full  | 7/8  | 3/8   | 10/16 |
 
 这是小规模开发集成绩，不代表完整 LongMemEval 跑分或稳定召回准确率。
 

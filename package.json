@@ -22,7 +22,11 @@
   ],
   "type": "module",
   "keywords": [
-    "pi-package"
+    "pi-package",
+    "compaction",
+    "recall",
+    "context",
+    "history"
   ],
   "pi": {
     "extensions": [
