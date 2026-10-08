@@ -19,6 +19,8 @@ spec = importlib.util.spec_from_file_location('current_lme_runner', HERE / 'run.
 live = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(live)
 report = common.module('current_report_test', HERE / 'report.py')
+# Synthetic LME16 split selection; the runner reads it from data/<split>/manifest.json.
+LME = {'dev8': tuple('dev-' + str(n) for n in range(8)), 'hard8': tuple('hard-' + str(n) for n in range(8))}
 
 
 def save(path, value):
@@ -45,8 +47,10 @@ class CurrentFlow(unittest.TestCase):
         save(config, {'answer': model, 'judges': {'luna': model, 'sol': model},
                       'profiles': {'answer': str(profile), 'luna': str(profile), 'sol': str(profile)}})
         questions, bound, gold = [], {}, {}
-        groups = [('dev8', tuple('swe-' + str(n) for n in range(8)))] if swe else [('dev8', prepare.DEV), ('hard8', prepare.HARD)]
+        groups = [('dev8', tuple('swe-' + str(n) for n in range(8)))] if swe else list(LME.items())
         for group, ids in groups:
+            if not swe:
+                save(data / 'data' / group / 'manifest.json', {'selected': list(ids)})
             for qid in ids:
                 q = {'question_id': qid, 'question': 'Find synthetic evidence ' + qid, 'question_date': '2024/01/01 00:00'}
                 session = snapshots / (qid + '.jsonl')
@@ -189,8 +193,8 @@ class CurrentFlow(unittest.TestCase):
                     path = args.output / ('grade-1to10/manifest.json' if stage == 'numerical' else 'manifest.json')
                     manifest = json.loads(path.read_text())
                     self.assertEqual(manifest['state'], 'capacity-blocked')
-                    self.assertEqual(manifest['completed'], [prepare.DEV[0]])
-                    self.assertEqual(calls.count((stage, prepare.DEV[1])), 1)
+                    self.assertEqual(manifest['completed'], [LME['dev8'][0]])
+                    self.assertEqual(calls.count((stage, LME['dev8'][1])), 1)
                     count = len(calls)
                     self.assertEqual(count, {'answer': 4, 'strict': 5, 'numerical': 51}[stage])
                     self.assertEqual(self.cli(args, 'flow' if stage == 'numerical' else 'all'), 1)
@@ -288,7 +292,7 @@ class CurrentFlow(unittest.TestCase):
                         output, config, pins, manifest, configs, paths = prepare.prepare(args)
                         question = manifest['questions'][0]
                         answer = json.loads((output / 'results' / args.arm / question['id'] / 'result.json').read_text())
-                        folder = args.output / ('results' if phase == 'answer' else 'judge-v2/luna') / args.arm / prepare.DEV[0]
+                        folder = args.output / ('results' if phase == 'answer' else 'judge-v2/luna') / args.arm / LME['dev8'][0]
                         marker, path = folder / 'result-state.json', folder / 'result.json'
                         state = json.loads(marker.read_text())
                         if damage == 'missing':

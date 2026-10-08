@@ -63,10 +63,13 @@ from runner import prepare, artifacts as run
 data, source = Path(sys.argv[2]), Path(sys.argv[3])
 source.mkdir()
 questions, sessions = [], {}
-for group, ids in [('dev8', prepare.DEV), ('hard8', prepare.HARD)]:
+for group in ('dev8', 'hard8'):
+    ids = [group + '-' + str(n) for n in range(8)]
+    (data / 'data' / group).mkdir(parents=True)
+    (data / 'data' / group / 'manifest.json').write_text(json.dumps({'selected': ids}))
     for qid in ids:
         directory = data / 'data' / group / qid
-        directory.mkdir(parents=True)
+        directory.mkdir()
         question = {'question_id': qid, 'question': 'Synthetic question ' + qid, 'question_date': '2024/01/01 00:00'}
         (directory / 'question.json').write_text(json.dumps(question))
         (directory / 'answer.json').write_text(json.dumps({'question_id': qid, 'answer': 'private synthetic reference'}))

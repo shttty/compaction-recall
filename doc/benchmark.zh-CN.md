@@ -44,7 +44,7 @@ LME16 使用 [LongMemEval_M](https://huggingface.co/datasets/xiaowu0162/longmeme
 | `--compression native\|package` | 仅 package arm：复用原生快照，或按冻结原生切点在源历史上调用 package 压缩钩子。 |
 | `--baseline-source` | 用于精确绑定题面 / 参考答案 / 提示词的历史答题目录；`LME16-Chinese` 必填，英文可选。不代表历史 arm 是原生。 |
 
-LME 题集保留 `data/dev8/<id>/`、`data/hard8/<id>/` 下的 `question.json`、`corpus.json`、`answer.json`、`judge.json`。旧三 arm 和 `--compression native` 复用已有原生压缩；`--compression package` 使用原始时间顺序历史和三个已验证的原生切点，不新增切点。`LME16-Chinese` 通过 `--baseline-source` 绑定历史 2026-10-06 中文提示词及参考答案，原生快照来源单独绑定。SWE 使用外部 `freeze.json`、`questions.json`、`gold.json`，将实际快照路径和哈希绑定到题目。这些题由本地 SWE-chat 会话派生，不是上游现成的问答题。
+LME 题集保留 `data/dev8/<id>/`、`data/hard8/<id>/` 下的 `question.json`、`corpus.json`、`answer.json`、`judge.json`。各 split 的 `data/<split>/manifest.json` 在 `selected` 中按运行顺序列出题号；runner 从这里读取选题，并把该清单的哈希绑定进轮次身份，因此换题只改数据，不改代码。旧三 arm 和 `--compression native` 复用已有原生压缩；`--compression package` 使用原始时间顺序历史和三个已验证的原生切点，不新增切点。`LME16-Chinese` 通过 `--baseline-source` 绑定历史 2026-10-06 中文提示词及参考答案，原生快照来源单独绑定。SWE 使用外部 `freeze.json`、`questions.json`、`gold.json`，将实际快照路径和哈希绑定到题目。这些题由本地 SWE-chat 会话派生，不是上游现成的问答题。
 
 runner 的准备阶段根据实际源码及锁定依赖、题面及参考答案、模型配置和已有快照，生成并冻结候选与输入绑定。不要提供 `CANDIDATE`、`PINS`、`PREFLIGHT`、两份裁判配置或手工 archive / commit hash。历史中文 preflight 不能复用为原生快照证据。原冻结材料和历史指标保持原值，不得用新代码重写旧指纹或写入旧轮次。
 

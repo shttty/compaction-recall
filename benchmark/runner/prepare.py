@@ -6,8 +6,6 @@ import shutil
 import subprocess
 from runner import artifacts as common
 
-DEV = ('778164c6', '51b23612', 'ceb54acb', '577d4d32', '3d86fd0a', '15745da0', 'gpt4_65aabe59', '982b5123')
-HARD = ('gpt4_7fce9456', 'gpt4_a1b77f9c', '28dc39ac', 'gpt4_15e38248', '6d550036', '2ce6a0f2', '9d25d4e0', 'gpt4_731e37d7')
 NATIVE_ARMS = ('pi-native', 'pi-lite', 'pi-full')
 ARMS = (*NATIVE_ARMS, 'package')
 LABELS = ('luna', 'sol')
@@ -193,7 +191,12 @@ def load_questions(data, dataset):
     inputs = {}
     if dataset.startswith('LME16-'):
         questions = []
-        for group, ids in (('dev8', DEV), ('hard8', HARD)):
+        for group in ('dev8', 'hard8'):
+            manifest_path = data / 'data' / group / 'manifest.json'
+            ids = json.loads(manifest_path.read_text())['selected']
+            if not ids or len(set(ids)) != len(ids):
+                raise ValueError('Split manifest must select unique question IDs: ' + str(manifest_path))
+            inputs[str(manifest_path)] = common.sha(manifest_path)
             for qid in ids:
                 directory = data / 'data' / group / qid
                 question_path = directory / ('question-zh.json' if dataset == 'LME16-Chinese' else 'question.json')
