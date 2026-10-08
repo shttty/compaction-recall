@@ -78,8 +78,6 @@ Answering model: `gpt-6-luna` (high); judge: `gpt-6-luna` (xhigh). Scores are co
 | lite | 2/8 | 0/8 | 2/16 |
 | full | 8/8 | 3/8 | 11/16 |
 
-DEV8 and HARD8 independently show historical subset peaks, which may come from different rounds. Combined peaks sum those scores; they are not a measured single 16-question run. Individual answers are not combined across runs. Lite currently has one complete formal-mode run.
-
 ### Random test run
 
 A single run on the fixed English LongMemEval_M set on 2026-10-06, not a new random sample or a best-of-repeat selection. All three modes use the same questions, references and native Pi compaction snapshots. The native baseline has retained context only, without history-retrieval tools.
