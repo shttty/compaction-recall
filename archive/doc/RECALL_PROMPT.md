@@ -60,6 +60,22 @@ prepended (equal), with a worked example (equal, more calls), trimmed mechanics 
 paragraph, adding a bge-m3 vector channel to model searches and locators recovered only 0–2 more paraphrases (4–5
 under the old description).
 
+## End-to-end LME16 (answer + two strict judges), same day
+
+Answer gpt-6-luna high, judges gpt-6-luna xhigh and gpt-6.1-sol medium, frozen native snapshots, workers 8. Scores
+are strict correct of 16 (luna / sol). On 2026-10-09 the 2026-10-06 baselines were rerun with their frozen candidates,
+configs and inputs (English exactly, runner `d63ef30` byte-identical to the original and Node v24.18.0; Chinese with the
+closest committed runner, as 6 original runner files were never committed):
+
+| set | 10-06 original | 10-09 rerun of the 10-06 candidate | 10-09 `ddc1752` |
+|---|---|---|---|
+| Chinese | 9 / 9 | 6 / 6 | 9 / 9 |
+| English | 10 / 10 | 7 / 7 (HARD8 0 / 0) | 10 / 9 |
+
+The exact English rerun lost three questions with unchanged code and inputs, so scores drift across days with the
+provider's models; historical runs are not a valid yardstick. Compared on the same day, `ddc1752` answered three more
+questions than the 10-06 candidate in each language under both judges. Each cell is a single run.
+
 ## Limits and open points
 
 - One model family stands in for the agent; luna runs vary by ±3–5 of 48; sol was run once per arm and nearly saturates.
