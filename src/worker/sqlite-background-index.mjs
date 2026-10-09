@@ -248,8 +248,9 @@ export class SQLiteBackgroundIndex {
   if (mode === 'manual') {
    const queryDeadlineAt = queryNow() + timeoutMs;
    check = createQueryCheck(queryDeadlineAt, timeoutMs);
-   // Validate before structured cloning can erase a non-plain input prototype.
-   parseQuery(query);
+   // Validate before structured cloning can erase a non-plain input prototype; count overflow is clamped and
+   // reported by the worker, so it is not an error here.
+   parseQuery(query, { clamped: [] });
    options = { ...options, queryDeadlineAt, queryTimeoutMs: timeoutMs };
   }
   this.activeQueries++;

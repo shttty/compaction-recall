@@ -71,12 +71,15 @@ function text(value         , path        , max        )         {
   return result;
 }
 
-function array(value         , path        , min        , max        )            {
-  if (!Array.isArray(value) || value.length < min || value.length > max) {
+function array(value         , path        , min        , max        , clamped              )            {
+  if (!Array.isArray(value) || value.length < min || (value.length > max && !clamped)) {
     fail("INVALID_ARRAY", `${path}: expected ${min}..${max} items`);
   }
   // Array.from turns sparse holes into undefined, which subsequent validation rejects.
-  return Array.from(value);
+  const items = Array.from(value);
+  if (items.length <= max) return items;
+  clamped.push({ path, max, ignored: items.slice(max) });
+  return items.slice(0, max);
 }
 
 function unique   (values              )      {
@@ -95,8 +98,11 @@ function quoteFts5Atom(value        )         {
   return `"${atom.replace(/"/g, '""')}"`;
 }
 
-/** Validate unknown tool input, including unknown fields. Never silently truncate. */
-export function parseQuery(input         )                        {
+/**
+ * Validate unknown tool input, including unknown fields. Count limits fail unless `clamped` is given: then the items past
+ * each limit are dropped and recorded there ({ path, max, ignored }) for the caller to report. Nothing is dropped silently.
+ */
+export function parseQuery(input         , { clamped }                                  = {})                        {
   if (typeof input !== "object" || input === null || Array.isArray(input)) {
     fail("INVALID_QUERY", "Expected a query object");
   }
@@ -120,12 +126,12 @@ export function parseQuery(input         )                        {
     }
     return s;
   };
-  const concepts = array(q.concepts, "concepts", 1, LIMITS.groups).map((group, i) =>
-    unique(array(group, `concepts[${i}]`, 1, LIMITS.alternatives).map((s, j) =>
+  const concepts = array(q.concepts, "concepts", 1, LIMITS.groups, clamped).map((group, i) =>
+    unique(array(group, `concepts[${i}]`, 1, LIMITS.alternatives, clamped).map((s, j) =>
       surface(s, `concepts[${i}][${j}]`))),
   );
   const exclude = unique(array(q.exclude === undefined ? [] : q.exclude,
-    "exclude", 0, LIMITS.exclusions).map((s, i) => surface(s, `exclude[${i}]`)));
+    "exclude", 0, LIMITS.exclusions, clamped).map((s, i) => surface(s, `exclude[${i}]`)));
   return { concepts, match: mode, exclude };
 }
 

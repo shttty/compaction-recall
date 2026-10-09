@@ -217,7 +217,9 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
   }
   function conceptRows(query, timer, check, options) {
     check?.();
-    const parsed = parseQuery(query), analyses = new Map();
+    // Items past the group/alternative/exclusion limits are dropped and reported instead of failing the call.
+    const clamped = [];
+    const parsed = parseQuery(query, { clamped }), analyses = new Map();
     const analyze = surface => {
       let analysis = analyses.get(surface);
       if (!analysis) {
@@ -238,7 +240,8 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
       return terms.length ? [terms] : [];
     }));
     // Compile first so zero-token surfaces retain the author's original error.
-    const warnings = dropped.length ? [`Warning: ${safeQueryData(dropped)} produced no searchable terms and ${dropped.length === 1 ? 'was' : 'were'} ignored. Suggestion: use other words or history_grep.`] : [];
+    const warnings = clamped.map(({ path, max, ignored }) => `Warning: ${path} has more than ${max} items; ignored ${safeQueryData(ignored)}.`);
+    if (dropped.length) warnings.push(`Warning: ${safeQueryData(dropped)} produced no searchable terms and ${dropped.length === 1 ? 'was' : 'were'} ignored. Suggestion: use other words or history_grep.`);
     for (const [surface, { spans, terms }] of analyses) {
       check?.();
       if (!terms.length) continue;

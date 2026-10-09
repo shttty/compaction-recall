@@ -60,6 +60,11 @@ test('formal default/off ranking stays inside fixed FTS candidates and precedes 
       assert.deepEqual(ids(mixed).sort(), ['eight', 'seven']); // A zero-term alternative is dropped, not fatal.
       assert.match(mixed.content[0].text, /Warning: \["\*"\] produced no searchable terms and was ignored/);
       assert.deepEqual(ids(await host.recall({ concepts: [['topic', 'a1', 'b2', 'c3', 'd4', 'e5', 'f6', 'g7']] })).sort(), ['eight', 'seven']);
+      const clamped = await host.recall({ concepts: [['topic', 'a1', 'b2', 'c3', 'd4', 'e5', 'f6', 'g7', 'h8'], ['x1'], ['x2'], ['x3'], ['x4'], ['x5']], exclude: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'] });
+      assert.deepEqual(ids(clamped).sort(), ['eight', 'seven']); // Count overflow is clamped, not fatal.
+      assert.match(clamped.content[0].text, /Warning: concepts has more than 5 items; ignored \[\["x5"\]\]/);
+      assert.match(clamped.content[0].text, /Warning: concepts\[0\] has more than 8 items; ignored \["h8"\]/);
+      assert.match(clamped.content[0].text, /Warning: exclude has more than 5 items; ignored \["q6"\]/);
       await assert.rejects(host.recall({ query: 'topic' }), { name: 'QueryError', code: 'UNKNOWN_FIELD' });
       assert.deepEqual(ids(await host.recall({ concepts: [['topic']], exclude: ['7:30'] })), []);
       assert.deepEqual(ids(await host.recall({ concepts: [['topic']] })).sort(), ['eight', 'seven']);

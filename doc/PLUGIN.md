@@ -77,6 +77,7 @@ Available only in `full`. Use concept groups to specify what to find, alternativ
 
 - `concepts` accepts 1 to 5 groups, each with 1 to 8 alternative lexical forms. Any alternative within a group can match; `match="all"` requires every group to match in the same record, while the default `"any"` requires only one group to match. Matches on multiple words do not guarantee their order or adjacency in the original text.
 - `exclude` accepts up to 5 lexical forms. Matching records are excluded and do not participate in excerpt selection or jieba ranking. Lexical forms are not SQL, FTS MATCH syntax, or regular expressions.
+- Groups, alternatives or exclusions beyond these counts are ignored and named in a warning instead of rejecting the call.
 - Each lexical form must be nonempty after trimming leading and trailing whitespace, with at most 256 Unicode code points per form and 2,048 in total.
 - If tokenization loses some valid characters, retrieval continues with the remaining terms and returns a warning. A lexical form with no searchable terms at all is ignored with a warning; only when no positive form remains does recall return an error. recall does not silently switch to grep; the model must rephrase or explicitly call grep when needed.
 - The default and maximum for `limit` are both 50; `offset` defaults to 0. Results include entry IDs, original-text excerpts, the total count, and `nextOffset`; continue paging with the same query while the branch remains unchanged.
