@@ -28,7 +28,7 @@
 
 const LIMITS = Object.freeze({
   groups: 5,
-  alternatives: 4,
+  alternatives: 8,
   exclusions: 5,
   surfaceCodePoints: 256,
   totalSurfaceCodePoints: 2048,

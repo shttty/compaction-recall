@@ -56,6 +56,10 @@ test('formal default/off ranking stays inside fixed FTS candidates and precedes 
       assert.deepEqual(automaticIds, ['pieces', 'long']); // Measured raw-bigram automatic terms have no long-word bonuses.
       assert.deepEqual(ids(await host.recall({ concepts: [['7:30']] })).sort(), ['eight', 'seven']);
       await assert.rejects(host.recall({ concepts: [['*']] }), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
+      const mixed = await host.recall({ concepts: [['topic', '*']] });
+      assert.deepEqual(ids(mixed).sort(), ['eight', 'seven']); // A zero-term alternative is dropped, not fatal.
+      assert.match(mixed.content[0].text, /Warning: \["\*"\] produced no searchable terms and was ignored/);
+      assert.deepEqual(ids(await host.recall({ concepts: [['topic', 'a1', 'b2', 'c3', 'd4', 'e5', 'f6', 'g7']] })).sort(), ['eight', 'seven']);
       await assert.rejects(host.recall({ query: 'topic' }), { name: 'QueryError', code: 'UNKNOWN_FIELD' });
       assert.deepEqual(ids(await host.recall({ concepts: [['topic']], exclude: ['7:30'] })), []);
       assert.deepEqual(ids(await host.recall({ concepts: [['topic']] })).sort(), ['eight', 'seven']);

@@ -217,17 +217,31 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
   }
   function conceptRows(query, timer, check, options) {
     check?.();
-    const normalized = parseQuery(query), analyses = new Map();
+    const parsed = parseQuery(query), analyses = new Map();
+    const analyze = surface => {
+      let analysis = analyses.get(surface);
+      if (!analysis) {
+        const spans = tokenizeSpans(surface);
+        analysis = { spans, terms: spans.map(span => span.term) };
+        analyses.set(surface, analysis);
+      }
+      return analysis;
+    };
+    // A surface without searchable terms is dropped with a warning, like partial token loss; the query still fails
+    // with the original compiler error when no positive surface remains.
+    const searchable = surface => analyze(surface).terms.length > 0;
+    const concepts = parsed.concepts.map(group => group.filter(searchable)).filter(group => group.length);
+    const normalized = concepts.length ? { ...parsed, concepts, exclude: parsed.exclude.filter(searchable) } : parsed;
+    const dropped = concepts.length ? [...new Set([...parsed.concepts.flat(), ...parsed.exclude].filter(surface => !searchable(surface)))] : [];
     const plan = measured(timer, 'concept_query_compile', () => compileFts5(normalized, surface => {
-      const spans = tokenizeSpans(surface);
-      const terms = spans.map(span => span.term);
-      analyses.set(surface, { spans, terms });
+      const { terms } = analyze(surface);
       return terms.length ? [terms] : [];
     }));
     // Compile first so zero-token surfaces retain the author's original error.
-    const warnings = [];
+    const warnings = dropped.length ? [`Warning: ${safeQueryData(dropped)} produced no searchable terms and ${dropped.length === 1 ? 'was' : 'were'} ignored. Suggestion: use other words or history_grep.`] : [];
     for (const [surface, { spans, terms }] of analyses) {
       check?.();
+      if (!terms.length) continue;
       const chars = Array.from(surface), covered = new Uint8Array(chars.length);
       for (const span of spans) covered.fill(1, span.start, span.end);
       if (chars.some((point, at) => meaningful.test(point) && !covered[at])) {
