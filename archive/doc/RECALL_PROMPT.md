@@ -1,8 +1,8 @@
-# history_recall prompt and lenient surfaces (prototype, 2026-10-09)
+# history_recall prompt and lenient surfaces (2026-10-09)
 
-Branch `proto/recall-prompt-20261009` from main `203ec4b`. Recall-only evaluation: no answering or judging. Inputs, scripts,
-per-run rows and the full report stay in the external local evaluation data (`compaction-recall-evaldata`,
-`lme16/para-zh/REPORT.md`); figures below are its summaries.
+Developed on `proto/recall-prompt-20261009` from main `203ec4b` and fast-forwarded to main. Recall-only evaluation: no
+answering or judging. Inputs, scripts, per-run rows and the full report stay in the external local evaluation data
+(`compaction-recall-evaldata`, `lme16/para-zh/REPORT.md`); figures below are its summaries.
 
 ## Changes
 
@@ -13,6 +13,9 @@ per-run rows and the full report stay in the external local evaluation data (`co
    question; one group per topic with short alternatives (names, synonyms, broader/narrower terms, Chinese and English
    forms); drop non-identifying words; `match=any` by default; two or three differently worded calls in parallel. It
    states no tokenizer rule.
+3. `17d958b` — groups, alternatives and exclusions past their limits are ignored with a warning instead of rejecting
+   the call. The count limits moved from the tool schema, which Pi validates with AJV before `execute`, into the
+   description; `parseQuery` accepts an optional `clamped` collector and the worker reports the ignored items.
 
 ## Why
 
@@ -33,22 +36,34 @@ the frozen English held-out set (64 LongMemEval_M questions, original wording, n
 
 ## Results (gold turn seen; mean over runs)
 
-| set | model | main `203ec4b` | this branch |
+Over OpenAI-compatible `/chat/completions` (`17d958b`'s clamping not yet included):
+
+| set | model | main `203ec4b` | this change |
 |---|---|---|---|
 | paraphrases (48) | gpt-6-luna medium, 2–4 runs | 33.0 (round 1: 21.5) | 41.5 (round 1: 36.3) |
 | held-out English (64) | gpt-6-luna medium, 2 runs | 56.5 (round 1: 52.0) | 60.0 (round 1: 59.0) |
 | paraphrases (48) | gpt-6.1-sol high, 1 run | 48 (round 1: 39) | 47 (round 1: 41) |
 | held-out English (64) | gpt-6.1-sol high, 1 run | 63 (round 1: 61) | 64 (round 1: 63) |
 
-Rejected calls fell from 34.5 / 11 (luna) and 46 / 12 (sol) to 0–2.5 and 1; mean rounds fell on every set. Variants
-tried and not kept: strategy prepended (equal), with a worked example (equal, more calls), trimmed mechanics text (−3 to
-−4). With the strategy paragraph, adding a bge-m3 vector channel to model searches and locators recovered only 0–2 more
-paraphrases (4–5 under the current description).
+Over Anthropic Messages, as production clp is configured (`api: anthropic-messages`; adaptive thinking with
+`output_config.effort`), `203ec4b` vs `17d958b`:
+
+| set | model | `203ec4b` | `17d958b` |
+|---|---|---|---|
+| paraphrases (48) | gpt-6-luna medium, 2 runs | 33.5 (round 1: 23.0) | 40.5 (round 1: 34.5) |
+| held-out English (64) | gpt-6-luna medium, 2 runs | 58.0 (round 1: 52.0) | 61.0 (round 1: 59.0) |
+| paraphrases (48) | gpt-6.1-sol high, 1 run | 46 (round 1: 34) | 46 (round 1: 43) |
+| held-out English (64) | gpt-6.1-sol high, 1 run | 64 (round 1: 60) | 64 (round 1: 62) |
+
+Rejected calls fell from 11–37 per set to 0–1, and mean rounds fell on every set. Variants tried and not kept: strategy
+prepended (equal), with a worked example (equal, more calls), trimmed mechanics text (−3 to −4). With the strategy
+paragraph, adding a bge-m3 vector channel to model searches and locators recovered only 0–2 more paraphrases (4–5
+under the old description).
 
 ## Limits and open points
 
 - One model family stands in for the agent; luna runs vary by ±3–5 of 48; sol was run once per arm and nearly saturates.
 - Paraphrases were model-written against the gold text and not reviewed; three are too vague to identify a target.
 - “Seen in a page” is not an answer; no `history_expand` / `history_grep` in the loop.
-- Remaining rejections are groups over 8 alternatives (English synonym lists); cutting with a warning would remove them.
-- Whether `reasoning_effort=high` changes gpt-6.1-sol's reasoning on this endpoint is not established.
+- The one rejection left after clamping is a call whose every surface had no searchable terms, which errors by design.
+- gpt-6.1-sol thinks at every effort setting with little change on both protocols; its effort sensitivity is unmeasured.
