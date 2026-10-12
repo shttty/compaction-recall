@@ -7,7 +7,7 @@ An extension that helps AI agents recover details from compacted conversations.
 Summaries can lose names, numbers and exact wording. compaction-recall lets the model search the original messages on the current branch and expand the relevant evidence, without replacing the agent's own compaction.
 
 - **Local, in-memory retrieval.** SQLite FTS5 runs in a Node worker, with no persistent index, embedding service or extra model calls.
-- **English and Chinese support.** English stemming and Chinese character-bigram indexing, with optional jieba-based ranking of existing matches.
+- **Multilingual lexical support.** English stemming, Chinese and Japanese character-bigram indexing, whole-word indexing for other scripts, exact dotted runs such as IPs and versions, and NFKC folding of fullwidth/halfwidth forms, with optional jieba-based ranking of existing matches.
 - **Two modes.** `full` provides automatic history hints and three tools; `lite` keeps only grep and expansion, without an index or worker.
 
 ## Installation

@@ -35,6 +35,17 @@ function extractText(content) {
     .join('\n');
 }
 
+// history_recall ANDs one surface's terms. A dotted run adds an exact-run branch next to the fragment branch:
+// partial runs (10.0.0) still match by fragments, and records holding the whole run (10.0.0.1) score both branches.
+function surfaceBranches(spans) {
+  const runs = spans.filter(span => span.term.includes('.'));
+  const fragments = spans.filter(span => !span.term.includes('.')).map(span => span.term);
+  if (!runs.length) return fragments.length ? [fragments] : [];
+  const exact = spans.filter(span => runs.includes(span)
+    || !runs.some(run => span.start >= run.start && span.end <= run.end)).map(span => span.term);
+  return fragments.length ? [fragments, exact] : [exact];
+}
+
 
 export function createIndex(documents, { jieba = true, autoGate = 280, snippetBudget } = {}) {
   const ranking = createHanRanking(jieba);
@@ -47,7 +58,7 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     const recency = document.sourcePosition ?? document.recency ?? i;
     const previous = byId.get(document.id);
     if (!previous || recency >= previous.recency) byId.set(document.id, {
-      id: document.id, text: document.text, date: document.date, role: document.role, recency,
+      id: document.id, text: document.text.normalize('NFKC'), date: document.date, role: document.role, recency,
       timestamp: document.timestamp ?? document.date ?? '',
     });
   });
@@ -60,7 +71,7 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
       PRAGMA temp_store = MEMORY;
       CREATE VIRTUAL TABLE terms USING fts5(
         tokens, stems, content='', columnsize=1, detail=full,
-        tokenize='ascii'
+        tokenize="ascii tokenchars '.'"
       );
       CREATE VIRTUAL TABLE vocabulary USING fts5vocab(terms, 'col');
       CREATE TABLE messages(rowid INTEGER PRIMARY KEY, content_hash BLOB NOT NULL, timestamp TEXT NOT NULL, recency INTEGER NOT NULL);
@@ -99,7 +110,7 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
       if (seen.has(document.id)) throw new Error('Cannot append duplicate index document id');
       seen.add(document.id);
       const recency = document.sourcePosition ?? document.recency ?? corpus.length + index;
-      return { id: document.id, text: document.text, date: document.date, role: document.role, recency, timestamp: document.timestamp ?? document.date ?? '' };
+      return { id: document.id, text: document.text.normalize('NFKC'), date: document.date, role: document.role, recency, timestamp: document.timestamp ?? document.date ?? '' };
     });
     const added = normalized.filter(document => document.text !== '');
     db.exec('BEGIN');
@@ -207,7 +218,7 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     const text = extractText(query);
     if (weightedLength(text) > autoGate) return { skipped: true, total: 0, results: [], queryTerms: [] };
     if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) throw new RangeError('limit must be a non-negative safe integer');
-    const queryTerms = [...new Set(tokenizeAutomatic(text).filter(term => !STOPWORDS.has(term)))];
+    const queryTerms = [...new Set(tokenizeAutomatic(text.normalize('NFKC')).filter(term => !STOPWORDS.has(term)))];
     if (!queryTerms.length) return { skipped: false, total: 0, results: [], queryTerms };
     const terms = queryTerms.map(term => ({ term, stem: true }));
     const expression = terms.map(({ term }) => porterTerm(term, stem)).join(' OR ');
@@ -219,12 +230,15 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     check?.();
     // Items past the group/alternative/exclusion limits are dropped and reported instead of failing the call.
     const clamped = [];
-    const parsed = parseQuery(query, { clamped }), analyses = new Map();
+    // Surfaces are NFKC-folded like indexed documents, so fullwidth and halfwidth spellings meet.
+    const raw = parseQuery(query, { clamped }), analyses = new Map();
+    const fold = surfaces => [...new Set(surfaces.map(surface => surface.normalize('NFKC')))];
+    const parsed = { ...raw, concepts: raw.concepts.map(fold), exclude: fold(raw.exclude) };
     const analyze = surface => {
       let analysis = analyses.get(surface);
       if (!analysis) {
         const spans = tokenizeSpans(surface);
-        analysis = { spans, terms: spans.map(span => span.term) };
+        analysis = { spans, terms: spans.map(span => span.term), branches: surfaceBranches(spans) };
         analyses.set(surface, analysis);
       }
       return analysis;
@@ -235,10 +249,7 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     const concepts = parsed.concepts.map(group => group.filter(searchable)).filter(group => group.length);
     const normalized = concepts.length ? { ...parsed, concepts, exclude: parsed.exclude.filter(searchable) } : parsed;
     const dropped = concepts.length ? [...new Set([...parsed.concepts.flat(), ...parsed.exclude].filter(surface => !searchable(surface)))] : [];
-    const plan = measured(timer, 'concept_query_compile', () => compileFts5(normalized, surface => {
-      const { terms } = analyze(surface);
-      return terms.length ? [terms] : [];
-    }));
+    const plan = measured(timer, 'concept_query_compile', () => compileFts5(normalized, surface => analyze(surface).branches));
     // Compile first so zero-token surfaces retain the author's original error.
     const warnings = clamped.map(({ path, max, ignored }) => `Warning: ${path} has more than ${max} items; ignored ${safeQueryData(ignored)}.`);
     if (dropped.length) warnings.push(`Warning: ${safeQueryData(dropped)} produced no searchable terms and ${dropped.length === 1 ? 'was' : 'were'} ignored. Suggestion: use other words or history_grep.`);

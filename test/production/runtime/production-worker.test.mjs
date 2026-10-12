@@ -98,9 +98,9 @@ for (const timingEnabled of [false, true]) {
     try {
       const agentDir = join(root, 'env-agent');
       mkdirSync(agentDir);
-      // Supply installed development native dependencies; standalone tgz installation is verified separately.
+      // Supply installed development dependencies; standalone tgz installation is verified separately.
       mkdirSync(join(root, 'node_modules'), { recursive: true });
-      symlinkSync(fileURLToPath(new URL('../../../node_modules/@node-rs', import.meta.url)), join(root, 'node_modules/@node-rs'), 'dir');
+      symlinkSync(fileURLToPath(new URL('../../../node_modules/jieba-wasm', import.meta.url)), join(root, 'node_modules/jieba-wasm'), 'dir');
       const source = process.env.COMPACTION_RECALL_TEST_PACKAGE || fileURLToPath(new URL('../../..', import.meta.url));
       for (const [layout, archive] of [join(root, 'compaction-recall'), join(root, 'node_modules', 'pi-compaction-recall')].entries()) {
         for (const file of ['package.json', 'src']) cpSync(join(source, file), join(archive, file), { recursive: true });

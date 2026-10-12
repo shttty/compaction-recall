@@ -56,6 +56,6 @@
     "typescript": "7.0.2"
   },
   "dependencies": {
-    "@node-rs/jieba": "2.0.3"
+    "jieba-wasm": "2.4.0"
   }
 }

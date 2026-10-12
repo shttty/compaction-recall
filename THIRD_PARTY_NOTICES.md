@@ -6,12 +6,12 @@ compaction-recall's own code is licensed under the [MIT License](https://github.
 Copyright (c) 2026 shttty. The third-party code and evaluation materials below
 retain their respective licenses and attribution.
 
-## @node-rs/jieba
+## jieba-wasm
 
-- Use: Chinese word segmentation for retrieval ranking, loaded only in the native worker.
-- Version: `@node-rs/jieba` 2.0.3.
-- Source: [napi-rs/node-rs](https://github.com/napi-rs/node-rs).
-- License: MIT, Copyright (c) 2020-present LongYinan. The installed package includes its LICENSE.
+- Use: Chinese word segmentation for retrieval ranking; loaded only in the worker.
+- Version: `jieba-wasm` 2.4.0.
+- Source: [fengkx/jieba-wasm](https://github.com/fengkx/jieba-wasm), a WebAssembly binding of [jieba-rs](https://github.com/messense/jieba-rs).
+- License: MIT, Copyright (c) 2018 fengkx. The installed package includes its LICENSE.
 
 SQLite comes from Node's built-in `node:sqlite`. The project's license does not
 replace notices supplied with Node or installed dependencies.

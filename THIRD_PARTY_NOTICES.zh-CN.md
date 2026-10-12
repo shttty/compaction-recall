@@ -5,12 +5,12 @@
 compaction-recall 自身代码使用 [MIT 许可证](https://github.com/shttty/compaction-recall/blob/main/LICENSE)，Copyright (c) 2026 shttty。
 下列第三方代码和评测材料保留各自的许可证与署名。
 
-## @node-rs/jieba
+## jieba-wasm
 
-- 用途：中文分词，用于检索排序；只在原生 worker 中加载。
-- 版本：`@node-rs/jieba` 2.0.3。
-- 来源：[napi-rs/node-rs](https://github.com/napi-rs/node-rs)。
-- 许可：MIT，Copyright (c) 2020-present LongYinan。安装包附有自身的 LICENSE。
+- 用途：中文分词，用于检索排序；只在 worker 中加载。
+- 版本：`jieba-wasm` 2.4.0。
+- 来源：[fengkx/jieba-wasm](https://github.com/fengkx/jieba-wasm)，是 [jieba-rs](https://github.com/messense/jieba-rs) 的 WebAssembly 绑定。
+- 许可：MIT，Copyright (c) 2018 fengkx。安装包附有自身的 LICENSE。
 
 SQLite 由 Node 内置的 `node:sqlite` 提供。项目许可证不替代随 Node 或已安装依赖分发的声明。
 

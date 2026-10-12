@@ -64,10 +64,10 @@ test('worker creation and released engine initialization failures fail closed wi
   }
 });
 
-test('jieba native initialization failure falls back to Intl.Segmenter inside the worker without failing or restarting', async () => {
+test('jieba-wasm load failure falls back to Intl.Segmenter inside the worker without failing or restarting', async () => {
   const directory = mkdtempSync(join(tmpdir(), 'worker-jieba-init-'));
   const preload = join(directory, 'reject-jieba.cjs');
-  writeFileSync(preload, `const Module = require('node:module');\nconst load = Module._load;\nModule._load = function(request, ...args) { if (request === '@node-rs/jieba') throw new Error('synthetic jieba native init failure'); return load.call(this, request, ...args); };\n`);
+  writeFileSync(preload, `const Module = require('node:module');\nconst load = Module._load;\nModule._load = function(request, ...args) { if (request.startsWith('jieba-wasm')) throw new Error('synthetic jieba-wasm load failure'); return load.call(this, request, ...args); };\n`);
   let starts = 0;
   const index = new SQLiteBackgroundIndex({ workerFactory: options => {
     starts++;
