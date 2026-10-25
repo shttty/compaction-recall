@@ -23,7 +23,7 @@ test('non-Han scripts, Japanese kana and NFKC variants are indexed instead of dr
     assert.deepEqual(await ids('行きました'), ['japanese']);
     assert.deepEqual(await ids('ガラス'), ['halfwidth']); // Halfwidth katakana folds to fullwidth.
     assert.deepEqual((await ids('abc server')).sort(), ['fullwidth']); // Fullwidth Latin folds to ASCII.
-    assert.deepEqual((await index.queryRanked('ガラス', current)).results.map(row => row.id), ['halfwidth']);
+    assert.deepEqual((await index.queryRanked('ガラス??', current)).results.map(row => row.id), ['halfwidth']);
   } finally { await index.dispose(); }
 });
 
@@ -41,7 +41,7 @@ test('dotted runs rank exact matches first without losing partial-run fragment m
     assert.deepEqual((await page('10.0.0')).sort(), ['exact', 'fullwidth', 'sibling', 'ten']); // Partial run: never zero.
     assert.deepEqual(await page('irisrinne.party'), ['domain']);
     assert.deepEqual(await page('api.irisrinne.party'), ['domain']);
-    const automatic = (await index.queryRanked('10.0.0.1', current)).results.map(row => row.id);
+    const automatic = (await index.queryRanked('10.0.0.1???', current)).results.map(row => row.id);
     assert.deepEqual(automatic.slice(0, 2).sort(), ['exact', 'fullwidth']);
   } finally { await index.dispose(); }
 });

@@ -26,7 +26,7 @@ test('name, command/path and Chinese input-only terms are searchable through all
  const call = msg('call', [{ type: 'text', text: 'Ordinary prose.' }, { type: 'toolCall', name: 'search_archive', arguments: { z: 3, command: 'cat /project/数据库/session_store.json', query: '压缩边界' } }]);
  const b = branch([call]), run = tools(b);
  for (const query of ['search_archive', 'session_store', '数据库', '压缩边界']) {
-  assert.deepEqual((await run.locators(query)).map(r => r.id), ['call']);
+  assert.deepEqual((await run.locators(query + '??')).map(r => r.id), ['call']);
   assert.deepEqual(rows((await run('history_recall', { concepts: [[query]] })).content[0].text).map(r => r.id), ['call']);
   assert.ok((await run('history_grep', { pattern: query })).details.total > 0);
  }

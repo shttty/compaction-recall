@@ -17,7 +17,7 @@ test('released worker preserves large transfers, live scope, compaction and awai
   const initial = initialBranch([msg('a', 'needle first'), msg('long', '😀'.repeat(40000) + ' needle ' + 'tail '.repeat(20000))]);
   let worker;
   try {
-    assert.deepEqual(ids(await index.queryRanked('needle', initial)).sort(), ['ma', 'mlong']);
+    assert.deepEqual(ids(await index.queryRanked('needle?????', initial)).sort(), ['ma', 'mlong']);
     worker = index.worker;
     const live = [...initial, msg('new', 'newneedle')];
     await index.prepare(live, { preindexLive: true });
@@ -74,10 +74,13 @@ test('jieba-wasm load failure falls back to Intl.Segmenter inside the worker wit
     return new Worker(workerURL, { workerData: options, execArgv: ['--require', preload] });
   } });
   try {
-    const branch = initialBranch([msg('native-init', '杭州西湖')]);
+    const branch = initialBranch([msg('native-init', '杭州西湖'), msg('migration', '迁移后再做实验'), msg('fragment', '无关移实记录')]);
     for (let attempt = 0; attempt < 2; attempt++) {
       assert.deepEqual(ids(await index.queryRanked('杭州西湖', branch)), ['mnative-init']);
     }
+    assert.deepEqual(ids(await index.queryRanked('迁移实验', branch)), ['mmigration']);
+    assert.deepEqual(ids(await index.queryRanked('那这个插件呢', branch, { options: { recentUserTexts: ['迁移实验'] } })), ['mmigration']);
+    assert.deepEqual(ids(await index.queryRanked('继续', branch, { options: { recentUserTexts: ['迁移实验'] } })), []);
     assert.equal(starts, 1);
     assert.equal(index.failed, false);
   } finally {
@@ -115,7 +118,7 @@ test('session reset cancels an in-flight old build before serving the replacemen
   pause = false; release();
   try {
     assert.equal(await old, 'AbortError');
-    assert.deepEqual(ids(await index.queryRanked('nebula', initialBranch([msg('fresh', 'nebula fresh')]))), ['mfresh']);
+    assert.deepEqual(ids(await index.queryRanked('nebula?????', initialBranch([msg('fresh', 'nebula fresh')]))), ['mfresh']);
   } finally { release(); await index.dispose(); }
 });
 
@@ -126,7 +129,7 @@ test('live prewarm cannot cancel a cold foreground lookup or block a warm eligib
   let pause = true;
   const index = new SQLiteBackgroundIndex({ yieldFn: async () => { if (pause) { entered(); await gate; } } });
   const branch = initialBranch([msg('old', 'needle eligible')]);
-  const lookup = index.queryRanked('needle', branch);
+  const lookup = index.queryRanked('needle?????', branch);
   await reached;
   const prewarm = index.prepare(branch, { preindexLive: true });
   pause = false; release();
@@ -141,7 +144,7 @@ test('live prewarm cannot cancel a cold foreground lookup or block a warm eligib
     await reached;
     let timeout;
     try {
-      const found = await Promise.race([index.queryRanked('needle', live), new Promise((_, reject) => {
+      const found = await Promise.race([index.queryRanked('needle?????', live), new Promise((_, reject) => {
         timeout = setTimeout(() => reject(new Error('Query waited for irrelevant live batch')), 1000);
       })]);
       assert.deepEqual(ids(found), ['mold']);
@@ -187,7 +190,7 @@ test('without timing neither main nor actual worker memory APIs are sampled', as
   process.memoryUsage = () => { throw new Error('Unexpected main memory sample'); };
   try {
     const branch = initialBranch([msg('a', 'needle')]);
-    assert.deepEqual(ids(await index.queryRanked('needle', branch)), ['ma']);
+    assert.deepEqual(ids(await index.queryRanked('needle?????', branch)), ['ma']);
     assert.deepEqual((await index.queryPage(manual(['needle']), branch)).ids, ['ma']);
     assert.equal(heapReads, 0);
   } finally { process.memoryUsage = original; await index.dispose(); }

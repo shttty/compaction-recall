@@ -242,7 +242,7 @@ export class SQLiteBackgroundIndex {
   } catch { /* Optional diagnostics cannot invalidate a completed index. */ }
  }
  /** @param {unknown} query @param {import('@earendil-works/pi-coding-agent').SessionEntry[]} branch
-  * @param {{mode?: 'auto' | 'manual', options?: {limit?: number, offset?: number, page?: boolean}, timeoutMs?: number}} settings */
+  * @param {{mode?: 'auto' | 'manual', options?: {limit?: number, offset?: number, page?: boolean, recentUserTexts?: string[]}, timeoutMs?: number}} settings */
  async queryRanked(query, branch, { mode = 'auto', options = {}, timeoutMs = this.recallTimeoutMs } = {}) {
   let check;
   if (mode === 'manual') {

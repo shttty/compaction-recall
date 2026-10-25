@@ -7,7 +7,7 @@ An extension that helps AI agents recover details from compacted conversations.
 Summaries can lose names, numbers and exact wording. compaction-recall lets the model search the original messages on the current branch and expand the relevant evidence, without replacing the agent's own compaction.
 
 - **Local, in-memory retrieval.** SQLite FTS5 runs in a Node worker, with no persistent index, embedding service or extra model calls.
-- **Multilingual lexical support.** English stemming, Chinese and Japanese character-bigram indexing, whole-word indexing for other scripts, exact dotted runs such as IPs and versions, and NFKC folding of fullwidth/halfwidth forms, with optional jieba-based ranking of existing matches.
+- **Multilingual lexical support.** English stemming, Chinese and Japanese character-bigram indexing, whole-word indexing for other scripts, exact dotted runs such as IPs and versions, and NFKC folding of fullwidth/halfwidth forms, with jieba word boundaries for automatic hints.
 - **Two modes.** `full` provides automatic history hints and three tools; `lite` keeps only grep and expansion, without an index or worker.
 
 ## Installation
@@ -16,7 +16,7 @@ Currently supports Pi, with support for other agents planned.
 
 ### Pi
 
-Requires [Pi](https://github.com/badlogic/pi-mono) and **Node.js >=24.18.0**. Tested with Pi SDK **1.0.0**.
+Requires [Pi](https://github.com/badlogic/pi-mono) and **Node.js >=24.18.0**. Tested with Pi SDK **1.4.0**.
 
 Install from npm:
 
@@ -43,7 +43,7 @@ Unset fields use defaults; environment variables override the configuration file
 | Setting | Default | Description | Environment override |
 |---|---|---|---|
 | `mode` | `"full"` | `full`: automatic hints and three tools; `lite`: grep/expand only. | `COMPACTION_RECALL_MODE` (`full`/`lite`) |
-| `jieba` | `true` | Rank existing FTS candidates by long Chinese terms before pagination. | `COMPACTION_RECALL_JIEBA` (`on`/`off`) |
+| `jieba` | `true` | Set Han word boundaries for automatic queries with jieba; when off, `Intl.Segmenter` is used. | `COMPACTION_RECALL_JIEBA` (`on`/`off`) |
 | `autoGate` | `280` | Treat longer user messages as task instructions and skip automatic recall to avoid adding unrelated history; the model can still search with tools (Han codepoints count as 2, others as 1). | `COMPACTION_RECALL_AUTO_GATE` |
 | `snippetBudget` | `240` | Source-text budget per automatic hint or `history_recall` result; higher values allow longer excerpts (Han codepoints count as 2, others as 1). | `COMPACTION_RECALL_SNIPPET_BUDGET` |
 | `recallTimeoutMs` | `5000` | Manual recall deadline in milliseconds; native MATCH cannot be interrupted. | `COMPACTION_RECALL_QUERY_TIMEOUT_MS` |

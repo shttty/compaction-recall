@@ -7,7 +7,7 @@ compaction-recall 自身代码使用 [MIT 许可证](https://github.com/shttty/c
 
 ## jieba-wasm
 
-- 用途：中文分词，用于检索排序；只在 worker 中加载。
+- 用途：中文分词，用于划定自动查询的词边界；只在 worker 中加载。
 - 版本：`jieba-wasm` 2.4.0。
 - 来源：[fengkx/jieba-wasm](https://github.com/fengkx/jieba-wasm)，是 [jieba-rs](https://github.com/messense/jieba-rs) 的 WebAssembly 绑定。
 - 许可：MIT，Copyright (c) 2018 fengkx。安装包附有自身的 LICENSE。

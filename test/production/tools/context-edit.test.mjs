@@ -42,7 +42,7 @@ function host(sessionManager) {
   };
 }
 async function absent(h, query) {
-  assert.ok(rows(await h.auto(query)).every(row => !row.snippet.includes(query)), `automatic locator leaked ${query}`);
+  assert.ok(rows(await h.auto(query + '?????')).every(row => !row.snippet.includes(query)), `automatic locator leaked ${query}`);
   assert.equal((await h.run('history_recall', { concepts: [[query]] })).details.total, 0, `recall leaked ${query}`);
   assert.equal((await h.run('history_grep', { pattern: query })).details.total, 0, `grep leaked ${query}`);
 }

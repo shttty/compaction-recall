@@ -1,14 +1,19 @@
 import { DatabaseSync } from 'node:sqlite';
 import { createHash } from 'node:crypto';
-import { STOPWORDS, tokenize as tokenizeAutomatic } from './sqlite-lexical.mjs';
+import { Buffer } from 'node:buffer';
+import { BIGRAM_TERM, STOPWORDS, tokenize as tokenizeAutomatic } from './sqlite-lexical.mjs';
 import { createStemmer, porterTerm } from './sqlite-porter.mjs';
 import { selectFts5Range } from './fts5-snippet.mjs';
 import { measured } from '../observability/timing.mjs';
 import { sqliteRecallPage } from './sqlite-page.mjs';
-import { createHanRanking } from './han-ranking.mjs';
+import { createHanSegmentation } from './han-segmentation.mjs';
 import { compileFts5, parseQuery } from './concept-query-compiler.mjs';
 const HAN = /\p{Script=Han}/u;
 const meaningful = /[\p{L}\p{N}\p{M}]/u;
+const HAN_RUN = /^\p{Script=Han}+$/u;
+const AUTO_BORROWED_TERM_LIMIT = 4;
+const AUTO_MIN_TEXT_BYTES = 10;
+const AUTO_BORROW_MAX_BYTES = 240;
 const safeQueryData = value => JSON.stringify(value).replace(/[<>&\u2028\u2029]/g,
   point => `\\u${point.charCodeAt(0).toString(16).padStart(4, '0')}`);
 
@@ -35,23 +40,39 @@ function extractText(content) {
     .join('\n');
 }
 
-// history_recall ANDs one surface's terms. A dotted run adds an exact-run branch next to the fragment branch:
+// Consecutive bigrams of one Han/kana run form one FTS5 phrase atom ("长江 江大 大桥"), so a multi-character word
+// matches only where it is written contiguously; the index's run barrier keeps phrases from crossing punctuation.
+// Duplicates stay in order ("哈哈 哈哈"). Other terms remain separate AND atoms.
+function phraseAtoms(spans) {
+  const atoms = [];
+  let run = [];
+  const flush = () => { if (run.length) atoms.push(run.map(span => span.term).join(' ')); run = []; };
+  for (const span of spans) {
+    if (!BIGRAM_TERM.test(span.term)) { flush(); atoms.push(span.term); continue; }
+    if (run.length && span.start !== run[run.length - 1].start + 1) flush();
+    run.push(span);
+  }
+  flush();
+  return atoms;
+}
+
+// history_recall ANDs one surface's atoms. A dotted run adds an exact-run branch next to the fragment branch:
 // partial runs (10.0.0) still match by fragments, and records holding the whole run (10.0.0.1) score both branches.
 function surfaceBranches(spans) {
   const runs = spans.filter(span => span.term.includes('.'));
-  const fragments = spans.filter(span => !span.term.includes('.')).map(span => span.term);
-  if (!runs.length) return fragments.length ? [fragments] : [];
+  const fragments = spans.filter(span => !span.term.includes('.'));
+  if (!runs.length) return fragments.length ? [phraseAtoms(fragments)] : [];
   const exact = spans.filter(span => runs.includes(span)
-    || !runs.some(run => span.start >= run.start && span.end <= run.end)).map(span => span.term);
-  return fragments.length ? [fragments, exact] : [exact];
+    || !runs.some(run => span.start >= run.start && span.end <= run.end));
+  return fragments.length ? [phraseAtoms(fragments), phraseAtoms(exact)] : [phraseAtoms(exact)];
 }
 
 
 export function createIndex(documents, { jieba = true, autoGate = 280, snippetBudget } = {}) {
-  const ranking = createHanRanking(jieba);
+  const han = createHanSegmentation(jieba);
   autoGate = parseAutoGate(autoGate);
   const budget = Number.isSafeInteger(snippetBudget) && snippetBudget > 0 ? snippetBudget : 240;
-  const { tokenize, tokenizeSpans } = ranking.tokenizer;
+  const { tokenize, tokenizeSpans } = han.tokenizer;
   // Latest id wins before the empty check, so a latest empty edit hides older text.
   const byId = new Map();
   documents.forEach((document, i) => {
@@ -65,7 +86,7 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
   const indexedIds = new Set(byId.keys());
   const corpus = [...byId.values()].filter(document => document.text !== '');
   const db = new DatabaseSync(':memory:');
-  let match, count, stem, rankedSql, insert, insertMessage, insertLongWord;
+  let match, count, stem, insert, insertMessage, autoFrequency;
   try {
     db.exec(`
       PRAGMA temp_store = MEMORY;
@@ -80,16 +101,11 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     stem = createStemmer(db);
     insert = db.prepare('INSERT INTO terms(rowid, tokens, stems) VALUES (?, ?, ?)');
     insertMessage = db.prepare('INSERT INTO messages VALUES (?, ?, ?, ?)');
-    if (ranking.longWordRanking) {
-      db.exec('CREATE TABLE han_rank(rowid INTEGER NOT NULL, term TEXT NOT NULL, PRIMARY KEY(rowid, term)) WITHOUT ROWID');
-      insertLongWord = db.prepare('INSERT INTO han_rank VALUES (?, ?)');
-    }
     corpus.forEach((document, i) => {
       const tokens = tokenize(document.text);
       insert.run(i + 1, tokens.join(' '), tokens.map(stem).filter(Boolean).join(' '));
       const hash = createHash('sha256').update(document.text.replace(/\s+/g, ' ').trim()).digest();
       insertMessage.run(i + 1, hash, document.timestamp, document.recency);
-      if (insertLongWord) for (const word of ranking.longWords(document.text)) insertLongWord.run(i + 1, word);
     });
     db.exec('COMMIT');
     // MATERIALIZED keeps FTS5's bm25 auxiliary call inside its MATCH cursor.
@@ -97,12 +113,12 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
       messages.content_hash, messages.timestamp, messages.recency
       FROM terms JOIN messages ON messages.rowid = terms.rowid
       WHERE terms MATCH ? AND (? < 0 OR messages.recency < ?)`;
-    rankedSql = `WITH hits AS MATERIALIZED (${scored}), ranked AS (
+    match = db.prepare(`WITH hits AS MATERIALIZED (${scored}), ranked AS (
       SELECT *, row_number() OVER (PARTITION BY content_hash ORDER BY score, timestamp DESC, recency DESC, rowid DESC) AS representative FROM hits
-    )`;
-    match = db.prepare(`${rankedSql} SELECT rowid, score FROM ranked WHERE representative = 1
+    ) SELECT rowid, score FROM ranked WHERE representative = 1
       ORDER BY score, timestamp DESC, recency DESC, rowid DESC LIMIT ? OFFSET ?`);
     count = db.prepare('SELECT count(DISTINCT content_hash) AS total FROM terms JOIN messages ON messages.rowid = terms.rowid WHERE terms MATCH ? AND (? < 0 OR messages.recency < ?)');
+    autoFrequency = db.prepare('SELECT count(*) AS total FROM terms JOIN messages ON messages.rowid = terms.rowid WHERE terms MATCH ? AND (? < 0 OR messages.recency < ?)');
   } catch (error) { db.close(); throw error; }
   function appendDocuments(additions) {
     const seen = new Set(indexedIds);
@@ -121,7 +137,6 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
         insert.run(rowid, tokens.join(' '), tokens.map(stem).filter(Boolean).join(' '));
         const hash = createHash('sha256').update(document.text.replace(/\s+/g, ' ').trim()).digest();
         insertMessage.run(rowid, hash, document.timestamp, document.recency);
-        if (insertLongWord) for (const word of ranking.longWords(document.text)) insertLongWord.run(rowid, word);
       });
       db.exec('COMMIT');
     } catch (error) {
@@ -197,33 +212,63 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     check?.();
     return results;
   }
-  function collect(expression, snippetTerms, timer, check, { limit = -1, offset = 0, eligibleCount = -1 } = {}, longWords = []) {
+  function collect(expression, snippetTerms, timer, check, { limit = -1, offset = 0, eligibleCount = -1 } = {}) {
     check?.();
     const eligible = Number.isSafeInteger(eligibleCount) && eligibleCount >= 0 ? eligibleCount : -1;
     const total = measured(timer, 'native_count', () => count.get(expression, eligible, eligible).total);
     check?.();
-    const native = measured(timer, 'native_query', () => {
-      if (!ranking.longWordRanking || !longWords.length) return match.all(expression, eligible, eligible, limit, offset);
-      // Reuse the candidate SQL: fix base MATCH representatives before long-word ranking.
-      const ranked = db.prepare(`${rankedSql} SELECT rowid, score,
-        (SELECT count(*) FROM han_rank WHERE han_rank.rowid = ranked.rowid AND term IN (${longWords.map(() => '?').join(',')})) AS long_word_score
-        FROM ranked WHERE representative = 1
-        ORDER BY long_word_score DESC, score, timestamp DESC, recency DESC, rowid DESC LIMIT ? OFFSET ?`);
-      return ranked.all(expression, eligible, eligible, ...longWords, limit, offset);
-    });
+    const native = measured(timer, 'native_query', () => match.all(expression, eligible, eligible, limit, offset));
     check?.(); // SQLite is synchronous and cannot check a deadline inside MATCH.
     return { total, results: materialize(native, snippetTerms, timer, check) };
   }
-  function automaticRows(query, timer, limit, offset = 0, eligibleCount = -1) {
+  function automaticWords(text) {
+    const words = [];
+    for (const part of text.normalize('NFKC').split(/(\p{Script=Han}+)/u)) {
+      if (!HAN_RUN.test(part)) {
+        for (const term of tokenizeAutomatic(part)) words.push({ term, surface: term });
+        continue;
+      }
+      const add = surface => {
+        const terms = tokenizeAutomatic(surface);
+        if (terms.length) words.push({ term: terms.join(' '), surface });
+      };
+      let singles = '';
+      for (const word of han.segmentHan(part)) {
+        if (Array.from(word).length === 1) { singles += word; continue; }
+        add(singles); singles = '';
+        add(word);
+      }
+      add(singles);
+    }
+    return [...new Map(words.map(word => [word.term, word])).values()];
+  }
+  function automaticRows(query, timer, limit, offset = 0, eligibleCount = -1, recentUserTexts = []) {
     const text = extractText(query);
     if (weightedLength(text) > autoGate) return { skipped: true, total: 0, results: [], queryTerms: [] };
     if (limit !== undefined && (!Number.isSafeInteger(limit) || limit < 0)) throw new RangeError('limit must be a non-negative safe integer');
-    const queryTerms = [...new Set(tokenizeAutomatic(text.normalize('NFKC')).filter(term => !STOPWORDS.has(term)))];
-    if (!queryTerms.length) return { skipped: false, total: 0, results: [], queryTerms };
-    const terms = queryTerms.map(term => ({ term, stem: true }));
-    const expression = terms.map(({ term }) => porterTerm(term, stem)).join(' OR ');
-    const longWords = ranking.longWordRanking ? queryTerms.filter(term => /^\p{Script=Han}{3,}$/u.test(term)) : [];
-    const found = collect(expression, terms, timer, undefined, { limit, offset, eligibleCount }, longWords);
+    if (Buffer.byteLength(text.trim(), 'utf8') <= AUTO_MIN_TEXT_BYTES) return { skipped: true, total: 0, results: [], queryTerms: [] };
+    const eligible = Number.isSafeInteger(eligibleCount) && eligibleCount >= 0 ? eligibleCount : -1;
+    const frequencies = new Map();
+    const analyze = input => automaticWords(input).filter(word => !STOPWORDS.has(word.surface)).map(word => {
+      const expression = porterTerm(word.term, stem);
+      if (!frequencies.has(expression)) frequencies.set(expression, autoFrequency.get(expression, eligible, eligible).total);
+      return { ...word, expression, frequency: frequencies.get(expression) };
+    });
+    // Unseen words cannot anchor a hint, but must not block borrowing a known topic.
+    const isUsable = word => word.frequency > 0;
+    let words = analyze(text);
+    let usable = words.filter(isUsable);
+    if (!usable.length) for (const previous of recentUserTexts) {
+      const bytes = Buffer.byteLength(previous.trim(), 'utf8');
+      if (bytes <= AUTO_MIN_TEXT_BYTES || bytes >= AUTO_BORROW_MAX_BYTES) continue;
+      usable = analyze(previous).filter(isUsable).sort((a, b) => a.frequency - b.frequency).slice(0, AUTO_BORROWED_TERM_LIMIT);
+      if (usable.length) { words.push(...usable); break; } // Nearest usable topic wins.
+    }
+    const queryTerms = [...new Set(words.map(word => word.term))];
+    if (!usable.length) return { skipped: false, total: 0, results: [], queryTerms };
+    const expression = usable.map(word => word.expression).join(' OR ');
+    const terms = [...new Set(queryTerms.flatMap(term => term.split(' ')))].map(term => ({ term, stem: true }));
+    const found = collect(expression, terms, timer, undefined, { limit, offset, eligibleCount });
     return { skipped: false, ...found, queryTerms };
   }
   function conceptRows(query, timer, check, options) {
@@ -266,14 +311,13 @@ export function createIndex(documents, { jieba = true, autoGate = 280, snippetBu
     const terms = new Set(normalized.concepts.flatMap(group => group.flatMap(surface => analyses.get(surface).terms)));
     const snippets = [...terms].map(term => ({ term }));
     check?.();
-    const longWords = ranking.longWordRanking ? [...new Set(normalized.concepts.flat().filter(surface => /^\p{Script=Han}{3,}$/u.test(surface)))] : [];
-    return { ...collect(plan.match, snippets, timer, check, options, longWords), warnings };
+    return { ...collect(plan.match, snippets, timer, check, options), warnings };
   }
   return {
     get size() { return corpus.length; },
     append(documents) { appendDocuments(documents); },
-    queryRows(query, { mode = 'manual', timer, check, limit, offset = 0, eligibleCount = -1 } = {}) {
-      return mode === 'auto' ? automaticRows(query, timer, limit, offset, eligibleCount) : conceptRows(query, timer, check, { limit, offset, eligibleCount });
+    queryRows(query, { mode = 'manual', timer, check, limit, offset = 0, eligibleCount = -1, recentUserTexts = [] } = {}) {
+      return mode === 'auto' ? automaticRows(query, timer, limit, offset, eligibleCount, recentUserTexts) : conceptRows(query, timer, check, { limit, offset, eligibleCount });
     },
     queryPage(query, options = {}, { timer, check } = {}) {
       const limit = options.limit ?? 50, offset = options.offset ?? 0;

@@ -7,7 +7,7 @@
 摘要可能丢掉名字、数字和原话。compaction-recall 让模型搜索当前分支的原始消息，再展开相关证据，不替换 agent 自身的压缩机制。
 
 - **本地内存检索**：SQLite FTS5 在 Node worker 中运行，不持久化索引，不需要 embedding 服务，也不额外调用模型。
-- **多语言词面检索**：英文词干、中日文双字索引，其他文字按整词索引，IP、版本号这类点号串也能整串精确匹配；全角、半角写法经 NFKC 归一后互通。可选 jieba 长词排名，在已有命中中优先返回相关记录。
+- **多语言词面检索**：英文词干、中日文双字索引，其他文字按整词索引，IP、版本号这类点号串也能整串精确匹配；全角、半角写法经 NFKC 归一后互通。自动提示用 jieba 划定中文词边界。
 - **两种模式**：`full` 提供自动历史提示和三个工具；`lite` 只保留 grep 与原文展开，不启动索引或 worker。
 
 ## 安装
@@ -16,7 +16,7 @@
 
 ### Pi
 
-需要 [Pi](https://github.com/badlogic/pi-mono) 和 **Node.js >=24.18.0**，已在 **Pi SDK 1.0.0** 上测试。
+需要 [Pi](https://github.com/badlogic/pi-mono) 和 **Node.js >=24.18.0**，已在 **Pi SDK 1.4.0** 上测试。
 
 从 npm 安装：
 
@@ -43,7 +43,7 @@ pi install npm:pi-compaction-recall
 | 配置项                             | 默认值      | 说明                                                                 | 环境变量覆盖                                   |
 | ------------------------------- | -------- | ------------------------------------------------------------------ | ---------------------------------------- |
 | `mode`                          | `"full"` | `full` 提供自动提示和三个工具；`lite` 只保留 grep/expand。                         | `COMPACTION_RECALL_MODE`（`full`/`lite`）  |
-| `jieba`                         | `true`   | 按中文长词命中重排已有 FTS 候选，先排序再分页。                                         | `COMPACTION_RECALL_JIEBA`（`on`/`off`）    |
+| `jieba`                         | `true`   | 用 jieba 为自动查询划定汉字词边界；关闭时改用 `Intl.Segmenter`。                                         | `COMPACTION_RECALL_JIEBA`（`on`/`off`）    |
 | `autoGate`                      | `280`    | 用户消息超过此长度时，按长任务指示处理，跳过自动召回以避免带入无关历史；模型仍可主动调用工具查询（汉字计 2，其余码点计 1）。   | `COMPACTION_RECALL_AUTO_GATE`            |
 | `snippetBudget`                 | `240`    | 控制自动提示和 `history_recall` 每条结果展示的原文片段长度，越大允许展示的片段越长（汉字计 2，其余码点计 1）。 | `COMPACTION_RECALL_SNIPPET_BUDGET`       |
 | `recallTimeoutMs`               | `5000`   | 主动 recall 超时门槛，单位毫秒，不能抢占 native MATCH。                             | `COMPACTION_RECALL_QUERY_TIMEOUT_MS`     |

@@ -8,7 +8,7 @@ retain their respective licenses and attribution.
 
 ## jieba-wasm
 
-- Use: Chinese word segmentation for retrieval ranking; loaded only in the worker.
+- Use: Chinese word segmentation for automatic-query word boundaries; loaded only in the worker.
 - Version: `jieba-wasm` 2.4.0.
 - Source: [fengkx/jieba-wasm](https://github.com/fengkx/jieba-wasm), a WebAssembly binding of [jieba-rs](https://github.com/messense/jieba-rs).
 - License: MIT, Copyright (c) 2018 fengkx. The installed package includes its LICENSE.

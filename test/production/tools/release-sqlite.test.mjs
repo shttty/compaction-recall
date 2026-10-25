@@ -35,49 +35,38 @@ function harness(jieba) {
     close: () => emit('session_shutdown', { reason: 'quit' }) };
 }
 
-test('formal default/off ranking stays inside fixed FTS candidates and precedes pagination with warnings', async () => {
-  const enabled = harness(), disabled = harness('off');
-  const query = { concepts: [['南京市', '7:30'], ['长江大桥']], match: 'all' };
+test('recall phrases, warns, clamps and paginates without failing the call', async () => {
+  const host = harness();
   try {
-    const on = await enabled.recall(query), off = await disabled.recall(query);
-    assert.deepEqual(ids(on), ['long', 'pieces']);
-    assert.deepEqual(ids(off), ['pieces', 'long']);
-    assert.equal(on.details.total, 2);
-    assert.equal(off.details.total, 2);
-    assert.deepEqual(on.details.warnings, off.details.warnings);
-    assert.match(on.content[0].text, /Warning: "7:30"/);
-    for (const [host, expected] of [[enabled, ['long', 'pieces']], [disabled, ['pieces', 'long']]]) {
-      const first = await host.recall({ ...query, limit: 1 });
-      const second = await host.recall({ ...query, limit: 1, offset: first.details.nextOffset });
-      assert.deepEqual([...ids(first), ...ids(second)], expected);
-      assert.equal(second.details.nextOffset, null);
-      const automatic = await host.auto('南京市长江大桥');
-      const automaticIds = automatic.split('\n').filter(line => line.startsWith('{')).map(line => JSON.parse(line).id);
-      assert.deepEqual(automaticIds, ['pieces', 'long']); // Measured raw-bigram automatic terms have no long-word bonuses.
-      assert.deepEqual(ids(await host.recall({ concepts: [['7:30']] })).sort(), ['eight', 'seven']);
-      await assert.rejects(host.recall({ concepts: [['*']] }), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
-      const mixed = await host.recall({ concepts: [['topic', '*']] });
-      assert.deepEqual(ids(mixed).sort(), ['eight', 'seven']); // A zero-term alternative is dropped, not fatal.
-      assert.match(mixed.content[0].text, /Warning: \["\*"\] produced no searchable terms and was ignored/);
-      assert.deepEqual(ids(await host.recall({ concepts: [['topic', 'a1', 'b2', 'c3', 'd4', 'e5', 'f6', 'g7']] })).sort(), ['eight', 'seven']);
-      const clamped = await host.recall({ concepts: [['topic', 'a1', 'b2', 'c3', 'd4', 'e5', 'f6', 'g7', 'h8'], ['x1'], ['x2'], ['x3'], ['x4'], ['x5']], exclude: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'] });
-      assert.deepEqual(ids(clamped).sort(), ['eight', 'seven']); // Count overflow is clamped, not fatal.
-      assert.match(clamped.content[0].text, /Warning: concepts has more than 5 items; ignored \[\["x5"\]\]/);
-      assert.match(clamped.content[0].text, /Warning: concepts\[0\] has more than 8 items; ignored \["h8"\]/);
-      assert.match(clamped.content[0].text, /Warning: exclude has more than 5 items; ignored \["q6"\]/);
-      await assert.rejects(host.recall({ query: 'topic' }), { name: 'QueryError', code: 'UNKNOWN_FIELD' });
-      assert.deepEqual(ids(await host.recall({ concepts: [['topic']], exclude: ['7:30'] })), []);
-      assert.deepEqual(ids(await host.recall({ concepts: [['topic']] })).sort(), ['eight', 'seven']);
-    }
-  } finally { await enabled.close(); await disabled.close(); }
+    const found = await host.recall({ concepts: [['南京市', '7:30'], ['长江大桥']], match: 'all' });
+    assert.deepEqual(ids(found), ['long']); // Scattered bigrams in "pieces" are not a phrase match.
+    assert.match(found.content[0].text, /Warning: "7:30"/);
+    const first = await host.recall({ concepts: [['topic']], limit: 1 });
+    const second = await host.recall({ concepts: [['topic']], limit: 1, offset: first.details.nextOffset });
+    assert.deepEqual([...ids(first), ...ids(second)].sort(), ['eight', 'seven']);
+    assert.equal(second.details.nextOffset, null);
+    assert.deepEqual(ids(await host.recall({ concepts: [['7:30']] })).sort(), ['eight', 'seven']);
+    await assert.rejects(host.recall({ concepts: [['*']] }), { name: 'QueryError', code: 'EMPTY_ANALYSIS' });
+    const mixed = await host.recall({ concepts: [['topic', '*']] });
+    assert.deepEqual(ids(mixed).sort(), ['eight', 'seven']); // A zero-term alternative is dropped, not fatal.
+    assert.match(mixed.content[0].text, /Warning: \["\*"\] produced no searchable terms and was ignored/);
+    assert.deepEqual(ids(await host.recall({ concepts: [['topic', 'a1', 'b2', 'c3', 'd4', 'e5', 'f6', 'g7']] })).sort(), ['eight', 'seven']);
+    const clamped = await host.recall({ concepts: [['topic', 'a1', 'b2', 'c3', 'd4', 'e5', 'f6', 'g7', 'h8'], ['x1'], ['x2'], ['x3'], ['x4'], ['x5']], exclude: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'] });
+    assert.deepEqual(ids(clamped).sort(), ['eight', 'seven']); // Count overflow is clamped, not fatal.
+    assert.match(clamped.content[0].text, /Warning: concepts has more than 5 items; ignored \[\["x5"\]\]/);
+    assert.match(clamped.content[0].text, /Warning: concepts\[0\] has more than 8 items; ignored \["h8"\]/);
+    assert.match(clamped.content[0].text, /Warning: exclude has more than 5 items; ignored \["q6"\]/);
+    await assert.rejects(host.recall({ query: 'topic' }), { name: 'QueryError', code: 'UNKNOWN_FIELD' });
+    assert.deepEqual(ids(await host.recall({ concepts: [['topic']], exclude: ['7:30'] })), []);
+  } finally { await host.close(); }
 });
 
 test('formal automatic default gate is 280 weighted units; Porter aliases do not broaden unrelated Han candidates', async () => {
   const host = harness();
   try {
-    assert.match(await host.auto('padding' + ' '.repeat(273)), /"id":"long"/);
-    assert.equal(await host.auto('padding' + ' '.repeat(274)), undefined);
-    assert.match(await host.auto('paddings'), /"id":"long"/);
+    assert.match(await host.auto('padding????' + ' '.repeat(269)), /"id":"long"/);
+    assert.equal(await host.auto('padding????' + ' '.repeat(270)), undefined);
+    assert.match(await host.auto('paddings???'), /"id":"long"/);
     assert.equal(await host.auto('不存在'), undefined);
   } finally { await host.close(); }
 });
@@ -100,7 +89,7 @@ test('released worker keeps manual literals separate from automatic Porter alias
   const current = [...records, { type: 'compaction', id: 'c', timestamp, firstKeptEntryId: 'tail' }];
   try {
     assert.deepEqual((await index.queryPage({ concepts: [['booked']] }, current)).ids, ['booked']);
-    assert.deepEqual((await index.queryRanked('booked', current)).results.map(row => row.id).sort(), ['base', 'booked', 'booking']);
+    assert.deepEqual((await index.queryRanked('booked?????', current)).results.map(row => row.id).sort(), ['base', 'booked', 'booking']);
     for (const term of ['答案', 'needle']) {
       const page = await index.queryPage({ concepts: [[term]] }, current);
       const row = page.page.text.split('\n').filter(line => line.startsWith('{')).map(JSON.parse)[0];
@@ -116,13 +105,20 @@ test('released worker keeps manual literals separate from automatic Porter alias
   } finally { await index.dispose(); }
 });
 
-test('default worker ranks long Chinese words with jieba-wasm', async () => {
+test('history_recall matches each Han run as a contiguous phrase while separate words stay co-occurrence', async () => {
   const { SQLiteBackgroundIndex } = await import('../../../src/worker/sqlite-background-index.mjs');
-  const index = new SQLiteBackgroundIndex({ jieba: true });
+  const index = new SQLiteBackgroundIndex({ jieba: false });
+  const records = [msg('bridge', '长江大桥通车了'), msg('scattered', '长江 江大 大桥'),
+    msg('database', '数据库迁移'), msg('punctuated', '数据，据库'),
+    msg('laugh', '哈哈哈'), msg('short-laugh', '哈哈'),
+    msg('rocky', 'Rocky Linux 8 主机'), msg('tail', 'retained')];
+  const current = [...records, { type: 'compaction', id: 'c', timestamp, firstKeptEntryId: 'tail' }];
+  const found = async query => (await index.queryPage(query, current)).ids.sort();
   try {
-    // jieba keeps 长江大桥 as one long word; BM25 alone (or Intl's 长江/大/桥) would rank the shorter pieces record first.
-    assert.deepEqual((await index.queryPage({ concepts: [['长江大桥']] }, branch)).ids, ['long', 'pieces']);
-  } finally {
-    await index.dispose();
-  }
+    assert.deepEqual(await found({ concepts: [['长江大桥']] }), ['bridge']);
+    assert.deepEqual(await found({ concepts: [['数据库']] }), ['database']);
+    assert.deepEqual(await found({ concepts: [['哈哈哈']] }), ['laugh']);
+    assert.deepEqual(await found({ concepts: [['Rocky 8']] }), ['rocky']);
+    assert.deepEqual(await found({ concepts: [['大桥']], exclude: ['长江大桥'] }), ['scattered']);
+  } finally { await index.dispose(); }
 });

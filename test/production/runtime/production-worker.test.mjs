@@ -50,7 +50,7 @@ function harness(initial) {
         offset = page.details.nextOffset;
       } while (offset !== null);
       assert.deepEqual([...manualIds].sort(), [...expectedIds].sort());
-      assert.deepEqual(manualIds, autoIds);
+      assert.deepEqual(autoIds.sort(), [...expectedIds].sort());
     },
   };
 }
@@ -122,7 +122,7 @@ for (const timingEnabled of [false, true]) {
         }
         try {
           await emit('session_start', { reason: 'startup' });
-          const context = await emit('context', { messages: [{ role: 'user', content: 'quasar', timestamp: 0 }] });
+          const context = await emit('context', { messages: [{ role: 'user', content: 'quasar?????', timestamp: 0 }] });
           assert.match(JSON.stringify(context.messages), /sdk-match/);
           const page = await extension.tools.get('history_recall').definition.execute('sdk', { concepts: [['quasar']], limit: 1 }, undefined, undefined, ctx);
           assert.equal(page.details.total, 2);
