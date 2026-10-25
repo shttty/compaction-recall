@@ -38,3 +38,6 @@ settings.json
 
 # npm cache used by prototype dependency installs
 .npm-cache/
+
+# Local feedback notes
+/issues.md
