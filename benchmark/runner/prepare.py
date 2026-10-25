@@ -25,6 +25,22 @@ def verify_files(files, label='Frozen input'):
         if not Path(filename).is_file() or common.sha(Path(filename)) != digest:
             raise ValueError(label + ' changed: ' + filename)
 
+def native_compaction_cuts(rows):
+    count, cuts, entries = 0, [], []
+    for row in rows:
+        if row.get('type') == 'message':
+            count += 1
+        elif row.get('type') == 'compaction':
+            cuts.append(count)
+            entries.append(row)
+    if (not entries or any(not isinstance(row.get('summary'), str) or not row['summary'].strip()
+                           or not isinstance(row.get('id'), str)
+                           or not row['id'] or 'blind-simulated' in row['id'] or row.get('fromHook') is True
+                           for row in entries)
+            or any(left >= right for left, right in zip([0, *cuts], cuts))):
+        raise ValueError('Requires genuine nonempty native compactions at strictly increasing source cuts')
+    return cuts
+
 
 def freeze_candidate(source, output):
     source = source.resolve(strict=True)
@@ -239,8 +255,9 @@ def bind_swe_snapshots(data, source, output, questions):
             raise ValueError('SWE snapshot/output overlap')
         rows = common.transcript(session)
         compactions = [row for row in rows if row.get('type') == 'compaction']
-        if not compactions or any(not row.get('summary') or not row.get('firstKeptEntryId') or 'blind-simulated' in row.get('id', '') for row in compactions):
-            raise ValueError('SWE requires genuine nonempty native snapshot compactions')
+        native_compaction_cuts(rows)
+        if any(not row.get('firstKeptEntryId') for row in compactions):
+            raise ValueError('SWE requires retained-entry identities for native compactions')
         if any(row.get('message', {}).get('role') == 'user' and ''.join(block.get('text', '') for block in row['message'].get('content', []) if isinstance(block, dict)) == question['question'] for row in rows):
             raise ValueError('SWE snapshot already contains evaluation question')
         digest = question['snapshotSha256']
@@ -284,10 +301,9 @@ def bind_snapshots(source, output, questions, dataset):
             raise ValueError('Relative snapshot session escapes source')
         if session.is_relative_to(output) or output.is_relative_to(session):
             raise ValueError('Snapshot session/output overlap')
-        compactions = [row for row in common.transcript(session) if row.get('type') == 'compaction']
-        if len(compactions) != 3 or any(not row.get('summary') or 'blind-simulated' in row.get('id', '') for row in compactions):
-            raise ValueError('Requires three nonempty native source compactions')
-        if any(row.get('message', {}).get('role') == 'user' and ''.join(b.get('text', '') for b in row['message'].get('content', [])) == q['question'] for row in common.transcript(session)):
+        rows = common.transcript(session)
+        native_compaction_cuts(rows)
+        if any(row.get('message', {}).get('role') == 'user' and ''.join(b.get('text', '') for b in row['message'].get('content', [])) == q['question'] for row in rows):
             raise ValueError('Snapshot already contains evaluation question')
         files[str(session)] = entry['sha256']
         bindings[key] = {'path': str(session), 'sha256': entry['sha256']}
@@ -318,20 +334,30 @@ def verify_snapshot_bindings(manifest, output, native=None):
         source, session = folder / 'source.jsonl', folder / 'session.jsonl'
         if not all(path.is_file() for path in (source, session, folder / 'snapshot.json', folder / 'snapshot-state.json')):
             raise ValueError('Package snapshot completion evidence missing')
-        cuts, count = [0], 0
-        for row in common.transcript(Path(original['path'])):
-            if row.get('type') == 'message':
-                count += 1
-            elif row.get('type') == 'compaction':
-                cuts.append(count)
-        cuts.append(count)
+        native_rows = common.transcript(Path(original['path']))
+        message_count = sum(row.get('type') == 'message' for row in native_rows)
+        native_cuts = native_compaction_cuts(native_rows)
+        cuts = compression.cut_boundaries(native_cuts, message_count)
         phase_identity = common.object_sha({'run': manifest['fingerprint'], 'qid': key.removeprefix('pi/'),
                                            'source': common.sha(source), 'cuts': cuts})
         record = common.durable_phase(folder, 'snapshot', phase_identity, lambda: None)
         if record != generated or record['path'] != str(session) or record['sourcePath'] != str(source) or record['cuts'] != cuts:
             raise ValueError('Package snapshot completion identity differs')
         verify_files({str(session): record['sha256'], str(source): record['sourceSha256']}, 'Package snapshot')
-        compression.validate_compactions(common.transcript(session), common.transcript(folder / 'compaction-events.jsonl'))
+        if record.get('modelRequests') != 0 or (folder / 'wire-requests.jsonl').exists():
+            raise ValueError('Package snapshot must contain zero model requests')
+        final = common.transcript(session)
+        entries = compression.validate_compactions(final, common.transcript(folder / 'compaction-events.jsonl'))
+        observed_cuts, observed_messages = [], 0
+        for row in final:
+            if row.get('type') == 'message':
+                observed_messages += 1
+            elif row.get('type') == 'compaction':
+                observed_cuts.append(observed_messages)
+        if observed_cuts != native_cuts or len(entries) != len(native_cuts) or observed_messages != message_count:
+            raise ValueError('Package snapshot compaction cuts differ from native source')
+        if len(record.get('compactions', [])) != len(native_cuts):
+            raise ValueError('Package snapshot compaction receipts differ from native source count')
 
 
 def bind_baseline(source, output, questions, config):

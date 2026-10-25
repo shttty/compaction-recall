@@ -38,7 +38,7 @@ test('native context rejects automatic locators and retains unmodified private r
   const next = { ...payload, input: [...payload.input, { role: 'assistant', content: 'Unchanged answer.' }] };
   persistContextPayload(next, { directory, toolsOnly: true, source: 'onPayload' });
   assert.deepEqual(JSON.parse(readFileSync(join(directory, 'payload-0002.json'), 'utf8')), next);
-  const leaked = { ...payload, input: [{ role: 'user', content: 'Compacted-history locators (lexical hints only).\n[id]' }] };
+  const leaked = { ...payload, input: [{ role: 'user', content: '<compacted-history-hints>\n[id]</compacted-history-hints>' }] };
   assert.throws(() => persistContextPayload(leaked, { directory, toolsOnly: true }), /locator leak/);
   const toolResult = { ...payload, input: [{ role: 'tool', content: leaked.input[0].content }] };
   persistContextPayload(toolResult, { directory, toolsOnly: true });

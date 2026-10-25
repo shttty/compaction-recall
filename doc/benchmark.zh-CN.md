@@ -44,7 +44,7 @@ LME16 使用 [LongMemEval_M](https://huggingface.co/datasets/xiaowu0162/longmeme
 | `--compression native\|package` | 仅 package arm：复用原生快照，或按冻结原生切点在源历史上调用 package 压缩钩子。 |
 | `--baseline-source` | 用于精确绑定题面 / 参考答案 / 提示词的历史答题目录；`LME16-Chinese` 必填，英文可选。不代表历史 arm 是原生。 |
 
-LME 题集保留 `data/dev8/<id>/`、`data/hard8/<id>/` 下的 `question.json`、`corpus.json`、`answer.json`、`judge.json`。各 split 的 `data/<split>/manifest.json` 在 `selected` 中按运行顺序列出题号；runner 从这里读取选题，并把该清单的哈希绑定进轮次身份，因此换题只改数据，不改代码。旧三 arm 和 `--compression native` 复用已有原生压缩；`--compression package` 使用原始时间顺序历史和三个已验证的原生切点，不新增切点。`LME16-Chinese` 通过 `--baseline-source` 绑定历史 2026-10-06 中文提示词及参考答案，原生快照来源单独绑定。SWE 使用外部 `freeze.json`、`questions.json`、`gold.json`，将实际快照路径和哈希绑定到题目。这些题由本地 SWE-chat 会话派生，不是上游现成的问答题。
+LME 题集保留 `data/dev8/<id>/`、`data/hard8/<id>/` 下的 `question.json`、`corpus.json`、`answer.json`、`judge.json`。各 split 的 `data/<split>/manifest.json` 在 `selected` 中按运行顺序列出题号；runner 从这里读取选题，并把该清单的哈希绑定进轮次身份，因此换题只改数据，不改代码。旧三 arm 和 `--compression native` 复用已有原生压缩；`--compression package` 使用原始时间顺序历史及冻结的任意数量、严格递增的原生切点，不会自行新增切点。至少需要一次真实原生压缩。`LME16-Chinese` 通过 `--baseline-source` 绑定历史 2026-10-06 中文提示词及参考答案，原生快照来源单独绑定。SWE 使用外部 `freeze.json`、`questions.json`、`gold.json`，将实际快照路径和哈希绑定到题目。这些题由本地 SWE-chat 会话派生，不是上游现成的问答题。
 
 runner 的准备阶段根据实际源码及锁定依赖、题面及参考答案、模型配置和已有快照，生成并冻结候选与输入绑定。不要提供 `CANDIDATE`、`PINS`、`PREFLIGHT`、两份裁判配置或手工 archive / commit hash。历史中文 preflight 不能复用为原生快照证据。原冻结材料和历史指标保持原值，不得用新代码重写旧指纹或写入旧轮次。
 
@@ -76,6 +76,19 @@ runner 的准备阶段根据实际源码及锁定依赖、题面及参考答案�
 所有模型、服务商和 effort 都必须显式给出。`luna` / `sol` 是两位独立裁判的角色名，不是固定模型默认值。profile 可以引用同一专用评测目录；需事先准备 SDK 可读的模型 / 凭据文件。配置仅保存路径，不复制凭据内容。SDK 校验实际模型和 effort，不选取隐式个人默认值，也不将不支持的 effort 调整为受支持的值。
 
 通用 package 沿用相同的 `answer` / `judges` 配置，不新增独立压缩模型键；压缩使用答题模型描述符。生成的 SDK 配置保留冻结候选的 `sdk_path`，不改用第三方 package 依赖中的 SDK。即使模型描述符已存在，离线 preflight 仍阻断网络。
+
+### 生成英文原生快照
+
+快照生成是显式的付费服务商入口，且仅生成英文 LME16 快照。请在获得授权后，使用明确的外部输入主动运行；普通准备阶段不会生成快照：
+
+```sh
+systemd-run --user --unit "$SNAPSHOT_UNIT" \
+  -p MemoryMax=14G -p MemorySwapMax=0 \
+  python3 benchmark/snapshots.py --config "$CONFIG" --data-root "$DATA_ROOT" \
+    --output "$OUT" --source-root "$ROOT" --workers "$N"
+```
+
+压缩使用 `config.answer`；其专用 profile 必须声明 `contextWindow=200000`。锁定的 SDK 1.4.0 按时间顺序读取语料投影，保留会话日期标记和原始消息 ID / 时间戳，不加入评测问题。全部切点由 SDK 原生自动阈值逻辑决定并生成真实摘要，不设固定次数或人工切点。已完成题目按哈希验证后复用，失败或未知在途请求不会隐式重放。使用独立且唯一的 service unit，workers 为 1–8，profile 与快照输出目录必须互不包含。
 
 ## 4. 准备及运行
 
@@ -129,7 +142,7 @@ systemd-run --user --scope \
 
 压缩和答题共享 `OUT/homes/<question-id>`，package 状态可跨恢复保留。序列化预检在 `OUT/serialization/<question-id>` 下使用私有 HOME 克隆，不改变题目的持久 HOME。压缩证据独立保存在 `OUT/compression/<question-id>/snapshot.json`，因此离线子集可以已有压缩记录但没有答卷。SDK 证据包括 `tools.json`、`sdk-registration.json`、压缩钩子 / 事件、工具执行及上下文 / 实际传输 payload 观察。
 
-`--compression native` 复用冻结原生快照；`--compression package` 在相同三个原生切点上调用 package 处理源历史，并始终要求零模型压缩，付费答题阶段也不例外。压缩器尝试访问服务商时明确失败，不回退到原生快照或伪造摘要；压缩需要模型的包应选用 `native`。
+`--compression native` 复用冻结原生快照；`--compression package` 恰好执行冻结数量的 package 压缩，并逐个匹配严格递增的原生源切点，始终要求零模型压缩，付费答题阶段也不例外。压缩器尝试访问服务商时明确失败，不回退到原生快照或伪造摘要；压缩需要模型的包应选用 `native`。
 
 英文一条命令离线预检，复用原生压缩。变量均指向显式外部输入；`QID_1` / `QID_2` 为已授权的冻结题号：
 

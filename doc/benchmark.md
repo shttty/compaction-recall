@@ -44,7 +44,7 @@ LME16 uses the fixed DEV8 and HARD8 subsets of [LongMemEval_M](https://huggingfa
 | `--compression native\|package` | Package arm only: reuse native snapshots, or run the package's compression hooks over the source history at the frozen native cuts. |
 | `--baseline-source` | Historical answer-run directory for exact prompt / reference binding; required for `LME16-Chinese`, optional for English. It is not a claim that the historical arm was native. |
 
-The LME question set retains `question.json`, `corpus.json`, `answer.json`, and `judge.json` under `data/dev8/<id>/` and `data/hard8/<id>/`. Each split's `data/<split>/manifest.json` lists its question IDs in run order under `selected`; the runner reads the selection there and binds the manifest hash into the run identity, so changing questions means editing data, not code. Legacy arms and `--compression native` reuse existing native compaction. `--compression package` uses the original chronological history and the three verified native cuts; it does not invent new cuts. `LME16-Chinese` binds the historical 2026-10-06 Chinese prompts and references through `--baseline-source` while native snapshot provenance remains separate. SWE uses external `freeze.json`, `questions.json`, and `gold.json`, with actual snapshot paths and hashes bound to its questions. These questions are derived from local SWE-chat sessions, not ready-made upstream QA.
+The LME question set retains `question.json`, `corpus.json`, `answer.json`, and `judge.json` under `data/dev8/<id>/` and `data/hard8/<id>/`. Each split's `data/<split>/manifest.json` lists its question IDs in run order under `selected`; the runner reads the selection there and binds the manifest hash into the run identity, so changing questions means editing data, not code. Legacy arms and `--compression native` reuse existing native compaction. `--compression package` uses the original chronological history and the frozen number of strictly increasing native cuts; it does not invent cuts. At least one genuine native compaction is required. `LME16-Chinese` binds the historical 2026-10-06 Chinese prompts and references through `--baseline-source` while native snapshot provenance remains separate. SWE uses external `freeze.json`, `questions.json`, and `gold.json`, with actual snapshot paths and hashes bound to its questions. These questions are derived from local SWE-chat sessions, not ready-made upstream QA.
 
 The runner's preparation stage generates and freezes candidate and input bindings from the actual source and locked dependencies, questions and references, model configuration, and existing snapshots. Do not supply `CANDIDATE`, `PINS`, `PREFLIGHT`, two judge configurations, or manual archive / commit hashes. Historical Chinese preflight is not reused as native snapshot evidence. Original frozen materials and historical metrics retain their original values; new code must not rewrite old fingerprints or write into an old run.
 
@@ -76,6 +76,19 @@ For example, an external `models.json`:
 All models, providers, and effort settings must be explicit. `luna` / `sol` are role names for two independent judges, not fixed model defaults. Profiles may point to the same dedicated evaluation directory; prepare model / credential files readable by the SDK in advance. The configuration stores only paths, not copies of credentials. The SDK validates the actual model / effort, does not select implicit personal defaults, and does not clamp unsupported effort settings.
 
 Generic package runs keep this same `answer` / `judges` configuration; there is no separate compression-model key. Compression uses the answer-model descriptor. The generated SDK configuration retains `sdk_path` from the frozen candidate, not from the third-party package's dependencies. Offline preflight blocks network access even when those descriptors are present.
+
+### Generating native English snapshots
+
+Snapshot generation is an explicit paid provider entry point and generates English LME16 only. Run it deliberately with authorized external inputs; normal preparation does not generate snapshots:
+
+```sh
+systemd-run --user --unit "$SNAPSHOT_UNIT" \
+  -p MemoryMax=14G -p MemorySwapMax=0 \
+  python3 benchmark/snapshots.py --config "$CONFIG" --data-root "$DATA_ROOT" \
+    --output "$OUT" --source-root "$ROOT" --workers "$N"
+```
+
+Compaction uses `config.answer`; its dedicated profile must declare `contextWindow=200000`. The locked SDK 1.4.0 receives the chronological corpus projection, including session-date markers and original message IDs/timestamps, without the evaluation question. Its native automatic threshold logic chooses every cut and generates real summaries; no fixed count or manual cuts are used. Completed questions are hash-verified and reused; failed or unknown in-flight requests are never implicitly replayed. Choose a unique service unit and 1–8 workers; keep the profile disjoint from the snapshot output.
 
 ## 4. Preparation and execution
 
@@ -129,7 +142,7 @@ Repeat `--package-root FIRST --package-root SECOND` to load both in command-line
 
 Compression and answer share `OUT/homes/<question-id>` so package state survives resume. Serialization preflight uses a private clone under `OUT/serialization/<question-id>` and cannot mutate the question's persistent HOME. Compression evidence is saved independently in `OUT/compression/<question-id>/snapshot.json`, so an offline subset can have recorded compactions without any answers. SDK evidence includes `tools.json`, `sdk-registration.json`, compaction hooks / events, tool executions, and context / wire payload observations.
 
-`--compression native` reuses frozen native snapshots. `--compression package` invokes the package over the source history at the same three native cuts and always requires zero-model compression, including paid answer stages: a package that tries to contact a provider fails explicitly, with no native or fake-summary fallback. Use `native` for packages whose compression needs a model.
+`--compression native` reuses frozen native snapshots. `--compression package` runs exactly the frozen number of package compactions, matching each strictly increasing native source cut, and always requires zero-model compression, including paid answer stages: a package that tries to contact a provider fails explicitly, with no native or fake-summary fallback. Use `native` for packages whose compression needs a model.
 
 One-command English offline preflight, reusing native compression (all variables name explicit external inputs; `QID_1` / `QID_2` are authorized frozen question IDs):
 

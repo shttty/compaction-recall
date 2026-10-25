@@ -21,7 +21,7 @@ async function preflight(args, guard, directory) {
   child.stdout.setEncoding('utf8'); child.stdout.on('data', value => { stdout += value; });
   child.stderr.setEncoding('utf8'); child.stderr.on('data', value => { stderr += value; });
   child.stdin.on('error', () => {});
-  child.stdin.write(JSON.stringify({ type: 'prompt', id: 'offline-preflight', message: 'quasar' }) + '\n');
+  child.stdin.write(JSON.stringify({ type: 'prompt', id: 'offline-preflight', message: 'quasar at 7:30' }) + '\n');
   const code = await new Promise((resolveResult, reject) => {
     const timeout = setTimeout(() => { child.kill('SIGKILL'); reject(new Error('Offline SDK preflight timed out')); }, 60000);
     child.once('error', error => { clearTimeout(timeout); reject(error); });
@@ -76,7 +76,10 @@ for group in ('dev8', 'hard8'):
         questions.append({'id': qid, 'question': question['question'], 'question_date': question['question_date'], 'language': 'en'})
         session = source / (qid + '.jsonl')
         rows = [{'type': 'session', 'version': 3, 'id': 'synthetic-' + qid}]
-        rows += [{'type': 'compaction', 'id': 'synthetic-compaction-' + str(n), 'summary': 'Synthetic offline fixture only.', 'firstKeptEntryId': 'retained'} for n in range(3)]
+        for n in range(3):
+            retained = 'retained-' + str(n)
+            rows.append({'type': 'message', 'id': retained, 'message': {'role': 'user', 'content': [{'type': 'text', 'text': 'synthetic native history'}]}})
+            rows.append({'type': 'compaction', 'id': 'synthetic-compaction-' + str(n), 'summary': 'Synthetic offline fixture only.', 'firstKeptEntryId': retained})
         session.write_text(''.join(json.dumps(row) + '\\n' for row in rows))
         sessions['pi/' + qid] = {'path': str(session), 'sha256': run.sha(session)}
 identity = {'dataset': 'LME16-English', 'fixtureOnly': True, 'config': {'compression': {'provider': 'synthetic-offline', 'model': 'fixture-model', 'effort': 'off'}}}

@@ -2,15 +2,15 @@ import { closeSync, existsSync, fsyncSync, mkdirSync, openSync, writeFileSync } 
 import { join } from 'node:path';
 
 const LOCATOR_TYPE = 'compaction-recall:compacted-locators:v1';
-const HEADER = 'Compacted-history locators (lexical hints only).';
+const HINTS_TAG = '<compacted-history-hints>';
 
 export function persistContextPayload(payload, { directory, toolsOnly, nativeLocators = [], source = 'before_provider_request', runtime }) {
   mkdirSync(directory, { recursive: true, mode: 0o700 });
   const messages = payload?.input ?? payload?.messages;
   if (!Array.isArray(messages)) throw new Error('Missing serialized provider messages');
-  // Recall tool results contain the same header; only user messages can be hints.
+  // Only user-role messages can carry injected hints; recall tool results are never wrapped in the tag.
   const serializedLocators = messages.filter(message => message.role === 'user'
-    && JSON.stringify(message.content).includes(HEADER));
+    && JSON.stringify(message.content).includes(HINTS_TAG));
   if (toolsOnly && (nativeLocators.length || serializedLocators.length)) throw new Error('Tools-only locator leak');
   if (nativeLocators.some(locator => !serializedLocators.some(message => JSON.stringify(message.content)
     .includes(JSON.stringify(locator.content).slice(1, -1))))) throw new Error('Locator serialization mismatch');

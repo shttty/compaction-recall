@@ -95,7 +95,7 @@ test('describe uses real SDK descriptors for all phases without network or profi
     assert.equal(result.status, 0, result.stderr);
     assert.deepEqual(JSON.parse(result.stdout), {
       provider: 'synthetic-offline', model: 'fixture-model', effort: 'off',
-      contextWindow: 16384, maxTokens: 2048, sdk_version: '1.0.0',
+      contextWindow: 16384, maxTokens: 2048, sdk_version: JSON.parse(readFileSync(path.join(sdkDirectory(), 'package.json'), 'utf8')).version,
     });
   }
   assert.deepEqual(f.hashFiles(f.profile), before);

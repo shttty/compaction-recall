@@ -13,7 +13,7 @@ const HELP = `Usage: node benchmark/sdk/session.mjs --config PATH --phase compre
 
 Uses the explicitly configured Pi SDK and read-only phase profile. No default model,
 provider, effort, personal configuration, or model-catalog network access.
-Supported SDK: @earendil-works/pi-coding-agent 1.0.0 (native runtime-host RPC API).
+SDK: @earendil-works/pi-coding-agent (native runtime-host RPC API); the installed version is reported, not pinned.
 `;
 const PHASES = ['compression', 'answer', 'judge'];
 const CONFIG_PHASES = ['answer', 'judge'];
@@ -118,9 +118,7 @@ export async function main({ appendSystemPrompt = '', configureModelRuntime, obs
  const provider = configuredModels.providers?.[phase.provider];
  if (!provider?.models?.some(model => model.id === phase.model)) throw new Error('Selected provider/model must be explicitly declared in profile/models.json');
  const sdkPackage = json(path.join(sdkPath, 'package.json'));
- if (sdkPackage.name !== '@earendil-works/pi-coding-agent' || sdkPackage.version !== '1.0.0') {
-  throw new Error('Unsupported SDK: requires @earendil-works/pi-coding-agent 1.0.0');
- }
+ if (sdkPackage.name !== '@earendil-works/pi-coding-agent') throw new Error('Unsupported SDK: expected @earendil-works/pi-coding-agent');
  const arm = values.arm ?? 'native';
  if (!['native', 'production', 'package'].includes(arm)) throw new Error('Unknown --arm');
  if (values.phase === 'judge' && (arm !== 'native' || values['plugin-dir'] || values.home)) throw new Error('Judge cannot load extensions or a persistent HOME');
