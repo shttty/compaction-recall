@@ -4,8 +4,8 @@ import { setImmediate as yieldImmediate } from 'node:timers/promises';
 import { branchMessageEntries, compactedEntries } from '../history/history.mjs';
 import { locatorText } from '../history/locator.mjs';
 import { measured } from '../observability/timing.mjs';
-import { createQueryCheck, queryNow } from '../search/sqlite-deadline.mjs';
-import { parseQuery } from '../search/concept-query-compiler.mjs';
+import { createQueryCheck, queryNow } from '../sqlite/sqlite-deadline.mjs';
+import { parseQuery } from '../query/concept-query-compiler.mjs';
 
 // jiti transforms import.meta.url; its CommonJS filename remains the original source.
 const sourceURL = typeof __filename === 'string' ? pathToFileURL(__filename) : import.meta.url;
@@ -283,7 +283,7 @@ export class SQLiteBackgroundIndex {
  }
  /** @param {unknown} query @param {import('@earendil-works/pi-coding-agent').SessionEntry[]} branch
   * @param {{limit?: number, offset?: number}} options
-  * @returns {Promise<{total: number, page: ReturnType<typeof import('../search/sqlite-page.mjs').sqliteRecallPage>, ids: string[]}>} */
+  * @returns {Promise<{total: number, page: ReturnType<typeof import('../sqlite/sqlite-page.mjs').sqliteRecallPage>, ids: string[]}>} */
  async queryPage(query, branch, options = {}) {
   return /** @type {any} */ (await this.queryRanked(query, branch, { mode: 'manual', options: { ...options, page: true } }));
  }

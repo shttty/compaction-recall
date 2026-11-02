@@ -1,6 +1,6 @@
-import { createIndex, parseAutoGate } from '../search/sqlite-index.mjs';
+import { createIndex, parseAutoGate } from '../sqlite/sqlite-index.mjs';
 import { measured } from '../observability/timing.mjs';
-import { createQueryCheck } from '../search/sqlite-deadline.mjs';
+import { createQueryCheck } from '../sqlite/sqlite-deadline.mjs';
 
 export function createWorkerEngine({ autoGate = 280, snippetBudget = 240, jieba = true } = {}) {
   autoGate = parseAutoGate(autoGate);

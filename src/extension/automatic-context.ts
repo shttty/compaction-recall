@@ -2,7 +2,7 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import type { SQLiteBackgroundIndex } from "../worker/sqlite-background-index.mjs";
 import { withLocators, locatorText, formatLocatorRows } from "../history/locator.mjs";
 import { recallTiming, measured } from "../observability/timing.mjs";
-import { displayRows } from "../search/sqlite-page.mjs";
+import { displayRows } from "../sqlite/sqlite-page.mjs";
 import { branch, observe } from "./operations.ts";
 
 const RECENT_USER_MESSAGES = 2;
