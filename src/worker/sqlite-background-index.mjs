@@ -1,15 +1,12 @@
 import { Worker } from 'node:worker_threads';
 import { pathToFileURL } from 'node:url';
 import { setImmediate as yieldImmediate } from 'node:timers/promises';
-import { branchMessageEntries, compactedEntries } from '../history/history.mjs';
-import { locatorText } from '../history/locator.mjs';
 import { measured } from '../observability/timing.mjs';
 import { createQueryCheck, queryNow } from '../sqlite/sqlite-deadline.mjs';
-import { parseQuery } from '../query/concept-query-compiler.mjs';
-
+import { parseQuery } from '../query/concept-query.mjs';
+import { buildIndex, cancelled, prepareIndex } from './sqlite-background-build.mjs';
 // jiti transforms import.meta.url; its CommonJS filename remains the original source.
 const sourceURL = typeof __filename === 'string' ? pathToFileURL(__filename) : import.meta.url;
-const cancelled = () => Object.assign(new Error('Index generation cancelled'), { name: 'AbortError' });
 export class SQLiteBackgroundIndex {
  /** @param {{timer?: import('../observability/timing.mjs').StageTiming, autoGate?: number, recallTimeoutMs?: number, snippetBudget?: number, jieba?: boolean, workerFactory?: (options: {engineOptions: {autoGate: number, snippetBudget: number, jieba: boolean}}) => Worker, yieldFn?: () => Promise<unknown>}} options */
  constructor({ timer, autoGate = 280, recallTimeoutMs = 5000, snippetBudget = 240, jieba = true,
@@ -124,104 +121,10 @@ export class SQLiteBackgroundIndex {
   return this.timer ? this.timer.runAsync(`worker_roundtrip_${type}`, send) : send();
  }
  prepare(branch, { preindexLive = false } = {}) {
-  if (this.disposed) return Promise.reject(cancelled());
-  if (preindexLive && this.activeQueries) {
-   const generation = this.generation;
-   return new Promise(resolve => this.queryIdleWaiters.push(resolve)).then(() => {
-    if (generation !== this.generation || this.disposed) throw cancelled();
-    return this.prepare(branch, { preindexLive: true });
-   });
-  }
-  const next = measured(this.timer, 'main_branch_selection', () => {
-   if (!this.branch || branch.length !== this.branch.length || branch.some((entry, i) => entry !== this.branch[i])) {
-    this.branch = branch.slice();
-    this.fullEntries = measured(this.timer, 'branch_projection', () => branchMessageEntries(branch));
-    this.compacted = measured(this.timer, 'compacted_selection', () => this.fullEntries.slice(0, compactedEntries(branch).length));
-   }
-   const preserve = this.entries.length >= this.compacted.length && this.entries.every((entry, i) => entry === this.fullEntries[i]);
-   return preindexLive ? this.fullEntries : preserve ? this.entries : this.compacted;
-  });
-  const eligibleCount = this.compacted.length;
-  const same = next.length === this.entries.length && next.every((entry, i) => entry === this.entries[i]);
-  if (same && this.eligibleCount === eligibleCount && this.preparation) return this.preparation;
-  let append = this.ready && next.length >= this.entries.length && this.entries.every((entry, i) => entry === next[i]);
-  const seen = new Set(this.entries.filter(entry => ['user', 'assistant'].includes(entry.message.role)).map(entry => entry.id));
-  for (const entry of next.slice(this.entries.length)) {
-   if (!['user', 'assistant'].includes(entry.message.role)) continue;
-   if (seen.has(entry.id)) append = false;
-   seen.add(entry.id);
-  }
-  const from = append ? this.entries.length : 0;
-  const serveOld = append && this.eligibleCount === eligibleCount;
-  if (!append && this.worker) void this.stopWorker();
-  const generation = ++this.generation;
-  this.entries = next;
-  this.eligibleCount = eligibleCount;
-  this.serveWhilePreparing = serveOld;
-  this.ready = false;
-  const build = () => this.build(next, from, append, generation);
-  this.preparation = (this.timer ? this.timer.runAsync('background_prepare', build) : build()).catch(error => {
-   if (generation !== this.generation || this.disposed) throw cancelled();
-   this.failed = true;
-   this.failure = error;
-   void this.stopWorker();
-   this.event('worker_failed');
-   throw error;
-  });
-  return this.preparation;
+  return prepareIndex(this, branch, preindexLive);
  }
- async build(next, from, append, generation) {
-  if (this.failed) return;
-  await this.termination;
-  if (generation !== this.generation || this.disposed) throw cancelled();
-  this.startWorker();
-  await this.rpc('begin', { append, eligibleCount: this.eligibleCount }, generation);
-  let batch = [], chars = 0;
-  const flush = async () => {
-   if (batch.length) { await this.rpc('batch', { entries: batch }, generation); batch = []; chars = 0; }
-   await this.yieldFn();
-  };
-  for (let i = from; i < next.length; i++) {
-   if (generation !== this.generation || this.disposed) throw cancelled();
-   const original = next[i];
-   if (!['user', 'assistant'].includes(original.message.role)) continue;
-   const text = measured(this.timer, 'main_text_extraction', () => locatorText(original.message));
-   const entry = { type: 'message', sourcePosition: i, id: original.id, timestamp: original.timestamp, message: { role: original.message.role, content: text } };
-   if (text.length > 65536) {
-    await flush();
-    await this.rpc('large_start', { entry: { ...entry, message: { ...entry.message, content: '' } } }, generation);
-    for (let at = 0; at < text.length; at += 65536) {
-     await this.rpc('large_chunk', { text: text.slice(at, at + 65536) }, generation);
-     await this.yieldFn();
-    }
-    await this.rpc('large_end', {}, generation);
-   } else {
-    if (chars + text.length > 65536) await flush();
-    batch.push(entry); chars += text.length;
-   }
-   if (batch.length >= 32 || chars >= 65536) await flush();
-  }
-  await flush();
-  const result = await this.rpc('commit', {}, generation);
-  if (generation !== this.generation || this.disposed) throw cancelled();
-  this.ready = true;
-  this.event('background_index_ready', { kind: append ? 'incremental_update' : 'build_or_rebuild', documents: result.documents, workerHeapBytes: result.heapUsed });
-  if (this.timer && process.env.COMPACTION_RECALL_TIMING_FILE) {
-   const worker = this.worker;
-   this.memoryDocuments = result.documents;
-   await this.sampleMemory(worker, generation, result.documents, 'post_build');
-   if (generation !== this.generation || this.disposed) throw cancelled();
-   if (worker !== this.worker || worker.threadId === -1) return;
-   this.memoryTimers ??= new Set();
-   const timer = setTimeout(() => {
-    this.memoryTimers.delete(timer);
-    // Later commits may have changed the document count in this same worker.
-    void this.sampleMemory(worker, generation, this.memoryDocuments, 'settled')
-     .then(path => { if (path) this.timer?.flush(path); }).catch(() => { });
-   }, 3000);
-   timer.unref();
-   this.memoryTimers.add(timer);
-  }
+ build(next, from, append, generation) {
+  return buildIndex(this, next, from, append, generation);
  }
  /** @param {Worker} worker @param {number} generation @param {number} entries
   * @param {'post_build' | 'settled'} phase */

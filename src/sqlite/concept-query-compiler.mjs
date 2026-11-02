@@ -1,4 +1,4 @@
-import { LIMITS, fail, text, array, unique, parseQuery } from '../query/concept-query-compiler.mjs';
+import { LIMITS, fail, text, array, unique, parseQuery } from '../query/concept-query.mjs';
 
 function join(op              , values                   )         {
   const parts = unique(values);

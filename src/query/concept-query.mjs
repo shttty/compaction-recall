@@ -1,31 +1,4 @@
-// Generated once with Node stripTypeScriptTypes from unchanged author query.ts.
-// Source SHA256: ee35b838e82db1f4a2fc559565f86f6ee4c0ace9ad5a887f526c9390084df914
 /** Model-facing lexical query. No SQL or FTS5 syntax is accepted. */
-
-
-
-
-
-
-
-
-
-/**
- * Backend-only positive expansion: OR of branches, AND of atoms in each branch.
- * Every atom must represent one indexed FTS term under the configured tokenizer.
- * Do not pass index-time expansions as one AND branch without considering meaning.
- */
-
-
-
-
-
-
-
-
-
-
-
 export const LIMITS = Object.freeze({
   groups: 5,
   alternatives: 8,

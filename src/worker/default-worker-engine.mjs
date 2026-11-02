@@ -1,6 +1,10 @@
 import { createIndex, parseAutoGate } from '../sqlite/sqlite-index.mjs';
 import { measured } from '../observability/timing.mjs';
 import { createQueryCheck } from '../sqlite/sqlite-deadline.mjs';
+import { sqliteRecallPage } from '../sqlite/sqlite-page.mjs';
+import { LOCATOR_HEADER, recallPageFromRows } from '../history/locator.mjs';
+
+const renderPage = (rows, options, bounds) => sqliteRecallPage(rows, options, bounds, { LOCATOR_HEADER, recallPageFromRows });
 
 export function createWorkerEngine({ autoGate = 280, snippetBudget = 240, jieba = true } = {}) {
   autoGate = parseAutoGate(autoGate);
@@ -21,7 +25,7 @@ export function createWorkerEngine({ autoGate = 280, snippetBudget = 240, jieba 
         measured(timer, 'postings_append', () => index.append(additions));
         documents = next;
       } else if (changed) {
-        const replacement = measured(timer, 'postings_activation', () => createIndex(next, { jieba, autoGate, snippetBudget }));
+        const replacement = measured(timer, 'postings_activation', () => createIndex(next, { jieba, autoGate, snippetBudget, measured, renderPage }));
         index?.close(); index = replacement; documents = next;
       }
       timer?.mark('worker_maintenance', { kind: appendable ? 'incremental_update' : changed ? 'build_or_rebuild' : 'activation', entries: index.size, execution: 'worker_thread' });
