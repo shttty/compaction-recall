@@ -72,6 +72,8 @@ Weighted length counts each Chinese character as 2 and each other Unicode code p
 
 The default is `autoGate=280`: automatic queries are still allowed at a weighted length of exactly 280 and are skipped above it. This existing upper gate is unchanged: it measures the original current message's weighted length, not trimmed UTF-8 bytes or borrowed text. Longer messages are treated as instructions for a long task, keeping unrelated history out of the context; the model can still explicitly use retrieval tools.
 
+These rules come from scenario design, not from measured tuning. They target conversational follow-ups: a short reply such as `那个呢` should keep the topic, a generic word should not pull up unrelated history, and weak matches should stay silent. The 10-byte minimum and the 10–240-byte borrowing window were chosen by hand to skip contentless replies and to keep a pasted block from being used for term lookups; synthetic scenario tests in `test/production/tools/automatic-topic.test.mjs` cover topic switches, `继续` and cross-word fragments. A single A/B run on the LME16-English snapshots when the rules were introduced scored 7/16 against 8/16 for the previous code, within single-run noise. LME16 asks one self-contained question per case, so borrowing and the short-message minimum are never exercised there; comparing alternatives such as always prepending the previous user message needs multi-turn sessions with topic switches.
+
 Hints apply only to the current model request. They are not written to session history and do not accumulate across turns. They provide search leads and may leave relevant facts uncovered; expand the original text to verify important conclusions.
 
 ## Tool behavior
