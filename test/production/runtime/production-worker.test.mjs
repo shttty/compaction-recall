@@ -7,7 +7,6 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import register from '../../../src/index.ts';
-import { LOCATOR_TYPE } from '../../../src/history/locator.mjs';
 
 const timestamp = '2026-09-30T00:00:00.000Z';
 const msg = (id, content, role = 'user') => ({
@@ -19,12 +18,14 @@ const compact = (id, firstKeptEntryId) => ({
   firstKeptEntryId, summary: 'summary', tokensBefore: 100
 });
 
+// Retrieval-only harness: records are not persisted, so every request queries again.
+const hintOf = messages => { const last = messages.findLast(m => m.role === 'user')?.content?.at?.(-1); return typeof last === 'object' && last.text.startsWith('<compacted-history-hints>') ? last.text : undefined; };
 function harness(initial) {
   let branch = initial;
   const tools = new Map(), hooks = new Map();
   const ctx = { sessionManager: { getBranch: () => branch, getSessionId: () => 'production-fixture' } };
   register({
-    registerTool: tool => tools.set(tool.name, tool), on: (name, hook) => {
+    registerTool: tool => tools.set(tool.name, tool), appendEntry() {}, on: (name, hook) => {
       const handlers = hooks.get(name) ?? []; handlers.push(hook); hooks.set(name, handlers);
     }
   });
@@ -41,7 +42,7 @@ function harness(initial) {
       const messages = [{ role: 'user', content: 'quasar nebula', timestamp: 0 }];
       const actual = await this.emit('context', { messages });
       const rows = text => text.split('\n').filter(line => line.startsWith('{')).map(JSON.parse);
-      const autoIds = rows(actual.messages.find(message => message.customType === LOCATOR_TYPE).content).map(row => row.id);
+      const autoIds = rows(hintOf(actual.messages)).map(row => row.id);
       const manualIds = [];
       let offset = 0;
       do {
@@ -115,6 +116,8 @@ for (const timingEnabled of [false, true]) {
         const extension = loaded.extensions[0];
         const branch = ${JSON.stringify([msg('sdk-match', 'quasar nebula fixture'), msg('sdk-second', 'quasar second'), msg('sdk-live', 'tail'), compact('sdk-c', 'sdk-live')])};
         const ctx = { sessionManager: { getBranch: () => branch, getSessionId: () => 'isolated-sdk' } };
+        // No session is bound here; hint records land on the fixture branch.
+        loaded.runtime.appendEntry = (customType, data) => branch.push({ type: 'custom', id: 'hint', customType, data });
         async function emit(type, fields = {}) {
           let result;
           for (const handler of extension.handlers.get(type) ?? []) result = await handler({ type, ...fields }, ctx);

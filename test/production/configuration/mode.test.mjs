@@ -36,7 +36,7 @@ function capture() {
   register({ registerTool: tool => tools.set(tool.name, tool), on: (name, hook) => hooks.set(name, hook) });
   return { tools, hooks };
 }
-const fullHooks = ['agent_end', 'context', 'message_end', 'session_compact', 'session_shutdown', 'session_start', 'session_tree', 'turn_end'];
+const fullHooks = ['agent_end', 'context', 'input', 'message_end', 'session_compact', 'session_shutdown', 'session_start', 'session_tree', 'turn_end'];
 
 test('mode uses only the agent config at registration, with environment overriding the file', async () => {
   for (const [config, env, full] of [[undefined, undefined, true], [{ mode: 'full' }, undefined, true], [{ mode: 'lite' }, undefined, false], [{ mode: 'lite' }, 'full', true], [{ mode: 'full' }, 'lite', false]]) {

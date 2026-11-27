@@ -2,7 +2,6 @@ import '../../fixtures/isolated-agent-dir.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import register from '../../../src/index.ts';
-import { LOCATOR_TYPE } from '../../../src/history/locator.mjs';
 
 const timestamp = '2026-10-06T00:00:00Z';
 const msg = (id, content) => ({ type: 'message', id, timestamp, message: { role: 'user', content } });
@@ -10,6 +9,8 @@ const branch = [msg('long', '南京市长江大桥 ' + 'padding '.repeat(30)),
   msg('pieces', '南京 京市 市长 长江 江大 大桥'), msg('unrelated', '广州塔'),
   msg('seven', 'topic at 7:30'), msg('eight', 'topic at 8:30'), msg('live', 'retained'),
   { type: 'compaction', id: 'compact', timestamp, firstKeptEntryId: 'live', summary: '', tokensBefore: 100 }];
+// Retrieval-only harness: records are not persisted, so every request queries again.
+const hintOf = messages => { const last = messages.findLast(m => m.role === 'user')?.content?.at?.(-1); return typeof last === 'object' && last.text.startsWith('<compacted-history-hints>') ? last.text : undefined; };
 const ids = result => result.content[0].text.split('\n').filter(line => line.startsWith('{')).map(line => JSON.parse(line).id);
 function harness(jieba) {
   const saved = process.env.COMPACTION_RECALL_JIEBA;
@@ -18,7 +19,7 @@ function harness(jieba) {
   if (jieba === undefined) delete process.env.COMPACTION_RECALL_JIEBA;
   else process.env.COMPACTION_RECALL_JIEBA = jieba;
   const tools = new Map(), hooks = new Map();
-  try { register({ registerTool: tool => tools.set(tool.name, tool), on: (name, fn) => {
+  try { register({ registerTool: tool => tools.set(tool.name, tool), appendEntry() {}, on: (name, fn) => {
     const handlers = hooks.get(name) ?? []; handlers.push(fn); hooks.set(name, handlers);
   } }); } finally {
     if (saved === undefined) delete process.env.COMPACTION_RECALL_JIEBA; else process.env.COMPACTION_RECALL_JIEBA = saved;
@@ -31,7 +32,7 @@ function harness(jieba) {
     return result;
   };
   return { recall: params => tools.get('history_recall').execute('release', params, undefined, undefined, ctx),
-    emit, async auto(query) { return (await emit('context', { messages: [{ role: 'user', content: query, timestamp: 0 }] })).messages.find(m => m.customType === LOCATOR_TYPE)?.content; },
+    emit, async auto(query) { return hintOf((await emit('context', { messages: [{ role: 'user', content: query, timestamp: 0 }] })).messages); },
     close: () => emit('session_shutdown', { reason: 'quit' }) };
 }
 

@@ -16,6 +16,8 @@ const compact = (id, firstKeptEntryId) => ({
   parentId: null, firstKeptEntryId, summary: 'not searchable summary', tokensBefore: 100
 });
 const text = (result) => result.content[0].text;
+// Retrieval-only harness: records are not persisted, so every request queries again.
+const hintOf = messages => { const last = messages.findLast(m => m.role === 'user')?.content?.at?.(-1); return typeof last === 'object' && last.text.startsWith('<compacted-history-hints>') ? last.text : undefined; };
 const activeHarnesses = new Set();
 afterEach(async () => {
   for (const close of activeHarnesses) await close();
@@ -26,14 +28,14 @@ function harness(initial) {
   const tools = new Map();
   const hooks = new Map();
   const ctx = { sessionManager: { getBranch: () => branch } };
-  register({ registerTool: (tool) => tools.set(tool.name, tool), on: (event, handler) => hooks.set(event, handler) });
+  register({ registerTool: (tool) => tools.set(tool.name, tool), appendEntry() {}, on: (event, handler) => hooks.set(event, handler) });
   activeHarnesses.add(() => hooks.get('session_shutdown')?.({ type: 'session_shutdown', reason: 'quit' }, ctx));
   return {
     tools, setBranch: (value) => { branch = value; },
     run: (name, params) => tools.get(name).execute('test', params, undefined, undefined, ctx),
     async auto(query) {
       const result = await hooks.get('context')({ messages: [{ role: 'user', content: query, timestamp: 0 }] }, ctx);
-      return result.messages.find(message => message.role === 'custom')?.content;
+      return hintOf(result.messages);
     }
   };
 }

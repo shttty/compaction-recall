@@ -2,12 +2,13 @@ import '../../fixtures/isolated-agent-dir.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import register from '../../../src/index.ts';
-import { LOCATOR_TYPE } from '../../../src/history/locator.mjs';
 
 const timestamp = '2026-10-25T00:00:00Z';
 const msg = (id, content) => ({ type: 'message', id, timestamp, message: { role: 'user', content } });
 const followup = '这个怎么可以呢';
 const ids = text => text?.split('\n').filter(line => line.startsWith('{')).map(line => JSON.parse(line).id).sort() ?? [];
+// Retrieval-only harness: records are not persisted, so every request queries again.
+const hintOf = messages => { const last = messages.findLast(m => m.role === 'user')?.content?.at?.(-1); return typeof last === 'object' && last.text.startsWith('<compacted-history-hints>') ? last.text : undefined; };
 const history = [
   msg('dnf', 'dnf ansible-core 2.21.5 EL8 Python 3.9 模块可用'),
   msg('docker', 'docker 容器网络故障已经修复'),
@@ -22,7 +23,7 @@ function harness(jieba, records = history) {
   process.env.COMPACTION_RECALL_JIEBA = jieba ? 'on' : 'off';
   const tools = new Map(), hooks = new Map();
   try {
-    register({ registerTool: tool => tools.set(tool.name, tool), on(name, fn) {
+    register({ registerTool: tool => tools.set(tool.name, tool), appendEntry() {}, on(name, fn) {
       const handlers = hooks.get(name) ?? []; handlers.push(fn); hooks.set(name, handlers);
     } });
   } finally {
@@ -45,7 +46,7 @@ function harness(jieba, records = history) {
       // Assistant/tool text must not become a borrowed topic.
       messages.splice(messages.length - 1, 0, { role: 'assistant', content: [{ type: 'text', text: 'docker' }], timestamp: 0 });
       const result = await emit('context', { messages });
-      const hint = result.messages.find(message => message.customType === LOCATOR_TYPE)?.content;
+      const hint = hintOf(result.messages);
       return ids(hint);
     },
     async recall(surface) {

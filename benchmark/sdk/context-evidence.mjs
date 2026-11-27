@@ -1,7 +1,6 @@
 import { closeSync, existsSync, fsyncSync, mkdirSync, openSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const LOCATOR_TYPE = 'compaction-recall:compacted-locators:v1';
 const HINTS_TAG = '<compacted-history-hints>';
 
 export function persistContextPayload(payload, { directory, toolsOnly, nativeLocators = [], source = 'before_provider_request', runtime }) {
@@ -47,8 +46,10 @@ export function withContextEvidence(pi, { directory, toolsOnly }) {
       if (property === 'on') return (name, handler) => target.on(name, name === 'context'
         ? async (event, ctx) => {
           const result = await handler(event, ctx);
-          locators = (result?.messages ?? event.messages).filter(message => message.role === 'custom'
-            && message.customType === LOCATOR_TYPE);
+          // Hints ride as the final text block of their user message in the request copy.
+          locators = (result?.messages ?? event.messages).flatMap(message => message.role === 'user'
+            && Array.isArray(message.content) ? message.content.filter(block => block.type === 'text'
+              && block.text.startsWith(HINTS_TAG)).map(block => ({ content: block.text })) : []);
           return result;
         } : handler);
       const value = Reflect.get(target, property);

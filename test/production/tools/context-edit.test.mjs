@@ -4,7 +4,6 @@ import test, { afterEach } from 'node:test';
 import { SessionManager } from '@earendil-works/pi-coding-agent';
 import register from '../../../src/index.ts';
 import * as history from '../../../src/history/history.mjs';
-import { LOCATOR_TYPE } from '../../../src/history/locator.mjs';
 
 const shutdowns = [];
 afterEach(async () => { for (const shutdown of shutdowns.splice(0)) await shutdown(); });
@@ -19,6 +18,8 @@ const comp = (firstKeptEntryId = 'live', id = 'compaction') => ({
   type: 'compaction', id, parentId: null,
   timestamp: stamp, firstKeptEntryId, summary: 'summaryOnlyMarker', tokensBefore: 100
 });
+// Retrieval-only harness: records are not persisted, so every request queries again.
+const hintOf = messages => { const last = messages.findLast(m => m.role === 'user')?.content?.at?.(-1); return typeof last === 'object' && last.text.startsWith('<compacted-history-hints>') ? last.text : undefined; };
 const rows = text => text?.split('\n').filter(line => line.startsWith('{')).map(JSON.parse) ?? [];
 const text = result => result.content[0].text;
 function freeze(value) {
@@ -30,14 +31,14 @@ function freeze(value) {
 }
 function host(sessionManager) {
   const tools = new Map(), hooks = new Map();
-  register({ registerTool: tool => tools.set(tool.name, tool), on: (name, hook) => hooks.set(name, hook) });
+  register({ registerTool: tool => tools.set(tool.name, tool), appendEntry() {}, on: (name, hook) => hooks.set(name, hook) });
   shutdowns.push(() => hooks.get('session_shutdown')());
   const ctx = { sessionManager };
   return {
     run: (name, params) => tools.get(name).execute('context-edit', params, undefined, undefined, ctx),
     async auto(query) {
       const result = await hooks.get('context')({ messages: [message(query)] }, ctx);
-      return result.messages.find(m => m.customType === LOCATOR_TYPE)?.content;
+      return hintOf(result.messages);
     },
   };
 }

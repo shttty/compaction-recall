@@ -6,7 +6,7 @@ import { measured } from "../observability/timing.mjs";
 /** @typedef {import("@earendil-works/pi-coding-agent").SessionEntry} SessionEntry */
 import { searchableMessageText } from "./history.mjs";
 
-export const LOCATOR_TYPE = "compaction-recall:compacted-locators:v1";
+export const HINT_ENTRY_TYPE = "compaction-recall:hint:v1";
 const MAX_LOCATORS = 5;
 const LOCATOR_CHARS = 1500;
 const RECALL_DEFAULT_LIMIT = 50;
@@ -121,22 +121,39 @@ export function recallPageFromRows(rows, options = {}, timer, { total = rows.len
 }
 
 /**
- * Called for every model request, including consumed steering/follow-up messages.
- * @param {ContextEvent["messages"]} messages
+ * Hint records written on the branch after its latest compaction, keyed by user message timestamp.
+ * Older records are dropped: compaction already rewrote the prompt prefix, and the host sizes the
+ * kept tail without hints, so replaying them would push the next request back over the threshold.
  * @param {SessionEntry[]} branch
- * @param {(query: string, branch: SessionEntry[]) => string | undefined} lookup
+ * @returns {Map<number, string | null>}
+ */
+export function hintRecords(branch) {
+  /** @type {Map<number, string | null>} */
+  const records = new Map();
+  for (let at = branch.length - 1; at >= 0 && branch[at].type !== "compaction"; at--) {
+    const entry = branch[at];
+    if (entry.type !== "custom" || entry.customType !== HINT_ENTRY_TYPE) continue;
+    const data = /** @type {{ timestamp?: unknown, content?: unknown } | undefined} */ (entry.data);
+    if (typeof data?.timestamp !== "number" || records.has(data.timestamp)) continue;
+    records.set(data.timestamp, typeof data.content === "string" ? data.content : null);
+  }
+  return records;
+}
+
+/**
+ * Request copy with each recorded hint appended to its user message as a final text block.
+ * The bytes repeat on every request, so provider prefix caches and OMP's history projection
+ * treat the message as stable; the session's user message itself is never changed.
+ * @param {ContextEvent["messages"]} messages
+ * @param {Map<number, string | null>} records
  * @returns {ContextEvent["messages"]}
  */
-export function withLocators(messages, branch, lookup) {
-  const clean = messages.filter(m => !(m.role === "custom" && m.customType === LOCATOR_TYPE));
-  const user = clean.findLastIndex(m => m.role === "user");
-  if (user < 0) return clean;
-  const last = clean[user];
-  const content = lookup("content" in last ? locatorText(last) : "", branch);
-  if (!content) return clean;
-  // Inserting here leaves subsequent assistant calls and tool results adjacent.
-  return [...clean.slice(0, user + 1), {
-    role: "custom", customType: LOCATOR_TYPE, content,
-    display: false, timestamp: last.timestamp
-  }, ...clean.slice(user + 1)];
+export function withHints(messages, records) {
+  return messages.map(message => {
+    if (message.role !== "user") return message;
+    const hint = records.get(message.timestamp);
+    if (!hint) return message;
+    const blocks = typeof message.content === "string" ? [{ type: "text", text: message.content }] : message.content;
+    return /** @type {typeof message} */ ({ ...message, content: [...blocks, { type: "text", text: hint }] });
+  });
 }

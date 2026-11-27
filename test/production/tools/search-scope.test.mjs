@@ -7,16 +7,18 @@ const msg = (id, content, role = 'assistant') => ({ type: 'message', id, parentI
 const branch = old => [...old, msg('live', 'tail', 'user'), { type: 'compaction', id: 'c', timestamp: '2026-09-30T00:00:00.000Z', firstKeptEntryId: 'live' }];
 const shutdowns = [];
 afterEach(async () => { for (const shutdown of shutdowns.splice(0)) await shutdown(); });
+// Retrieval-only harness: records are not persisted, so every request queries again.
+const hintOf = messages => { const last = messages.findLast(m => m.role === 'user')?.content?.at?.(-1); return typeof last === 'object' && last.text.startsWith('<compacted-history-hints>') ? last.text : undefined; };
 const tools = b => {
  const t = new Map(), hooks = new Map();
- register({ registerTool: x => t.set(x.name, x), on: (name, fn) => hooks.set(name, fn) });
+ register({ registerTool: x => t.set(x.name, x), appendEntry() {}, on: (name, fn) => hooks.set(name, fn) });
  const ctx = { sessionManager: { getBranch: () => b } };
  shutdowns.push(() => hooks.get('session_shutdown')());
  const run = (name, params) => t.get(name).execute('scope', params, undefined, undefined, ctx);
  run.locators = async query => {
   const messages = [{ role: 'user', content: [{ type: 'text', text: query }], timestamp: 0 }];
   const result = await hooks.get('context')({ type: 'context', messages }, ctx);
-  return rows((result?.messages ?? messages).filter(message => message.role === 'custom').map(message => message.content).join('\n'));
+  return rows(hintOf(result?.messages ?? messages) ?? '');
  };
  return run;
 };
