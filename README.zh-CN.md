@@ -7,12 +7,13 @@
 摘要可能丢掉名字、数字和原话。compaction-recall 让模型搜索当前分支的原始消息，再展开相关证据，不替换 agent 自身的压缩机制。
 
 - **本地内存检索**：SQLite FTS5 在 Node worker 中运行，不持久化索引，不需要 embedding 服务，也不额外调用模型。
+- **不破坏提示缓存**：每条用户消息只查一次，提示记录在会话里，之后的请求、工具循环和恢复会话都原样重发同一份字节。
 - **多语言词面检索**：英文词干、中日文双字索引，其他文字按整词索引，IP、版本号这类点号串也能整串精确匹配；全角、半角写法经 NFKC 归一后互通。自动提示用 jieba 划定中文词边界。
 - **两种模式**：`full` 提供自动历史提示和三个工具；`lite` 只保留 grep 与原文展开，不启动索引或 worker。
 
 ## 安装
 
-目前支持 Pi，其他 agent 适配计划中。
+支持 Pi 和 OMP（oh-my-pi）。
 
 ### Pi
 
@@ -24,11 +25,21 @@
 pi install npm:pi-compaction-recall
 ```
 
-配置文件位于 Pi profile 的 agent 插件目录：`$PI_CODING_AGENT_DIR/extensions/compaction-recall.json`（默认：`~/.pi/agent/extensions/compaction-recall.json`）。**配置文件不会自动生成**，需要调整时手动创建；不创建则使用默认值或环境变量。
+### OMP
+
+已在 OMP **18.22.2** 中加载打包后的扩展测试。
+
+```sh
+omp plugin install pi-compaction-recall
+```
+
+### 配置文件
+
+配置文件位于宿主 agent 目录下的插件目录：`<agent 目录>/extensions/compaction-recall.json`。Pi 的 agent 目录是 `$PI_CODING_AGENT_DIR`（默认 `~/.pi/agent`）；OMP 是当前 profile 的 agent 目录（默认 `~/.omp/agent`）。**配置文件不会自动生成**，需要调整时手动创建；不创建则使用默认值或环境变量。
 
 ## 工具
 
-`full` 模式会在回答前附上简短的历史定位提示，由模型决定是否继续搜索或展开。
+`full` 模式下，每条用户消息最多配一次简短的历史定位提示：提示追加在发给模型的那条消息末尾，并记录在会话里，之后的请求原样重发；会话里存的消息本身不变。来自其他会话或插件的消息（输入来源为 `extension`）不配提示。由模型决定是否继续搜索或展开。
 
 | 工具               | 作用                         |
 | ---------------- | -------------------------- |
@@ -60,6 +71,7 @@ pi install npm:pi-compaction-recall
 - 索引用户/助手正文及助手工具调用名和参数，不索引思考内容、图片、工具结果正文或压缩摘要；可读的工具结果仍可按 ID 展开。
 - 遵循分支内的上下文编辑：省略的条目不可见，替换内容会遮住原文。
 - 提示和工具结果会进入模型上下文，可能发送给模型服务商；`lite` 只关闭自动提示，不阻止主动检索的历史被发送。
+- 提示记录（`compaction-recall:hint:v1` custom entry）写在会话文件里，内容就是提示文本，会引用更早的消息。宿主组上下文和生成压缩摘要时都不读它；只重放最近一次压缩之后的记录。
 
 查不到不代表从未提到，重要信息应展开原文核实。诊断 trace 可能包含对话内容，不应公开上传。
 
@@ -87,7 +99,7 @@ pi install npm:pi-compaction-recall
 | lite  | 2/8  | 0/8   | 2/16  |
 | full  | 7/8  | 3/8   | 10/16 |
 
-这是小规模开发集成绩，不代表完整 LongMemEval 跑分或稳定召回准确率。
+这是小规模开发集成绩，不代表完整 LongMemEval 跑分或稳定召回准确率。随机测试用的是 0.1.0 候选版本（2026-10-06，Pi SDK 1.0.0）；两张表都没有反映之后的行为改动。
 
 运行命令和输入要求见 [benchmark 指南](https://github.com/shttty/compaction-recall/blob/main/doc/benchmark.zh-CN.md)。
 

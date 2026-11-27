@@ -7,12 +7,13 @@ An extension that helps AI agents recover details from compacted conversations.
 Summaries can lose names, numbers and exact wording. compaction-recall lets the model search the original messages on the current branch and expand the relevant evidence, without replacing the agent's own compaction.
 
 - **Local, in-memory retrieval.** SQLite FTS5 runs in a Node worker, with no persistent index, embedding service or extra model calls.
+- **Prompt-cache friendly hints.** Each user message is looked up once; the hint is recorded in the session and resent with identical bytes on later requests, tool loops and resumes.
 - **Multilingual lexical support.** English stemming, Chinese and Japanese character-bigram indexing, whole-word indexing for other scripts, exact dotted runs such as IPs and versions, and NFKC folding of fullwidth/halfwidth forms, with jieba word boundaries for automatic hints.
 - **Two modes.** `full` provides automatic history hints and three tools; `lite` keeps only grep and expansion, without an index or worker.
 
 ## Installation
 
-Currently supports Pi, with support for other agents planned.
+Supports Pi and OMP (oh-my-pi).
 
 ### Pi
 
@@ -24,11 +25,21 @@ Install from npm:
 pi install npm:pi-compaction-recall
 ```
 
-The configuration file lives in the Pi profile's agent extensions directory: `$PI_CODING_AGENT_DIR/extensions/compaction-recall.json` (default: `~/.pi/agent/extensions/compaction-recall.json`). **It is not generated automatically**; create it manually if needed. Without it, defaults and environment variables are used.
+### OMP
+
+Tested by loading the packed extension in OMP **18.22.2**.
+
+```sh
+omp plugin install pi-compaction-recall
+```
+
+### Configuration file
+
+The file lives in the host's agent extensions directory: `<agent dir>/extensions/compaction-recall.json`. For Pi that is `$PI_CODING_AGENT_DIR` (default `~/.pi/agent`); for OMP it is the active profile's agent directory (default `~/.omp/agent`). **It is not generated automatically**; create it manually if needed. Without it, defaults and environment variables are used.
 
 ## Tools
 
-In `full` mode, short history hints are added before answers. The model decides when to search or expand further.
+In `full` mode, each user message gets short history hints at most once. They are appended to that message in the request sent to the model and recorded in the session, so later requests resend the same bytes; the stored message itself is unchanged. Messages from other sessions or extensions (input source `extension`) get no hints. The model decides when to search or expand further.
 
 | Tool | Purpose |
 |---|---|
@@ -61,6 +72,7 @@ Retrieval, preindex and trace settings apply to `full` mode. Details: [Configura
 - Indexes user/assistant text and assistant tool-call names and arguments. Thinking, images, tool-result bodies and compaction summaries are not indexed; readable tool results can still be expanded by ID.
 - Honors branch-local context edits: omitted entries stay unavailable, and replacement text hides the original.
 - Hints and tool results enter the model's context and may be sent to its provider. `lite` disables automatic hints, not the transmission of explicitly retrieved history.
+- Hint records (`compaction-recall:hint:v1` custom entries) are written to the session file and contain the hint text, which quotes earlier messages. The host leaves them out of its own context and compaction summaries; only records after the latest compaction are replayed.
 
 An empty result does not prove a detail was never mentioned. Verify important facts against the expanded source. Diagnostic traces can contain conversation content and should not be published.
 
@@ -88,7 +100,7 @@ A single run on the fixed English LongMemEval_M set. The native baseline has ret
 | lite | 2/8 | 0/8 | 2/16 |
 | full | 7/8 | 3/8 | 10/16 |
 
-These small development-set results are not full LongMemEval scores or a guarantee of recall accuracy.
+These small development-set results are not full LongMemEval scores or a guarantee of recall accuracy. The random test run used the 0.1.0 candidate (2026-10-06, Pi SDK 1.0.0); neither table reflects later behavior changes.
 
 See the [benchmark guide](https://github.com/shttty/compaction-recall/blob/main/doc/benchmark.md) for commands and required inputs.
 
